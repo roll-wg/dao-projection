@@ -1,0 +1,1050 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>Root initiated routing state in RPL</title>
+
+  
+<style type="text/css">/*<![CDATA[*/
+
+body {
+  font: 16px "Helvetica Neue","Open Sans",Helvetica,Calibri,sans-serif;
+  color: #333;
+  font-size-adjust: 0.5;
+  line-height: 24px;
+  margin: 75px auto;
+  max-width: 624px;
+  padding: 0 5px;
+}
+
+.title, .filename, h1, h2, h3, h4, h5 {
+  font: 16px "Roboto Condensed","Helvetica Neue","Open Sans",Helvetica,Calibri,sans-serif;
+  font-size-adjust: 0.5;
+  font-weight: bold;
+  color: #333;
+  line-height: 100%;
+  margin: 1.2em 0 0.3em;
+}
+.title, #rfc\.title h1 { font-size: 32px; }
+h1, section h1, h2, section h2, section h3, nav h2 { font-size: 20px; }
+h3, section h4, h4, section h5 { font-size: 16px; }
+h1 a[href], h2 a[href], h3 a[href], h4 a[href] {
+  color: #333;
+}
+
+table {
+  margin-left: 0em;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+  vertical-align: top;
+}
+tr:nth-child(2n+1) > td,
+tr:nth-child(2n+1) > th {
+  background-color: #f9f9f9;
+}
+td.reference {
+  max-width: 200px;
+  border-top: none;
+  padding-right: 1em;
+}
+.right {
+  text-align: right;
+}
+
+
+table.header, table#rfc\.headerblock {
+  width: 100%;
+}
+table.header td, table#rfc\.headerblock td {
+  border: none;
+  background-color: transparent;
+  color: black;
+  padding: 0;
+}
+.filename {
+  display: block;
+  color: rgb(119, 119, 119);
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 100%;
+  margin: 10px 0 32px;
+}
+#rfc\.abstract+p, #rfc\.abstract p {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+samp, tt, code, pre {
+  font: 15px Consolas, monospace;
+  font-size-adjust: none;
+}
+pre {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  padding: 5px;
+  margin: 5px;
+}
+.figure, caption {
+  font-style: italic;
+  margin: 0 1.5em;
+  text-align: left;
+}
+
+address {
+  margin: 16px 2px;
+  line-height: 20px;
+}
+.vcard {
+  font-style: normal;
+}
+.vcardline {
+  display: block;
+}
+.vcardline .fn, address b {
+  font-weight: normal;
+}
+.vcardline .hidden {
+  display: none;
+}
+
+dl {
+  margin-left: 1em;
+}
+dl.dl-horizontal: {
+  margin-left: 0;
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.nohang > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .5em;
+}
+dl.compact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+ul.empty {
+  list-style-type: none;
+}
+ul.empty li {
+  margin-top: .5em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+hr.noprint {
+  display: none;
+}
+
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #2a6496;
+}
+a[href]:hover {
+  background-color: #eee;
+}
+
+p, ol, ul, li {
+  padding: 0;
+}
+p {
+  margin: 0.5em 0;
+}
+ol, ul {
+  margin: 0.2em 0 0.2em 2em;
+}
+li {
+  margin: 0.2em 0;
+}
+address {
+  font-style: normal;
+}
+
+ul.toc ul {
+  margin: 0 0 0 2em;
+}
+ul.toc li {
+  list-style: none;
+  margin: 0;
+}
+
+@media screen and (min-width: 924px) {
+  body {
+    padding-right: 350px;
+  }
+  body>ul.toc, body>#rfc\.toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 500px);
+    width: 300px;
+    z-index: 1;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  body>#rfc\.toc {
+    top: 55px;
+  }
+  body>ul.toc {
+    top: 100px;
+  }
+
+  ul.toc {
+    margin: 0 0 0 4px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+  ul.toc ul {
+    margin-left: 1.2em;
+  }
+}
+
+.github-fork-ribbon-wrapper {
+  display: none;
+}
+@media screen and (min-width: 800px) {
+  /* "Fork me on GitHub" CSS ribbon based on
+   * https://github.com/simonwhitaker/github-fork-ribbon-css
+   */
+  .github-fork-ribbon {
+    position: absolute;
+    padding: 2px 0;
+    background-color: #a00;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+    font: 700 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    pointer-events: auto;
+
+    top: 38px;
+    right: -45px;
+
+    transform: rotate(45deg);
+  }
+
+  .github-fork-ribbon a[href],
+  .github-fork-ribbon a[href]:hover {
+    color: #fff;
+    background-color: transparent;
+    text-decoration: none;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+    text-align: center;
+
+    width: 190px;
+    line-height: 18px;
+
+    display: inline-block;
+    padding: 2px 0;
+
+    border: 1.5px dotted #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .github-fork-ribbon-wrapper {
+    display: block;
+    width: 130px;
+    height: 130px;
+    position: absolute;
+    overflow: hidden;
+    top: 0; right: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .github-fork-ribbon-wrapper {
+    position: fixed;
+  }
+  /*]]>*/</style>
+  <meta name="viewport" content="initial-scale=1.0">
+
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology">
+<link href="#rfc.section.2.1" rel="Chapter" title="2.1 BCP 14">
+<link href="#rfc.section.2.2" rel="Chapter" title="2.2 References">
+<link href="#rfc.section.2.3" rel="Chapter" title="2.3 Subset of a 6LoWPAN Glossary">
+<link href="#rfc.section.2.4" rel="Chapter" title="2.4 New Terms">
+<link href="#rfc.section.3" rel="Chapter" title="3 Extending RFC 6550">
+<link href="#rfc.section.4" rel="Chapter" title="4 New RPL Control Message Options">
+<link href="#rfc.section.5" rel="Chapter" title="5 Projected DAO">
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Non-storing Mode Projected Route">
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Storing-Mode Projected Route">
+<link href="#rfc.section.6" rel="Chapter" title="6 Applications">
+<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Loose Source Routing in Non-storing Mode">
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Transversal Routes in storing and non-storing modes">
+<link href="#rfc.section.7" rel="Chapter" title="7 RPL Instances">
+<link href="#rfc.section.8" rel="Chapter" title="8 Security Considerations">
+<link href="#rfc.section.9" rel="Chapter" title="9 IANA Considerations">
+<link href="#rfc.section.10" rel="Chapter" title="10 Acknowledgments">
+<link href="#rfc.references" rel="Chapter" title="11 References">
+<link href="#rfc.references.1" rel="Chapter" title="11.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="11.2 Informative References">
+<link href="#rfc.appendix.A" rel="Chapter" title="A Examples">
+<link href="#rfc.appendix.A.1" rel="Chapter" title="A.1 Using storing mode P-DAO in non-storing mode MOP">
+<link href="#rfc.appendix.A.2" rel="Chapter" title="A.2 Projecting a storing-mode transversal route">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.10.0 - https://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Thubert, P., Ed., Jadhav, R., and J. Pylakutty" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-roll-dao-projection-latest" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-29" />
+  <meta name="dct.abstract" content="This document proposes a  protocol extension to RPL that enables to install a limited amount of centrally-computed routes in a RPL graph, enabling loose source routing down a non-storing mode DODAG, or transversal routes inside the DODAG.  As opposed to the classical route injection in RPL that are injected by the end devices, this draft enables the root of the DODAG to projects the routes that are needed on the nodes where they should be installed.  " />
+  <meta name="description" content="This document proposes a  protocol extension to RPL that enables to install a limited amount of centrally-computed routes in a RPL graph, enabling loose source routing down a non-storing mode DODAG, or transversal routes inside the DODAG.  As opposed to the classical route injection in RPL that are injected by the end devices, this draft enables the root of the DODAG to projects the routes that are needed on the nodes where they should be installed.  " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left">ROLL</td>
+<td class="right">P. Thubert, Ed.</td>
+</tr>
+<tr>
+<td class="left">Internet-Draft</td>
+<td class="right">Cisco</td>
+</tr>
+<tr>
+<td class="left">Intended status: Standards Track</td>
+<td class="right">R. Jadhav</td>
+</tr>
+<tr>
+<td class="left">Expires: March 2, 2019</td>
+<td class="right">Huawei Tech</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">J. Pylakutty</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">Cisco</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">August 29, 2018</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">Root initiated routing state in RPL<br />
+  <span class="filename">draft-ietf-roll-dao-projection-latest</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This document proposes a  protocol extension to RPL that enables to install a limited amount of centrally-computed routes in a RPL graph, enabling loose source routing down a non-storing mode DODAG, or transversal routes inside the DODAG.  As opposed to the classical route injection in RPL that are injected by the end devices, this draft enables the root of the DODAG to projects the routes that are needed on the nodes where they should be installed.  </p>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on March 2, 2019.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2018 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<li>2.   <a href="#rfc.section.2">Terminology</a>
+</li>
+<ul><li>2.1.   <a href="#rfc.section.2.1">BCP 14</a>
+</li>
+<li>2.2.   <a href="#rfc.section.2.2">References</a>
+</li>
+<li>2.3.   <a href="#rfc.section.2.3">Subset of a 6LoWPAN Glossary</a>
+</li>
+<li>2.4.   <a href="#rfc.section.2.4">New Terms</a>
+</li>
+</ul><li>3.   <a href="#rfc.section.3">Extending RFC 6550</a>
+</li>
+<li>4.   <a href="#rfc.section.4">New RPL Control Message Options</a>
+</li>
+<li>5.   <a href="#rfc.section.5">Projected DAO</a>
+</li>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Non-storing Mode Projected Route</a>
+</li>
+<li>5.2.   <a href="#rfc.section.5.2">Storing-Mode Projected Route</a>
+</li>
+</ul><li>6.   <a href="#rfc.section.6">Applications</a>
+</li>
+<ul><li>6.1.   <a href="#rfc.section.6.1">Loose Source Routing in Non-storing Mode</a>
+</li>
+<li>6.2.   <a href="#rfc.section.6.2">Transversal Routes in storing and non-storing modes</a>
+</li>
+</ul><li>7.   <a href="#rfc.section.7">RPL Instances</a>
+</li>
+<li>8.   <a href="#rfc.section.8">Security Considerations</a>
+</li>
+<li>9.   <a href="#rfc.section.9">IANA Considerations</a>
+</li>
+<li>10.   <a href="#rfc.section.10">Acknowledgments</a>
+</li>
+<li>11.   <a href="#rfc.references">References</a>
+</li>
+<ul><li>11.1.   <a href="#rfc.references.1">Normative References</a>
+</li>
+<li>11.2.   <a href="#rfc.references.2">Informative References</a>
+</li>
+</ul><li>Appendix A.   <a href="#rfc.appendix.A">Examples</a>
+</li>
+<ul><li>A.1.   <a href="#rfc.appendix.A.1">Using storing mode P-DAO in non-storing mode MOP</a>
+</li>
+<li>A.2.   <a href="#rfc.appendix.A.2">Projecting a storing-mode transversal route</a>
+</li>
+</ul><li><a href="#rfc.authors">Authors' Addresses</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a>
+</h1>
+<p id="rfc.section.1.p.1">The <a href="#RFC6550" class="xref">"Routing Protocol for Low Power and Lossy Networks"</a> (LLN)(RPL) is a generic Distance Vector protocol that is well suited for application in a variety of low energy Internet of Things (IoT) networks.  RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which the root often acts as the Border Router to connect the RPL domain to the Internet. The root is responsible to select the RPL Instance that is used to forward a packet coming from the Internet into the RPL domain and set the related RPL information in the packets.  </p>
+<p id="rfc.section.1.p.2">The  <a href="#I-D.ietf-6tisch-architecture" class="xref">6TiSCH architecture</a> leverages RPL for its routing operation and considers the <a href="#I-D.ietf-detnet-architecture" class="xref">Deterministic Networking Architecture</a> as one possible model whereby the device resources and capabilities are exposed to an external controller which installs routing states into the network based on some objective functions that reside in that external entity.  </p>
+<p id="rfc.section.1.p.3">Based on heuristics of usage, path length, and knowledge of device capacity and available resources such as battery levels and reservable buffers, a Path Computation Element (<a href="#PCE" class="xref">[PCE]</a>) with a global visibility on the system could install additional P2P routes that are more optimized for the current needs as expressed by the objective function.  </p>
+<p id="rfc.section.1.p.4">This draft enables a RPL root to install and maintain projected routes (P-routes) within its DODAG, along a selected set of nodes that may or may not include self, for a chosen duration. This potentially enables routes that are more optimized than those obtained with the distributed operation of RPL, either in terms of the size of a source-route header or in terms of path length, which impacts both the latency and the packet delivery ratio.  P-routes may be installed in either Storing and Non-Storing Modes Instances of the classical RPL operation, resulting in potentially hybrid situations where the mode of some P-routes is different from that of the other routes in the RPL Instance.  </p>
+<p id="rfc.section.1.p.5">Projected routes must be used with the parsimony to limit the amount of state that is installed in each device to fit within its resources, and to limit the amount of rerouted traffic to fit within the capabilities of the transmission links.  The algorithm used to compute the paths and the protocol used to learn the topology of the network and the resources that are available in devices and in the network are out of scope for this document.  Possibly with the assistance of a Path Computation Element (<a href="#PCE" class="xref">[PCE]</a>) that could have a better visibility on the larger system, the root computes which segment could be optimized and uses this draft to install the corresponding projected routes.  </p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> Terminology</h1>
+<h1 id="rfc.section.2.1">
+<a href="#rfc.section.2.1">2.1.</a> <a href="#bcp" id="bcp">BCP 14</a>
+</h1>
+<p id="rfc.section.2.1.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <a href="#RFC2119" class="xref">[RFC2119]</a><a href="#RFC8174" class="xref">[RFC8174]</a> when, and only when, they appear in all capitals, as shown here.  </p>
+<h1 id="rfc.section.2.2">
+<a href="#rfc.section.2.2">2.2.</a> <a href="#lo" id="lo">References</a>
+</h1>
+<p id="rfc.section.2.2.p.1">In this document, readers will encounter terms and concepts that are discussed in the following documents: </p>
+
+<ul>
+<li>
+<a href="#RFC6550" class="xref">"Routing Protocol for Low Power and Lossy Networks"</a>, and </li>
+<li>
+<a href="#RFC7102" class="xref">"Terminology in Low power And Lossy Networks"</a>. </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.2.3">
+<a href="#rfc.section.2.3">2.3.</a> <a href="#gloss" id="gloss">Subset of a 6LoWPAN Glossary</a>
+</h1>
+<p id="rfc.section.2.3.p.1">This document often uses the following acronyms: </p>
+
+<dl>
+<dt>6BBR:</dt>
+<dd style="margin-left: 6">6LoWPAN Backbone Router </dd>
+<dt>6LBR:</dt>
+<dd style="margin-left: 6">6LoWPAN Border Router </dd>
+<dt>6LN:</dt>
+<dd style="margin-left: 6">6LoWPAN Node  </dd>
+<dt>6LR:</dt>
+<dd style="margin-left: 6">6LoWPAN Router </dd>
+<dt>6CIO:</dt>
+<dd style="margin-left: 6">Capability Indication Option </dd>
+<dt>EARO:</dt>
+<dd style="margin-left: 6">(Extended) Address Registration Option -- (E)ARO</dd>
+<dt>EDAR:</dt>
+<dd style="margin-left: 6">(Extended) Duplicate Address Request  -- (E)DAR</dd>
+<dt>EDAC:</dt>
+<dd style="margin-left: 6">(Extended) Duplicate Address Confirmation  -- (E)DAC</dd>
+<dt>DAD:</dt>
+<dd style="margin-left: 6">Duplicate Address Detection </dd>
+<dt>DODAG:</dt>
+<dd style="margin-left: 6">Destination-Oriented Directed Acyclic Graph </dd>
+<dt>LLN:</dt>
+<dd style="margin-left: 6">Low-Power and Lossy Network </dd>
+<dt>NA:</dt>
+<dd style="margin-left: 6">Neighbor Advertisement </dd>
+<dt>NCE:</dt>
+<dd style="margin-left: 6">Neighbor Cache Entry  </dd>
+<dt>ND:</dt>
+<dd style="margin-left: 6">Neighbor Discovery  </dd>
+<dt>NDP:</dt>
+<dd style="margin-left: 6">Neighbor Discovery Protocol </dd>
+<dt>NS:</dt>
+<dd style="margin-left: 6">Neighbor Solicitation  </dd>
+<dt>RPL:</dt>
+<dd style="margin-left: 6">IPv6 Routing Protocol for LLNs (pronounced ripple) <a href="#RFC6550" class="xref">[RFC6550]</a> </dd>
+<dt>RA:</dt>
+<dd style="margin-left: 6">Router Advertisement  </dd>
+<dt>RS:</dt>
+<dd style="margin-left: 6">Router Solicitation  </dd>
+</dl>
+
+<p> </p>
+<h1 id="rfc.section.2.4">
+<a href="#rfc.section.2.4">2.4.</a> <a href="#new" id="new">New Terms</a>
+</h1>
+<p></p>
+
+<dl>
+<dt>Projected Route:</dt>
+<dd style="margin-left: 6">A route that is installed remotely by a RPL root.  </dd>
+</dl>
+
+<p> </p>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#ext6550" id="ext6550">Extending RFC 6550</a>
+</h1>
+<p id="rfc.section.3.p.1">Section 6.7 of RPL <a href="#RFC6550" class="xref">[RFC6550]</a> specifies Control Message Options (CMO) to be placed in RPL messages such as the Destination Advertisement Object (DAO) message. The RPL Target Option and the Transit Information Option (TIO) are such options; the former indicates a node to be reached and the latter specifies a parent that can be used to reach that node. Options may be factorized; one or more contiguous TIOs apply to the one or more contiguous Target options that immediately precede the TIOs in the RPL message.  </p>
+<p id="rfc.section.3.p.2">This specification introduces 2 new Control Message Options referred to as Route Projection Options (RPO). One RPO is the Information option (VIO) and the other is the Source-Routed VIO (SRVIO). The VIO installs a route on each hop along a projected route (in a fashion analogous to RPL Storing Mode) whereas the SRVIO installs a source-routing state at the ingress node, which uses it to insert a routing header in a fashion similar to Non-Storing Mode.  </p>
+<p id="rfc.section.3.p.3">Like the TIO, the RPOs MUST be preceded by one or more RPL Target Options to which they apply, and they can be factorized: multiple contiguous RPOs indicate alternate paths to the target(s).  </p>
+<h1 id="rfc.section.4">
+<a href="#rfc.section.4">4.</a> <a href="#rplccmo" id="rplccmo">New RPL Control Message Options</a>
+</h1>
+<p id="rfc.section.4.p.1">The format of RPOs is as follows: </p>
+<div id="rfc.figure.1"></div>
+<div id="viao"></div>
+<pre>
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |   Type        | Option Length | Path Sequence | Path Lifetime |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +                                                               +
+    .                                                               .
+    .                     Via Address 1                             .
+    .                                                               .
+    +                                                               +
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    .                              ....                             .
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +                                                               +
+    .                                                               .
+    .                     Via Address n                             .
+    .                                                               .
+    +                                                               +
+    |                                                               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ </pre>
+<p class="figure">Figure 1: Via Information option format</p>
+<p></p>
+
+<dl>
+<dt>Option Type:</dt>
+<dd style="margin-left: 6">0x0A for VIO, 0x0B for SRVIO (to be confirmed by IANA)</dd>
+<dt>Option Length:</dt>
+<dd style="margin-left: 6">In bytes; variable, depending on the number of Via Addresses.</dd>
+<dt>Path Sequence:</dt>
+<dd style="margin-left: 6">8-bit unsigned integer. When a RPL Target option is issued by the root of the DODAG (i.e. in a DAO message), that root sets the Path Sequence and increments the Path Sequence each time it issues a RPL Target option with updated information. The indicated sequence deprecates any state for a given Target that was learned from a previous sequence and adds to any state that was learned for that sequence.</dd>
+<dt>Path Lifetime:</dt>
+<dd style="margin-left: 6">8-bit unsigned integer. The length of time in Lifetime Units (obtained from the Configuration option) that the prefix is valid for route determination. The period starts when a new Path Sequence is seen. A value of all one bits (0xFF) represents infinity. A value of all zero bits (0x00) indicates a loss of reachability. A DAO message that contains a Via Information option with a Path Lifetime of 0x00 for a Target is referred as a No-Path (for that Target) in this document.</dd>
+<dt>Via Address:</dt>
+<dd style="margin-left: 6">16 bytes. IPv6 Address of the next hop towards the destination(s) indicated in the target option that immediately precede the RPO. Via Addresses are indicated in the order of the data path from the ingress to the egress nodes.  TBD: See how the /64 prefix can be elided if it is the same as that of (all of) the target(s). In that case, the Next-Hop Address could be expressed as the 8-bytes suffix only.  </dd>
+</dl>
+<p id="rfc.section.4.p.3">An RPO MUST contain at least one Via Address, and a Via Address MUST NOT be present more than once, otherwise the RPO MUST be ignored.  </p>
+<h1 id="rfc.section.5">
+<a href="#rfc.section.5">5.</a> <a href="#pdao" id="pdao">Projected DAO</a>
+</h1>
+<p id="rfc.section.5.p.1">This draft adds a capability to RPL whereby the root of a DODAG projects a route by sending an extended DAO message called a Projected-DAO (P-DAO) to an arbitrary router in the DODAG, indicating one or more sequence(s) of routers inside the DODAG via which the target(s) indicated in the Target Information Option(s) (TIO) can be reached.  </p>
+<p id="rfc.section.5.p.2">A P-DAO is sent from a global address of the root to a global address of the recipient, and MUST be confirmed by a DAO-ACK, which is sent back to a global address of the root.  </p>
+<p id="rfc.section.5.p.3">A P-DAO message MUST contain at least one TIO and at least one RPO following it. There can be at most one such sequence of TIOs and then RPOs.  </p>
+<p id="rfc.section.5.p.4">Like a classical DAO message, a P-DAO is processed only if it is "new" per section 9.2.2. "Generation of DAO Messages" of the <a href="#RFC6550" class="xref">RPL specification</a>; this is determined using the Path Sequence information from the RPO as opposed to a TIO. Also, a Path Lifetime of 0 in an RPO indicates that a route is to be removed.  </p>
+<p id="rfc.section.5.p.5">There are two kinds of operation for the projected routes, the Storing Mode and the Non-Storing Mode.  </p>
+
+<ul class="empty">
+<li>The Non-Storing Mode is discussed in section <a href="#nspdao" class="xref">Section 5.1</a>.  It uses an SRVIO that carries a list of Via Addresses to be used as a source-routed path to the target. The recipient of the P-DAO is the ingress router of the source-routed path. Upon a Non-Storing Mode P-DAO, the ingress router installs a source-routed state to the target and replies to the root directly with a DAO-ACK message.  </li>
+<li>The Storing Mode is discussed in section  <a href="#spdao" class="xref">Section 5.2</a>. It uses a VIO with one Via Address per consecutive hop, from the ingress to the egress of the path, including the list of all intermediate routers in the data path order.  The Via Addresses indicate the routers in which the routing state to the target have to be installed via the next Via Address in the VIO.  In normal operations, the P-DAO is propagated along the chain of Via Routers from the egress router of the path till the ingress one, which confirms the installation to the root with a DAO-ACK message.  Note that the root may be the ingress and it may be the egress of the path, that it can also be neither but it cannot be both.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.5.1">
+<a href="#rfc.section.5.1">5.1.</a> <a href="#nspdao" id="nspdao">Non-storing Mode Projected Route</a>
+</h1>
+<p id="rfc.section.5.1.p.1">As illustrated in <a href="#nsdf" class="xref">Figure 2</a>, a P-DAO that carries an SRVIO enables the root to install a source-routed path towards a target in any particular router; with this path information the router can add a source routed header reflecting the P-route to any packet for which the current destination either is the said target or can be reached via the target.  </p>
+<div id="rfc.figure.2"></div>
+<div id="nsdf"></div>
+<pre>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+                   |  P  ^            |
+                 |                      | DAO | ACK        | Loose
+           o    o   o    o     router   V     |            | Source
+       o o   o  o   o  o  o      o  o            | P-DAO   . Route
+      o  o o  o o    o   o   o  o  o             | Source  . Path
+      o   o    o  o     o  o    o  o  o          | Route   . From
+     o  o   o  o   o         o   o o             | Path    . Root
+        o  o  o  o             o    target       V         . To
+       o       o               o    o                      | Desti-
+     o          o             o     o                      | nation
+                                   destination             V
+
+                       LLN
+                       </pre>
+<p class="figure">Figure 2: Projecting a Non-Storing Route</p>
+<p id="rfc.section.5.1.p.2">A route indicated by an SRVIO may be loose, meaning that the node that owns the next listed Via Address is not necessarily a neighbor. Without proper loop avoidance mechanisms, the interaction of loose source routing and other mechanisms may effectively cause loops. In order to avoid those loops, if the router that installs a P-route does not have a connected route (a direct adjacency) to the next soure routed hop and fails to locate it as a neighbor or a neighbor of a neighbor, then it MUST ensure that it has another projected route to the next loose hop under the control of the same route computation system, otherwise the P-DAO is rejected.  </p>
+<p id="rfc.section.5.1.p.3">When forwarding a packet to a destination for which the router determines that routing happens via the target, the router inserts the source routing header in the packet to reach the target. In the case of a loose source-routed path, there MUST be either a neighbor that is adjacent to the loose next hop, on which case the packet s forwarded to that neighbor, or a source-routed path to the loose next hop; in the latter case, another encapsulation takes place and the process possibly recurses; otherwise the packet is dropped.  </p>
+<p id="rfc.section.5.1.p.4">In order to add a source-routing header, the router encapsulates the packet with an IP-in-IP header and a non-storing mode source routing header (SRH) <a href="#RFC6554" class="xref">[RFC6554]</a>.</p>
+<p id="rfc.section.5.1.p.5">In the uncompressed form the source of the packet would be self, the destination would be the first Via Address in the SRVIO, and the SRH would contain the list of the remaining Via Addresses and then the target.</p>
+<p id="rfc.section.5.1.p.6">In practice, the router will normally use the <a href="#RFC8025" class="xref">"IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging Dispatch"</a> to compress the RPL artifacts as indicated in the <a href="#RFC8138" class="xref">"6LoWPAN Routing Header"</a> specification. In that case, the router indicates self as encapsulator in an IP-in-IP 6LoRH Header, and places the list of Via Addresses in the order of the VIO and then the target in the SRH 6LoRH Header.  </p>
+<h1 id="rfc.section.5.2">
+<a href="#rfc.section.5.2">5.2.</a> <a href="#spdao" id="spdao">Storing-Mode Projected Route</a>
+</h1>
+<p id="rfc.section.5.2.p.1">As illustrated in <a href="#sdf" class="xref">Figure 3</a>, the Storing Mode projected iq used by the root to install a routing state towards a target in the routers along a segment between an ingress and an egress router; this enables the routers to forward along that segment any packet for which the next loose hop is the said target, for instance a loose source routed packet for which the next loose hop is the target, or a packet for which the router has a routing state to the final destination via the target.  </p>
+<div id="rfc.figure.3"></div>
+<div id="sdf"></div>
+<pre>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+                      |     ^                   |
+                 |                         | DAO | ACK               |
+           o    o   o    o                 |     |                   |
+       o o   o  o   o  o  o o   o          |  ^       | Projected    .
+      o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
+      o   o    o  o     o  o    o  o  o    | ^        |              .
+     o  o   o  o   o         o   o o       v | DAO    v              .
+     o          o   LLN   o   o     o                                |
+         o o   o        o     o              Loose Source Route Path |
+      o       o      o    o                 From Root To Destination v
+
+      </pre>
+<p class="figure">Figure 3: Projecting a route</p>
+<p id="rfc.section.5.2.p.2">In order to install the relevant routing state along the segment between an ingress and an egress routers, the root sends a unicast P-DAO message to the egress router of the routing segment that must be installed. The P-DAO message contains the ordered list of hops along the segment as a direct sequence of Via Information options that are preceded by one or more RPL Target options to which they relate.  Each Via Information option contains a Path Lifetime for which the state is to be maintained.  </p>
+<p id="rfc.section.5.2.p.3">The root sends the P-DAO directly to the egress node of the segment.  In that P-DAO, the destination IP address matches the Via Address in the last VIO. This is how the egress recognizes its role. In a similar fashion, the ingress node recognizes its role as it matches Via Address in the first VIO.  </p>
+<p id="rfc.section.5.2.p.4">The egress node of the segment is the only node in the path that does not install a route in response to the P-DAO; it is expected to be already able to route to the target(s) on its own. It may either be the target, or may have some existing information to reach the target(s), such as a connected route or an already installed projected route.  If one of the targets cannot be located, the node MUST answer to the root with a negative DAO-ACK listing the target(s) that could not be located (suggested status 10 to be confirmed by IANA).  </p>
+<p id="rfc.section.5.2.p.5">If the egress node can reach all the targets, then it forwards the P-DAO with unchanged content to its loose predecessor in the segment as indicated in the list of Via Information options, and recursively the message is propagated unchanged along the sequence of routers indicated in the P-DAO, but in the reverse order, from egress to ingress.  </p>
+<p id="rfc.section.5.2.p.6">The address of the predecessor to be used as destination of the propagated DAO message is found in the Via Information option the precedes the one that contain the address of the propagating node, which is used as source of the packet.  </p>
+<p id="rfc.section.5.2.p.7">Upon receiving a propagated DAO, an intermediate router as well as the ingress router install a route towards the DAO target(s) via its successor in the P-DAO; the router locates the VIO that contains its address, and uses as next hop the address found in the Via Address field in the following VIO. The router MAY install additional routes towards the addresses that are located in VIOs that are after the next one, if any, but in case of a conflict or a lack of resource, a route to a target installed by the root has precedence.  </p>
+<p id="rfc.section.5.2.p.8">The process recurses till the P-DAO is propagated to ingress router of the segment, which answers with a DAO-ACK to the root.  </p>
+<p id="rfc.section.5.2.p.9">Also, the path indicated in a P-DAO may be loose, in which case the reachability to the next hop has to be asserted. Each router along the path indicated in a P-DAO is expected to be able to reach its successor, either with a connected route (direct neighbor), or by routing, for instance following a route installed previously by a DAO or a P-DAO message.  If that route is not connected then a recursive lookup may take place at packet forwarding time to find the next hop to reach the target(s).  If it does not and cannot reach the next router in the P-DAO, the router MUST answer to the root with a negative DAO-ACK indicating the successor that is unreachable (suggested status 11 to be confirmed by IANA).  </p>
+<p id="rfc.section.5.2.p.10">A Path Lifetime of 0 in a Via Information option is used to clean up the state. The P-DAO is forwarded as described above, but the DAO is interpreted as a No-Path DAO and results in cleaning up existing state as opposed to refreshing an existing one or installing a new one.  </p>
+<h1 id="rfc.section.6">
+<a href="#rfc.section.6">6.</a> Applications</h1>
+<h1 id="rfc.section.6.1">
+<a href="#rfc.section.6.1">6.1.</a> Loose Source Routing in Non-storing Mode</h1>
+<p id="rfc.section.6.1.p.1">A RPL implementation operating in a very constrained LLN typically uses the Non-Storing Mode of Operation as represented in <a href="#nost" class="xref">Figure 4</a>.  In that mode, a RPL node indicates a parent-child relationship to the root, using a Destination Advertisement Object (DAO) that is unicast from the node directly to the root, and the root typically builds a source routed path to a destination down the DODAG by recursively concatenating this information.  </p>
+<div id="rfc.figure.4"></div>
+<div id="nost"></div>
+<pre>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+                      ^     |        |
+                 |                         | DAO | ACK    |
+           o    o   o    o                 |     |        | Strict
+       o o   o  o   o  o  o o   o          |     |        | Source
+      o  o o  o o    o   o   o  o  o       |     |        | Route
+      o   o    o  o     o  o    o  o  o    |     |        |
+     o  o   o  o   o         o   o o       |     v        v
+     o          o             o     o
+                       LLN
+                       </pre>
+<p class="figure">Figure 4: RPL non-storing mode of operation </p>
+<p id="rfc.section.6.1.p.2">Based on the parent-children relationships expressed in the non-storing DAO messages,the root possesses topological information about the whole network, though this information is limited to the structure of the DODAG for which it is the destination.  A packet that is generated within the domain will always reach the root, which can then apply a source routing information to reach the destination if the destination is also in the DODAG.  Similarly, a packet coming from the outside of the domain for a destination that is expected to be in a RPL domain reaches the root.  </p>
+<p id="rfc.section.6.1.p.3">It results that the root, or then some associated centralized computation engine such as a PCE, can determine the amount of packets that reach a destination in the RPL domain, and thus the amount of energy and bandwidth that is wasted for transmission, between itself and the destination, as well as the risk of fragmentation, any potential delays because of a paths longer than necessary (shorter paths exist that would not traverse the root).  </p>
+<p id="rfc.section.6.1.p.4">As a network gets deep, the size of the source routing header that the root must add to all the downward packets becomes an issue for nodes that are many hops away. In some use cases, a RPL network forms long lines and a limited amount of well-targeted routing state would allow to make the source routing operation loose as opposed to strict, and save packet size.  Limiting the packet size is directly beneficial to the energy budget, but, mostly, it reduces the chances of frame loss and/or packet fragmentation, which is highly detrimental to the LLN operation. Because the capability to store a routing state in every node is limited, the decision of which route is installed where can only be optimized with a global knowledge of the system, a knowledge that the root or an associated PCE may possess by means that are outside of the scope of this specification.  </p>
+<p id="rfc.section.6.1.p.5">This specification enables to store source-routed or storing mode state in intermediate routers, which enables to limit the excursion of the source route headers in deep networks.  Once a P-DAO exchange has taken place for a given target, if the root operates in non storing mode, then it may elide the sequence of routers that is installed in the network from its source route headers to destination that are reachable via that target, and the source route headers effectively become loose.  </p>
+<h1 id="rfc.section.6.2">
+<a href="#rfc.section.6.2">6.2.</a> Transversal Routes in storing and non-storing modes</h1>
+<p id="rfc.section.6.2.p.1">RPL is optimized for Point-to-Multipoint (P2MP), root to leaves and Multipoint-to-Point (MP2P) leaves to root operations, whereby routes are always installed along the RPL DODAG. Transversal Peer to Peer (P2P) routes in a RPL network will generally suffer from some stretch since routing between 2 peers always happens via a common parent, as illustrated in <a href="#stretch" class="xref">Figure 5</a>: </p>
+
+<ul>
+<li>in non-storing mode, all packets routed within the DODAG flow all the way up to the root of the DODAG. If the destination is in the same DODAG, the root must encapsulate the packet to place a Routing Header that has the strict source route information down the DODAG to the destination. This will be the case even if the destination is relatively close to the source and the root is relatively far off.  </li>
+<li>In storing mode, unless the destination is a child of the source, the packets will follow the default route up the DODAG as well.  If the destination is in the same DODAG, they will eventually reach a common parent that has a route to the destination; at worse, the common parent may also be the root. From that common parent, the packet will follow a path down the DODAG that is optimized for the Objective Function that was used to build the DODAG.</li>
+</ul>
+
+<p> </p>
+<div id="rfc.figure.5"></div>
+<div id="stretch"></div>
+<pre>
+                   ------+---------
+                    |          Internet
+                    |
+                 +-----+
+                 |     | Border Router
+                 |     |  (RPL Root)
+                 +-----+
+                    X
+              ^    v   o    o
+          ^ o   o  v   o  o  o o   o
+         ^  o o  o v    o   o   o  o  o
+         ^   o    o  v     o  o    o  o  o
+        S  o   o  o   D         o   o o
+        o          o             o     o
+                          LLN
+       </pre>
+<p class="figure">Figure 5: Routing Stretch between S and D via common parent X</p>
+<p id="rfc.section.6.2.p.2">It results that it is often beneficial to enable transversal P2P routes, either if the RPL route presents a stretch from shortest path, or if the new route is engineered with a different objective.  For that reason, earlier work at the IETF introduced the <a href="#RFC6997" class="xref">"Reactive Discovery of Point-to-Point Routes in Low Power and Lossy Networks"</a>, which specifies a distributed method for establishing optimized P2P routes. This draft proposes an alternate based on a centralized route computation.  </p>
+<div id="rfc.figure.6"></div>
+<div id="opti2"></div>
+<pre>
+              ------+---------
+                    |          Internet
+                    |
+                 +-----+
+                 |     | Border Router
+                 |     |  (RPL Root)
+                 +-----+
+                    |
+              o    o   o    o
+          o o   o  o   o  o  o o   o
+         o  o o  o o    o   o   o  o  o
+         o   o    o  o     o  o    o  o  o
+        S&gt;&gt;A&gt;&gt;&gt;B&gt;&gt;C&gt;&gt;&gt;D         o   o o
+        o          o             o     o
+                          LLN
+       </pre>
+<p class="figure">Figure 6: Projected Transversal Route</p>
+<p id="rfc.section.6.2.p.3">This specification enables to store source-routed or storing mode state in intermediate routers, which enables to limit the stretch of a P2P route and maintain the characteristics within a given SLA. An example of service using this mechanism oculd be a control loop that would be installed in a network that uses classical RPL for asynchronous data collection. In that case, the P2P path may be installed in a different RPL Instance, with a different objective function.  </p>
+<h1 id="rfc.section.7">
+<a href="#rfc.section.7">7.</a> RPL Instances</h1>
+<p id="rfc.section.7.p.1">It must be noted that RPL has a concept of instance but does not have a concept of an administrative distance, which exists in certain proprietary implementations to sort out conflicts between multiple sources of routing information. This draft conforms the instance model as follows: </p>
+
+<ul>
+<li>If the PCE needs to influence a particular instance to add better routes in conformance with the routing objectives in that instance, it may do so.  When the PCE modifies an existing instance then the added routes must not create a loop in that instance. This is achieved by always preferring a route obtained from the PCE over a route that is learned via RPL.</li>
+<li>If the PCE installs a more specific (say, Traffic Engineered) route between a particular pair of nodes then it SHOULD use a Local Instance from the ingress node of that path. A packet associated with that instance will be routed along that path and MUST NOT be placed over a Global Instance again. A packet that is placed on a Global Instance may be injected in the Local Instance based on node policy and the Local Instance paramenters.  </li>
+</ul>
+
+<p> In all cases, the path is indicated by a new Via Information option, and the flow is similar to the flow used to obtain loose source routing.  </p>
+<h1 id="rfc.section.8">
+<a href="#rfc.section.8">8.</a> Security Considerations</h1>
+<p id="rfc.section.8.p.1">This draft uses messages that are already present in RPL <a href="#RFC6550" class="xref">[RFC6550]</a> with optional secured versions. The same secured versions may be used with this draft, and whatever security is deployed for a given network also applies to the flows in this draft.  </p>
+<h1 id="rfc.section.9">
+<a href="#rfc.section.9">9.</a> <a href="#RPLCtrlMsgOptionsReg" id="RPLCtrlMsgOptionsReg">IANA Considerations</a>
+</h1>
+<p id="rfc.section.9.p.1">This document extends the IANA registry created by RFC 6550 for RPL Control Codes as follows:</p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+<caption>RPL Control Codes</caption>
+<thead><tr>
+<th class="center">Code</th>
+<th class="left">Description</th>
+<th class="left">Reference</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="center">0x0A</td>
+<td class="left">Via</td>
+<td class="left">This document</td>
+</tr>
+<tr>
+<td class="center">0x0B</td>
+<td class="left">Source-Routed Via</td>
+<td class="left">This document</td>
+</tr>
+</tbody>
+</table>
+<p id="rfc.section.9.p.2">This document is updating the registry created by RFC 6550 for the RPL 3-bit Mode of Operation (MOP) as follows: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+<caption>DIO Mode of operation</caption>
+<thead><tr>
+<th class="center">MOP value</th>
+<th class="left">Description</th>
+<th class="left">Reference</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="center">5</td>
+<td class="left">Non-Storing mode of operation with Projected routes</td>
+<td class="left">This document</td>
+</tr>
+<tr>
+<td class="center">6</td>
+<td class="left">Storing mode of operation with Projected routes</td>
+<td class="left">This document</td>
+</tr>
+</tbody>
+</table>
+<h1 id="rfc.section.10">
+<a href="#rfc.section.10">10.</a> Acknowledgments</h1>
+<p id="rfc.section.10.p.1">The authors wish to acknowledge JP Vasseur and Patrick Wetterwald for their contributions to the ideas developed here.</p>
+<h1 id="rfc.references">
+<a href="#rfc.references">11.</a> References</h1>
+<h1 id="rfc.references.1">
+<a href="#rfc.references.1">11.1.</a> Normative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6550">[RFC6550]</b></td>
+<td class="top">
+<a>Winter, T.</a>, <a>Thubert, P.</a>, <a>Brandt, A.</a>, <a>Hui, J.</a>, <a>Kelsey, R.</a>, <a>Levis, P.</a>, <a>Pister, K.</a>, <a>Struik, R.</a>, <a>Vasseur, JP.</a> and <a>R. Alexander</a>, "<a href="https://tools.ietf.org/html/rfc6550">RPL: IPv6 Routing Protocol for Low-Power and Lossy Networks</a>", RFC 6550, DOI 10.17487/RFC6550, March 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6551">[RFC6551]</b></td>
+<td class="top">
+<a>Vasseur, JP.</a>, <a>Kim, M.</a>, <a>Pister, K.</a>, <a>Dejean, N.</a> and <a>D. Barthel</a>, "<a href="https://tools.ietf.org/html/rfc6551">Routing Metrics Used for Path Calculation in Low-Power and Lossy Networks</a>", RFC 6551, DOI 10.17487/RFC6551, March 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6554">[RFC6554]</b></td>
+<td class="top">
+<a>Hui, J.</a>, <a>Vasseur, JP.</a>, <a>Culler, D.</a> and <a>V. Manral</a>, "<a href="https://tools.ietf.org/html/rfc6554">An IPv6 Routing Header for Source Routes with the Routing Protocol for Low-Power and Lossy Networks (RPL)</a>", RFC 6554, DOI 10.17487/RFC6554, March 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC8025">[RFC8025]</b></td>
+<td class="top">
+<a>Thubert, P.</a> and <a>R. Cragie</a>, "<a href="https://tools.ietf.org/html/rfc8025">IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging Dispatch</a>", RFC 8025, DOI 10.17487/RFC8025, November 2016.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC8138">[RFC8138]</b></td>
+<td class="top">
+<a>Thubert, P.</a>, <a>Bormann, C.</a>, <a>Toutain, L.</a> and <a>R. Cragie</a>, "<a href="https://tools.ietf.org/html/rfc8138">IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Routing Header</a>", RFC 8138, DOI 10.17487/RFC8138, April 2017.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC8174">[RFC8174]</b></td>
+<td class="top">
+<a>Leiba, B.</a>, "<a href="https://tools.ietf.org/html/rfc8174">Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a>", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.references.2">
+<a href="#rfc.references.2">11.2.</a> Informative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="I-D.ietf-6tisch-architecture">[I-D.ietf-6tisch-architecture]</b></td>
+<td class="top">
+<a>Thubert, P.</a>, "<a href="https://tools.ietf.org/html/draft-ietf-6tisch-architecture-14">An Architecture for IPv6 over the TSCH mode of IEEE 802.15.4</a>", Internet-Draft draft-ietf-6tisch-architecture-14, April 2018.</td>
+</tr>
+<tr>
+<td class="reference"><b id="I-D.ietf-detnet-architecture">[I-D.ietf-detnet-architecture]</b></td>
+<td class="top">
+<a>Finn, N.</a>, <a>Thubert, P.</a>, <a>Varga, B.</a> and <a>J. Farkas</a>, "<a href="https://tools.ietf.org/html/draft-ietf-detnet-architecture-07">Deterministic Networking Architecture</a>", Internet-Draft draft-ietf-detnet-architecture-07, August 2018.</td>
+</tr>
+<tr>
+<td class="reference"><b id="PCE">[PCE]</b></td>
+<td class="top">
+<a>IETF</a>, "<a href="https://datatracker.ietf.org/doc/charter-ietf-pce/">Path Computation Element</a>"</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6997">[RFC6997]</b></td>
+<td class="top">
+<a>Goyal, M.</a>, <a>Baccelli, E.</a>, <a>Philipp, M.</a>, <a>Brandt, A.</a> and <a>J. Martocci</a>, "<a href="https://tools.ietf.org/html/rfc6997">Reactive Discovery of Point-to-Point Routes in Low-Power and Lossy Networks</a>", RFC 6997, DOI 10.17487/RFC6997, August 2013.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7102">[RFC7102]</b></td>
+<td class="top">
+<a>Vasseur, JP.</a>, "<a href="https://tools.ietf.org/html/rfc7102">Terms Used in Routing for Low-Power and Lossy Networks</a>", RFC 7102, DOI 10.17487/RFC7102, January 2014.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.appendix.A">
+<a href="#rfc.appendix.A">Appendix A.</a> Examples</h1>
+<h1 id="rfc.appendix.A.1">
+<a href="#rfc.appendix.A.1">A.1.</a> Using storing mode P-DAO in non-storing mode MOP</h1>
+<p id="rfc.section.A.1.p.1">In non-storing mode, the DAG root maintains the knowledge of the whole DODAG topology, so when both the source and the destination of a packet are in the DODAG, the root can determine the common parent that would have been used in storing mode, and thus the list of nodes in the path between the common parent and the destination. For instance in the diagram shown in <a href="#exmp" class="xref">Figure 7</a>, if the source is node 41 and the destination is node 52, then the common parent is node 22.  </p>
+<div id="rfc.figure.7"></div>
+<div id="exmp"></div>
+<pre>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+
+               | \  \____
+              /   \       \
+            o 11   o 12     o  13
+           /       |       /  \
+         o 22      o 23   o 24  o 25
+        /  \       | \      \
+      o 31   o 32  o   o     o 35
+     /      /      |    \    |    \
+    o 41   o 42    o     o   o 45   o 46
+    |      |       |     |    \     |
+    o 51   o 52    o 53  o     o 55 o 56
+
+                       LLN
+       </pre>
+<p class="figure">Figure 7: Example DODAG forming a logical tree topology</p>
+<p id="rfc.section.A.1.p.2">With this draft, the root can install a storing mode routing states along a segment that is either from itself to the destination, or from one or more common parents for a particular source/destination pair towards that destination (in this particular example, this would be the segment made of nodes 22, 32, 42).  </p>
+<p id="rfc.section.A.1.p.3">In the example below, say that there is a lot of traffic to nodes 55 and 56 and the root decides to reduce the size of routing headers to those destinations. The root can first send a DAO to node 45 indicating target 55 and a Via segment (35, 45), as well as another DAO to node 46 indicating target 56 and a Via segment (35, 46). This will save one entry in the routing header on both sides. The root may then send a DAO to node 35 indicating targets 55 and 56 a Via segment (13, 24, 35) to fully optimize that path.</p>
+<p id="rfc.section.A.1.p.4">Alternatively, the root may send a DAO to node 45 indicating target 55 and a Via segment (13, 24, 35, 45) and then a DAO to node 46 indicating target 56 and a Via segment (13, 24, 35, 46), indicating the same DAO Sequence.  </p>
+<h1 id="rfc.appendix.A.2">
+<a href="#rfc.appendix.A.2">A.2.</a> Projecting a storing-mode transversal route</h1>
+<p id="rfc.section.A.2.p.1">In this example, say that a PCE determines that a path must be installed between node S and node D via routers A, B and C, in order to serve the needs of a particular application.  </p>
+<p id="rfc.section.A.2.p.2">The root sends a P-DAO with a target option indicating the destination D and a sequence Via Information option, one for S, which is the ingress router of the segment, one for A and then for B, which are an intermediate routers, and one for C, which is the egress router.  </p>
+<div id="rfc.figure.8"></div>
+<div id="pdao2"></div>
+<pre>
+              ------+---------
+                    |          Internet
+                    |
+                 +-----+
+                 |     | Border Router
+                 |     |  (RPL Root)
+                 +-----+
+                    | Projected DAO message to C
+              o    |   o    o
+          o o   o |    o  o  o o   o
+         o  o o  | o    o   o   o  o  o
+         o   o   V  o     o  o    o  o  o
+        S  A  B  C   D         o   o o
+        o          o             o     o
+                          LLN
+       </pre>
+<p class="figure">Figure 8: Projected DAO from root</p>
+<p id="rfc.section.A.2.p.3">Upon reception of the P-DAO, C validates that it can reach D, e.g. using IPv6 Neighbor Discovery, and if so, propagates the P-DAO unchanged to B.  </p>
+<p id="rfc.section.A.2.p.4">B checks that it can reach C and of so, installs a route towards D via C.  Then it propagates the P-DAO to A.  </p>
+<p id="rfc.section.A.2.p.5">The process recurses till the P-DAO reaches S, the ingress of the segment, which installs a route to D via A and sends a DAO-ACK to the root.  </p>
+<div id="rfc.figure.9"></div>
+<div id="pdao3"></div>
+<pre>
+              ------+---------
+                    |          Internet
+                    |
+                 +-----+
+                 |     | Border Router
+                 |     |  (RPL Root)
+                 +-----+
+                  ^ Projected DAO-ACK from S
+              /    o   o    o
+           /   o o    o  o  o o   o
+         |  o o  o o    o   o   o  o  o
+         |   o   o  o     o  o    o  o  o
+        S  A  B  C   D         o   o o
+        o          o             o     o
+                          LLN
+       </pre>
+<p class="figure">Figure 9: Projected DAO-ACK to root</p>
+<p id="rfc.section.A.2.p.6">As a result, a transversal route is installed that does not need to follow the DODAG structure.  </p>
+<div id="rfc.figure.10"></div>
+<div id="opti"></div>
+<pre>
+              ------+---------
+                    |          Internet
+                    |
+                 +-----+
+                 |     | Border Router
+                 |     |  (RPL Root)
+                 +-----+
+                    |
+              o    o   o    o
+          o o   o  o   o  o  o o   o
+         o  o o  o o    o   o   o  o  o
+         o   o    o  o     o  o    o  o  o
+        S&gt;&gt;A&gt;&gt;&gt;B&gt;&gt;C&gt;&gt;&gt;D         o   o o
+        o          o             o     o
+                          LLN
+       </pre>
+<p class="figure">Figure 10: Projected Transversal Route</p>
+<h1 id="rfc.authors"><a href="#rfc.authors">Authors' Addresses</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Pascal Thubert</span> (editor)
+	  <span class="n hidden">
+		<span class="family-name">Thubert</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Cisco Systems </span>
+	<span class="adr">
+	  <span class="vcardline">Village d'Entreprises Green Side</span>
+<span class="vcardline">400, Avenue de Roumanille</span>
+<span class="vcardline">Batiment T3</span>
+
+	  <span class="vcardline">
+		<span class="locality">Biot - Sophia Antipolis</span>,  
+		<span class="region"></span>
+		<span class="code">06410</span>
+	  </span>
+	  <span class="country-name vcardline">FRANCE</span>
+	</span>
+	<span class="vcardline">Phone: +33 4 97 23 26 34</span>
+
+<span class="vcardline">EMail: <a href="mailto:pthubert@cisco.com">pthubert@cisco.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Rahul Arvind Jadhav</span> 
+	  <span class="n hidden">
+		<span class="family-name">Jadhav</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Huawei Tech</span>
+	<span class="adr">
+	  <span class="vcardline">Kundalahalli Village, Whitefield,</span>
+
+	  <span class="vcardline">
+		<span class="locality">Bangalore</span>,  
+		<span class="region">Karnataka</span> 
+		<span class="code">560037</span>
+	  </span>
+	  <span class="country-name vcardline">India</span>
+	</span>
+	<span class="vcardline">Phone: +91-080-49160700</span>
+
+<span class="vcardline">EMail: <a href="mailto:rahul.ietf@gmail.com">rahul.ietf@gmail.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">James Pylakutty</span> 
+	  <span class="n hidden">
+		<span class="family-name">Pylakutty</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Cisco Systems </span>
+	<span class="adr">
+	  <span class="vcardline">Cessna Business Park</span>
+<span class="vcardline">Kadubeesanahalli</span>
+<span class="vcardline">Marathalli ORR</span>
+
+	  <span class="vcardline">
+		<span class="locality">Bangalore</span>,  
+		<span class="region">Karnataka</span> 
+		<span class="code">560087</span>
+	  </span>
+	  <span class="country-name vcardline">INDIA</span>
+	</span>
+	<span class="vcardline">Phone: +91 80 4426 4140</span>
+
+<span class="vcardline">EMail: <a href="mailto:mundenma@cisco.com">mundenma@cisco.com</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
