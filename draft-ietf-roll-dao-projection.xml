@@ -615,6 +615,161 @@ inter DODAG routing?
       </section>  <!-- "Storing-Mode Projected DAO" -->
     </section>  <!-- "Projected DAO" -->
 
+    <section title="Loop Handling">
+        <t>
+            Section 11.2 of RPL explains loop avoidance/detection and recovery.
+            The loop recovery mechanism in RPL is applicable only to storing
+            mode of operation. This draft introduces hybrid mode such that the
+            DODAG is formed in non-storing mode of operation but there could be
+            segments projected using P-DAOs which operate in storing mode.
+            P-DAOs injecting state into existing DODAG creates a possibility
+            of loops occurring for following reasons:
+        </t>
+        <t>
+            <list style="symbols">
+            <t>
+                Changes in route adjacencies (for e.g.  because of parent
+                switching) after the routes are projected from the root.
+            </t>
+            <t>
+                Route invalidation is probabilistic because of control packet
+                loss and thus stale states might be retained on the nodes for
+                longer duration.
+            </t>
+            </list>
+        </t>
+        <t>
+            These reasons might result in a differing view between how root sees the
+            network and how locally it is manifested, thus possibly resulting in loops.
+            <figure anchor="loopeg" title="Loop Handling: Example Scenario">
+            <artwork>
+                +=======+
+                | Root  |
+                +=======+
+                   /\
+                  /  \
+                 /    \
+             +---+     \
+             | A |      \
+             +---+       \
+              /\         +---+
+             /  \        | D |
+            /    \       +---+
+         +---+   +---+
+         | B |   | C |--\
+         +---+   +---+   \
+                          \
+                         +---+
+                         | E |
+                         +---+
+            </artwork>
+            </figure>
+        </t>
+        <t>
+            Consider following scenario:
+            <list style="format %d:" counter="loop_cnt">
+            <t>
+                Assume that the network is established in non-storing mode with
+                P-DAO as per the adjacencies mentioned in the figure.
+            </t>
+            <t>
+                Assume that (B) has significant traffic for (E) and Root
+                decides to project a P-DAO along the segment (A,C) for reaching
+                target (E).
+            </t>
+            <t>
+                Henceforth, (B)'s traffic for (E) takes the optimized path
+                (B->A->C->E)
+            </t>
+            <t>
+                Assume that the path between (C) and (E) is impaired. (E)
+                switches the preferred parent to (D). Thus the network nows
+                looks as follows:
+            </t>
+            </list>
+        </t>
+        <t>
+                <figure anchor="loopeg2" title="Loop Handling: Changed Adjacencies">
+                <artwork>
+                +=======+
+                | Root  |
+                +=======+
+                   /\
+                  /  \
+                 /    \
+             +---+     \
+             | A |      \
+             +---+       \
+              /\         +---+
+             /  \        | D |
+            /    \       +---+
+         +---+   +---+     |
+         | B |   | C |     |
+         +---+   +---+     |
+                           |
+                         +---+
+                         | E |
+                         +---+
+                </artwork>
+                </figure>
+        </t>
+        <t>
+            <list style="format %d:" counter="loop_cnt">
+            <t>
+                Any subsequent traffic from (B) to (E) will fail at (C). Note
+                that link between (C) and (E) is impaired thus the traffic will
+                fail.
+            </t>
+            <t>
+                At this point (C) can clear the routing entry for target (E)
+                but the corresponding routing entry for target (E) in (A) is
+                not cleared.
+            </t>
+            <t>
+                Thus the packet will get into loop at this stage i.e. the
+                packet would be sent back to (A).
+            </t>
+            </list>
+        </t>
+        <section  title="Loop Detection">
+            <t>
+                RPL uses loop detection to ensure that packets make forward
+                progress within the DODAG Version and trigger repairs when
+                necessary.  Sections 11.2 of RFC6550 states the loop avoidance
+                and detection procedure. The RPI header carried in data path
+                can be used to detect whether there is any inconsistency in the
+                path.  The same loop detection logic can be used even in the
+                context of this document.  Thus there is a way to identify
+                whether a loop has occurred.
+            </t>
+        </section>
+        <section  title="Loop avoidance: recommendations">
+            <t>
+                Following recommendations can reduce the possibility of loop
+                formation:
+                <list style="numbers">
+                    <t>
+                        It is important that the root invalidates the route
+                        segment established before using P-DAO in case it
+                        notices that the adjacencies have changed.  For
+                        example, in the above figure [CROSS-REF] when (E)
+                        switches the parent from (C) to (D), the root node can
+                        invalidate the routing entries along the previously
+                        projected segment.
+                    </t>
+                    <t>
+                        TBD: A node should be able to send multiple parent
+                        address in preferred order in the Transit Information
+                        container. This would allow the root node to make an
+                        informed decision whether the previous path is still
+                        available but not preferred or whether the connectivity
+                        to previous parent is impaired.
+                    </t>
+                </list>
+            </t>
+        </section>
+    </section>
+
 	<section  title="Applications">
       <section title="Loose Source Routing in Non-storing Mode">
 
@@ -797,6 +952,22 @@ inter DODAG routing?
       different objective function.
       </t>
       </section>
+          <section title="Multipath Routing">
+            <t>
+                P-DAOs can be more effectively made use for establishing
+                multi-path routing adjacencies because the root can view the
+                DODAG holistically and make more appropriate decisions than the
+                target node itself. A requirement for multi-path routing is
+                that the different paths that are chosen should ideally be
+                exclusive i.e. it is better not to have a common segment along
+                the different paths. Since root has a full view of the network,
+                it can project routes along the disjoint segments which can
+                result in more optimal multi-path routing.
+            </t>
+            <t>
+                TBD: Priority needs to be attached with every P-DAO for multipath routing.
+            </t>
+          </section>
       </section>
 
 
