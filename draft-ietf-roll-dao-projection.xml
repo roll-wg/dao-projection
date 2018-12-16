@@ -347,7 +347,7 @@ inter DODAG routing?
               previous sequence and adds to any state that was learned for
               that sequence.</t>
 
-              <t hangText="Path Lifetime:">8-bit unsigned integer. The length
+              <t hangText="Path Lifetime:">8-bit unsigned integer. The duration
               of time in Lifetime Units (obtained from the Configuration
               option) that the prefix is valid for route determination. The
               period starts when a new Path Sequence is seen. A value of all
@@ -606,14 +606,28 @@ inter DODAG routing?
      indicating the successor that is unreachable
      (suggested status 11 to be confirmed by IANA).
     </t>
-    <t>
-     A Path Lifetime of 0 in a Via Information option is used to clean up the
-     state. The P-DAO is forwarded as described above, but the DAO
-     is interpreted as a No-Path DAO and results in cleaning up existing state
-     as opposed to refreshing an existing one or installing a new one.
-    </t>
       </section>  <!-- "Storing-Mode Projected DAO" -->
     </section>  <!-- "Projected DAO" -->
+
+    <section title="Route Invalidation">
+        <t>
+            A Path Lifetime of 0 in a Via Information option is used to clean
+            up the state. The P-DAO is forwarded as described above, but the
+            DAO is interpreted as a No-Path DAO and results in cleaning up
+            existing state as opposed to refreshing an existing one or
+            installing a new one.
+        </t>
+        <section title="Reactive Route cleanup">
+            <t>
+                RPL allows reactive route cleanup i.e. a router might determine
+                that the path to the next hop is no longer available and thus
+                all the targets reachable via that next-hop are no more
+                reachable. The router might in turn initiate a reactive route
+                cleanup. Section 11.2 of RPL mentions use of 'Forwarding-Error'
+                bit which can be used for this purpose.
+            </t>
+        </section>
+    </section>
 
     <section title="Loop Handling">
         <t>
