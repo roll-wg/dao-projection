@@ -610,14 +610,51 @@ inter DODAG routing?
     </section>  <!-- "Projected DAO" -->
 
     <section title="Route Invalidation">
-        <t>
-            A Path Lifetime of 0 in a Via Information option is used to clean
-            up the state. The P-DAO is forwarded as described above, but the
-            DAO is interpreted as a No-Path DAO and results in cleaning up
-            existing state as opposed to refreshing an existing one or
-            installing a new one.
-        </t>
+        <section title="Proactive Route cleanup">
+            <t>
+                A Path Lifetime of 0 in a Via Information option is used to
+                clean up the state. The P-DAO is forwarded as described in
+                <xref target="pdao"/>, but the DAO is interpreted as a No-Path
+                DAO and results in cleaning up existing state as opposed to
+                refreshing an existing one or installing a new one.
+            </t>
+        </section>
         <section title="Reactive Route cleanup">
+            <t>
+                Consider following sample topology:
+                <figure anchor="routeinval" title="Route Invalidation: Example topology">
+                <artwork>
+                    +=======+
+                    | Root  |
+                    +=======+
+                       /\
+                      /  \
+                     /    \
+                 +---+     \
+                 | A |      \
+                 +---+       \
+                  /\         +---+
+                 /  \        | H |
+                /    \       +---+
+             +---+   +---+
+             | B |   | C |
+             +---+   +---+
+                       /\
+                      /  \
+                     /    \
+                  +---+  +---+
+                  | D |  | E |
+                  +---+  +---+
+                           /\
+                          /  \
+                         /    \
+                      +---+  +---+
+                      | F |  | G |
+                      +---+  +---+
+
+                </artwork>
+                </figure>
+            </t>
             <t>
                 RPL allows reactive route cleanup i.e. a router might determine
                 that the path to the next hop is no longer available and thus
@@ -625,6 +662,34 @@ inter DODAG routing?
                 reachable. The router might in turn initiate a reactive route
                 cleanup. Section 11.2 of RPL mentions use of 'Forwarding-Error'
                 bit which can be used for this purpose.
+            </t>
+            <t>
+                In Figure <xref target="routeinval"/>, consider that nodes A,
+                C, and E have route entries to target F and G installed using
+                storing P-DAO such that traffic from B and D destined to F and
+                G could directly use these installed routes and thus are more
+                optimized. At later point of time, if the connectivity between
+                C and E is impaired then C won't be able to forward traffic to
+                E. In such case, Node C should set the 'Forwarding-Error' bit
+                in the RPI and redirect the same packet to its parent node A.
+                Node A would see the forwarding-error bit set and clear any
+                routing entries corresponding to the IPv6 destination address
+                of the packet, and then try to route the packet again, with the
+                forwarding-error bit unset, based on the new routing table
+                state.
+            </t>
+            <t>
+                In case source route is installed on node A for target F and G,
+                the process remains same i.e. when node C finds that the link
+                to node E is impaired, node C sets the 'Forwarding-Error' bit
+                in the RPI and forwards the packet as per its routing state,
+                i.e. the packet is sent to its default route. Node A receives
+                the packet with 'Forwarding-Error' bit set and thus clears the
+                routing state corresponding to the packets IPv6 destination
+                address. [Should Node A at this point send some feedback to the
+                root so that it knows that the path is no longer available?
+                Based on this it can provision another path if required
+                proactively. TODO]
             </t>
         </section>
     </section>
