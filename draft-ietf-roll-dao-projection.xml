@@ -619,7 +619,7 @@ inter DODAG routing?
                 refreshing an existing one or installing a new one.
             </t>
         </section>
-        <section title="Reactive Route cleanup">
+        <section title="Reactive Route cleanup in projected route">
             <t>
                 Consider following sample topology:
                 <figure anchor="routeinval" title="Route Invalidation: Example topology">
@@ -663,34 +663,53 @@ inter DODAG routing?
                 cleanup. Section 11.2 of RPL mentions use of 'Forwarding-Error'
                 bit which can be used for this purpose.
             </t>
-            <t>
-                In Figure <xref target="routeinval"/>, consider that nodes A,
-                C, and E have route entries to target F and G installed using
-                storing P-DAO such that traffic from B and D destined to F and
-                G could directly use these installed routes and thus are more
-                optimized. At later point of time, if the connectivity between
-                C and E is impaired then C won't be able to forward traffic to
-                E. In such case, Node C should set the 'Forwarding-Error' bit
-                in the RPI and redirect the same packet to its parent node A.
-                Node A would see the forwarding-error bit set and clear any
-                routing entries corresponding to the IPv6 destination address
-                of the packet, and then try to route the packet again, with the
-                forwarding-error bit unset, based on the new routing table
-                state.
-            </t>
-            <t>
-                In case source route is installed on node A for target F and G,
-                the process remains same i.e. when node C finds that the link
-                to node E is impaired, node C sets the 'Forwarding-Error' bit
-                in the RPI and forwards the packet as per its routing state,
-                i.e. the packet is sent to its default route. Node A receives
-                the packet with 'Forwarding-Error' bit set and thus clears the
-                routing state corresponding to the packets IPv6 destination
-                address. [Should Node A at this point send some feedback to the
-                root so that it knows that the path is no longer available?
-                Based on this it can provision another path if required
-                proactively. TODO]
-            </t>
+
+            <section title="Reactive cleanup in segment installed with non-storing mode projected route">
+                <t>
+                    In <xref target="routeinval"/>, consider that the root
+                    installs a source-route with address-list (C,E) on node A
+                    for reaching the target G.  Consider that the link between
+                    node C and E gets impaired at later point of time. Next
+                    if node B sends a packet for destination G, intermediate
+                    router node A will use source-routing based on projected
+                    route to reach node G.  When the packet reaches node C and
+                    it fails to forward it to node E, node C will send an ICMP
+                    error with a code "Error in Source Routing Header" back to
+                    node A.
+                </t>
+            </section>
+
+            <section title="Reactive cleanup in segment installed with storing mode projected route">
+                <t>
+                    In Figure <xref target="routeinval"/>, consider that nodes A,
+                    C, and E have route entries to target F and G installed using
+                    storing P-DAO such that traffic from B and D destined to F and
+                    G could directly use these installed routes and thus are more
+                    optimized. At later point of time, if the connectivity between
+                    C and E is impaired then C won't be able to forward traffic to
+                    E. In such case, Node C should set the 'Forwarding-Error' bit
+                    in the RPI and redirect the same packet to its parent node A.
+                    Node A would see the forwarding-error bit set and clear any
+                    routing entries corresponding to the IPv6 destination address
+                    of the packet, and then try to route the packet again, with the
+                    forwarding-error bit unset, based on the new routing table
+                    state.
+                </t>
+            </section>
+            <section title="Informing Root of route unavailability">
+                <t>
+                    The root node is in charge of projecting a P-DAO.
+                    Subsequently if the path becomes unusable, the root node
+                    should be informed so that it may perform any corrective
+                    action if necessary. RPL allows an ICMP error message with
+                    code "Error in Source Routing Header" to be sent to the
+                    root (RPL section 11.2.2.3) in case the source-routed path
+                    is broken. This mechanism can be used and extended in
+                    non-storing mode projected route wherein the non-root node
+                    which inserts a source-route based on projected route sends
+                    the ICMP error message back to the root.
+                </t>
+            </section>
         </section>
     </section>
 
