@@ -68,6 +68,23 @@ inter DODAG routing?
   </address>
 </author>
 
+
+<author initials="M" surname="Gillmore" fullname="Matthew Gillmore" >
+      <organization abbrev="Itron">Itron, Inc</organization>
+      <address>
+         <postal>
+            <street>Building D</street>
+            <street>2111 N Molter Road</street>
+            <city>Liberty Lake</city>
+            <code>99019</code>
+            <country>United States</country>
+         </postal>
+         <phone>+1.800.635.5461</phone>
+         <email>matthew.gillmore@itron.com>
+      </address>
+   </author>
+
+
 	<author fullname="James Pylakutty" initials="J.P." surname="Pylakutty">
           <organization abbrev="Cisco">
              Cisco Systems
