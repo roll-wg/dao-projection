@@ -184,7 +184,7 @@ inter DODAG routing?
      for each node to store a number of routes, which can be discovered for
      instance using a Network Management System (NMS) and/or the RPL routing
      extensions specified in
-      <xref target="RFC6551">"Routing for Path Calculation in LLNs"</xref>.
+      <xref target="RFC6551">"Routing Metrics Used for Path Calculation in LLNs"</xref>.
     </t>
      -->
     </section>
@@ -270,14 +270,16 @@ inter DODAG routing?
 
     <section anchor="ext6550" title="Extending RFC 6550">
 	<t>
-	Section 6.7 of RPL <xref target="RFC6550"/> specifies Control Message Options (CMO)
-   to be placed in RPL messages such as the Destination Advertisement Object
-   (DAO) message. The RPL Target Option
-   and the Transit Information Option (TIO) are such options; the former
-   indicates a node to be reached and the latter specifies
-   a parent that can be used to reach that node. Options may be factorized;
-   one or more contiguous TIOs apply to the one or more contiguous Target
-   options that immediately precede the TIOs in the RPL message.
+   Section 6.7 of RPL <xref target="RFC6550"/> specifies Control Message Options
+   (CMO) to be placed in RPL messages such as the Destination Advertisement
+   Object (DAO) message. The RPL Target Option and the Transit Information
+   Option (TIO) are such options. 
+   In Non-Storing Mode, the TIO option is used in the DAO message to indicate
+   the immediate parent of a given path.  The TIO applies to the Target options
+   that immedially preceed it.  Options may be factorized; multiple TIOs may be 
+   present to indicate multiple routes to the one or more contiguous addressed
+   indicated in the Target Options that immediately precede the TIOs in the RPL
+   message.
    </t>
    <t>
    This specification introduces two new Control Message Options referred to as
@@ -671,6 +673,11 @@ inter DODAG routing?
      a given network also applies to the flows in this draft.
 
 	</t>
+	<t> TODO: should probably consider how projected DAO messages could be abused by
+
+    a) rogue nodes b) via replay of messages c) if use of projected DAO messages could in fact deal with any threats?
+
+	</t>
    </section>
    <section anchor="RPLCtrlMsgOptionsReg" title="IANA Considerations">
 
@@ -845,12 +852,13 @@ inter DODAG routing?
     <section title="Transversal Routes in storing and non-storing modes">
 
       <t>
-      RPL is optimized for Point-to-Multipoint
-      (P2MP), root to leaves and Multipoint-to-Point (MP2P) leaves to root operations,
-      whereby routes are always installed along the RPL DODAG. Transversal
+      RPL is optimized for Point-to-Multipoint (P2MP) and Multipoint-to-Point
+      (MP2P), whereby routes are always installed along the RPL DODAG
+      respectively from and towards the DODAG Root. Transversal
       Peer to Peer (P2P) routes in a RPL network will generally suffer from some
-      stretch since routing between 2 peers always happens via a common parent,
-      as illustrated in <xref target="stretch"/>:
+      elongated (stretched) path versus the best possible path, since routing
+      between 2 nodes always happens via a common parent, as illustrated in
+      <xref target="stretch"/>:
         <list style="symbols">
         <t> in non-storing mode, all packets
      routed within the DODAG flow all the way up to the root of the DODAG. If
