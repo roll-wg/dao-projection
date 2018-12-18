@@ -36,7 +36,7 @@ inter DODAG routing?
     <front>
         <title>Root initiated routing state in RPL</title>
         <author initials="P" surname="Thubert" fullname="Pascal Thubert" role="editor">
-          <organization abbrev="Cisco">
+          <organization abbrev="Cisco Systems">
              Cisco Systems
           </organization>
           <address>
@@ -208,23 +208,6 @@ inter DODAG routing?
 </section>	<!-- end section "BCP 14" -->
 
 
-  <section anchor='lo' title="References">
-    <t>
-	In this document, readers will encounter terms and concepts
-	that are discussed in the following documents:
-	<list style="symbols">
-<!--  CEP: There aren't any terms from RFC 3972.  Concepts, O.K.   -->
-	<t>
-    <xref target="RFC6550">"Routing Protocol for Low Power and Lossy Networks"
-		</xref>, and </t>
-	<t>
-    <xref target="RFC7102">"Terminology in Low power And Lossy Networks"
-		</xref>. </t>
-
-	</list>
-    </t>
-  </section>	<!-- end section "References" -->
-
 <section anchor='gloss' title="Subset of a 6LoWPAN Glossary">
     <t> This document often uses the following acronyms:
        <list hangIndent="6" style="hanging">
@@ -265,6 +248,23 @@ inter DODAG routing?
     </list>
 </t>
 </section>	<!-- end section "New Terms" -->
+  <section anchor='lo' title="References">
+    <t>
+	In this document, readers will encounter terms and concepts
+	that are discussed in the following documents:
+	<list style="symbols">
+<!--  CEP: There aren't any terms from RFC 3972.  Concepts, O.K.   -->
+	<t>
+    <xref target="RFC6550">"Routing Protocol for Low Power and Lossy Networks"
+		</xref>, and </t>
+	<t>
+    <xref target="RFC7102">"Terminology in Low power And Lossy Networks"
+		</xref>. </t>
+
+	</list>
+    </t>
+  </section>	<!-- end section "References" -->
+
 </section>	<!-- end section "Terminology" -->
 
 
@@ -280,7 +280,7 @@ inter DODAG routing?
    options that immediately precede the TIOs in the RPL message.
    </t>
    <t>
-   This specification introduces 2 new Control Message Options referred to as
+   This specification introduces two new Control Message Options referred to as
    Route Projection Options (RPO). One RPO is the Information option (VIO) and
    the other is the Source-Routed VIO (SRVIO). The VIO installs a route on each
    hop along a projected route (in a fashion analogous to RPL Storing Mode)
@@ -350,20 +350,20 @@ inter DODAG routing?
               <t hangText="Path Lifetime:">8-bit unsigned integer. The length
               of time in Lifetime Units (obtained from the Configuration
               option) that the prefix is valid for route determination. The
-              period starts when a new Path Sequence is seen. A value of all
-              one bits (0xFF) represents infinity. A value of all zero bits
-              (0x00) indicates a loss of reachability. A DAO message that
+              period starts when a new Path Sequence is seen. A value of 255
+              (0xFF) represents infinity. A value of zero (0x00)
+              indicates a loss of reachability. A DAO message that
               contains a Via Information option with a Path Lifetime of
-              0x00 for a Target is referred as a No-Path (for that Target) in
+              zero for a Target is referred as a No-Path (for that Target) in
               this document.</t>
 
               <t hangText="Via Address:">16 bytes. IPv6 Address of the
               next hop towards the destination(s) indicated in the target option
               that immediately precede the RPO. Via Addresses are indicated in
               the order of the data path from the ingress to the egress nodes.
-              TBD: See how the /64 prefix can be elided if it is the same as
+              <!--TBD: See how the /64 prefix can be elided if it is the same as
               that of (all of) the target(s). In that case, the Next-Hop Address
-              could be expressed as the 8-bytes suffix only.
+              could be expressed as the 8-bytes suffix only.-->
               </t>
             </list></t>
                <t>
@@ -430,7 +430,7 @@ inter DODAG routing?
     for this document.
     </t-->
 
-    <section anchor="nspdao"  title="Non-storing Mode Projected Route">
+    <section anchor="nspdao"  title="Non-Storing Mode Projected Route">
 
     <t>
     As illustrated in <xref target="nsdf"/>, a P-DAO that carries an SRVIO
@@ -502,6 +502,17 @@ inter DODAG routing?
       encapsulator in an IP-in-IP 6LoRH Header, and places the list of Via
       Addresses in the order of the VIO and then the target in the SRH 6LoRH
       Header.
+      </t>
+      <t>In case of a forwarding error along a Source Route path, the node that
+      fails to forward MUST send an ICMP error with a code "Error in Source
+      Routing Header" back to the root, as discussed in section 11.2.2.3. of
+      <xref target="RFC6550"/>. The root can then modify or remove the Projected
+      Route. The node SHOULD also send an ICMP Error (Destination Unreachable,
+      Error in Source Routing Header) to the source of the packet,
+      the encapsulating node. Upon this message, the encapsulating node SHOULD
+      stop using the source route path for a period of time.
+      This avoids wasting resources for packets along the source route path that
+      is broken till the root corrects the situation.
       </t>
       </section>
 
@@ -612,9 +623,147 @@ inter DODAG routing?
      is interpreted as a No-Path DAO and results in cleaning up existing state
      as opposed to refreshing an existing one or installing a new one.
     </t>
+    <t>In case of a forwarding error along a Storing-Mode Projected Route, the
+      node that fails to forward MUST send an ICMP error (Destination 
+      Unreachable, reject route to destination) to the root. The root can then
+      modify or remove the Projected Route.
+      </t>
       </section>  <!-- "Storing-Mode Projected DAO" -->
     </section>  <!-- "Projected DAO" -->
 
+
+
+        <section title="RPL Instances">
+     <t>
+     It must be noted that RPL has a concept of instance but does not have a
+     concept of an administrative distance, which exists in certain proprietary
+     implementations to sort out conflicts between multiple sources of routing
+     information. This draft conforms the instance model as follows:
+     <list style="symbols">
+     <t>
+     If the PCE needs to influence a particular instance to add better routes
+     in conformance with the routing objectives in that instance, it may do so.
+     When the PCE modifies an existing instance then the added routes
+     must not create a loop in that instance. This is achieved by always
+     preferring a route obtained from the PCE over a route that is learned via
+     RPL.</t>
+     <t>
+     If the PCE installs a more specific (say, Traffic Engineered) route between
+     a particular pair of nodes then it SHOULD use a Local Instance from the
+     ingress node of that path. A packet associated with that instance will
+     be routed along that path and MUST NOT be placed over a Global Instance
+     again. A packet that is placed on a Global Instance may be injected in the
+     Local Instance based on node policy and the Local Instance paramenters.
+     <!-- TODO: add config parm to the local instance -->
+     </t>
+     </list>
+     In all cases, the path is indicated by a new Via Information option, and
+     the flow is similar to the flow used to obtain loose source routing.
+   </t>
+    </section>
+
+
+    <section title="Security Considerations">
+
+	<t>This draft uses messages that are already present in RPL
+     <xref target="RFC6550"/> with optional secured versions. The same secured
+     versions may be used with this draft, and whatever security is deployed for
+     a given network also applies to the flows in this draft.
+
+	</t>
+   </section>
+   <section anchor="RPLCtrlMsgOptionsReg" title="IANA Considerations">
+
+    <t>This document extends the IANA registry created by RFC 6550 for RPL
+    Control Codes as follows:</t>
+
+        <texttable title="RPL Control Codes">
+          <ttcol align="center">Code</ttcol>
+
+          <ttcol align="left">Description</ttcol>
+
+          <ttcol align="left">Reference</ttcol>
+
+
+          <c>0x0A</c>
+
+          <c>Via</c>
+
+          <c>This document</c>
+
+          <c>0x0B</c>
+
+          <c>Source-Routed Via</c>
+
+          <c>This document</c>
+        </texttable>
+
+
+
+    <t>This document is updating the registry created by RFC 6550 for the RPL
+        3-bit Mode of Operation (MOP) as follows:
+        </t>
+
+        <texttable title="DIO Mode of operation">
+          <ttcol align="center">MOP value</ttcol>
+
+          <ttcol align="left">Description</ttcol>
+
+          <ttcol align="left">Reference</ttcol>
+
+          <c>5</c>
+
+          <c>Non-Storing mode of operation with Projected routes</c>
+
+          <c>This document</c>
+
+          <c>6</c>
+
+          <c>Storing mode of operation with Projected routes</c>
+
+          <c>This document</c>
+
+        </texttable>
+   </section>
+
+
+<section title="Acknowledgments">
+<t>The authors wish to acknowledge JP Vasseur and Patrick Wetterwald for their
+ contributions to the ideas developed here.</t>
+</section>
+
+    </middle>
+
+    <back>
+    <references title='Normative References'>
+	  <?rfc include="reference.RFC.2119"?>
+	  <?rfc include="reference.RFC.6550"?>
+	  <?rfc include="reference.RFC.6553"?>
+	  <?rfc include="reference.RFC.6554"?>
+	  <?rfc include="reference.RFC.8025"?>
+	  <?rfc include="reference.RFC.8138"?>
+	  <?rfc include="reference.RFC.8174"?>
+
+
+    </references>
+    <references title='Informative References'>
+
+	  <?rfc include="reference.RFC.7102"?>
+	   <?rfc include="reference.RFC.6997"?>
+      <?rfc include='reference.I-D.ietf-6tisch-architecture'?>
+      <?rfc include='reference.I-D.ietf-detnet-architecture'?>
+      <reference anchor="PCE"
+          target="https://datatracker.ietf.org/doc/charter-ietf-pce/">
+         <front>
+            <title>Path Computation Element</title>
+            <author>
+               <organization>IETF</organization>
+            </author>
+            <date></date>
+         </front>
+      </reference>
+
+    </references>
 	<section  title="Applications">
       <section title="Loose Source Routing in Non-storing Mode">
 
@@ -800,139 +949,6 @@ inter DODAG routing?
       </section>
 
 
-
-
-        <section title="RPL Instances">
-     <t>
-     It must be noted that RPL has a concept of instance but does not have a
-     concept of an administrative distance, which exists in certain proprietary
-     implementations to sort out conflicts between multiple sources of routing
-     information. This draft conforms the instance model as follows:
-     <list style="symbols">
-     <t>
-     If the PCE needs to influence a particular instance to add better routes
-     in conformance with the routing objectives in that instance, it may do so.
-     When the PCE modifies an existing instance then the added routes
-     must not create a loop in that instance. This is achieved by always
-     preferring a route obtained from the PCE over a route that is learned via
-     RPL.</t>
-     <t>
-     If the PCE installs a more specific (say, Traffic Engineered) route between
-     a particular pair of nodes then it SHOULD use a Local Instance from the
-     ingress node of that path. A packet associated with that instance will
-     be routed along that path and MUST NOT be placed over a Global Instance
-     again. A packet that is placed on a Global Instance may be injected in the
-     Local Instance based on node policy and the Local Instance paramenters.
-     <!-- TODO: add config parm to the local instance -->
-     </t>
-     </list>
-     In all cases, the path is indicated by a new Via Information option, and
-     the flow is similar to the flow used to obtain loose source routing.
-   </t>
-    </section>
-
-
-    <section title="Security Considerations">
-
-	<t>This draft uses messages that are already present in RPL
-     <xref target="RFC6550"/> with optional secured versions. The same secured
-     versions may be used with this draft, and whatever security is deployed for
-     a given network also applies to the flows in this draft.
-
-	</t>
-   </section>
-   <section anchor="RPLCtrlMsgOptionsReg" title="IANA Considerations">
-
-    <t>This document extends the IANA registry created by RFC 6550 for RPL
-    Control Codes as follows:</t>
-
-        <texttable title="RPL Control Codes">
-          <ttcol align="center">Code</ttcol>
-
-          <ttcol align="left">Description</ttcol>
-
-          <ttcol align="left">Reference</ttcol>
-
-
-          <c>0x0A</c>
-
-          <c>Via</c>
-
-          <c>This document</c>
-
-          <c>0x0B</c>
-
-          <c>Source-Routed Via</c>
-
-          <c>This document</c>
-        </texttable>
-
-
-
-    <t>This document is updating the registry created by RFC 6550 for the RPL
-        3-bit Mode of Operation (MOP) as follows:
-        </t>
-
-        <texttable title="DIO Mode of operation">
-          <ttcol align="center">MOP value</ttcol>
-
-          <ttcol align="left">Description</ttcol>
-
-          <ttcol align="left">Reference</ttcol>
-
-          <c>5</c>
-
-          <c>Non-Storing mode of operation with Projected routes</c>
-
-          <c>This document</c>
-
-          <c>6</c>
-
-          <c>Storing mode of operation with Projected routes</c>
-
-          <c>This document</c>
-
-        </texttable>
-   </section>
-
-
-<section title="Acknowledgments">
-<t>The authors wish to acknowledge JP Vasseur and Patrick Wetterwald for their
- contributions to the ideas developed here.</t>
-</section>
-
-    </middle>
-
-    <back>
-    <references title='Normative References'>
-	  <?rfc include="reference.RFC.2119"?>
-	  <?rfc include="reference.RFC.6550"?>
-	  <?rfc include="reference.RFC.6551"?>
-	  <?rfc include="reference.RFC.6554"?>
-	  <?rfc include="reference.RFC.8025"?>
-	  <?rfc include="reference.RFC.8138"?>
-	  <?rfc include="reference.RFC.8174"?>
-
-
-    </references>
-    <references title='Informative References'>
-
-	  <?rfc include="reference.RFC.7102"?>
-	   <?rfc include="reference.RFC.6997"?>
-      <?rfc include='reference.I-D.ietf-6tisch-architecture'?>
-      <?rfc include='reference.I-D.ietf-detnet-architecture'?>
-      <reference anchor="PCE"
-          target="https://datatracker.ietf.org/doc/charter-ietf-pce/">
-         <front>
-            <title>Path Computation Element</title>
-            <author>
-               <organization>IETF</organization>
-            </author>
-            <date></date>
-         </front>
-      </reference>
-
-    </references>
 
 
     <section  title="Examples">
