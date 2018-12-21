@@ -5,12 +5,12 @@
 ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Intended status: Standards Track                               R. Jadhav
-Expires: June 21, 2019                                       Huawei Tech
+Expires: June 24, 2019                                       Huawei Tech
                                                              M. Gillmore
                                                                    Itron
                                                             J. Pylakutty
                                                                    Cisco
-                                                       December 18, 2018
+                                                       December 21, 2018
 
 
                   Root initiated routing state in RPL
@@ -41,7 +41,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 21, 2019.
+   This Internet-Draft will expire on June 24, 2019.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires June 21, 2019                 [Page 1]
+Thubert, et al.           Expires June 24, 2019                 [Page 1]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
@@ -75,41 +75,41 @@ Table of Contents
      2.3.  New Terms . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.4.  References  . . . . . . . . . . . . . . . . . . . . . . .   5
    3.  Extending RFC 6550  . . . . . . . . . . . . . . . . . . . . .   5
-   4.  New RPL Control Message Options . . . . . . . . . . . . . . .   5
-   5.  Projected DAO . . . . . . . . . . . . . . . . . . . . . . . .   7
-     5.1.  Non-Storing Mode Projected Route  . . . . . . . . . . . .   8
-     5.2.  Storing-Mode Projected Route  . . . . . . . . . . . . . .   9
-   6.  RPL Instances . . . . . . . . . . . . . . . . . . . . . . . .  12
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
-   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
-   9.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  13
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  13
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  14
+     3.1.  RPL Instances . . . . . . . . . . . . . . . . . . . . . .   5
+     3.2.  New RPL Control Message Options . . . . . . . . . . . . .   6
+     3.3.  Projected DAO . . . . . . . . . . . . . . . . . . . . . .   7
+       3.3.1.  Non-Storing Mode P-Route  . . . . . . . . . . . . . .   8
+       3.3.2.  Storing-Mode P-Route  . . . . . . . . . . . . . . . .  10
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  12
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
+     5.1.  New RPL Control Codes . . . . . . . . . . . . . . . . . .  12
+     5.2.  Error in Projected Route ICMPv6 Code  . . . . . . . . . .  13
+   6.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  13
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  14
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .  15
    Appendix A.  Applications . . . . . . . . . . . . . . . . . . . .  15
      A.1.  Loose Source Routing in Non-storing Mode  . . . . . . . .  15
-     A.2.  Transversal Routes in storing and non-storing modes . . .  16
-   Appendix B.  Examples . . . . . . . . . . . . . . . . . . . . . .  18
-     B.1.  Using storing mode P-DAO in non-storing mode MOP  . . . .  18
-     B.2.  Projecting a storing-mode transversal route . . . . . . .  19
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
+     A.2.  Transversal Routes in storing and non-storing modes . . .  17
+   Appendix B.  Examples . . . . . . . . . . . . . . . . . . . . . .  19
+     B.1.  Using storing mode P-DAO in non-storing mode MOP  . . . .  19
+     B.2.  Projecting a storing-mode transversal route . . . . . . .  20
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  22
 
 1.  Introduction
 
    The "Routing Protocol for Low Power and Lossy Networks" [RFC6550]
    (LLN)(RPL) is a generic Distance Vector protocol that is well suited
-   for application in a variety of low energy Internet of Things (IoT)
-   networks.  RPL forms Destination Oriented Directed Acyclic Graphs
-   (DODAGs) in which the root often acts as the Border Router to connect
-   the RPL domain to the Internet.  The root is responsible to select
-   the RPL Instance that is used to forward a packet coming from the
-   Internet into the RPL domain and set the related RPL information in
-   the packets.
+   low energy Internet of Things (IoT) networks.  RPL forms Destination
+   Oriented Directed Acyclic Graphs (DODAGs) in which the root often
+   acts as the Border Router to connect the RPL domain to the Internet.
+   The root is responsible to select the RPL Instance that is used to
+   forward a packet coming from the Internet into the RPL domain and set
+   the related RPL information in the packets.
 
 
 
-
-Thubert, et al.           Expires June 21, 2019                 [Page 2]
+Thubert, et al.           Expires June 24, 2019                 [Page 2]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
@@ -130,7 +130,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    function.
 
    This draft enables a RPL root to install and maintain projected
-   routes (P-routes) within its DODAG, along a selected set of nodes
+   routes (P-Routes) within its DODAG, along a selected set of nodes
    that may or may not include self, for a chosen duration.  This
    potentially enables routes that are more optimized than those
    obtained with the distributed operation of RPL, either in terms of
@@ -141,17 +141,16 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    where the mode of some P-routes is different from that of the other
    routes in the RPL Instance.
 
-   Projected routes must be used with the parsimony to limit the amount
-   of state that is installed in each device to fit within its
-   resources, and to limit the amount of rerouted traffic to fit within
-   the capabilities of the transmission links.  The algorithm used to
-   compute the paths and the protocol used to learn the topology of the
-   network and the resources that are available in devices and in the
-   network are out of scope for this document.  Possibly with the
-   assistance of a Path Computation Element ([PCE]) that could have a
-   better visibility on the larger system, the root computes which
-   segment could be optimized and uses this draft to install the
-   corresponding projected routes.
+   P-Routes must be used with the parsimony to limit the amount of state
+   that is installed in each device to fit within its resources, and to
+   limit the amount of rerouted traffic to fit within the capabilities
+   of the transmission links.  The algorithm used to compute the paths
+   and the protocol used to learn the topology of the network and the
+   resources that are available in devices and in the network are out of
+   scope for this document.  Possibly with the assistance of a Path
+   Computation Element ([PCE]) that could have a better visibility on
+   the larger system, the root computes which segment could be optimized
+   and uses this draft to install the corresponding P-Routes.
 
 2.  Terminology
 
@@ -165,7 +164,8 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
 
 
-Thubert, et al.           Expires June 21, 2019                 [Page 3]
+
+Thubert, et al.           Expires June 24, 2019                 [Page 3]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
@@ -214,14 +214,14 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
 2.3.  New Terms
 
-   Projected Route:  A route that is installed remotely by a RPL root.
+   P-Route:  A route that is installed remotely by a RPL root.
 
 
 
 
 
 
-Thubert, et al.           Expires June 21, 2019                 [Page 4]
+Thubert, et al.           Expires June 24, 2019                 [Page 4]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
@@ -251,36 +251,52 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    This specification introduces two new Control Message Options
    referred to as Route Projection Options (RPO).  One RPO is the
    Information option (VIO) and the other is the Source-Routed VIO
-   (SRVIO).  The VIO installs a route on each hop along a projected
-   route (in a fashion analogous to RPL Storing Mode) whereas the SRVIO
-   installs a source-routing state at the ingress node, which uses it to
-   insert a routing header in a fashion similar to Non-Storing Mode.
+   (SRVIO).  The VIO installs a route on each hop along a P-Route (in a
+   fashion analogous to RPL Storing Mode) whereas the SRVIO installs a
+   source-routing state at the ingress node, which uses it to insert a
+   routing header in a fashion similar to Non-Storing Mode.
 
    Like the TIO, the RPOs MUST be preceded by one or more RPL Target
    Options to which they apply, and they can be factorized: multiple
    contiguous RPOs indicate alternate paths to the target(s).
 
-4.  New RPL Control Message Options
+3.1.  RPL Instances
 
-   The format of RPOs is as follows:
+   It must be noted that RPL has a concept of instance but does not have
+   a concept of an administrative distance, which exists in certain
+   proprietary implementations to sort out conflicts between multiple
+   sources of routing information.  This draft conforms the instance
+   model as follows:
+
+   o  If the PCE needs to influence a particular instance to add better
+      routes in conformance with the routing objectives in that
+      instance, it may do so.  When the PCE modifies an existing
+      instance then the added routes must not create a loop in that
+      instance.  This is achieved by always preferring a route obtained
+      from the PCE over a route that is learned via RPL.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                 [Page 5]
+Thubert, et al.           Expires June 24, 2019                 [Page 5]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
+
+   o  If the PCE installs a more specific (say, Traffic Engineered)
+      route between a particular pair of nodes then it SHOULD use a
+      Local Instance from the ingress node of that path.  A packet
+      associated with that instance will be routed along that path and
+      MUST NOT be placed over a Global Instance again.  A packet that is
+      placed on a Global Instance may be injected in the Local Instance
+      based on node policy and the Local Instance paramenters.
+
+   In all cases, the path is indicated by a new Via Information option,
+   and the flow is similar to the flow used to obtain loose source
+   routing.
+
+3.2.  New RPL Control Message Options
+
+   The format of RPOs is as follows:
 
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -313,6 +329,15 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
    Option Type:  0x0A for VIO, 0x0B for SRVIO (to be confirmed by IANA)
 
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                 [Page 6]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    Option Length:  In bytes; variable, depending on the number of Via
          Addresses.
 
@@ -330,14 +355,6 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
          when a new Path Sequence is seen.  A value of 255 (0xFF)
          represents infinity.  A value of zero (0x00) indicates a loss
          of reachability.  A DAO message that contains a Via Information
-
-
-
-Thubert, et al.           Expires June 21, 2019                 [Page 6]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
          option with a Path Lifetime of zero for a Target is referred as
          a No-Path (for that Target) in this document.
 
@@ -349,7 +366,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    An RPO MUST contain at least one Via Address, and a Via Address MUST
    NOT be present more than once, otherwise the RPO MUST be ignored.
 
-5.  Projected DAO
+3.3.  Projected DAO
 
    This draft adds a capability to RPL whereby the root of a DODAG
    projects a route by sending an extended DAO message called a
@@ -369,41 +386,55 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    Like a classical DAO message, a P-DAO is processed only if it is
    "new" per section 9.2.2.  "Generation of DAO Messages" of the RPL
    specification [RFC6550]; this is determined using the Path Sequence
-   information from the RPO as opposed to a TIO.  Also, a Path Lifetime
-   of 0 in an RPO indicates that a route is to be removed.
-
-   There are two kinds of operation for the projected routes, the
-   Storing Mode and the Non-Storing Mode.
-
-      The Non-Storing Mode is discussed in section Section 5.1.  It uses
-      an SRVIO that carries a list of Via Addresses to be used as a
-      source-routed path to the target.  The recipient of the P-DAO is
-      the ingress router of the source-routed path.  Upon a Non-Storing
-      Mode P-DAO, the ingress router installs a source-routed state to
-      the target and replies to the root directly with a DAO-ACK
-      message.
-
-      The Storing Mode is discussed in section Section 5.2.  It uses a
-      VIO with one Via Address per consecutive hop, from the ingress to
-      the egress of the path, including the list of all intermediate
 
 
 
-Thubert, et al.           Expires June 21, 2019                 [Page 7]
+Thubert, et al.           Expires June 24, 2019                 [Page 7]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
 
-      routers in the data path order.  The Via Addresses indicate the
-      routers in which the routing state to the target have to be
-      installed via the next Via Address in the VIO.  In normal
-      operations, the P-DAO is propagated along the chain of Via Routers
-      from the egress router of the path till the ingress one, which
-      confirms the installation to the root with a DAO-ACK message.
-      Note that the root may be the ingress and it may be the egress of
-      the path, that it can also be neither but it cannot be both.
+   information from the RPO as opposed to a TIO.  Also, a Path Lifetime
+   of 0 in an RPO indicates that a route is to be removed.
 
-5.1.  Non-Storing Mode Projected Route
+   There are two kinds of operation for the P-Routes, the Storing Mode
+   and the Non-Storing Mode.
+
+   o  The Non-Storing Mode is discussed in Section 3.3.1.  It uses an
+      SRVIO that carries a list of Via Addresses to be used as a source-
+      routed path to the target.  The recipient of the P-DAO is the
+      ingress router of the source-routed path.  Upon a Non-Storing Mode
+      P-DAO, the ingress router installs a source-routed state to the
+      target and replies to the root directly with a DAO-ACK message.
+
+   o  The Storing Mode is discussed in Section 3.3.2.  It uses a VIO
+      with one Via Address per consecutive hop, from the ingress to the
+      egress of the path, including the list of all intermediate routers
+      in the data path order.  The Via Addresses indicate the routers in
+      which the routing state to the target have to be installed via the
+      next Via Address in the VIO.  In normal operations, the P-DAO is
+      propagated along the chain of Via Routers from the egress router
+      of the path till the ingress one, which confirms the installation
+      to the root with a DAO-ACK message.  Note that the root may be the
+      ingress and it may be the egress of the path, that it can also be
+      neither but it cannot be both.
+
+   In case of a forwarding error along a P-Route, an ICMP error is sent
+   to the root with a new Code "Error in Projected Route" (See
+   Section 5.2).  The root can then modify or remove the P-Route.  The
+   "Error in Projected Route" message has the same format as the
+   "Destination Unreachable Message", as specified in RFC 4443
+   [RFC4443].  The portion of the invoking packet that is sent back in
+   the ICMP message SHOULD record at least up to the routing header if
+   one is present, and the routing header SHOULD be consumed by this
+   node so that the destination in the IPv6 header is the next hop that
+   this node could not reach.  if a 6LoWPAN Routing Header (6LoRH)
+   [RFC8138] is used to carry the IPv6 routing information in the outter
+   header then that whole 6LoRH information SHOULD be present in the
+   ICMP message.  The sender and exact operation depend on the Mode and
+   is described in Section 3.3.1 and Section 3.3.2 respectively.
+
+3.3.1.  Non-Storing Mode P-Route
 
    As illustrated in Figure 2, a P-DAO that carries an SRVIO enables the
    root to install a source-routed path towards a target in any
@@ -411,6 +442,13 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    source routed header reflecting the P-route to any packet for which
    the current destination either is the said target or can be reached
    via the target.
+
+
+
+Thubert, et al.           Expires June 24, 2019                 [Page 8]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
 
               ------+---------
                     |          Internet
@@ -441,17 +479,9 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    order to avoid those loops, if the router that installs a P-route
    does not have a connected route (a direct adjacency) to the next
    soure routed hop and fails to locate it as a neighbor or a neighbor
-   of a neighbor, then it MUST ensure that it has another projected
-
-
-
-Thubert, et al.           Expires June 21, 2019                 [Page 8]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
-   route to the next loose hop under the control of the same route
-   computation system, otherwise the P-DAO is rejected.
+   of a neighbor, then it MUST ensure that it has another P-Route to the
+   next loose hop under the control of the same route computation
+   system, otherwise the P-DAO is rejected.
 
    When forwarding a packet to a destination for which the router
    determines that routing happens via the target, the router inserts
@@ -464,12 +494,17 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
    In order to add a source-routing header, the router encapsulates the
    packet with an IP-in-IP header and a non-storing mode source routing
-   header (SRH) [RFC6554].
+   header (SRH) [RFC6554].  In the uncompressed form the source of the
+   packet would be self, the destination would be the first Via Address
+   in the SRVIO, and the SRH would contain the list of the remaining Via
+   Addresses and then the target.
 
-   In the uncompressed form the source of the packet would be self, the
-   destination would be the first Via Address in the SRVIO, and the SRH
-   would contain the list of the remaining Via Addresses and then the
-   target.
+
+
+Thubert, et al.           Expires June 24, 2019                 [Page 9]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
 
    In practice, the router will normally use the "IPv6 over Low-Power
    Wireless Personal Area Network (6LoWPAN) Paging Dispatch" [RFC8025]
@@ -480,32 +515,22 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    SRH 6LoRH Header.
 
    In case of a forwarding error along a Source Route path, the node
-   that fails to forward MUST send an ICMP error with a code "Error in
-   Source Routing Header" back to the root, as discussed in section
-   11.2.2.3. of [RFC6550].  The root can then modify or remove the
-   Projected Route.  The node SHOULD also send an ICMP Error
-   (Destination Unreachable, Error in Source Routing Header) to the
-   source of the packet, the encapsulating node.  Upon this message, the
+   that fails to forward SHOULD send an ICMP error with a code "Error in
+   Source Routing Header" back to the source of the packet, as described
+   in section 11.2.2.3. of [RFC6550].  Upon this message, the
    encapsulating node SHOULD stop using the source route path for a
-   period of time.  This avoids wasting resources for packets along the
-   source route path that is broken till the root corrects the
-   situation.
+   period of time and it SHOULD send an ICMP message with a Code "Error
+   in Projected Route" to the root.  Failure to follow these steps may
+   result in packet loss and wasted resources along the source route
+   path that is broken.
 
-5.2.  Storing-Mode Projected Route
+3.3.2.  Storing-Mode P-Route
 
    As illustrated in Figure 3, the Storing Mode projected iq used by the
    root to install a routing state towards a target in the routers along
    a segment between an ingress and an egress router; this enables the
    routers to forward along that segment any packet for which the next
    loose hop is the said target, for instance a loose source routed
-
-
-
-Thubert, et al.           Expires June 21, 2019                 [Page 9]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
    packet for which the next loose hop is the target, or a packet for
    which the router has a routing state to the final destination via the
    target.
@@ -530,6 +555,13 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
                        Figure 3: Projecting a route
 
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 10]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    In order to install the relevant routing state along the segment
    between an ingress and an egress routers, the root sends a unicast
    P-DAO message to the egress router of the routing segment that must
@@ -549,18 +581,10 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    not install a route in response to the P-DAO; it is expected to be
    already able to route to the target(s) on its own.  It may either be
    the target, or may have some existing information to reach the
-   target(s), such as a connected route or an already installed
-   projected route.  If one of the targets cannot be located, the node
-   MUST answer to the root with a negative DAO-ACK listing the target(s)
-   that could not be located (suggested status 10 to be confirmed by
-   IANA).
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 10]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
+   target(s), such as a connected route or an already installed P-Route.
+   If one of the targets cannot be located, the node MUST answer to the
+   root with a negative DAO-ACK listing the target(s) that could not be
+   located (suggested status 10 to be confirmed by IANA).
 
    If the egress node can reach all the targets, then it forwards the
    P-DAO with unchanged content to its loose predecessor in the segment
@@ -586,6 +610,14 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    The process recurses till the P-DAO is propagated to ingress router
    of the segment, which answers with a DAO-ACK to the root.
 
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 11]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    Also, the path indicated in a P-DAO may be loose, in which case the
    reachability to the next hop has to be asserted.  Each router along
    the path indicated in a P-DAO is expected to be able to reach its
@@ -604,59 +636,25 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    state as opposed to refreshing an existing one or installing a new
    one.
 
-   In case of a forwarding error along a Storing-Mode Projected Route,
-   the node that fails to forward MUST send an ICMP error (Destination
-   Unreachable, reject route to destination) to the root.  The root can
-   then modify or remove the Projected Route.
+   In case of a forwarding error along a Storing Mode P-Route, the node
+   that fails to forward SHOULD send an ICMP error with a code "Error in
+   Projected Route" to the root.  Failure to do so may result in packet
+   loss and wasted resources along the P-Route that is broken.
 
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 11]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
-6.  RPL Instances
-
-   It must be noted that RPL has a concept of instance but does not have
-   a concept of an administrative distance, which exists in certain
-   proprietary implementations to sort out conflicts between multiple
-   sources of routing information.  This draft conforms the instance
-   model as follows:
-
-   o  If the PCE needs to influence a particular instance to add better
-      routes in conformance with the routing objectives in that
-      instance, it may do so.  When the PCE modifies an existing
-      instance then the added routes must not create a loop in that
-      instance.  This is achieved by always preferring a route obtained
-      from the PCE over a route that is learned via RPL.
-
-   o  If the PCE installs a more specific (say, Traffic Engineered)
-      route between a particular pair of nodes then it SHOULD use a
-      Local Instance from the ingress node of that path.  A packet
-      associated with that instance will be routed along that path and
-      MUST NOT be placed over a Global Instance again.  A packet that is
-      placed on a Global Instance may be injected in the Local Instance
-      based on node policy and the Local Instance paramenters.
-
-   In all cases, the path is indicated by a new Via Information option,
-   and the flow is similar to the flow used to obtain loose source
-   routing.
-
-7.  Security Considerations
+4.  Security Considerations
 
    This draft uses messages that are already present in RPL [RFC6550]
    with optional secured versions.  The same secured versions may be
    used with this draft, and whatever security is deployed for a given
    network also applies to the flows in this draft.
 
-   TODO: should probably consider how projected DAO messages could be
-   abused by a) rogue nodes b) via replay of messages c) if use of
-   projected DAO messages could in fact deal with any threats?
+   TODO: should probably consider how P-DAO messages could be abused by
+   a) rogue nodes b) via replay of messages c) if use of P-DAO messages
+   could in fact deal with any threats?
 
-8.  IANA Considerations
+5.  IANA Considerations
+
+5.1.  New RPL Control Codes
 
    This document extends the IANA registry created by RFC 6550 for RPL
    Control Codes as follows:
@@ -669,7 +667,9 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
 
 
-Thubert, et al.           Expires June 21, 2019                [Page 12]
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 12]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
@@ -687,32 +687,61 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    This document is updating the registry created by RFC 6550 for the
    RPL 3-bit Mode of Operation (MOP) as follows:
 
-   +----------+------------------------------------------+-------------+
-   |   MOP    | Description                              | Reference   |
-   |  value   |                                          |             |
-   +----------+------------------------------------------+-------------+
-   |    5     | Non-Storing mode of operation with       | This        |
-   |          | Projected routes                         | document    |
-   |          |                                          |             |
-   |    6     | Storing mode of operation with Projected | This        |
-   |          | routes                                   | document    |
-   +----------+------------------------------------------+-------------+
+   +-----------+----------------------------------------+--------------+
+   | MOP value | Description                            | Reference    |
+   +-----------+----------------------------------------+--------------+
+   |     5     | Non-Storing mode of operation with     | This         |
+   |           | P-Routes                               | document     |
+   |           |                                        |              |
+   |     6     | Storing mode of operation with         | This         |
+   |           | P-Routes                               | document     |
+   +-----------+----------------------------------------+--------------+
 
                            DIO Mode of operation
 
-9.  Acknowledgments
+5.2.  Error in Projected Route ICMPv6 Code
+
+   In some cases RPL will return an ICMPv6 error message when a message
+   cannot be forwarded along a P-Route.  This ICMPv6 error message is
+   "Error in Projected Route".
+
+   IANA has defined an ICMPv6 "Code" Fields Registry for ICMPv6 Message
+   Types.  ICMPv6 Message Type 1 describes "Destination Unreachable"
+   codes.  This specification requires that a new code is allocated from
+   the ICMPv6 Code Fields Registry for ICMPv6 Message Type 1, for "Error
+   in Projected Route", with a suggested code value of 8, to be
+   confirmed by IANA.
+
+6.  Acknowledgments
 
    The authors wish to acknowledge JP Vasseur and Patrick Wetterwald for
    their contributions to the ideas developed here.
 
-10.  References
+7.  References
 
-10.1.  Normative References
+
+
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 13]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
+7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC4443]  Conta, A., Deering, S., and M. Gupta, Ed., "Internet
+              Control Message Protocol (ICMPv6) for the Internet
+              Protocol Version 6 (IPv6) Specification", STD 89,
+              RFC 4443, DOI 10.17487/RFC4443, March 2006,
+              <https://www.rfc-editor.org/info/rfc4443>.
 
    [RFC6550]  Winter, T., Ed., Thubert, P., Ed., Brandt, A., Hui, J.,
               Kelsey, R., Levis, P., Pister, K., Struik, R., Vasseur,
@@ -720,15 +749,6 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
               Low-Power and Lossy Networks", RFC 6550,
               DOI 10.17487/RFC6550, March 2012,
               <https://www.rfc-editor.org/info/rfc6550>.
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 13]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
 
    [RFC6553]  Hui, J. and JP. Vasseur, "The Routing Protocol for Low-
               Power and Lossy Networks (RPL) Option for Carrying RPL
@@ -756,7 +776,17 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-10.2.  Informative References
+
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 14]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
+7.2.  Informative References
 
    [I-D.ietf-6tisch-architecture]
               Thubert, P., "An Architecture for IPv6 over the TSCH mode
@@ -766,7 +796,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    [I-D.ietf-detnet-architecture]
               Finn, N., Thubert, P., Varga, B., and J. Farkas,
               "Deterministic Networking Architecture", draft-ietf-
-              detnet-architecture-09 (work in progress), October 2018.
+              detnet-architecture-10 (work in progress), December 2018.
 
    [PCE]      IETF, "Path Computation Element",
               <https://datatracker.ietf.org/doc/charter-ietf-pce/>.
@@ -776,15 +806,6 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
               in Low-Power and Lossy Networks", RFC 6997,
               DOI 10.17487/RFC6997, August 2013,
               <https://www.rfc-editor.org/info/rfc6997>.
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 14]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
 
    [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
               Lossy Networks", RFC 7102, DOI 10.17487/RFC7102, January
@@ -801,6 +822,25 @@ A.1.  Loose Source Routing in Non-storing Mode
    from the node directly to the root, and the root typically builds a
    source routed path to a destination down the DODAG by recursively
    concatenating this information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 15]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
 
               ------+---------
                     |          Internet
@@ -834,14 +874,6 @@ A.1.  Loose Source Routing in Non-storing Mode
    computation engine such as a PCE, can determine the amount of packets
    that reach a destination in the RPL domain, and thus the amount of
    energy and bandwidth that is wasted for transmission, between itself
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 15]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
    and the destination, as well as the risk of fragmentation, any
    potential delays because of a paths longer than necessary (shorter
    paths exist that would not traverse the root).
@@ -857,6 +889,15 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    detrimental to the LLN operation.  Because the capability to store a
    routing state in every node is limited, the decision of which route
    is installed where can only be optimized with a global knowledge of
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 16]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    the system, a knowledge that the root or an associated PCE may
    possess by means that are outside of the scope of this specification.
 
@@ -890,19 +931,28 @@ A.2.  Transversal Routes in storing and non-storing modes
    o  In storing mode, unless the destination is a child of the source,
       the packets will follow the default route up the DODAG as well.
       If the destination is in the same DODAG, they will eventually
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 16]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
       reach a common parent that has a route to the destination; at
       worse, the common parent may also be the root.  From that common
       parent, the packet will follow a path down the DODAG that is
       optimized for the Objective Function that was used to build the
       DODAG.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 17]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
 
                       ------+---------
                        |          Internet
@@ -931,29 +981,6 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    optimized P2P routes.  This draft proposes an alternate based on a
    centralized route computation.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 17]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
                  ------+---------
                        |          Internet
                        |
@@ -975,6 +1002,14 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    This specification enables to store source-routed or storing mode
    state in intermediate routers, which enables to limit the stretch of
    a P2P route and maintain the characteristics within a given SLA.  An
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 18]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    example of service using this mechanism oculd be a control loop that
    would be installed in a network that uses classical RPL for
    asynchronous data collection.  In that case, the P2P path may be
@@ -992,23 +1027,6 @@ B.1.  Using storing mode P-DAO in non-storing mode MOP
    in the path between the common parent and the destination.  For
    instance in the diagram shown in Figure 7, if the source is node 41
    and the destination is node 52, then the common parent is node 22.
-
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 18]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
 
               ------+---------
                     |          Internet
@@ -1039,6 +1057,15 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    pair towards that destination (in this particular example, this would
    be the segment made of nodes 22, 32, 42).
 
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 19]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
+
    In the example below, say that there is a lot of traffic to nodes 55
    and 56 and the root decides to reduce the size of routing headers to
    those destinations.  The root can first send a DAO to node 45
@@ -1059,13 +1086,6 @@ B.2.  Projecting a storing-mode transversal route
    installed between node S and node D via routers A, B and C, in order
    to serve the needs of a particular application.
 
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 19]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
    The root sends a P-DAO with a target option indicating the
    destination D and a sequence Via Information option, one for S, which
    is the ingress router of the segment, one for A and then for B, which
@@ -1079,7 +1099,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
                     |     | Border Router
                     |     |  (RPL Root)
                     +-----+
-                       | Projected DAO message to C
+                       | P-DAO message to C
                  o    |   o    o
              o o   o |    o  o  o o   o
             o  o o  | o    o   o   o  o  o
@@ -1088,11 +1108,19 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
            o          o             o     o
                              LLN
 
-                     Figure 8: Projected DAO from root
+                         Figure 8: P-DAO from root
 
    Upon reception of the P-DAO, C validates that it can reach D, e.g.
    using IPv6 Neighbor Discovery, and if so, propagates the P-DAO
    unchanged to B.
+
+
+
+
+Thubert, et al.           Expires June 24, 2019                [Page 20]
+
+Internet-Draft     Root initiated routing state in RPL     December 2018
+
 
    B checks that it can reach C and of so, installs a route towards D
    via C.  Then it propagates the P-DAO to A.
@@ -1101,27 +1129,6 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
    segment, which installs a route to D via A and sends a DAO-ACK to the
    root.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 20]
-
-Internet-Draft     Root initiated routing state in RPL     December 2018
-
-
                  ------+---------
                        |          Internet
                        |
@@ -1129,7 +1136,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
                     |     | Border Router
                     |     |  (RPL Root)
                     +-----+
-                     ^ Projected DAO-ACK from S
+                     ^ P-DAO-ACK from S
                  /    o   o    o
               /   o o    o  o  o o   o
             |  o o  o o    o   o   o  o  o
@@ -1138,7 +1145,7 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
            o          o             o     o
                              LLN
 
-                    Figure 9: Projected DAO-ACK to root
+                        Figure 9: P-DAO-ACK to root
 
    As a result, a transversal route is installed that does not need to
    follow the DODAG structure.
@@ -1161,22 +1168,17 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
                   Figure 10: Projected Transversal Route
 
-Authors' Addresses
 
 
 
 
 
-
-
-
-
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 21]
+Thubert, et al.           Expires June 24, 2019                [Page 21]
 
 Internet-Draft     Root initiated routing state in RPL     December 2018
 
+
+Authors' Addresses
 
    Pascal Thubert (editor)
    Cisco Systems
@@ -1227,6 +1229,4 @@ Internet-Draft     Root initiated routing state in RPL     December 2018
 
 
 
-
-
-Thubert, et al.           Expires June 21, 2019                [Page 22]
+Thubert, et al.           Expires June 24, 2019                [Page 22]

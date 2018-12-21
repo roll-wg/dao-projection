@@ -133,8 +133,8 @@ inter DODAG routing?
 
 	   <t> The <xref target="RFC6550">
 	 "Routing Protocol for Low Power and Lossy Networks"</xref> (LLN)(RPL)
-     is a generic Distance Vector protocol that is well suited for application
-     in a variety of low energy Internet of Things (IoT) networks.
+     is a generic Distance Vector protocol that is well suited <!--for application in a variety of --> low energy Internet of Things (IoT)
+     networks.
 
      RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
      the root often acts as the Border Router to connect the RPL domain to the
@@ -163,7 +163,7 @@ inter DODAG routing?
 	  </t>
      <t>
      This draft enables a RPL root to install and maintain projected routes
-     (P-routes) within its DODAG, along a selected set of nodes that may or may
+     (P-Routes) within its DODAG, along a selected set of nodes that may or may
      not include self, for a chosen duration. This potentially enables routes
      that are more optimized than those obtained with the distributed operation
      of RPL, either in terms of the size of a source-route header or in terms of
@@ -174,7 +174,7 @@ inter DODAG routing?
      in the RPL Instance.
 	  </t>
      <t>
-     Projected routes must be used with the parsimony to limit the amount of
+     P-Routes must be used with the parsimony to limit the amount of
      state that is installed in each device to fit within its resources, and to
      limit the amount of rerouted traffic to fit within the capabilities of the
      transmission links.
@@ -184,7 +184,7 @@ inter DODAG routing?
      Possibly with the assistance of a Path Computation Element
      (<xref target="PCE"/>) that could have a better visibility on the
      larger system, the root computes which segment could be optimized and uses
-     this draft to install the corresponding projected routes.
+     this draft to install the corresponding P-Routes.
     </t>
      <!--
     <t>
@@ -258,7 +258,7 @@ inter DODAG routing?
     <!-- Removed reference from routing and 6tisch here to keep it simple
 	 This specification introduces the following terminology:-->
     <list hangIndent="6" style="hanging">
-    <t hangText="Projected Route:">
+    <t hangText="P-Route:">
 	A route that is installed remotely by a RPL root.
 
     </t>
@@ -302,7 +302,7 @@ inter DODAG routing?
    This specification introduces two new Control Message Options referred to as
    Route Projection Options (RPO). One RPO is the Information option (VIO) and
    the other is the Source-Routed VIO (SRVIO). The VIO installs a route on each
-   hop along a projected route (in a fashion analogous to RPL Storing Mode)
+   hop along a P-Route (in a fashion analogous to RPL Storing Mode)
    whereas the SRVIO installs a source-routing state at the ingress node, which
    uses it to insert a routing header in a fashion similar to Non-Storing Mode.
    </t>
@@ -312,8 +312,36 @@ inter DODAG routing?
     indicate alternate paths to the target(s).
    </t>
 
-    </section>     <!-- "Extending RFC 6550"> -->
 
+
+        <section title="RPL Instances">
+     <t>
+     It must be noted that RPL has a concept of instance but does not have a
+     concept of an administrative distance, which exists in certain proprietary
+     implementations to sort out conflicts between multiple sources of routing
+     information. This draft conforms the instance model as follows:
+     <list style="symbols">
+     <t>
+     If the PCE needs to influence a particular instance to add better routes
+     in conformance with the routing objectives in that instance, it may do so.
+     When the PCE modifies an existing instance then the added routes
+     must not create a loop in that instance. This is achieved by always
+     preferring a route obtained from the PCE over a route that is learned via
+     RPL.</t>
+     <t>
+     If the PCE installs a more specific (say, Traffic Engineered) route between
+     a particular pair of nodes then it SHOULD use a Local Instance from the
+     ingress node of that path. A packet associated with that instance will
+     be routed along that path and MUST NOT be placed over a Global Instance
+     again. A packet that is placed on a Global Instance may be injected in the
+     Local Instance based on node policy and the Local Instance paramenters.
+     <!-- TODO: add config parm to the local instance -->
+     </t>
+     </list>
+     In all cases, the path is indicated by a new Via Information option, and
+     the flow is similar to the flow used to obtain loose source routing.
+   </t>
+    </section>
     <section anchor="rplccmo" title="New RPL Control Message Options">
 
 
@@ -391,6 +419,7 @@ inter DODAG routing?
     </t>
     </section> <!--"New RPL Control Message Options"-->
 
+    
 
     <section anchor="pdao" title="Projected DAO">
 
@@ -414,11 +443,11 @@ inter DODAG routing?
     information from the RPO as opposed to a TIO. Also, a Path Lifetime of 0 in
     an RPO indicates that a route is to be removed.
      </t> <t>
-    There are two kinds of operation for the projected routes, the Storing Mode
+    There are two kinds of operation for the P-Routes, the Storing Mode
     and the Non-Storing Mode.
-    <list>
+    <list style="symbols">
      <t>
-    The Non-Storing Mode is discussed in section <xref target="nspdao"/>.
+    The Non-Storing Mode is discussed in <xref target="nspdao"/>.
     It uses an SRVIO that carries a list of Via Addresses to be used as a
     source-routed path to the target. The recipient of the P-DAO is the
     ingress router of the source-routed path. Upon a Non-Storing Mode P-DAO, the
@@ -426,7 +455,7 @@ inter DODAG routing?
     the root directly with a DAO-ACK message.
      </t>
     <t>
-    The Storing Mode is discussed in section  <xref target="spdao"/>. It uses
+    The Storing Mode is discussed in <xref target="spdao"/>. It uses
     a VIO with one Via Address per consecutive hop, from the ingress to the
     egress of the path, including the list of all intermediate routers in the
     data path order.
@@ -441,7 +470,23 @@ inter DODAG routing?
      </list>
 
     </t>
-
+    <t>In case of a forwarding error along a P-Route, an ICMP error is
+    sent to the root with a new Code "Error in Projected Route" 
+    (See <xref target="ICMPv6ErrPRoute"></xref>).
+    The root can then modify or remove the P-Route.
+    The "Error in Projected Route" message has the same format as the 
+    "Destination Unreachable Message", as specified in RFC 4443
+    <xref target="RFC4443"/>.
+    The portion of the invoking packet that is sent back in the ICMP message
+    SHOULD record at least up to the routing header if one is present, and the
+    routing header SHOULD be consumed by this node so that the destination in 
+    the IPv6 header is the next hop that this node could not reach.
+    if a 6LoWPAN Routing Header (6LoRH) <xref target="RFC8138"/> is used to
+    carry the IPv6 routing information in the outter header then that whole 
+    6LoRH information SHOULD be present in the ICMP message.
+    The sender and exact operation depend on the Mode and is described in 
+    <xref target="nspdao"/> and <xref target="spdao"/> respectively.
+    </t>
     <!--t>
     Note: The target of a route that is installed by a P-DAO is not necessarily
     inside the DODAG, though how the root and the optional PCE obtain the
@@ -449,7 +494,7 @@ inter DODAG routing?
     for this document.
     </t-->
 
-    <section anchor="nspdao"  title="Non-Storing Mode Projected Route">
+    <section anchor="nspdao"  title="Non-Storing Mode P-Route">
 
     <t>
     As illustrated in <xref target="nsdf"/>, a P-DAO that carries an SRVIO
@@ -490,8 +535,8 @@ inter DODAG routing?
     the router that installs a P-route does not have a connected route
     (a direct adjacency) to the next soure routed hop and fails to locate it as
     a neighbor or a neighbor of a neighbor, then it MUST ensure that it has
-    <!-- a loopless path to it that will not interact with the projected route, for instance  -->
-    another projected route to the next loose hop under the control of the same
+    <!-- a loopless path to it that will not interact with the P-Route, for instance  -->
+    another P-Route to the next loose hop under the control of the same
     route computation system, otherwise the P-DAO is rejected.
     </t>
     <t>
@@ -507,8 +552,7 @@ inter DODAG routing?
     <t>
       In order to add a source-routing header, the router encapsulates the
       packet with an IP-in-IP header and a non-storing mode source routing
-      header (SRH) <xref target="RFC6554"/>.</t>
-    <t>
+      header (SRH) <xref target="RFC6554"/>.
       In the uncompressed form the source of the packet would be self, the
       destination would be the first Via Address in the SRVIO, and the SRH would
       contain the list of the remaining Via Addresses and then the target.</t>
@@ -523,21 +567,18 @@ inter DODAG routing?
       Header.
       </t>
       <t>In case of a forwarding error along a Source Route path, the node that
-      fails to forward MUST send an ICMP error with a code "Error in Source
-      Routing Header" back to the root, as discussed in section 11.2.2.3. of
-      <xref target="RFC6550"/>. The root can then modify or remove the Projected
-      Route. The node SHOULD also send an ICMP Error (Destination Unreachable,
-      Error in Source Routing Header) to the source of the packet,
-      the encapsulating node. Upon this message, the encapsulating node SHOULD
-      stop using the source route path for a period of time.
-      This avoids wasting resources for packets along the source route path that
-      is broken till the root corrects the situation.
+      fails to forward SHOULD send an ICMP error with a code "Error in Source
+      Routing Header" back to the source of the packet, as described in section 11.2.2.3. of <xref target="RFC6550"/>. Upon this message, the encapsulating node SHOULD stop using the source route path for a period 
+      of time and it SHOULD send an ICMP message with a Code "Error in
+      Projected Route" to the root. Failure to follow these steps may result
+      in packet loss and wasted resources along the source route path that
+      is broken.
       </t>
       </section>
 
 
 
-    <section anchor="spdao"  title="Storing-Mode Projected Route">
+    <section anchor="spdao"  title="Storing-Mode P-Route">
 
 
       <t> As illustrated in <xref target="sdf"/>, the Storing Mode projected iq
@@ -592,7 +633,7 @@ inter DODAG routing?
      install a route in response to the P-DAO; it is expected to be already able
      to route to the target(s) on its own. It may either be the target, or may
      have some existing information to reach the target(s), such as a connected
-     route or an already installed projected route.
+     route or an already installed P-Route.
     <!-- If it cannot reach the target, then the egress node may lookup the address on the relevant interfaces. -->
      If one of the targets cannot be located, the node MUST answer to the root
      with a negative DAO-ACK listing the target(s) that could not be located
@@ -642,45 +683,17 @@ inter DODAG routing?
      is interpreted as a No-Path DAO and results in cleaning up existing state
      as opposed to refreshing an existing one or installing a new one.
     </t>
-    <t>In case of a forwarding error along a Storing-Mode Projected Route, the
-      node that fails to forward MUST send an ICMP error (Destination 
-      Unreachable, reject route to destination) to the root. The root can then
-      modify or remove the Projected Route.
+      <t>In case of a forwarding error along a Storing Mode P-Route, the node
+      that fails to forward SHOULD send an ICMP error with a code "Error in
+      Projected Route" to the root. Failure to do so may result in packet loss 
+      and wasted resources along the P-Route that is broken.
       </t>
       </section>  <!-- "Storing-Mode Projected DAO" -->
     </section>  <!-- "Projected DAO" -->
 
 
 
-        <section title="RPL Instances">
-     <t>
-     It must be noted that RPL has a concept of instance but does not have a
-     concept of an administrative distance, which exists in certain proprietary
-     implementations to sort out conflicts between multiple sources of routing
-     information. This draft conforms the instance model as follows:
-     <list style="symbols">
-     <t>
-     If the PCE needs to influence a particular instance to add better routes
-     in conformance with the routing objectives in that instance, it may do so.
-     When the PCE modifies an existing instance then the added routes
-     must not create a loop in that instance. This is achieved by always
-     preferring a route obtained from the PCE over a route that is learned via
-     RPL.</t>
-     <t>
-     If the PCE installs a more specific (say, Traffic Engineered) route between
-     a particular pair of nodes then it SHOULD use a Local Instance from the
-     ingress node of that path. A packet associated with that instance will
-     be routed along that path and MUST NOT be placed over a Global Instance
-     again. A packet that is placed on a Global Instance may be injected in the
-     Local Instance based on node policy and the Local Instance paramenters.
-     <!-- TODO: add config parm to the local instance -->
-     </t>
-     </list>
-     In all cases, the path is indicated by a new Via Information option, and
-     the flow is similar to the flow used to obtain loose source routing.
-   </t>
-    </section>
-
+    </section>     <!-- "Extending RFC 6550"> -->
 
     <section title="Security Considerations">
 
@@ -690,13 +703,14 @@ inter DODAG routing?
      a given network also applies to the flows in this draft.
 
 	</t>
-	<t> TODO: should probably consider how projected DAO messages could be abused by
+	<t> TODO: should probably consider how P-DAO messages could be abused by
 
-    a) rogue nodes b) via replay of messages c) if use of projected DAO messages could in fact deal with any threats?
+    a) rogue nodes b) via replay of messages c) if use of P-DAO messages could in fact deal with any threats?
 
 	</t>
-   </section>
-   <section anchor="RPLCtrlMsgOptionsReg" title="IANA Considerations">
+</section>
+<section anchor="IANAcon" title="IANA Considerations">
+   <section anchor="RPLCtrlMsgOptionsReg" title="New RPL Control Codes">
 
     <t>This document extends the IANA registry created by RFC 6550 for RPL
     Control Codes as follows:</t>
@@ -737,18 +751,33 @@ inter DODAG routing?
 
           <c>5</c>
 
-          <c>Non-Storing mode of operation with Projected routes</c>
+          <c>Non-Storing mode of operation with P-Routes</c>
 
           <c>This document</c>
 
           <c>6</c>
 
-          <c>Storing mode of operation with Projected routes</c>
+          <c>Storing mode of operation with P-Routes</c>
 
           <c>This document</c>
 
         </texttable>
-   </section>
+        
+   </section> <!-- "New RPL Control Codes" -->
+   <section anchor="ICMPv6ErrPRoute"
+               title="Error in Projected Route ICMPv6 Code">
+        <t>In some cases RPL will return an ICMPv6 error message when a
+        message cannot be forwarded along a P-Route.
+        This ICMPv6 error message is "Error in Projected Route".</t>
+
+        <t>IANA has defined an ICMPv6 "Code" Fields Registry for ICMPv6
+        Message Types. ICMPv6 Message Type 1 describes "Destination Unreachable"
+        codes. This specification requires that a new code is allocated from the
+        ICMPv6 Code Fields Registry for ICMPv6 Message Type 1, for "Error in
+        Projected Route", with a suggested code value of 8, to be confirmed by 
+        IANA.</t>
+   </section> <!--"ICMPv6: Error in a P-Route" -->
+</section> <!-- "IANA Considerations"-->
 
 
 <section title="Acknowledgments">
@@ -761,6 +790,7 @@ inter DODAG routing?
     <back>
     <references title='Normative References'>
 	  <?rfc include="reference.RFC.2119"?>
+	  <?rfc include="reference.RFC.4443"?>
 	  <?rfc include="reference.RFC.6550"?>
 	  <?rfc include="reference.RFC.6553"?>
 	  <?rfc include="reference.RFC.6554"?>
@@ -1087,7 +1117,7 @@ inter DODAG routing?
    the segment, one for A and then for B, which are an intermediate routers, and
    one for C, which is the egress router.
    </t>
-       <figure  anchor="pdao2" title="Projected DAO from root">
+       <figure  anchor="pdao2" title="P-DAO from root">
             <artwork>
               ------+---------
                     |          Internet
@@ -1096,7 +1126,7 @@ inter DODAG routing?
                  |     | Border Router
                  |     |  (RPL Root)
                  +-----+
-                    | Projected DAO message to C
+                    | P-DAO message to C
               o    |   o    o
           o o   o |    o  o  o o   o
          o  o o  | o    o   o   o  o  o
@@ -1117,7 +1147,7 @@ inter DODAG routing?
    which installs a route to D via A and sends a DAO-ACK to the root.
     </t>
 
-          <figure  anchor="pdao3" title="Projected DAO-ACK to root">
+          <figure  anchor="pdao3" title="P-DAO-ACK to root">
             <artwork>
               ------+---------
                     |          Internet
@@ -1126,7 +1156,7 @@ inter DODAG routing?
                  |     | Border Router
                  |     |  (RPL Root)
                  +-----+
-                  ^ Projected DAO-ACK from S
+                  ^ P-DAO-ACK from S
               /    o   o    o
            /   o o    o  o  o o   o
          |  o o  o o    o   o   o  o  o
