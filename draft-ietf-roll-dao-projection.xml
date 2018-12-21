@@ -232,11 +232,6 @@ inter DODAG routing?
        <t hangText="6LBR:"> 6LoWPAN Border Router </t>
        <t hangText="6LN:"> 6LoWPAN Node  </t>
        <t hangText="6LR:"> 6LoWPAN Router </t>
-       <t hangText="6CIO:"> Capability Indication Option </t>
-       <t hangText="EARO:"> (Extended) Address Registration Option -- (E)ARO</t>
-       <t hangText="EDAR:"> (Extended) Duplicate Address Request  -- (E)DAR</t>
-       <t hangText="EDAC:"> (Extended) Duplicate Address Confirmation  --
-				(E)DAC</t>
        <t hangText="DAD:"> Duplicate Address Detection </t>
        <t hangText="DODAG:"> Destination-Oriented Directed Acyclic Graph </t>
        <t hangText="LLN:"> Low-Power and Lossy Network </t>
@@ -246,7 +241,7 @@ inter DODAG routing?
        <t hangText="NDP:">  Neighbor Discovery Protocol </t>
        <t hangText="NS:">  Neighbor Solicitation  </t>
        <t hangText="RPL:"> IPv6 Routing Protocol for LLNs
-					(pronounced ripple) <xref target="RFC6550"/> </t>
+			 <xref target="RFC6550"/> </t>
        <t hangText="RA:">  Router Advertisement  </t>
        <t hangText="RS:">  Router Solicitation  </t>
        </list>
@@ -259,9 +254,17 @@ inter DODAG routing?
 	 This specification introduces the following terminology:-->
     <list hangIndent="6" style="hanging">
     <t hangText="P-Route:">
-	A route that is installed remotely by a RPL root.
-
+	A Projected Route is a route that is installed remotely by a RPL root.</t>
+    <t hangText="P-DAO:">
+	A Projected DAO is a DAO message sent by the RPL root to install a P-route.
     </t>
+    <t hangText="VIO:">
+	A Via Information Option, used in Storing Mode P-DAO messages.    </t>
+    <t hangText="SR-VIO:">
+	A Source-Routed Via Information Option, used in Non-Storing Mode
+    P-DAO messages.    </t>
+    <t hangText="RPO:">
+	A Route Projection Option; it can be a VIO or an SR-VIO.    </t>
     </list>
 </t>
 </section>	<!-- end section "New Terms" -->
@@ -725,13 +728,13 @@ inter DODAG routing?
 
           <c>0x0A</c>
 
-          <c>Via</c>
+          <c>Via Information option</c>
 
           <c>This document</c>
 
           <c>0x0B</c>
 
-          <c>Source-Routed Via</c>
+          <c>Source-Routed Via Information option</c>
 
           <c>This document</c>
         </texttable>
