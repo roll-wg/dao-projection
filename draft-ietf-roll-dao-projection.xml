@@ -381,7 +381,7 @@
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       | RPLInstanceID |K|R|   Flags   |  PDRLifetime  | PDRSequence   |
+       |   TrackID     |K|R|   Flags   |  PDRLifetime  | PDRSequence   |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |   Option(s)...
        +-+-+-+-+-+-+-+-+
@@ -390,8 +390,8 @@
 </figure>
 
           <dl spacing='normal'>
-              <dt>TrackID:</dt><dd>8-bit field indicating the topology
-              Instance associated with the Track. It is set to zero upon the
+              <dt>TrackID:</dt><dd>8-bit field indicating the RPLInstanceID
+              associated with the Track. It is set to zero upon the
               first request for a new Track and then to the TrackID once the
               Track was created, to either renew it of destroy it.
               </dd>
