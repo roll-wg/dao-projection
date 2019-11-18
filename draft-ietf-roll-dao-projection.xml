@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-08" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-09" >
 
 <front>
 
@@ -349,7 +349,8 @@
      <t>
      A Projected Route is a serial path that may the whole path or a segment in
      a complex Track, in which case multiple Projected Routes are installed with
-     the stuple (Target address, TrackID), and a node that is present on more
+     the same tuple (Target address, TrackID) and a different segment ID.
+     A node that is present on more
      than one segment in a Track may be able to use either of the Projected
      Routes to forward towards the Target. The selection of the best route in a
      Track at forwarding time is out of scope for this document.
@@ -498,9 +499,9 @@
     field of DIO messages as Compression Reference.
     </t><t>
     An RPO indicates a Projected Route that can be a serial Track in full or
-    a segment of a more complex Track. The Track is identified by a
-    RPLInstanceID that is either Global or local to the Target of the
-    Track.
+    a segment of a more complex Track. In the latter case, multiple RPO
+    may be placed after a same Target Option. The Track is identified by a
+    TrackID that is a Local RPLInstanceID to the Target of the Track.
     </t><t>
     The format of RPOs is as follows:
     </t>
@@ -511,7 +512,7 @@
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |   Type        | Option Length |Comp.|  Flags  |    TrackID    |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Path Lifetime | Path Sequence |     Reserved                  |
+    | Track Sequence| Track Lifetime|   SegmentID   |Segm. Sequence |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
     +                                                               +
@@ -551,27 +552,51 @@
               </dd>
 
               <dt>TrackID:</dt><dd>8-bit field indicating the topology Instance
-               associated with the Track.
+               associated with the Track. The tuple (Target Address, TrackID)
+               forms a unique ID of the Track in the RPL domain.
               </dd>
 
-              <dt>Path Lifetime:</dt><dd>8-bit unsigned integer. The length
+              <dt>Track Sequence:</dt><dd>8-bit unsigned integer.
+              The Track Sequence obeys the operation in section 7.2 of
+              <xref target='RFC6550'/> and the lollipop starts at 255.
+              The Track Sequence is set by the Root and incremented
+              each time the Root refreshes that Track globally.
+              A Track Sequence that is fresher than the current on deprecates
+              any state for the Track. A Track Sequence that is current adds to
+              any state that was learned for that Track Sequence. A RTO with
+              a Track Sequence that is not as fresh as the current one is
+              ignored.</dd>
+
+
+              <dt>Track Lifetime:</dt><dd>8-bit unsigned integer. The length
               of time in Lifetime Units (obtained from the Configuration
-              option) that the prefix is valid for route determination. The
-              period starts when a new Path Sequence is seen. A value of 255
+              option) that the Track is usable. The
+              period starts when a new Track Sequence is seen. A value of 255
               (0xFF) represents infinity. A value of zero (0x00)
               indicates a loss of reachability. A DAO message that
               contains a Via Information option with a Path Lifetime of
               zero for a Target is referred as a No-Path (for that Target) in
               this document.</dd>
 
-              <dt>Path Sequence:</dt><dd>8-bit unsigned integer. When a RPL
-              Target option is issued by the Root of the DODAG
-              (i.e. in a DAO message), that Root sets the Path Sequence and
-              increments the Path Sequence each time it issues a RPL Target
-              option with updated information. The indicated sequence
-              deprecates any state for a given Target that was learned from a
-              previous sequence and adds to any state that was learned for
-              that sequence.</dd>
+
+              <dt>SegmentID:</dt><dd>8-bit field that identifies a segment
+               within a Track. A Value of 0 is used to signal a serial Track.
+              </dd>
+
+              <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
+              The Segment Sequence obeys the operation in section 7.2 of
+              <xref target='RFC6550'/> and the lollipop starts at 255. When the
+              Root of the DODAG needs to update a single segment in a Track,
+              but does not need to modify the rest of the Track, it
+              increments the Segment Sequence but not the Track Sequence.
+              The segment information indicated in the RTO deprecates any state
+              for the segment indicated by the SegmentID within the indicated
+              Track and sets up the new information. A RTO with a Segment
+              Sequence that is not as fresh as the current one is ignored.
+              a RTO for a given target with the same (TrackID, Track Sequence,
+              SegmentID, Segment Sequence) indicates a retry; it MUST NOT
+              change the segment and MUST be propagated or answered as the first
+              copy.</dd>
 
               <dt>Via Address:</dt><dd>2 to 16 bytes, a compressed IPv6 Address.
               A Via Address indicates the next hop within the path towards the
@@ -675,7 +700,8 @@
 
     <t>
     This draft adds a capability to RPL whereby the Root of a DODAG projects a
-    route by sending an extended DAO message called a Projected-DAO (P-DAO) to an
+    route by sending an extended DAO message called one or more Projected-DAO
+    (P-DAO) messages to an
     arbitrary router in the DODAG, indicating one or more sequence(s) of routers
     inside the DODAG via which the Target(s) indicated in the RPL Target
     Option(s) (RTO) can be reached.
@@ -687,11 +713,12 @@
     A P-DAO message MUST contain at least one RTO and at least one RPO following
     it. There can be at most one such sequence of RTOs and then RPOs.
      </t> <t>
-    Like a classical DAO message, a P-DAO is processed only if it is "new"
-    per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
-    RPL specification</xref>; this is determined using the Path Sequence
-    information from the RPO as opposed to a TIO. Also, a Path Lifetime of 0 in
-    an RPO indicates that a route is to be removed.
+    Like a classical DAO message, a P-DAO causes a change of state only if it is
+    "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
+    RPL specification</xref>; this is determined using the Track Sequence and
+    the Segment Sequence information from the RPO as opposed to the Path
+    Sequence from a TIO. Also, a Path Lifetime of 0 in  an RPO indicates that a
+    route is to be removed.
      </t> <t>
     There are two kinds of operation for the Projected Routes, the Storing Mode
     and the Non-Storing Mode.
