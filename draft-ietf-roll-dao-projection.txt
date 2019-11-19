@@ -6,13 +6,13 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Updates: 6550 (if approved)                                  R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 20 May 2020                                         M. Gillmore
+Expires: 21 May 2020                                         M. Gillmore
                                                                    Itron
-                                                        17 November 2019
+                                                        18 November 2019
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-09
+                   draft-ietf-roll-dao-projection-10
 
 Abstract
 
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 May 2020.
+   This Internet-Draft will expire on 21 May 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 1]
+Thubert, et al.            Expires 21 May 2020                  [Page 1]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -77,8 +77,8 @@ Table of Contents
      2.4.  References  . . . . . . . . . . . . . . . . . . . . . . .   5
    3.  Extending RFC 6550  . . . . . . . . . . . . . . . . . . . . .   6
    4.  Identifying a Path  . . . . . . . . . . . . . . . . . . . . .   7
-   5.  New RPL Control Messages and Options  . . . . . . . . . . . .   7
-     5.1.  New P-DAO Request Control Message . . . . . . . . . . . .   7
+   5.  New RPL Control Messages and Options  . . . . . . . . . . . .   8
+     5.1.  New P-DAO Request Control Message . . . . . . . . . . . .   8
      5.2.  New PDR-ACK Control Message . . . . . . . . . . . . . . .   8
      5.3.  Route Projection Options  . . . . . . . . . . . . . . . .  10
      5.4.  Sibling Information Option  . . . . . . . . . . . . . . .  12
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 2]
+Thubert, et al.            Expires 21 May 2020                  [Page 2]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -165,7 +165,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 3]
+Thubert, et al.            Expires 21 May 2020                  [Page 3]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -221,7 +221,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 4]
+Thubert, et al.            Expires 21 May 2020                  [Page 4]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -277,7 +277,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 5]
+Thubert, et al.            Expires 21 May 2020                  [Page 5]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 6]
+Thubert, et al.            Expires 21 May 2020                  [Page 6]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -379,20 +379,27 @@ Internet-Draft               DAO Projection                November 2019
    Track at forwarding time is out of scope for this document.  [RAW-PS]
    elaborates on that particular problem.
 
+   All properties of a Track operations are inherited form the main
+   instance that is used to install the Track.  For instance, the use of
+   compression per [RFC8138] is determined by whether it is used in the
+   main instance, e.g., by setting the "T" flag [TURN-ON_RFC8138] in the
+   RPL configuration option.
+
+
+
+
+
+Thubert, et al.            Expires 21 May 2020                  [Page 7]
+
+Internet-Draft               DAO Projection                November 2019
+
+
 5.  New RPL Control Messages and Options
 
 5.1.  New P-DAO Request Control Message
 
    The PDR is sent to the Root to request a new Path.  Exactly one
    Target Options MUST be present.
-
-
-
-
-Thubert, et al.            Expires 20 May 2020                  [Page 7]
-
-Internet-Draft               DAO Projection                November 2019
-
 
    The format of P-DAO Request (PDR) Base Object is as follows:
 
@@ -438,14 +445,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-
-
-
-
-
-
-
-Thubert, et al.            Expires 20 May 2020                  [Page 8]
+Thubert, et al.            Expires 21 May 2020                  [Page 8]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -501,7 +501,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                  [Page 9]
+Thubert, et al.            Expires 21 May 2020                  [Page 9]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 10]
+Thubert, et al.            Expires 21 May 2020                 [Page 10]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 11]
+Thubert, et al.            Expires 21 May 2020                 [Page 11]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 12]
+Thubert, et al.            Expires 21 May 2020                 [Page 12]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 13]
+Thubert, et al.            Expires 21 May 2020                 [Page 13]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 14]
+Thubert, et al.            Expires 21 May 2020                 [Page 14]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 15]
+Thubert, et al.            Expires 21 May 2020                 [Page 15]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 16]
+Thubert, et al.            Expires 21 May 2020                 [Page 16]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 17]
+Thubert, et al.            Expires 21 May 2020                 [Page 17]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 18]
+Thubert, et al.            Expires 21 May 2020                 [Page 18]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 19]
+Thubert, et al.            Expires 21 May 2020                 [Page 19]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 20]
+Thubert, et al.            Expires 21 May 2020                 [Page 20]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 21]
+Thubert, et al.            Expires 21 May 2020                 [Page 21]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 22]
+Thubert, et al.            Expires 21 May 2020                 [Page 22]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1239,16 +1239,6 @@ Internet-Draft               DAO Projection                November 2019
               for Low-Power and Lossy Networks (RPL)", RFC 6554,
               DOI 10.17487/RFC6554, March 2012,
               <https://www.rfc-editor.org/info/rfc6554>.
-
-   [RFC8025]  Thubert, P., Ed. and R. Cragie, "IPv6 over Low-Power
-              Wireless Personal Area Network (6LoWPAN) Paging Dispatch",
-              RFC 8025, DOI 10.17487/RFC8025, November 2016,
-              <https://www.rfc-editor.org/info/rfc8025>.
-
-   [RFC8138]  Thubert, P., Ed., Bormann, C., Toutain, L., and R. Cragie,
-              "IPv6 over Low-Power Wireless Personal Area Network
-              (6LoWPAN) Routing Header", RFC 8138, DOI 10.17487/RFC8138,
-              April 2017, <https://www.rfc-editor.org/info/rfc8138>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
@@ -1281,22 +1271,39 @@ Internet-Draft               DAO Projection                November 2019
    [RAW-PS]   Thubert, P. and G. Papadopoulos, "Reliable and Available
               Wireless Problem Statement", Work in Progress, Internet-
               Draft, draft-pthubert-raw-problem-statement-04, 23 October
+              2019, <https://tools.ietf.org/html/draft-pthubert-raw-
+              problem-statement-04>.
+
+   [TURN-ON_RFC8138]
+              Thubert, P. and L. Zhao, "Configuration option for RFC
+              8138", Work in Progress, Internet-Draft, draft-thubert-
+              roll-turnon-rfc8138-03, 8 July 2019,
+              <https://tools.ietf.org/html/draft-thubert-roll-turnon-
+              rfc8138-03>.
 
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 23]
+
+Thubert, et al.            Expires 21 May 2020                 [Page 23]
 
 Internet-Draft               DAO Projection                November 2019
 
-
-              2019, <https://tools.ietf.org/html/draft-pthubert-raw-
-              problem-statement-04>.
 
    [RFC8655]  Finn, N., Thubert, P., Varga, B., and J. Farkas,
               "Deterministic Networking Architecture", RFC 8655,
               DOI 10.17487/RFC8655, October 2019,
               <https://www.rfc-editor.org/info/rfc8655>.
+
+   [RFC8025]  Thubert, P., Ed. and R. Cragie, "IPv6 over Low-Power
+              Wireless Personal Area Network (6LoWPAN) Paging Dispatch",
+              RFC 8025, DOI 10.17487/RFC8025, November 2016,
+              <https://www.rfc-editor.org/info/rfc8025>.
+
+   [RFC8138]  Thubert, P., Ed., Bormann, C., Toutain, L., and R. Cragie,
+              "IPv6 over Low-Power Wireless Personal Area Network
+              (6LoWPAN) Routing Header", RFC 8138, DOI 10.17487/RFC8138,
+              April 2017, <https://www.rfc-editor.org/info/rfc8138>.
 
    [PCE]      IETF, "Path Computation Element",
               <https://datatracker.ietf.org/doc/charter-ietf-pce/>.
@@ -1331,6 +1338,14 @@ A.1.  Loose Source Routing in Non-storing Mode
 
                 Figure 8: RPL non-storing mode of operation
 
+
+
+
+Thubert, et al.            Expires 21 May 2020                 [Page 24]
+
+Internet-Draft               DAO Projection                November 2019
+
+
    Based on the parent-children relationships expressed in the non-
    storing DAO messages,the Root possesses topological information about
    the whole network, though this information is limited to the
@@ -1338,14 +1353,6 @@ A.1.  Loose Source Routing in Non-storing Mode
    that is generated within the domain will always reach the Root, which
    can then apply a source routing information to reach the destination
    if the destination is also in the DODAG.  Similarly, a packet coming
-
-
-
-Thubert, et al.            Expires 20 May 2020                 [Page 24]
-
-Internet-Draft               DAO Projection                November 2019
-
-
    from the outside of the domain for a destination that is expected to
    be in a RPL domain reaches the Root.
 
@@ -1387,6 +1394,14 @@ A.2.  Transversal Routes in storing and non-storing modes
    respectively from and towards the DODAG Root.  Transversal Peer to
    Peer (P2P) routes in a RPL network will generally suffer from some
    elongated (stretched) path versus the best possible path, since
+
+
+
+Thubert, et al.            Expires 21 May 2020                 [Page 25]
+
+Internet-Draft               DAO Projection                November 2019
+
+
    routing between 2 nodes always happens via a common parent, as
    illustrated in Figure 9:
 
@@ -1394,14 +1409,6 @@ A.2.  Transversal Routes in storing and non-storing modes
       the way up to the Root of the DODAG.  If the destination is in the
       same DODAG, the Root must encapsulate the packet to place a
       Routing Header that has the strict source route information down
-
-
-
-Thubert, et al.            Expires 20 May 2020                 [Page 25]
-
-Internet-Draft               DAO Projection                November 2019
-
-
       the DODAG to the destination.  This will be the case even if the
       destination is relatively close to the source and the Root is
       relatively far off.
@@ -1446,14 +1453,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-
-
-
-
-
-
-
-Thubert, et al.            Expires 20 May 2020                 [Page 26]
+Thubert, et al.            Expires 21 May 2020                 [Page 26]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1509,7 +1509,7 @@ B.1.  Using storing mode P-DAO in non-storing mode MOP
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 27]
+Thubert, et al.            Expires 21 May 2020                 [Page 27]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1565,7 +1565,7 @@ B.2.  Projecting a storing-mode transversal route
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 28]
+Thubert, et al.            Expires 21 May 2020                 [Page 28]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1621,7 +1621,7 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 29]
+Thubert, et al.            Expires 21 May 2020                 [Page 29]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1677,7 +1677,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 30]
+Thubert, et al.            Expires 21 May 2020                 [Page 30]
 
 Internet-Draft               DAO Projection                November 2019
 
@@ -1733,4 +1733,4 @@ Internet-Draft               DAO Projection                November 2019
 
 
 
-Thubert, et al.            Expires 20 May 2020                 [Page 31]
+Thubert, et al.            Expires 21 May 2020                 [Page 31]
