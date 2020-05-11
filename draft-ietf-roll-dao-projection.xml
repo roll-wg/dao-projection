@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-10" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-11" >
 
 <front>
 
@@ -108,7 +108,7 @@
 	 </t>
      <t>
      The  <xref target='I-D.ietf-6tisch-architecture'>
-     6TiSCH architecture </xref> leverages RPL for its routing operations and
+     "6TiSCH architecture"</xref> leverages RPL for its routing operations and
      considers the <xref target='RFC8655'>
      Deterministic Networking Architecture</xref> as one possible model
      whereby the device resources and capabilities are exposed to an external
@@ -116,30 +116,39 @@
      objective functions that reside in that external entity.  With DetNet and
      6TiSCH, the component of the controller that is responsible of computing
      routes is called a Path Computation Element (<xref target='PCE'/>).
-	 </t>
+     </t>
      <t>
      Based on heuristics of usage, path length, and knowledge of device capacity
      and available resources such as battery levels and reservable buffers, a
      PCE with a global visibility on the system can compute P2P routes that are
      more optimized
      for the current needs as expressed by the objective function.
-    </t><t>
      This draft proposes a protocol extension to RPL that enables the Root to
      install a limited amount of centrally-computed routes in a RPL graph, on
      behalf of a PCE that may be collocated or separated from the Root.
      Those extensions enable loose source routing down in RPL Non-Storing Mode
      and transversal routes inside the DODAG regardless of the RPL Mode of
      Operation (MOP).
-	 </t><t>
+	 </t>
+     <t>
+     The 6TiSCH architecture also introduces the concept of a Track that is a
+     complex path with possibly redundant forwarding solutions along the way,
+     exploiting Packet ARQ, Replication, Elimination, and Overhearing (PAREO)
+     functions. The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
+     Available Wireless (RAW) Architecture/Framework"</xref> separates the time
+     scale at which the PCE computes the Track (slow, globally optimized, with
+     statistical metrics) and the time scale at which the forwarding decision is
+     made for a packet or a small collection of packets (fast, at the scale of
+     the Track), to leverage the PAREO functions dynamically and provide the
+     required reliability and availability while conserving energy and spectrum.
+	 </t>
+     <t>
      As opposed to the classical RPL operations where routes are injected by the
      Target nodes, the protocol extension enables the Root of a DODAG to project
      the routes that are needed onto the nodes where they should be installed.
      This specification uses the term Projected Route to refer to those routes.
-     A Projected Route may be a stand-alone path to a Target or a segment in a
-     complex Track <xref target='I-D.ietf-6tisch-architecture'/> that provides
-     redundant forwarding solutions to a destination to improve reliability and
-     availability of the wireless transmissions
-     <xref target='I-D.pthubert-raw-problem-statement'/>.
+     A Projected Route may be a stand-alone end-to-end path to a Target or a
+     segment in a more complex Track.
      <!--
      Possibly with the assistance of an external PCE that could have a better
      visibility on the larger system, the Root computes optimized and redundant
@@ -200,44 +209,34 @@
 </t>
 </section>	<!-- end section "BCP 14" -->
 
+  <section anchor='lo'><name>References</name>
+    <t>
+	In this document, readers will encounter terms and concepts
+	that are discussed in the following documents:
+	</t><ul spacing='compact'>
+<!--  CEP: There aren't any terms from RFC 3972.  Concepts, O.K.   -->
+	<li>
+    <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"
+		</xref>, and </li>
+	<li>
+    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"
+        <!--
+		</xref> , and </li>
+    	<li><xref target='RFC4919'>"IPv6 over Low-Power Wireless Personal Area Networks (6LoWPANs): Overview, Assumptions, Problem Statement, and Goals "
+        <-->
 
-<section anchor='gloss'><name>Subset of a 6LoWPAN Glossary</name>
-    <t> This document often uses the following acronyms:
-       </t><dl spacing='normal'>
-       <dt>6BBR:</dt><dd> 6LoWPAN Backbone Router </dd>
-       <dt>6LBR:</dt><dd> 6LoWPAN Border Router </dd>
-       <dt>6LN:</dt><dd> 6LoWPAN Node  </dd>
-       <dt>6LR:</dt><dd> 6LoWPAN Router </dd>
-       <dt>DAD:</dt><dd> Duplicate Address Detection </dd>
-       <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph </dd>
-       <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
-       <dt>NA:</dt><dd>  Neighbor Advertisement </dd>
-       <dt>NCE:</dt><dd>  Neighbor Cache Entry  </dd>
-       <dt>ND:</dt><dd>  Neighbor Discovery  </dd>
-       <dt>NDP:</dt><dd>  Neighbor Discovery Protocol </dd>
-       <dt>NS:</dt><dd>  Neighbor Solicitation  </dd>
-       <dt>RPL:</dt><dd> IPv6 Routing Protocol for LLNs
-			 <xref target='RFC6550'/> </dd>
-       <dt>CMO:</dt><dd> Control Message Option</dd>
-       <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
-       <dt>VIO:</dt><dd> A Via Information Option, used in Storing Mode P-DAO messages.    </dd>
-       <dt>SRVIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing Mode P-DAO messages.    </dd>
-       <dt>RPO:</dt><dd> A Route Projection Option; it can be a VIO or an SRVIO.    </dd>
-      <dt>P-DAO:</dt><dd> A Projected DAO is a DAO message sent by the RPL Root to install a Projected Route.
-    </dd>
-       <dt>RTO:</dt><dd> RPL Target Option </dd>
-       <dt>RAN:</dt><dd> RPL-Aware Node </dd>
-       <dt>RA:</dt><dd>  Router Advertisement  </dd>
-       <dt>RS:</dt><dd>  Router Solicitation  </dd>
-       </dl><t>
+        </xref>.</li>
+
+	</ul><t>
     </t>
-</section>	<!-- end section "Subset of a 6LoWPAN Glossary" -->
+  </section>	<!-- end section "References" -->
+
 
 <section anchor='new'><name>Other Terms</name>
     <t>
     <!-- Removed reference from routing and 6tisch here to keep it simple
 	 This specification introduces the following terminology:-->
-    </t><dl spacing='normal'>
+    </t><dl spacing='compact'>
 
     <dt>Projected Route:</dt><dd>
 	A Projected Route is a serial path that is computed and installed remotely
@@ -245,46 +244,67 @@
     <dt>Track:</dt><dd>
     The term Track is used in this document to refer to a complex path,
     e.g., a DODAG, that incorporates redundant Projected Routes towards a
-    destination for increased reliability, high availability and load balancing.
+    destination using diversity to increase the reliability.
     </dd>
     </dl>
-</section>	<!-- end section "New Terms" -->
-  <section anchor='lo'><name>References</name>
-    <t>
-	In this document, readers will encounter terms and concepts
-	that are discussed in the following documents:
-	</t><ul spacing='normal'>
-<!--  CEP: There aren't any terms from RFC 3972.  Concepts, O.K.   -->
-	<li>
-    <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"
-		</xref>, and </li>
-	<li>
-    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"
-		</xref>. </li>
+</section>	<!-- end section "Other Terms" -->
 
-	</ul><t>
+<section anchor='gloss'><name>Glossary</name>
+    <t> This document often uses the following acronyms:
+       </t><dl spacing='compact'>
+       <dt>6BBR:</dt><dd> 6LoWPAN Backbone Router </dd>
+       <dt>6LBR:</dt><dd> 6LoWPAN Border Router </dd>
+       <dt>6LN:</dt><dd> 6LoWPAN Node  </dd>
+       <dt>6LR:</dt><dd> 6LoWPAN Router </dd>
+       <dt>CMO:</dt><dd> Control Message Option</dd>
+       <dt>DAD:</dt><dd> Duplicate Address Detection </dd>
+       <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
+       <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph </dd>
+       <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
+       <dt>MOP:</dt><dd> RPL Mode of Operation</dd>
+       <dt>NA:</dt><dd>  Neighbor Advertisement </dd>
+       <dt>NCE:</dt><dd>  Neighbor Cache Entry  </dd>
+       <dt>ND:</dt><dd>  Neighbor Discovery  </dd>
+       <dt>NDP:</dt><dd>  Neighbor Discovery Protocol </dd>
+       <dt>NS:</dt><dd>  Neighbor Solicitation  </dd>
+       <dt>P-DAO:</dt><dd> A Projected DAO is a DAO message sent by the RPL Root to install a Projected Route. </dd>
+       <dt>PDR</dt><dd> P-DAO Request </dd>
+       <dt>RA:</dt><dd>  Router Advertisement  </dd>
+       <dt>RAN:</dt><dd> RPL-Aware Node </dd>
+       <dt>RS:</dt><dd>  Router Solicitation  </dd>
+       <dt>RPL:</dt><dd> IPv6 Routing Protocol for LLNs
+       <xref target='RFC6550'/> </dd>
+       <dt>RPO:</dt><dd> A Route Projection Option; it can be a VIO or an SRVIO.    </dd>
+       <dt>RTO:</dt><dd> RPL Target Option </dd>
+       <dt>SIO:</dt><dd> RPL Sibling Information Option</dd>
+       <dt>SRVIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing Mode P-DAO messages.    </dd>
+       <dt>TIO:</dt><dd> RPL Transit Information Option</dd>
+
+       <dt>VIO:</dt><dd> A Via Information Option, used in Storing Mode P-DAO messages.    </dd>
+       </dl><t>
     </t>
-  </section>	<!-- end section "References" -->
+</section>	<!-- Glossary -->
 
 </section>	<!-- end section "Terminology" -->
 
 
-    <section anchor='ext6550'><name>Extending RFC 6550</name>
+    <section anchor='ext6550'><name>Updating RFC 6550</name>
 
-   <t>
+	<t>
    This specification introduces two new RPL Control Messages to enable a RPL
    Aware Node (RAN) to request the establisment of a path from self to a Target.
    A RAN may request the installation of a path by sending a new P-DAO Request
-   PDR) Message to the Root. The Root confirms with a new PDR-ACK message back
+   (PDR) Message to the Root. The Root confirms with a new PDR-ACK message back
    to the requester RAN with a completion status once it is done installing the
    path. See <xref target='pdaoreq'/> for more.
    </t>
 
 	<t>
-   Section 6.7 of <xref target='RFC6550'/> specifies RPL Control Message Options
-   (CMO) to be placed in RPL messages such as the Destination Advertisement
-   Object (DAO) message. The RPL Target Option (RTO) and the Transit Information
-   Option (TIO) are such options.
+   Section 6.7 of <xref target='RFC6550'/> specifies the RPL Control Message
+   Options (CMO) to be placed in RPL messages such as the Destination
+   Advertisement Object (DAO) message.
+   The RPL Target Option (RTO) and the Transit Information Option (TIO) are such
+   options.
    In Non-Storing Mode, the TIO option is used in the DAO message to indicate
    a parent within a DODAG.  The TIO applies to the RTOs that immedially preceed
    it in the message. Options may be factorized; multiple TIOs may be
@@ -305,8 +325,8 @@
    </t>
    <t>
    This specification also introduces a new CMO to enable a RAN to advertise
-   (some of) its siblings to the Root, using a new Sibling Information Option
-   (SIO) as specified in <xref target='rplsib'/>.
+   a selection of its candidate neighbors as siblings to the Root, using a new
+   Sibling Information Option (SIO) as specified in <xref target='rplsib'/>.
    </t>
 
   </section> <!-- Extending RFC 6550 -->
@@ -318,7 +338,10 @@
      routing topologies but does not have a concept of an administrative
      distance, which exists in certain proprietary implementations to sort out
      conflicts between multiple sources of routing information within one
-     routing topology. This draft conforms the Instance model as follows:
+     routing topology.
+     </t>
+     <t>
+     This draft conforms the Instance model as follows:
      </t><ul spacing='normal'>
      <li>
      If the PCE needs to influence a particular Instance to add better routes
@@ -347,14 +370,14 @@
      </li>
      </ul>
      <t>
-     A Projected Route is a serial path that may the whole path or a segment in
-     a complex Track, in which case multiple Projected Routes are installed with
-     the same tuple (Target address, TrackID) and a different segment ID.
-     A node that is present on more
-     than one segment in a Track may be able to use either of the Projected
-     Routes to forward towards the Target. The selection of the best route in a
-     Track at forwarding time is out of scope for this document.
-     <xref target='I-D.pthubert-raw-problem-statement'/> elaborates on that
+     A Projected Route is a serial path that may represent the end-to-end route or only a segment in a complex Track, in which case multiple Projected
+     Routes are installed with  the same tuple (Target address, TrackID) and a
+     different segment ID.
+     A node that is present on more than one segment in a Track may be able to
+     use either of the Projected Routes to forward towards the Target. The
+     selection of the best route in a Track at forwarding time is out of scope
+     for this document, but
+     <xref target='I-D.pthubert-raw-architecture'/> elaborates on that
      particular problem.
    </t>
    <t>All properties of a Track operations are inherited form the main instance
@@ -384,16 +407,15 @@
     </t>
 
 <figure anchor='disupdfmt'><name>New P-DAO Request Format</name>
-              <artwork>
+              <artwork align="center">
 
-        0                   1                   2                   3
-        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   TrackID     |K|R|   Flags   |  PDRLifetime  | PDRSequence   |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Option(s)...
-       +-+-+-+-+-+-+-+-+
-
+  0                   1                   2                   3
+  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   TrackID     |K|R|   Flags   |  PDRLifetime  | PDRSequence   |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |   Option(s)...
+ +-+-+-+-+-+-+-+-+
  </artwork>
 </figure>
 
@@ -433,17 +455,17 @@
     </t>
 
 <figure anchor='disackfmt'><name>New PDR-ACK Control Message Format</name>
-              <artwork>
+              <artwork align="center">
 
-      0                   1                   2                   3
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     |    TrackID    | PDR-ACK Status|     Flags     | Track Lifetime|
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     |  PDRSequence  |                Reserved                       |
-     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-     |  Option(s)...
-     +-+-+-+-+-+-+-+
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|    TrackID    | PDR-ACK Status|     Flags     | Track Lifetime|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  PDRSequence  |                Reserved                       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Option(s)...
++-+-+-+-+-+-+-+
  </artwork>
 </figure>
 
@@ -513,7 +535,7 @@
     The format of RPOs is as follows:
     </t>
 <figure anchor='viao'><name>Via Information option format</name>
-              <artwork>
+              <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -627,13 +649,21 @@
     The format of SIOs is as follows:
     </t>
 <figure anchor='siof'><name>Sibling Information Option Format</name>
-              <artwork>
+              <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |Comp.|B| Flags |    Opaque     |
+    |   Type        | Option Length |Comp.|B|D|Flags|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            Step of Rank       |       Reserved                |
+    |            Step of Rank       |        Sibling Rank           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                                                               |
+    +                                                               +
+    .                                                               .
+    .         Sibling DODAGID (if 'D' flag not set)                 .
+    .                                                               .
+    +                                                               +
+    |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
     +                                                               +
@@ -643,7 +673,6 @@
     +                                                               +
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
  </artwork>
 </figure>
 
@@ -658,13 +687,20 @@
               <xref target='RFC8138'/> that corresponds to the compression used
               for the Sibling Address.
               </dd>
-
+              <dt>Reserved for Flags:</dt><dd>MUST be set to zero by the sender
+              and MUST be ignored by the receiver.
+              </dd>
               <dt>B:</dt><dd>
               1-bit flag that is set to indicate that the connectivity to the sibling
               is bidirectional and roughly symmetrical. In that case, only one of the siblings may
               report the SIO for the hop. If 'B' is not set then the SIO only indicates connectivity
               from the sibling to this node, and does not provide information on the hop from this node
               to the sibling.
+
+              </dd>
+              <dt>D:</dt><dd>
+              1-bit flag that is set to indicate that sibling belongs to the
+              same DODAG. When not set, the Sibling DODAGID is indicated.
 
               </dd>
               <dt>Opaque:</dt><dd>MAY be used to carry information that the node
@@ -679,17 +715,21 @@
               Step of Rank <xref target='RFC6550'/> as computed by the Objective
               Function between this node and the sibling.
               </dd>
-
-              <dt>Reserved:</dt><dd>MUST be set to zero by the sender and MUST
-              be ignored by the receiver.
+              <dt>Sibling Rank:</dt><dd>16-bit unsigned integer. When non-zero,
+              this is the Rank <xref target='RFC6550'/> as exposed by the
+              sibling in DIO messages.
               </dd>
 
+
+
+              <dt>Sibling DODAGID:</dt><dd>2 to 16 bytes, the DODAGID of the
+              sibling in a <xref target='RFC8138'/> compressed form as indicated
+              by the Compression Type field. This field is present when the
+              'D' flag is not set.
+              </dd>
               <dt>Sibling Address:</dt><dd>2 to 16 bytes, the IPv6 Address of the
               sibling in a <xref target='RFC8138'/> compressed form as indicated
               by the Compression Type field.
-              <!--TBD: See how the /64 prefix can be elided if it is the same as
-              that of (all of) the Target(s). In that case, the Next-Hop Address
-              could be expressed as the 8-bytes suffix only.-->
               </dd>
             </dl>               <t>
     An SIO MAY be immediately followed by a DAG Metric Container. In that case
@@ -707,7 +747,7 @@
 
     <t>
     This draft adds a capability to RPL whereby the Root of a DODAG projects a
-    route by sending an extended DAO message called one or more Projected-DAO
+    route by sending one or more extended DAO message called Projected-DAO
     (P-DAO) messages to an
     arbitrary router in the DODAG, indicating one or more sequence(s) of routers
     inside the DODAG via which the Target(s) indicated in the RPL Target
@@ -826,20 +866,22 @@
     <t>
       When forwarding a packet to a destination for which the router determines
       that routing happens via the Target, the router inserts the source routing
-      header in the packet to reach the Target. In the case of a loose
-      source-routed path, there MUST be either a neighbor that is adjacent to the
-      loose next hop, on which case the packet s forwarded to that neighbor, or
-      a source-routed path to the loose next hop; in the latter case,
-      another encapsulation takes place and the process possibly recurses;
-      otherwise the packet is dropped.
-     </t>
-    <t>
+      header in the packet to reach the Target.
       In order to add a source-routing header, the router encapsulates the
       packet with an IP-in-IP header and a non-storing mode source routing
       header (SRH) <xref target='RFC6554'/>.
       In the uncompressed form the source of the packet would be self, the
       destination would be the first Via Address in the SRVIO, and the SRH would
-      contain the list of the remaining Via Addresses and then the Target.</t>
+      contain the list of the remaining Via Addresses and then the Target.
+    </t>
+    <t>
+      In the case of a loose source-routed path, there MUST be either a neighbor
+      that is adjacent to the
+      loose next hop, on which case the packet is forwarded to that neighbor, or
+      a source-routed path to the loose next hop; in the latter case,
+      another encapsulation takes place and the process possibly recurses;
+      otherwise the packet is dropped.
+     </t>
     <t>
       In practice, the router will normally use the <xref target='RFC8025'>
       "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
@@ -875,27 +917,26 @@
       routed packet for which the next loose hop is the Target, or a packet for
       which the router has a routing state to the final destination via the Target.
       </t>
-          <figure anchor='sdf'><name>Projecting a route</name>
-            <artwork>
-           ------+---------
-                 |          Internet
-                 |
-              +-----+
-              |     | Border Router
-              |     |  (RPL Root)
-              +-----+                      |     ^                   |
-                 |                         | DAO | ACK               |
-           o    o   o    o                 |     |                   |
-       o o   o  o   o  o  o o   o          |  ^       | Projected    .
-      o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
-      o   o    o  o     o  o    o  o  o    | ^        |              .
-     o  o   o  o   o         o   o o       v | DAO    v              .
-     o          o   LLN   o   o     o                                |
-         o o   o        o     o              Loose Source Route Path |
-      o       o      o    o                 From Root To Destination v
-
-      </artwork>
-          </figure>
+      <figure anchor='sdf'><name>Projecting a route</name>
+        <artwork>
+        ------+---------
+              |          Internet
+              |
+           +-----+
+           |     | Border Router
+           |     |  (RPL Root)
+           +-----+                      |     ^                   |
+              |                         | DAO | ACK               |
+        o    o   o    o                 |     |                   |
+    o o   o  o   o  o  o o   o          |  ^       | Projected    .
+   o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
+   o   o    o  o     o  o    o  o  o    | ^        |              .
+  o  o   o  o   o         o   o o       v | DAO    v              .
+  o          o   LLN   o   o     o                                |
+      o o   o        o     o              Loose Source Route Path |
+   o       o      o    o                 From Root To Destination v
+    </artwork>
+         </figure>
 
 
     <t>
@@ -1306,20 +1347,24 @@
 
 
 <section><name>Acknowledgments</name>
-<t>The authors wish to acknowledge JP Vasseur, James Pylakutty and
+<t>The authors wish to acknowledge JP Vasseur, Remy Liubing, James Pylakutty and
    Patrick Wetterwald for their contributions to the ideas developed here.</t>
 </section>
 
     </middle>
     <back>
 
-   <displayreference   target="I-D.pthubert-raw-problem-statement"     to="RAW-PS"/>
-   <displayreference   target="I-D.ietf-6tisch-architecture"           to="6TiSCH-ARCHI"/>
-   <displayreference   target="I-D.thubert-roll-turnon-rfc8138"        to="TURN-ON_RFC8138"/>
+   <displayreference   target="RFC6550"        to="RPL"/>
+   <displayreference   target="I-D.pthubert-raw-architecture"   to="RAW-ARCHI"/>
+   <displayreference   target="I-D.ietf-6tisch-architecture"    to="6TiSCH-ARCHI"/>
+   <displayreference   target="I-D.thubert-roll-turnon-rfc8138" to="TURN-ON_RFC8138"/>
 
     <references><name>Normative References</name>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
+	 <!--
+     <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4919.xml'/>
+     -->
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6554.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
@@ -1330,7 +1375,7 @@
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7102.xml'/>
 	   <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-6tisch-architecture.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.pthubert-raw-problem-statement.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.pthubert-raw-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.thubert-roll-turnon-rfc8138.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
