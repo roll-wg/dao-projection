@@ -320,7 +320,7 @@
    ingress node, which uses that state to encapsulate a packet with an IPv6
    Routing Header in a fashion similar to RPL Non-Storing Mode.
    Like the TIO, the RPOs MUST be preceded by exactly one RTO to which they
-   apply, and they can be factorized: multiple contiguous RPOs
+   apply, and SRVIOs can be factorized: multiple contiguous SRVIOs
    indicate alternate paths to the Target, more in <xref target='rplrpo'/>.
    </t>
    <t>
@@ -372,7 +372,7 @@
      <t>
      A Projected Route is a serial path that may represent the end-to-end route or only a segment in a complex Track, in which case multiple Projected
      Routes are installed with  the same tuple (Target address, TrackID) and a
-     different segment ID.
+     different segment ID each.
      A node that is present on more than one segment in a Track may be able to
      use either of the Projected Routes to forward towards the Target. The
      selection of the best route in a Track at forwarding time is out of scope
@@ -528,20 +528,21 @@
     field of DIO messages as Compression Reference.
     </t><t>
     An RPO indicates a Projected Route that can be a serial Track in full or
-    a segment of a more complex Track. In the latter case, multiple RPO
-    may be placed after a same Target Option. The Track is identified by a
+    a segment of a more complex Track. In Non-Storing Mode, multiple RPO
+    may be placed after a same Target Option to reflect different segments
+    originated at this node. The Track is identified by a
     TrackID that is a Local RPLInstanceID to the Target of the Track.
     </t><t>
     The format of RPOs is as follows:
     </t>
-<figure anchor='viao'><name>Via Information option format</name>
+<figure anchor='viao'><name>Via Information option format (uncompressed form)</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |Comp.|  Flags  |    TrackID    |
+    |   Type        | Option Length |C|   Flags     |   Reserved    |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    | Track Sequence| Track Lifetime|   SegmentID   |Segm. Sequence |
+    |   TrackID     |   SegmentID   |Segm. Sequence | Seg. Lifetime |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
     +                                                               +
@@ -574,10 +575,10 @@
               <dt>Option Length:</dt><dd>In bytes; variable, depending on the number
               of Via Addresses.</dd>
 
-              <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
-              SRH-6LoRH Type as defined in figure 7 in section 5.1 of
-              <xref target='RFC8138'/> that corresponds to the compression used
-              for all the Via Addresses.
+              <dt>C:</dt><dd>1-bit flag. Set to indicate that the following
+              Via Addresses are expressed as one or more SRH-6LoRH as defined in section 5.1 of <xref target='RFC8138'/>. <xref target='viao'/>
+              illustrates the case where the "C" flag is not set, meaning that
+              the Via Addresses are expressed in full 128 bits.
               </dd>
 
               <dt>TrackID:</dt><dd>8-bit field indicating the topology Instance
@@ -627,13 +628,14 @@
               change the segment and MUST be propagated or answered as the first
               copy.</dd>
 
-              <dt>Via Address:</dt><dd>2 to 16 bytes, a compressed IPv6 Address.
-              A Via Address indicates the next hop within the path towards the
-              destination(s) that is indicated in the Target option that
-              immediately precede the RPO in the DAO message. Via Addresses are
-              indicated in the order of the path from the ingress to the egress
-              nodes. All Via addresses are expressed in the same size as
-              indicated by the Compression Type.
+              <dt>Via Address:</dt><dd> The collection of Via Addresses along
+              one segment, indicated in the order of the path from the ingress
+              to the egress nodes. If the "C" flag is set,
+              the fields Via Address 1 .. Via Address n in <xref target='viao'/>
+              are replaced by one or more of the headers illustrated in Fig. 6
+              of <xref target='RFC8138'/>. More than one SRH-6LoRH is needed if
+              the compression of the addresses change inside the segment and
+              different SRH-6LoRH Types are used.
               </dd>
             </dl>
                <t>
