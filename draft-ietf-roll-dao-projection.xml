@@ -75,14 +75,14 @@
      This document enables a RPL Root to install and maintain Projected Routes
      within its DODAG, along a selected set of nodes that may or may
      not include self, for a chosen duration. This potentially enables routes
-     that are more optimized or resilient than those obtained with the
-     classical distributed operation of RPL, either in terms of the size of a
-     source-route header or in terms of path length, which impacts both the
-     latency and the packet delivery ratio.
-     Projected Routes may be installed in either Storing and Non-Storing Modes
-     Instances of the classical RPL operation, resulting in potentially hybrid
-     situations where the mode of some Projected Routes is different from that
-     of the other routes in the RPL Instance.
+    that are more optimized or resilient than those obtained with the
+    classical distributed operation of RPL, either in terms of the size of a
+    source-route header or in terms of path length, which impacts both the
+    latency and the packet delivery ratio.
+    Projected Routes may be installed in either Storing and Non-Storing Modes
+    Instances of the classical RPL operation, resulting in potentially hybrid
+    situations where the mode of some Projected Routes is different from that
+    of the other routes in the RPL Instance.
 	  </t>
 	</abstract>
     </front>
@@ -97,98 +97,111 @@
 
 	   <t> RPL, the <xref target='RFC6550'>
 	 "Routing Protocol for Low Power and Lossy Networks"</xref> (LLNs),
-     is a generic Distance Vector protocol that is well suited
-     for application in a variety of low energy Internet of Things (IoT)
-     networks.
-     RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
-     the Root often acts as the Border Router to connect the RPL domain to the
-     Internet. The Root is responsible to select the RPL Instance that is used
-     to forward a packet coming from the Internet into the RPL domain and set
-     the related RPL information in the packets.
+    is a generic Distance Vector protocol that is well suited
+    for application in a variety of low energy Internet of Things (IoT)
+    networks.
+    RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
+    the Root often acts as the Border Router to connect the RPL domain to the
+    Internet. The Root is responsible to select the RPL Instance that is used
+    to forward a packet coming from the Internet into the RPL domain and set
+    the related RPL information in the packets.
 	 </t>
-     <t>
-     The  <xref target='I-D.ietf-6tisch-architecture'>
-     "6TiSCH architecture"</xref> leverages RPL for its routing operations and
-     considers the <xref target='RFC8655'>
-     Deterministic Networking Architecture</xref> as one possible model
-     whereby the device resources and capabilities are exposed to an external
-     controller which installs routing states into the network based on some
-     objective functions that reside in that external entity.  With DetNet and
-     6TiSCH, the component of the controller that is responsible of computing
-     routes is called a Path Computation Element (<xref target='PCE'/>).
-     </t>
-     <t>
-     Based on heuristics of usage, path length, and knowledge of device capacity
-     and available resources such as battery levels and reservable buffers, a
-     PCE with a global visibility on the system can compute P2P routes that are
-     more optimized
-     for the current needs as expressed by the objective function.
-     This draft proposes a protocol extension to RPL that enables the Root to
-     install a limited amount of centrally-computed routes in a RPL graph, on
-     behalf of a PCE that may be collocated or separated from the Root.
-     Those extensions enable loose source routing down in RPL Non-Storing Mode
-     and transversal routes inside the DODAG regardless of the RPL Mode of
-     Operation (MOP).
+    <t>
+    The  <xref target='I-D.ietf-6tisch-architecture'>
+    "6TiSCH architecture"</xref> leverages RPL for its routing operations and
+    considers the <xref target='RFC8655'>
+    Deterministic Networking Architecture</xref> as one possible model
+    whereby the device resources and capabilities are exposed to an external
+    controller which installs routing states into the network based on some
+    objective functions that reside in that external entity.  With DetNet and
+    6TiSCH, the component of the controller that is responsible of computing
+    routes is called a Path Computation Element (<xref target='PCE'/>).
+    </t>
+    <t>
+    Based on heuristics of usage, path length, and knowledge of device capacity
+    and available resources such as battery levels and reservable buffers, a
+    PCE with a global visibility on the system can compute P2P routes that are
+    more optimized
+    for the current needs as expressed by the objective function.
+    </t>
+    <t>
+    This draft proposes protocol extensions to RPL that enable the Root to
+    install a limited amount of centrally-computed routes in a RPL graph, on
+    behalf of a PCE that may be collocated or separated from the Root.
+    Those extensions enable loose source routing down in RPL Non-Storing Mode
+    and transversal routes inside the DODAG regardless of the RPL Mode of
+    Operation (MOP).
 	 </t>
-     <t>
-     The 6TiSCH architecture also introduces the concept of a Track that is a
-     complex path with possibly redundant forwarding solutions along the way,
-     exploiting Packet ARQ, Replication, Elimination, and Overhearing (PAREO)
-     functions. The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
-     Available Wireless (RAW) Architecture/Framework"</xref> separates the time
-     scale at which the PCE computes the Track (slow, globally optimized, with
-     statistical metrics) and the time scale at which the forwarding decision is
-     made for a packet or a small collection of packets (fast, at the scale of
-     the Track), to leverage the PAREO functions dynamically and provide the
-     required reliability and availability while conserving energy and spectrum.
+    <t>
+    As opposed to the classical RPL operations where routes are injected by the
+    Target nodes, the protocol extensions enable the Root of a DODAG to project
+    the routes that are needed onto the nodes where they should be installed.
+    This specification uses the term Projected Route to refer to those routes.
+    A Projected Route may be a stand-alone end-to-end path to a Target or a
+    segment in a more complex structure called a Track.
+    <!--
+    Possibly with the assistance of an external PCE that could have a better
+    visibility on the larger system, the Root computes optimized and redundant
+    paths and uses this draft to install the corresponding Projected Routes.
+    -->
+    </t>
+    <t>
+    The concept of a Track was introduced in the 6TiSCH architecture, as a
+    complex path with redundant forwarding solutions along the way.
+    The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
+    Available Wireless (RAW) Architecture/Framework"</xref> extends the
+    the forward plane to leverage that redundancy with the Packet ARQ,
+    Replication, Elimination, and Overhearing (PAREO) functions.
+    </t>
+    <t>
+    To that effect, RAW defines the Path Selection Engine (PSE) that is
+    the counter-part of the PCE to perform rapid local adjustments of the
+    forwarding tables within the path diversity that the PCE has selected for
+    the Track.
+    </t>
+    <t>
+    RAW differentiates the time scale at which the PCE computes the Track (slow,
+    globally optimized, based on statistical metrics) and the time scale at
+    which the PSE makes the forwarding decision for a packet or a small
+    collection of packets (fast, but with a scope limited to the Track). This
+    provides a dynamic balance between the reliability and availability
+    requirements of the flows and the need to conserve energy  and spectrum.
 	 </t>
-     <t>
-     As opposed to the classical RPL operations where routes are injected by the
-     Target nodes, the protocol extension enables the Root of a DODAG to project
-     the routes that are needed onto the nodes where they should be installed.
-     This specification uses the term Projected Route to refer to those routes.
-     A Projected Route may be a stand-alone end-to-end path to a Target or a
-     segment in a more complex Track.
-     <!--
-     Possibly with the assistance of an external PCE that could have a better
-     visibility on the larger system, the Root computes optimized and redundant
-     paths and uses this draft to install the corresponding Projected Routes.
-     -->
-    </t><t>
-
-     Projected Routes must be used with the parsimony to limit the amount of
-     state that is installed in each device to fit within its resources, and to
-     limit the amount of rerouted traffic to fit within the capabilities of the
-     transmission links. The method to learn the node capabilities and the
-     resources that are available in the devices and in the network are out of
-     scope for this document.
-    </t><t>
-     In RPL Non-Storing Mode, the Root has enough information to build a basic
-     DODAG topology. This document adds the capability for nodes to advertise
-     sibling information in order to improve the topological awareness of the
-     Root. This specification uses the RPL Root as a proxy to the PCE.
-     The algorithm to compute the paths and the protocol used by an external PCE
-     to obtain the topology of the network from the Root are out of scope for
-     this document.
+    <t>
+    Projected Routes must be used with the parsimony to limit the amount of
+    state that is installed in each device to fit within its resources, and to
+    limit the amount of rerouted traffic to fit within the capabilities of the
+    transmission links. The methods used to learn the node capabilities and the
+    resources that are available in the devices and in the network are out of
+    scope for this document.
+    </t>
+    <t>
+    This specifcation expects that a base RPL Instance is operated in RPL Non-Storing Mode to sustain the exchanges with the Root. In that Mode, the
+    Root has enough information to build a basic DODAG topology based on parents and children, but lacks the knowledge of siblings. This document adds the capability for nodes to advertise
+    sibling information in order to improve the topological awareness of the
+    Root. This specification uses the RPL Root as a proxy to the PCE.
+    The algorithm to compute the paths and the protocol used by an external PCE
+    to obtain the topology of the network from the Root are out of scope for
+    this document.
 	  </t>
-     <!--
+    <!--
     <t>
-     It is envisaged that the computation could use the ratio
-     between the optimal path (existing path not traversing the Root, and the
-     current path), the application service level agreement (SLA) for specific
-     flows that could benefit from shorter paths, the energy wasted in the
-     network, local congestion on various links that would benefit from having
-     flows routed along alternate paths.
+    It is envisaged that the computation could use the ratio
+    between the optimal path (existing path not traversing the Root, and the
+    current path), the application service level agreement (SLA) for specific
+    flows that could benefit from shorter paths, the energy wasted in the
+    network, local congestion on various links that would benefit from having
+    flows routed along alternate paths.
     </t>
     <t>
-     In particular, the draft expects that the Root has enough information about
-     the capability
-     for each node to store a number of routes, which can be discovered for
-     Instance using a Network Management System (NMS) and/or the RPL routing
-     extensions specified in
-      <xref target="RFC6551">"Routing Metrics Used for Path Calculation in LLNs"</xref>.
+    In particular, the draft expects that the Root has enough information about
+    the capability
+    for each node to store a number of routes, which can be discovered for
+    Instance using a Network Management System (NMS) and/or the RPL routing
+    extensions specified in
+    <xref target="RFC6551">"Routing Metrics Used for Path Calculation in LLNs"</xref>.
     </t>
-     -->
+    -->
     </section>
 
 	<!-- **************************************************************** -->
@@ -212,22 +225,8 @@
   <section anchor='lo'><name>References</name>
     <t>
 	In this document, readers will encounter terms and concepts
-	that are discussed in the following documents:
-	</t><ul spacing='compact'>
-<!--  CEP: There aren't any terms from RFC 3972.  Concepts, O.K.   -->
-	<li>
-    <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"
-		</xref>, and </li>
-	<li>
-    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"
-        <!--
-		</xref> , and </li>
-    	<li><xref target='RFC4919'>"IPv6 over Low-Power Wireless Personal Area Networks (6LoWPANs): Overview, Assumptions, Problem Statement, and Goals "
-        <-->
-
-        </xref>.</li>
-
-	</ul><t>
+	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref> and
+    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
     </t>
   </section>	<!-- end section "References" -->
 
@@ -239,8 +238,8 @@
     </t><dl spacing='compact'>
 
     <dt>Projected Route:</dt><dd>
-	A Projected Route is a serial path that is computed and installed remotely
-    by a RPL Root.</dd>
+	A Projected Route is a serial path or path segment that is computed,
+    installed and maintained remotely by a RPL Root.</dd>
     <dt>Track:</dt><dd>
     The term Track is used in this document to refer to a complex path,
     e.g., a DODAG, that incorporates redundant Projected Routes towards a
@@ -460,9 +459,9 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|    TrackID    | PDR-ACK Status|     Flags     | Track Lifetime|
+|    TrackID    |     Flags     | Track Lifetime|  PDRSequence  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|  PDRSequence  |                Reserved                       |
+| PDR-ACK Status|                Reserved                       |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |  Option(s)...
 +-+-+-+-+-+-+-+
@@ -473,11 +472,6 @@
               <dt>TrackID:</dt><dd>
              The RPLInstanceID of the Track that was created. Set to 0 when no
              Track is created.
-              </dd>
-              <dt>PDR-ACK Status:</dt><dd>
-             Indicates the completion.  Substructured as indicated in
-              <xref target='rpst'/>.
-
               </dd>
 
               <dt>Track Lifetime:</dt><dd>
@@ -490,6 +484,11 @@
               </dd>
 
 
+              <dt>PDR-ACK Status:</dt><dd>
+             Indicates the completion.  Substructured as indicated in
+              <xref target='rpst'/>.
+
+              </dd>
             </dl>
 <t>
     The PDR-ACK Status is further substructured as follows:
