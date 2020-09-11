@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-11" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-12" >
 
 <front>
 
@@ -138,7 +138,7 @@
     the routes that are needed onto the nodes where they should be installed.
     This specification uses the term Projected Route to refer to those routes.
     A Projected Route may be a stand-alone end-to-end path to a Target or a
-    segment in a more complex forwarding graph called a Track.
+    Segment in a more complex forwarding graph called a Track.
     <!--
     Possibly with the assistance of an external PCE that could have a better
     visibility on the larger system, the Root computes optimized and redundant
@@ -148,8 +148,8 @@
     <t>
     The concept of a Track was introduced in the 6TiSCH architecture, as a
     complex path with redundant forwarding solutions along the way.
-    A node that is present on more than one segment in a Track may be able to
-    use either of the Track segments to forward a packet towards the Target.
+    A node that is present on more than one Segment in a Track may be able to
+    use either of the Track Segments to forward a packet towards the Target.
     </t>
     <t>
 
@@ -269,7 +269,7 @@
     </t><dl spacing='compact'>
 
     <dt>Projected Route:</dt><dd>
-	A Projected Route is a serial path or path segment that is computed,
+	A Projected Route is a serial path or path Segment that is computed,
     installed and maintained remotely by a RPL Root.</dd>
     <dt>Track:</dt><dd>
     The term Track is used in this document to refer to a complex path,
@@ -376,9 +376,9 @@
      </li>
      </ul>
      <t>
-     A Projected Route is a serial path that may represent the end-to-end route or only a segment in a complex Track, in which case multiple Projected
+     A Projected Route is a serial path that may represent the end-to-end route or only a Segment in a complex Track, in which case multiple Projected
      Routes are installed with  the same tuple (Target address, TrackID) and a
-     different segment ID each.
+     different Segment ID each.
      </t>
 
     <t>
@@ -399,7 +399,7 @@
                <t>
     The P-DAO Request (PDR) message is sent to the Root to request a new that
     the PCE establishes a new a projected route as a full path of a collection
-    of segments in a Track. Exactly one Target Options MUST be present.
+    of Segments in a Track. Exactly one Target Options MUST be present.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
     information on the requested path.
@@ -535,8 +535,8 @@
     field of DIO messages as Compression Reference.
     </t><t>
     An RPO indicates a Projected Route that can be a serial Track in full or
-    a segment of a more complex Track. In Non-Storing Mode, multiple RPO
-    may be placed after a same Target Option to reflect different segments
+    a Segment of a more complex Track. In Non-Storing Mode, multiple RPO
+    may be placed after a same Target Option to reflect different Segments
     originated at this node. The Track is identified by a
     TrackID that is a Local RPLInstanceID to the Target of the Track.
     </t><t>
@@ -593,22 +593,31 @@
                forms a unique ID of the Track in the RPL domain.
               </dd>
 
-              <dt>Track Sequence:</dt><dd>8-bit unsigned integer.
-              The Track Sequence obeys the operation in section 7.2 of
-              <xref target='RFC6550'/> and the lollipop starts at 255.
-              The Track Sequence is set by the Root and incremented
-              each time the Root refreshes that Track globally.
-              A Track Sequence that is fresher than the current on deprecates
-              any state for the Track. A Track Sequence that is current adds to
-              any state that was learned for that Track Sequence. A RTO with
-              a Track Sequence that is not as fresh as the current one is
-              ignored.</dd>
+
+              <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
+               within a Track. A Value of 0 is used to signal a serial Track.
+              </dd>
+
+              <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
+              The Segment Sequence obeys the operation in section 7.2 of
+              <xref target='RFC6550'/> and the lollipop starts at 255. When the
+              Root of the DODAG needs to update a single Segment in a Track,
+              but does not need to modify the rest of the Track, it
+              increments the Segment Sequence but not the Track Sequence.
+              The Segment information indicated in the RTO deprecates any state
+              for the Segment indicated by the SegmentID within the indicated
+              Track and sets up the new information. A RTO with a Segment
+              Sequence that is not as fresh as the current one is ignored.
+              a RTO for a given target with the same (TrackID, Track Sequence,
+              SegmentID, Segment Sequence) indicates a retry; it MUST NOT
+              change the Segment and MUST be propagated or answered as the first
+              copy.</dd>
 
 
-              <dt>Track Lifetime:</dt><dd>8-bit unsigned integer. The length
+              <dt>Segment Lifetime:</dt><dd>8-bit unsigned integer. The length
               of time in Lifetime Units (obtained from the Configuration
-              option) that the Track is usable. The
-              period starts when a new Track Sequence is seen. A value of 255
+              option) that the Segment is usable. The
+              period starts when a new Segment Sequence is seen. A value of 255
               (0xFF) represents infinity. A value of zero (0x00)
               indicates a loss of reachability. A DAO message that
               contains a Via Information option with a Path Lifetime of
@@ -616,32 +625,13 @@
               this document.</dd>
 
 
-              <dt>SegmentID:</dt><dd>8-bit field that identifies a segment
-               within a Track. A Value of 0 is used to signal a serial Track.
-              </dd>
-
-              <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
-              The Segment Sequence obeys the operation in section 7.2 of
-              <xref target='RFC6550'/> and the lollipop starts at 255. When the
-              Root of the DODAG needs to update a single segment in a Track,
-              but does not need to modify the rest of the Track, it
-              increments the Segment Sequence but not the Track Sequence.
-              The segment information indicated in the RTO deprecates any state
-              for the segment indicated by the SegmentID within the indicated
-              Track and sets up the new information. A RTO with a Segment
-              Sequence that is not as fresh as the current one is ignored.
-              a RTO for a given target with the same (TrackID, Track Sequence,
-              SegmentID, Segment Sequence) indicates a retry; it MUST NOT
-              change the segment and MUST be propagated or answered as the first
-              copy.</dd>
-
               <dt>Via Address:</dt><dd> The collection of Via Addresses along
-              one segment, indicated in the order of the path from the ingress
+              one Segment, indicated in the order of the path from the ingress
               to the egress nodes. If the "C" flag is set,
               the fields Via Address 1 .. Via Address n in <xref target='viao'/>
               are replaced by one or more of the headers illustrated in Fig. 6
               of <xref target='RFC8138'/>. More than one SRH-6LoRH is needed if
-              the compression of the addresses change inside the segment and
+              the compression of the addresses change inside the Segment and
               different SRH-6LoRH Types are used.
               </dd>
             </dl>
@@ -920,8 +910,8 @@
       <t>
       As illustrated in <xref target='sdf'/>, the Storing Mode route projection
       is used by the Root to install a routing state towards a Target in the
-      routers along a segment between an ingress and an egress router;
-      this enables the routers to forward along that segment any packet for
+      routers along a Segment between an ingress and an egress router;
+      this enables the routers to forward along that Segment any packet for
       which the next loose hop is the said Target, for Instance a loose source
       routed packet for which the next loose hop is the Target, or a packet for
       which the router has a routing state to the final destination via the Target.
@@ -949,23 +939,23 @@
 
 
     <t>
-     In order to install the relevant routing state along the segment between an
+     In order to install the relevant routing state along the Segment between an
      ingress and an egress routers,
      the Root sends a unicast P-DAO message to the egress router of the routing
-     segment that must be installed. The P-DAO message contains the ordered list
-     of hops along the segment as a direct sequence of Via Information options
+     Segment that must be installed. The P-DAO message contains the ordered list
+     of hops along the Segment as a direct sequence of Via Information options
      that are preceded by one or more RPL Target options to which they relate.
      Each Via Information option contains a Path Lifetime for which the state is
      to be maintained.
      </t><t>
-     The Root sends the P-DAO directly to the egress node of the segment.
+     The Root sends the P-DAO directly to the egress node of the Segment.
      In that P-DAO, the destination IP address matches the Via Address in the
      last VIO. This is how the egress recognizes its role. In a similar fashion,
      the ingress node recognizes its role as it matches Via Address in the first
      VIO.
      </t><t>
 
-     The egress node of the segment is the only node in the path that does not
+     The egress node of the Segment is the only node in the path that does not
      install a route in response to the P-DAO; it is expected to be already able
      to route to the Target(s) on its own. It may either be the Target, or may
      have some existing information to reach the Target(s), such as a connected
@@ -976,7 +966,7 @@
      (suggested status 10 to be confirmed by IANA).
     </t><t>
      If the egress node can reach all the Targets, then it forwards the P-DAO
-     with unchanged content to its loose predecessor in the segment as indicated
+     with unchanged content to its loose predecessor in the Segment as indicated
      in the list of Via Information options, and recursively the message is propagated
      unchanged along the sequence of routers indicated in the P-DAO, but in the
      reverse order, from egress to ingress.
@@ -999,7 +989,7 @@
 
     </t><t>
      The process recurses till the P-DAO is propagated to ingress router of
-     the segment, which answers with a DAO-ACK to the Root.
+     the Segment, which answers with a DAO-ACK to the Root.
      </t>
      <t>Also, the path indicated in a P-DAO may be loose, in which case the
      reachability to the next hop has to be asserted. Each router along the
@@ -1630,10 +1620,10 @@
 
     <t>
      With this draft, the Root can install a storing mode routing states along a
-     segment that is either from itself to the destination, or from one or more
+     Segment that is either from itself to the destination, or from one or more
      common parents for a particular source/destination pair towards that
      destination (in this particular
-     example, this would be the segment made of nodes 22, 32, 42).
+     example, this would be the Segment made of nodes 22, 32, 42).
     </t><!--t>
      If the predecessor can route to the successor node, then it installs a
      route to the Targets via the successor. If that route is not connected then
@@ -1645,15 +1635,15 @@
     <t> In the example below, say that there is a lot of traffic to nodes 55 and
     56 and the Root decides to reduce the size of routing headers to those
     destinations. The Root can first send a DAO to node 45 indicating Target 55
-    and a Via segment (35, 45), as well as another DAO to node 46 indicating
-    Target 56 and a Via segment (35, 46). This will save one entry in the
+    and a Via Segment (35, 45), as well as another DAO to node 46 indicating
+    Target 56 and a Via Segment (35, 46). This will save one entry in the
     routing header on both sides. The Root may then send a DAO to node 35
-    indicating Targets 55 and 56 a Via segment (13, 24, 35) to fully optimize
+    indicating Targets 55 and 56 a Via Segment (13, 24, 35) to fully optimize
     that path.</t>
     <t>
     Alternatively, the Root may send a DAO to node 45 indicating Target 55
-    and a Via segment (13, 24, 35, 45) and then a DAO to node 46 indicating
-    Target 56 and a Via segment (13, 24, 35, 46), indicating the same DAO
+    and a Via Segment (13, 24, 35, 45) and then a DAO to node 46 indicating
+    Target 56 and a Via Segment (13, 24, 35, 46), indicating the same DAO
     Sequence.
     </t>
     <!--
@@ -1668,7 +1658,7 @@
     </t><t>
     In this case the Root send the new DAO message to node 35 (well known node
     for its compute and storing capabilities) with the routing header to node
-    56 (segment 35 - 46).
+    56 (Segment 35 - 46).
 
     </t><t>
     When 35 receives from its child a packet to node 56, it adds the routing
@@ -1697,7 +1687,7 @@
    </t><t>
    The Root sends a P-DAO with a Target option indicating the destination D and
    a sequence Via Information option, one for S, which is the ingress router of
-   the segment, one for A and then for B, which are an intermediate routers, and
+   the Segment, one for A and then for B, which are an intermediate routers, and
    one for C, which is the egress router.
    </t>
        <figure anchor='pdao2'><name>P-DAO from Root</name>
@@ -1726,7 +1716,7 @@
    B checks that it can reach C and of so, installs a route towards D via C.
    Then it propagates the P-DAO to A.
    </t><t>
-   The process recurses till the P-DAO reaches S, the ingress of the segment,
+   The process recurses till the P-DAO reaches S, the ingress of the Segment,
    which installs a route to D via A and sends a DAO-ACK to the Root.
     </t>
 
