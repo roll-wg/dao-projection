@@ -6,9 +6,9 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Updates: 6550 (if approved)                                  R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: March 8, 2021                                       M. Gillmore
+Expires: March 15, 2021                                      M. Gillmore
                                                                    Itron
-                                                       September 4, 2020
+                                                      September 11, 2020
 
 
                   Root initiated routing state in RPL
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 8, 2021.
+   This Internet-Draft will expire on March 15, 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires March 8, 2021                 [Page 1]
+Thubert, et al.          Expires March 15, 2021                 [Page 1]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -70,16 +70,16 @@ Internet-Draft               DAO Projection               September 2020
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.1.  BCP 14  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     2.1.  Requirements Language . . . . . . . . . . . . . . . . . .   5
      2.2.  References  . . . . . . . . . . . . . . . . . . . . . . .   5
-     2.3.  Other Terms . . . . . . . . . . . . . . . . . . . . . . .   5
-     2.4.  Glossary  . . . . . . . . . . . . . . . . . . . . . . . .   5
+     2.3.  Glossary  . . . . . . . . . . . . . . . . . . . . . . . .   5
+     2.4.  Other Terms . . . . . . . . . . . . . . . . . . . . . . .   6
    3.  Updating RFC 6550 . . . . . . . . . . . . . . . . . . . . . .   6
-   4.  Identifying a Path  . . . . . . . . . . . . . . . . . . . . .   6
-   5.  New RPL Control Messages and Options  . . . . . . . . . . . .   7
+   4.  Identifying a Path  . . . . . . . . . . . . . . . . . . . . .   7
+   5.  New RPL Control Messages and Options  . . . . . . . . . . . .   8
      5.1.  New P-DAO Request Control Message . . . . . . . . . . . .   8
-     5.2.  New PDR-ACK Control Message . . . . . . . . . . . . . . .   8
+     5.2.  New PDR-ACK Control Message . . . . . . . . . . . . . . .   9
      5.3.  Route Projection Options  . . . . . . . . . . . . . . . .  10
      5.4.  Sibling Information Option  . . . . . . . . . . . . . . .  12
    6.  Projected DAO . . . . . . . . . . . . . . . . . . . . . . . .  14
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.           Expires March 8, 2021                 [Page 2]
+Thubert, et al.          Expires March 15, 2021                 [Page 2]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -130,11 +130,11 @@ Internet-Draft               DAO Projection               September 2020
    the RPL domain to the Internet.  The Root is responsible to select
    the RPL Instance that is used to forward a packet coming from the
    Internet into the RPL domain and set the related RPL information in
-   the packets.
+   the packets.  The "6TiSCH Architecture" [6TiSCH-ARCHI] uses RPL for
+   its routing operations.
 
-   The "6TiSCH architecture" [6TiSCH-ARCHI] leverages RPL for its
-   routing operations and considers the Deterministic Networking
-   Architecture [RFC8655] as one possible model whereby the device
+   The 6TiSCH Architecture also leverages the "Deterministic Networking
+   Architecture" [RFC8655] centralized model whereby the device
    resources and capabilities are exposed to an external controller
    which installs routing states into the network based on some
    objective functions that reside in that external entity.  With DetNet
@@ -160,27 +160,33 @@ Internet-Draft               DAO Projection               September 2020
    should be installed.  This specification uses the term Projected
    Route to refer to those routes.  A Projected Route may be a stand-
    alone end-to-end path to a Target or a segment in a more complex
-   structure called a Track.
+   forwarding graph called a Track.
 
 
 
 
-Thubert, et al.           Expires March 8, 2021                 [Page 3]
+Thubert, et al.          Expires March 15, 2021                 [Page 3]
 
 Internet-Draft               DAO Projection               September 2020
 
 
    The concept of a Track was introduced in the 6TiSCH architecture, as
-   a complex path with redundant forwarding solutions along the way.
+   a complex path with redundant forwarding solutions along the way.  A
+   node that is present on more than one segment in a Track may be able
+   to use either of the Track segments to forward a packet towards the
+   Target.
+
    The "Reliable and Available Wireless (RAW) Architecture/Framework"
    [RAW-ARCHI] extends the the forward plane to leverage that redundancy
    with the Packet ARQ, Replication, Elimination, and Overhearing
    (PAREO) functions.
 
-   To that effect, RAW defines the Path Selection Engine (PSE) that is
-   the counter-part of the PCE to perform rapid local adjustments of the
-   forwarding tables within the path diversity that the PCE has selected
-   for the Track.
+   The RAW Architecture also discusses the dynamic selection of the best
+   path for a packet within a Track at forwarding time.  To that effect,
+   it defines the Path Selection Engine (PSE), which is the counter-part
+   of the PCE to perform rapid local adjustments of the forwarding
+   tables within the path diversity that the PCE has selected for the
+   Track.
 
    RAW differentiates the time scale at which the PCE computes the Track
    (slow, globally optimized, based on statistical metrics) and the time
@@ -191,26 +197,38 @@ Internet-Draft               DAO Projection               September 2020
    energy and spectrum.
 
    Projected Routes must be used with the parsimony to limit the amount
-   of state that is installed in each device to fit within its
-   resources, and to limit the amount of rerouted traffic to fit within
-   the capabilities of the transmission links.  The methods used to
-   learn the node capabilities and the resources that are available in
-   the devices and in the network are out of scope for this document.
+   of state that is installed in each device to fit within the device
+   resources, and to maintain the amount of rerouted traffic within the
+   capabilities of the transmission links.  The methods used to learn
+   the node capabilities and the resources that are available in the
+   devices and in the network are out of scope for this document.
 
-   This specifcation expects that a base RPL Instance is operated in RPL
-   Non-Storing Mode to sustain the exchanges with the Root.  In that
+   This specification expects that a base RPL Instance is operated in
+   RPL Non-Storing Mode to sustain the exchanges with the Root.  In that
    Mode, the Root has enough information to build a basic DODAG topology
    based on parents and children, but lacks the knowledge of siblings.
    This document adds the capability for nodes to advertise sibling
    information in order to improve the topological awareness of the
-   Root.  This specification uses the RPL Root as a proxy to the PCE.
-   The algorithm to compute the paths and the protocol used by an
-   external PCE to obtain the topology of the network from the Root are
-   out of scope for this document.
+   Root.
+
+   This specification uses the RPL Root as a proxy to the PCE.  The PCE
+   may be collocated with the Root, or may reside in an external
+   Controller.  In that case, the PCE exchanges control messages with
+   the Root over a Southbound API, that is out of scope for this
+   specification.  The algorithm to compute the paths and the protocol
+   used by an external PCE to obtain the topology of the network from
+   the Root are also out of scope.
+
+
+
+Thubert, et al.          Expires March 15, 2021                 [Page 4]
+
+Internet-Draft               DAO Projection               September 2020
+
 
 2.  Terminology
 
-2.1.  BCP 14
+2.1.  Requirements Language
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -218,30 +236,13 @@ Internet-Draft               DAO Projection               September 2020
    14 [RFC2119][RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-
-
-
-Thubert, et al.           Expires March 8, 2021                 [Page 4]
-
-Internet-Draft               DAO Projection               September 2020
-
-
 2.2.  References
 
    In this document, readers will encounter terms and concepts that are
    discussed in the "Routing Protocol for Low Power and Lossy Networks"
    [RPL] and "Terminology in Low power And Lossy Networks" [RFC7102].
 
-2.3.  Other Terms
-
-
-   Projected Route:  A Projected Route is a serial path or path segment
-      that is computed, installed and maintained remotely by a RPL Root.
-   Track:  The term Track is used in this document to refer to a complex
-      path, e.g., a DODAG, that incorporates redundant Projected Routes
-      towards a destination using diversity to increase the reliability.
-
-2.4.  Glossary
+2.3.  Glossary
 
    This document often uses the following acronyms:
 
@@ -250,7 +251,6 @@ Internet-Draft               DAO Projection               September 2020
    6LN:  6LoWPAN Node
    6LR:  6LoWPAN Router
    CMO:  Control Message Option
-   DAD:  Duplicate Address Detection
    DAO:  Destination Advertisement Object
    DODAG:  Destination-Oriented Directed Acyclic Graph
    LLN:  Low-Power and Lossy Network
@@ -277,20 +277,27 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                 [Page 5]
+Thubert, et al.          Expires March 15, 2021                 [Page 5]
 
 Internet-Draft               DAO Projection               September 2020
 
 
+2.4.  Other Terms
+
+
+   Projected Route:  A Projected Route is a serial path or path segment
+      that is computed, installed and maintained remotely by a RPL Root.
+   Track:  The term Track is used in this document to refer to a complex
+      path, e.g., a DODAG, that incorporates redundant Projected Routes
+      towards a destination using diversity to increase the reliability.
+
 3.  Updating RFC 6550
 
    This specification introduces two new RPL Control Messages to enable
-   a RPL Aware Node (RAN) to request the establisment of a path from
-   self to a Target.  A RAN may request the installation of a path by
-   sending a new P-DAO Request (PDR) Message to the Root.  The Root
-   confirms with a new PDR-ACK message back to the requester RAN with a
-   completion status once it is done installing the path.  See
-   Section 5.1 for more.
+   a RPL Aware Node (RAN) to request the establisment of a Track from
+   self to a Target.  The RAN makes its request by sending a new P-DAO
+   Request (PDR) Message to the Root.  The Root confirms with a new PDR-
+   ACK message back to the requester RAN, see Section 5.1 for more.
 
    Section 6.7 of [RPL] specifies the RPL Control Message Options (CMO)
    to be placed in RPL messages such as the Destination Advertisement
@@ -298,11 +305,12 @@ Internet-Draft               DAO Projection               September 2020
    Information Option (TIO) are such options.
 
    In Non-Storing Mode, the TIO option is used in the DAO message to
-   indicate a parent within a DODAG.  The TIO applies to the RTOs that
-   immedially preceed it in the message.  Options may be factorized;
-   multiple TIOs may be present to indicate multiple routes to the one
-   or more contiguous addresses indicated in the RTOs that immediately
-   precede the TIOs in the RPL message.
+   inform the root of the parent-child relationships within the DODAG,
+   and the Root has a full knowledge of the DODAG structure.  The TIO
+   applies to the RTOs that preceed it immediately in the message.
+   Options may be factorized; multiple TIOs may be present to indicate
+   multiple routes to the one or more contiguous addresses indicated in
+   the RTOs that immediately precede the TIOs in the RPL message.
 
    This specification introduces two new CMOs referred to as Route
    Projection Options (RPO) to install Projected Routes.  One RPO is the
@@ -314,13 +322,21 @@ Internet-Draft               DAO Projection               September 2020
    fashion similar to RPL Non-Storing Mode.
 
    Like the TIO, the RPOs MUST be preceded by exactly one RTO to which
-   they apply, and SRVIOs can be factorized: multiple contiguous SRVIOs
-   indicate alternate paths to the Target, more in Section 5.3.
+   they apply, and SRVIOs MAY be factorized, though VIOs MUST NOT be.
+   Factorized contiguous SRVIOs indicate alternate paths to the Target,
+   more in Section 5.3.
 
    This specification also introduces a new CMO to enable a RAN to
    advertise a selection of its candidate neighbors as siblings to the
    Root, using a new Sibling Information Option (SIO) as specified in
    Section 5.4.
+
+
+
+Thubert, et al.          Expires March 15, 2021                 [Page 6]
+
+Internet-Draft               DAO Projection               September 2020
+
 
 4.  Identifying a Path
 
@@ -329,14 +345,6 @@ Internet-Draft               DAO Projection               September 2020
    administrative distance, which exists in certain proprietary
    implementations to sort out conflicts between multiple sources of
    routing information within one routing topology.
-
-
-
-
-Thubert, et al.           Expires March 8, 2021                 [Page 6]
-
-Internet-Draft               DAO Projection               September 2020
-
 
    This draft conforms the Instance model as follows:
 
@@ -347,33 +355,30 @@ Internet-Draft               DAO Projection               September 2020
       via RPL.
 
    *  A PCE that installs a more specific (say, Traffic Engineered) and
-      possibly complex path (aka a Track) towards a particular Target
+      possibly complex path (i.e., a Track) towards a particular Target
       MUST use a Local RPL Instance (see section 5 of [RPL]) associated
-      to that Target to identify the path.  We refer to that Local
-      RPLInstanceID as TrackID.
+      to that Target to identify the path.
 
-      A projected path is uniquely identified within the RPL domain by
-      the tuple (Target address, TrackID).  When packet is placed on a
-      Track, a RPL Packet Information (RPI) is added with the TrackID as
-      RPLInstanceID.  The RPLInstanceID has the 'D' flag set, indicating
-      that the destination address in the IPv6 header is the Target that
-      is used to identify the Track.
+      We refer to that Local RPLInstanceID as TrackID.  A TrackID MUST
+      be unique for a particular Target address.  A Track is uniquely
+      identified within the RPL domain by the tuple (Target address,
+      TrackID).
 
-   *  A packet that is routed over a projected path MUST NOT be placed
-      over a different RPL Instance again.  A packet that is placed on a
-      Global Instance MAY be injected in a Local Instance based on a
-      network policy and the Local Instance configuration.
+      When packet is placed on a Track, a RPL Packet Information (RPI)
+      is added with the TrackID as RPLInstanceID.  The RPLInstanceID has
+      the 'D' flag set, indicating that the destination address in the
+      IPv6 header is the Target that is used to identify the Track.
+
+   *  A packet that is routed over the RPL Instance associated to a
+      Track MUST NOT be placed over a different RPL Instance again.
+      Conversely, a packet that is placed on a Global Instance MAY be
+      injected in a Local Instance based on a network policy and the
+      Local Instance configuration.
 
    A Projected Route is a serial path that may represent the end-to-end
    route or only a segment in a complex Track, in which case multiple
    Projected Routes are installed with the same tuple (Target address,
    TrackID) and a different segment ID each.
-
-   A node that is present on more than one segment in a Track may be
-   able to use either of the Projected Routes to forward towards the
-   Target.  The selection of the best route in a Track at forwarding
-   time is out of scope for this document, but [RAW-ARCHI] elaborates on
-   that particular problem.
 
    All properties of a Track operations are inherited form the main
    instance that is used to install the Track.  For instance, the use of
@@ -381,25 +386,24 @@ Internet-Draft               DAO Projection               September 2020
    main instance, e.g., by setting the "T" flag [TURN-ON_RFC8138] in the
    RPL configuration option.
 
-5.  New RPL Control Messages and Options
 
 
 
-
-
-
-
-Thubert, et al.           Expires March 8, 2021                 [Page 7]
+Thubert, et al.          Expires March 15, 2021                 [Page 7]
 
 Internet-Draft               DAO Projection               September 2020
 
 
+5.  New RPL Control Messages and Options
+
 5.1.  New P-DAO Request Control Message
 
-   The PDR is sent to the Root to request a new Path.  Exactly one
-   Target Options MUST be present.
+   The P-DAO Request (PDR) message is sent to the Root to request a new
+   that the PCE establishes a new a projected route as a full path of a
+   collection of segments in a Track.  Exactly one Target Options MUST
+   be present.
 
-   The format of P-DAO Request (PDR) Base Object is as follows:
+   The format of PDR Base Object is as follows:
 
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -422,33 +426,34 @@ Internet-Draft               DAO Projection               September 2020
    R:  The 'R' flag is set to indicate that the Requested path should be
       redundant.
 
-   PDRLifetime:  8-bit unsigned integer.  The requested lifetime for the
-      Track expressed in Lifetime Units (obtained from the Configuration
-      option).  A PDR with a fresher PDRSequence refreshes the lifetime,
-      and a PDRLifetime of 0 indicates that the track should be
-      destroyed.
+   PDRLifetime:  8-bit unsigned integer.
 
-   PDRSequence:  8-bit wrapping sequence number.  The PDRSequence obeys
-      the operation in section 7.2 of [RPL].  It is incremented at each
-      PDR message and echoed in the PDR-ACK by the Root.  The
-      PDRSequence is used to correlate a PDR-ACK message with the PDR
-      message that triggeted it.
+      The requested lifetime for the Track expressed in Lifetime Units
+      (obtained from the DODAG Configuration option).
+
+      A PDR with a fresher PDRSequence refreshes the lifetime, and a
+      PDRLifetime of 0 indicates that the track should be destroyed.
+
+   PDRSequence:  8-bit wrapping sequence number, obeying the operation
+      in section 7.2 of [RPL].
+
+      The PDRSequence is used to correlate a PDR-ACK message with the
+      PDR message that triggeted it.  It is incremented at each PDR
+      message and echoed in the PDR-ACK by the Root.
+
+
+
+
+
+Thubert, et al.          Expires March 15, 2021                 [Page 8]
+
+Internet-Draft               DAO Projection               September 2020
+
 
 5.2.  New PDR-ACK Control Message
 
    The new PDR-ACK is sent as a response to a PDR message with the 'K'
    flag set.  Its format is as follows:
-
-
-
-
-
-
-
-Thubert, et al.           Expires March 8, 2021                 [Page 8]
-
-Internet-Draft               DAO Projection               September 2020
-
 
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -471,20 +476,17 @@ Internet-Draft               DAO Projection               September 2020
    PDRSequence:  8-bit wrapping sequence number.  It is incremented at
       each PDR message and echoed in the PDR-ACK.
 
-   PDR-ACK Status:  Indicates the completion.  Substructured as
-      indicated in Figure 3.
+   PDR-ACK Status:  8-bit field indicating the completion.
 
-   The PDR-ACK Status is further substructured as follows:
+      The PDR-ACK Status is further substructured as indicated in
+      Figure 3.
 
-                               0
                                0 1 2 3 4 5 6 7
                               +-+-+-+-+-+-+-+-+
                               |E|R|  Value    |
                               +-+-+-+-+-+-+-+-+
 
                       Figure 3: PDR-ACK status Format
-
-   The PDR-ACK Status subfields are:
 
    E:  1-bit flag.  Set to indicate a rejection.  When not set, a value
       of 0 indicates Success/Unqualified acceptance and other values
@@ -493,15 +495,13 @@ Internet-Draft               DAO Projection               September 2020
    R:  1-bit flag.  Reserved, MUST be set to 0 by the sender and ignored
       by the receiver.
 
-   Status Value:  6-bit unsigned integer.  Values depedning on the
+   Status Value:  6-bit unsigned integer.  Values depending on the
       setting of the 'E' flag as indicated respectively in Table 4 and
       Table 5.
 
 
 
-
-
-Thubert, et al.           Expires March 8, 2021                 [Page 9]
+Thubert, et al.          Expires March 15, 2021                 [Page 9]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 10]
+Thubert, et al.          Expires March 15, 2021                [Page 10]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 11]
+Thubert, et al.          Expires March 15, 2021                [Page 11]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 12]
+Thubert, et al.          Expires March 15, 2021                [Page 12]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 13]
+Thubert, et al.          Expires March 15, 2021                [Page 13]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -743,9 +743,9 @@ Internet-Draft               DAO Projection               September 2020
    of the recipient, and MUST be confirmed by a DAO-ACK, which is sent
    back to a global address of the Root.
 
-   A P-DAO message MUST contain at least one RTO and at least one RPO
-   following it.  There can be at most one such sequence of RTOs and
-   then RPOs.
+   A P-DAO message MUST contain exactly one RTO and either one VIO or
+   one or more SRVIOs following it.  There can be at most one such
+   sequence of RTOs and then RPOs.
 
    Like a classical DAO message, a P-DAO causes a change of state only
    if it is "new" per section 9.2.2.  "Generation of DAO Messages" of
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 14]
+Thubert, et al.          Expires March 15, 2021                [Page 14]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 15]
+Thubert, et al.          Expires March 15, 2021                [Page 15]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 16]
+Thubert, et al.          Expires March 15, 2021                [Page 16]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 17]
+Thubert, et al.          Expires March 15, 2021                [Page 17]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 18]
+Thubert, et al.          Expires March 15, 2021                [Page 18]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 19]
+Thubert, et al.          Expires March 15, 2021                [Page 19]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 20]
+Thubert, et al.          Expires March 15, 2021                [Page 20]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 21]
+Thubert, et al.          Expires March 15, 2021                [Page 21]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 22]
+Thubert, et al.          Expires March 15, 2021                [Page 22]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 23]
+Thubert, et al.          Expires March 15, 2021                [Page 23]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1341,7 +1341,7 @@ Appendix A.  Applications
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 24]
+Thubert, et al.          Expires March 15, 2021                [Page 24]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1397,7 +1397,7 @@ A.1.  Loose Source Routing in Non-storing Mode
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 25]
+Thubert, et al.          Expires March 15, 2021                [Page 25]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1453,7 +1453,7 @@ A.2.  Transversal Routes in storing and non-storing modes
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 26]
+Thubert, et al.          Expires March 15, 2021                [Page 26]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 27]
+Thubert, et al.          Expires March 15, 2021                [Page 27]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1565,7 +1565,7 @@ B.1.  Using storing mode P-DAO in non-storing mode MOP
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 28]
+Thubert, et al.          Expires March 15, 2021                [Page 28]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1621,7 +1621,7 @@ B.2.  Projecting a storing-mode transversal route
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 29]
+Thubert, et al.          Expires March 15, 2021                [Page 29]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 30]
+Thubert, et al.          Expires March 15, 2021                [Page 30]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1733,7 +1733,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 31]
+Thubert, et al.          Expires March 15, 2021                [Page 31]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1789,4 +1789,4 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires March 8, 2021                [Page 32]
+Thubert, et al.          Expires March 15, 2021                [Page 32]

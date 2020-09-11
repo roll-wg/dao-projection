@@ -105,12 +105,12 @@
     Internet. The Root is responsible to select the RPL Instance that is used
     to forward a packet coming from the Internet into the RPL domain and set
     the related RPL information in the packets.
+    The  <xref target='I-D.ietf-6tisch-architecture'>
+    "6TiSCH Architecture"</xref> uses RPL for its routing operations.
 	 </t>
     <t>
-    The  <xref target='I-D.ietf-6tisch-architecture'>
-    "6TiSCH architecture"</xref> leverages RPL for its routing operations and
-    considers the <xref target='RFC8655'>
-    Deterministic Networking Architecture</xref> as one possible model
+    The 6TiSCH Architecture also leverages the <xref target='RFC8655'>
+    "Deterministic Networking Architecture"</xref> centralized model
     whereby the device resources and capabilities are exposed to an external
     controller which installs routing states into the network based on some
     objective functions that reside in that external entity.  With DetNet and
@@ -138,7 +138,7 @@
     the routes that are needed onto the nodes where they should be installed.
     This specification uses the term Projected Route to refer to those routes.
     A Projected Route may be a stand-alone end-to-end path to a Target or a
-    segment in a more complex structure called a Track.
+    segment in a more complex forwarding graph called a Track.
     <!--
     Possibly with the assistance of an external PCE that could have a better
     visibility on the larger system, the Root computes optimized and redundant
@@ -148,16 +148,22 @@
     <t>
     The concept of a Track was introduced in the 6TiSCH architecture, as a
     complex path with redundant forwarding solutions along the way.
+    A node that is present on more than one segment in a Track may be able to
+    use either of the Track segments to forward a packet towards the Target.
+    </t>
+    <t>
+
     The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture/Framework"</xref> extends the
     the forward plane to leverage that redundancy with the Packet ARQ,
     Replication, Elimination, and Overhearing (PAREO) functions.
-    </t>
+     </t>
     <t>
-    To that effect, RAW defines the Path Selection Engine (PSE) that is
-    the counter-part of the PCE to perform rapid local adjustments of the
-    forwarding tables within the path diversity that the PCE has selected for
-    the Track.
+    The RAW Architecture also discusses the dynamic selection of the best path
+    for a packet within a Track at forwarding time. To that effect, it defines
+    the Path Selection Engine (PSE), which is the counter-part of the PCE to
+    perform rapid local adjustments of the forwarding tables within the path
+    diversity that the PCE has selected for the Track.
     </t>
     <t>
     RAW differentiates the time scale at which the PCE computes the Track (slow,
@@ -169,39 +175,28 @@
 	 </t>
     <t>
     Projected Routes must be used with the parsimony to limit the amount of
-    state that is installed in each device to fit within its resources, and to
-    limit the amount of rerouted traffic to fit within the capabilities of the
-    transmission links. The methods used to learn the node capabilities and the
-    resources that are available in the devices and in the network are out of
-    scope for this document.
+    state that is installed in each device to fit within the device resources,
+    and to maintain the amount of rerouted traffic within the capabilities of
+    the transmission links. The methods used to learn the node capabilities and
+    the resources that are available in the devices and in the network are out
+    of scope for this document.
     </t>
     <t>
-    This specifcation expects that a base RPL Instance is operated in RPL Non-Storing Mode to sustain the exchanges with the Root. In that Mode, the
-    Root has enough information to build a basic DODAG topology based on parents and children, but lacks the knowledge of siblings. This document adds the capability for nodes to advertise
-    sibling information in order to improve the topological awareness of the
-    Root. This specification uses the RPL Root as a proxy to the PCE.
+    This specification expects that a base RPL Instance is operated in RPL
+    Non-Storing Mode to sustain the exchanges with the Root. In that Mode, the
+    Root has enough information to build a basic DODAG topology based on
+    parents and children, but lacks the knowledge of siblings. This document
+    adds the capability for nodes to advertise sibling information in order to
+    improve the topological awareness of the Root.
+    </t>
+    <t>
+    This specification uses the RPL Root as a proxy to the PCE. The PCE may be
+    collocated with the Root, or may reside in an external Controller. In that
+    case, the PCE exchanges control messages with the Root over a Southbound
+    API, that is out of scope for this specification.
     The algorithm to compute the paths and the protocol used by an external PCE
-    to obtain the topology of the network from the Root are out of scope for
-    this document.
-	  </t>
-    <!--
-    <t>
-    It is envisaged that the computation could use the ratio
-    between the optimal path (existing path not traversing the Root, and the
-    current path), the application service level agreement (SLA) for specific
-    flows that could benefit from shorter paths, the energy wasted in the
-    network, local congestion on various links that would benefit from having
-    flows routed along alternate paths.
+    to obtain the topology of the network from the Root are also out of scope.
     </t>
-    <t>
-    In particular, the draft expects that the Root has enough information about
-    the capability
-    for each node to store a number of routes, which can be discovered for
-    Instance using a Network Management System (NMS) and/or the RPL routing
-    extensions specified in
-    <xref target="RFC6551">"Routing Metrics Used for Path Calculation in LLNs"</xref>.
-    </t>
-    -->
     </section>
 
 	<!-- **************************************************************** -->
@@ -210,7 +205,7 @@
 	<!-- **************************************************************** -->
 
 <section><name>Terminology</name>
-<section anchor='bcp'><name>BCP 14</name>
+<section anchor='bcp'><name>Requirements Language</name>
 <t>
 
     The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -220,7 +215,7 @@
     appear in all capitals, as shown here.
 
 </t>
-</section>	<!-- end section "BCP 14" -->
+</section>	<!-- end section "Requirements Language" -->
 
   <section anchor='lo'><name>References</name>
     <t>
@@ -231,22 +226,6 @@
   </section>	<!-- end section "References" -->
 
 
-<section anchor='new'><name>Other Terms</name>
-    <t>
-    <!-- Removed reference from routing and 6tisch here to keep it simple
-	 This specification introduces the following terminology:-->
-    </t><dl spacing='compact'>
-
-    <dt>Projected Route:</dt><dd>
-	A Projected Route is a serial path or path segment that is computed,
-    installed and maintained remotely by a RPL Root.</dd>
-    <dt>Track:</dt><dd>
-    The term Track is used in this document to refer to a complex path,
-    e.g., a DODAG, that incorporates redundant Projected Routes towards a
-    destination using diversity to increase the reliability.
-    </dd>
-    </dl>
-</section>	<!-- end section "Other Terms" -->
 
 <section anchor='gloss'><name>Glossary</name>
     <t> This document often uses the following acronyms:
@@ -256,7 +235,6 @@
        <dt>6LN:</dt><dd> 6LoWPAN Node  </dd>
        <dt>6LR:</dt><dd> 6LoWPAN Router </dd>
        <dt>CMO:</dt><dd> Control Message Option</dd>
-       <dt>DAD:</dt><dd> Duplicate Address Detection </dd>
        <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
        <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph </dd>
        <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
@@ -284,18 +262,33 @@
     </t>
 </section>	<!-- Glossary -->
 
+<section anchor='new'><name>Other Terms</name>
+    <t>
+    <!-- Removed reference from routing and 6tisch here to keep it simple
+	 This specification introduces the following terminology:-->
+    </t><dl spacing='compact'>
+
+    <dt>Projected Route:</dt><dd>
+	A Projected Route is a serial path or path segment that is computed,
+    installed and maintained remotely by a RPL Root.</dd>
+    <dt>Track:</dt><dd>
+    The term Track is used in this document to refer to a complex path,
+    e.g., a DODAG, that incorporates redundant Projected Routes towards a
+    destination using diversity to increase the reliability.
+    </dd>
+    </dl>
+</section>	<!-- end section "Other Terms" -->
 </section>	<!-- end section "Terminology" -->
 
 
     <section anchor='ext6550'><name>Updating RFC 6550</name>
 
-	<t>
+   <t>
    This specification introduces two new RPL Control Messages to enable a RPL
-   Aware Node (RAN) to request the establisment of a path from self to a Target.
-   A RAN may request the installation of a path by sending a new P-DAO Request
-   (PDR) Message to the Root. The Root confirms with a new PDR-ACK message back
-   to the requester RAN with a completion status once it is done installing the
-   path. See <xref target='pdaoreq'/> for more.
+   Aware Node (RAN) to request the establisment of a Track from self to a Target.
+   The RAN makes its request by sending a new P-DAO Request (PDR) Message to
+   the Root. The Root confirms with a new PDR-ACK message back to the requester
+   RAN, see <xref target='pdaoreq'/> for more.
    </t>
 
 	<t>
@@ -307,26 +300,28 @@
    </t>
 
 	<t>
-   In Non-Storing Mode, the TIO option is used in the DAO message to indicate
-   a parent within a DODAG.  The TIO applies to the RTOs that immedially preceed
-   it in the message. Options may be factorized; multiple TIOs may be
+   In Non-Storing Mode, the TIO option is used in the DAO message to inform the
+   root of the parent-child relationships within the DODAG, and the Root has a full knowledge of the DODAG structure.
+   The TIO applies to the RTOs that preceed it immediately in the message.
+   Options may be factorized; multiple TIOs may be
    present to indicate multiple routes to the one or more contiguous addresses
    indicated in the RTOs that immediately precede the TIOs in the RPL message.
    </t>
   <t>
    This specification introduces two new CMOs referred to as Route Projection
    Options (RPO) to install Projected Routes. One RPO is the Via Information
-   Option (VIO) and the other is the Source-Routed VIO (SRVIO). The VIO installs
-   a route on each hop along a Projected Route (in a fashion analogous to RPL
-   Storing Mode) whereas the SRVIO installs a source-routing state at the
+   Option (VIO) and the other is the Source-Routed VIO (SRVIO). The VIO
+   installs a route on each hop along a Projected Route (in a fashion analogous
+   to RPL Storing Mode) whereas the SRVIO installs a source-routing state at the
    ingress node, which uses that state to encapsulate a packet with an IPv6
    Routing Header in a fashion similar to RPL Non-Storing Mode.
    </t>
 
 	<t>
    Like the TIO, the RPOs MUST be preceded by exactly one RTO to which they
-   apply, and SRVIOs can be factorized: multiple contiguous SRVIOs
-   indicate alternate paths to the Target, more in <xref target='rplrpo'/>.
+   apply, and SRVIOs MAY be factorized, though VIOs MUST NOT be. Factorized
+   contiguous SRVIOs indicate alternate paths to the Target, more in
+   <xref target='rplrpo'/>.
    </t>
    <t>
    This specification also introduces a new CMO to enable a RAN to advertise
@@ -357,13 +352,15 @@
      <li>
      <t>
      A PCE that installs a more specific (say, Traffic Engineered) and possibly
-     complex path (aka a Track) towards a particular Target MUST use a Local RPL
-     Instance (see section 5 of <xref target='RFC6550'/>) associated to that
-     Target to identify the path. We refer to that Local RPLInstanceID as
-     TrackID.
+     complex path (i.e., a Track) towards a particular Target MUST use a Local
+     RPL Instance (see section 5 of <xref target='RFC6550'/>) associated to that
+     Target to identify the path.
      </t><t>
-     A projected path is uniquely identified within the RPL domain by
-     the tuple (Target address, TrackID). When packet is placed on a Track, a
+     We refer to that Local RPLInstanceID as TrackID. A TrackID MUST be unique
+     for a particular Target address. A Track is uniquely identified within the
+     RPL domain by the tuple (Target address, TrackID).
+     </t><t>
+     When packet is placed on a Track, a
      RPL Packet Information (RPI) is added with the TrackID as RPLInstanceID.
      The RPLInstanceID has the 'D' flag set, indicating that the destination
      address in the IPv6 header is the Target that is used to identify the
@@ -371,10 +368,10 @@
      </t>
      </li>
      <li>
-     A packet that is routed over a projected path MUST NOT be placed over a
-     different RPL Instance again. A packet that is placed on a Global Instance
-     MAY be injected in a Local Instance based on a network policy and the Local
-     Instance configuration.
+     A packet that is routed over the RPL Instance associated to a Track MUST
+     NOT be placed over a different RPL Instance again. Conversely,
+     a packet that is placed on a Global Instance MAY be injected in a Local
+     Instance based on a network policy and the Local Instance configuration.
      <!-- TODO: add config parm to the local Instance -->
      </li>
      </ul>
@@ -383,14 +380,7 @@
      Routes are installed with  the same tuple (Target address, TrackID) and a
      different segment ID each.
      </t>
-    <t>
-     A node that is present on more than one segment in a Track may be able to
-     use either of the Projected Routes to forward towards the Target. The
-     selection of the best route in a Track at forwarding time is out of scope
-     for this document, but
-     <xref target='I-D.pthubert-raw-architecture'/> elaborates on that
-     particular problem.
-     </t>
+
     <t>
      All properties of a Track operations are inherited form the main instance
      that is used to install the Track. For instance, the use of compression per
@@ -407,15 +397,16 @@
     <section anchor='pdaoreq'><name>New P-DAO Request Control Message</name>
 
                <t>
-    The PDR is sent to the Root to request a new Path. Exactly one Target
-    Options MUST be present.
+    The P-DAO Request (PDR) message is sent to the Root to request a new that
+    the PCE establishes a new a projected route as a full path of a collection
+    of segments in a Track. Exactly one Target Options MUST be present.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
     information on the requested path.
     -->
     </t>
     <t>
-    The format of P-DAO Request (PDR) Base Object is as follows:
+    The format of PDR Base Object is as follows:
     </t>
 
 <figure anchor='disupdfmt'><name>New P-DAO Request Format</name>
@@ -443,17 +434,25 @@
               <dt>R:</dt><dd>The 'R' flag is set to indicate that the Requested
               path should be redundant.
               </dd>
-              <dt>PDRLifetime:</dt><dd> 8-bit unsigned integer.
+              <dt>PDRLifetime:</dt><dd> <t>8-bit unsigned integer.</t>
+              <t>
               The requested lifetime for the Track expressed in Lifetime Units
-              (obtained from the Configuration option). A PDR with a fresher
+              (obtained from the DODAG Configuration option).
+              </t><t>
+              A PDR with a fresher
               PDRSequence refreshes the lifetime, and a PDRLifetime of 0
               indicates that the track should be destroyed.
+              </t>
               </dd>
-              <dt>PDRSequence:</dt><dd> 8-bit wrapping sequence number.
-              The PDRSequence obeys the operation in section 7.2 of
-              <xref target='RFC6550'/>. It is incremented at each PDR message
-              and echoed in the PDR-ACK by the Root. The PDRSequence is used to
-              correlate a PDR-ACK message with the PDR message that triggeted it.
+              <dt>PDRSequence:</dt><dd>
+              <t>8-bit wrapping sequence number,
+              obeying the operation in section 7.2 of
+              <xref target='RFC6550'/>.
+              </t><t>
+              The PDRSequence is used to correlate a PDR-ACK message with the
+              PDR message that triggeted it. It is incremented at each PDR
+              message and echoed in the PDR-ACK by the Root.
+              </t>
               </dd>
 
             </dl>
@@ -497,33 +496,29 @@
               </dd>
 
 
-              <dt>PDR-ACK Status:</dt><dd>
-             Indicates the completion.  Substructured as indicated in
-              <xref target='rpst'/>.
+              <dt>PDR-ACK Status:</dt><dd> <t>8-bit field indicating
+            the completion.
+            </t><t>
+            The PDR-ACK Status is further substructured as indicated in <xref target='rpst'/>.</t>
 
               </dd>
             </dl>
-<t>
-    The PDR-ACK Status is further substructured as follows:
-    </t>
+
 
  <figure anchor='rpst' suppress-title='false'><name>PDR-ACK status Format</name>
        <artwork align="center" name="" type="" alt="">
-    0
     0 1 2 3 4 5 6 7
    +-+-+-+-+-+-+-+-+
    |E|R|  Value    |
    +-+-+-+-+-+-+-+-+
 </artwork>
- </figure>
-  <t>The PDR-ACK Status subfields are:
-	</t><dl  spacing='normal'>
+ </figure><dl  spacing='normal'>
 	<dt>E:</dt><dd> 1-bit flag. Set to indicate a rejection. When not set, a value of 0
     indicates Success/Unqualified acceptance and other values indicate "not an
     outright rejection".</dd>
 	<dt>R:</dt><dd> 1-bit flag. Reserved, MUST be set to 0 by the sender and
     ignored by the receiver.</dd>
-	<dt>Status Value:</dt><dd> 6-bit unsigned integer. Values depedning on the
+	<dt>Status Value:</dt><dd> 6-bit unsigned integer. Values depending on the
     setting of the 'E' flag as indicated respectively in
     <xref target='iana-ack-status'/> and <xref target='iana-nack-status'/>.
     </dd>
@@ -771,8 +766,8 @@
     recipient, and MUST be confirmed by a DAO-ACK, which is sent back to a
     global address of the Root.
      </t> <t>
-    A P-DAO message MUST contain at least one RTO and at least one RPO following
-    it. There can be at most one such sequence of RTOs and then RPOs.
+    A P-DAO message MUST contain exactly one RTO and either one VIO or one or
+    more SRVIOs following it. There can be at most one such sequence of RTOs and then RPOs.
      </t> <t>
     Like a classical DAO message, a P-DAO causes a change of state only if it is
     "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
