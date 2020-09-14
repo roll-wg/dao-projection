@@ -79,10 +79,9 @@
     classical distributed operation of RPL, either in terms of the size of a
     source-route header or in terms of path length, which impacts both the
     latency and the packet delivery ratio.
-    Projected Routes may be installed in either Storing and Non-Storing Modes
-    Instances of the classical RPL operation, resulting in potentially hybrid
-    situations where the mode of some Projected Routes is different from that
-    of the other routes in the RPL Instance.
+    Projected Routes may be installed in either Storing and Non-Storing Modes,
+    potentially resulting in hybrid situations where the Mode of some Projected
+    Routes is different from that of the main RPL Instance.
 	  </t>
 	</abstract>
     </front>
@@ -148,21 +147,22 @@
     <t>
     The concept of a Track was introduced in the 6TiSCH architecture, as a
     complex path with redundant forwarding solutions along the way.
-    A node that is present on more than one Segment in a Track may be able to
-    use either of the Track Segments to forward a packet towards the Target.
+    A node at the ingress of more than one Segment in a Track may use any
+    combination of those Segments to forward a packet towards the Target.
     </t>
     <t>
 
     The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture/Framework"</xref> extends the
-    the forward plane to leverage that redundancy with the Packet ARQ,
-    Replication, Elimination, and Overhearing (PAREO) functions.
+    forwarding plane operations to leverage that redundancy with the Packet ARQ,
+    Replication, Elimination, and Overhearing (PAREO) functions, taking
+    advantage of multiple forms of diversity, including space and time, for a higher reliability.
      </t>
     <t>
-    The RAW Architecture also discusses the dynamic selection of the best path
-    for a packet within a Track at forwarding time. To that effect, it defines
+    The RAW Architecture also considers the dynamic path selection
+    within a Track at forwarding time. To that effect, it defines
     the Path Selection Engine (PSE), which is the counter-part of the PCE to
-    perform rapid local adjustments of the forwarding tables within the path
+    perform rapid local adjustments of the forwarding tables within the
     diversity that the PCE has selected for the Track.
     </t>
     <t>
@@ -217,49 +217,39 @@
 </t>
 </section>	<!-- end section "Requirements Language" -->
 
-  <section anchor='lo'><name>References</name>
-    <t>
-	In this document, readers will encounter terms and concepts
-	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref> and
-    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
-    </t>
-  </section>	<!-- end section "References" -->
-
 
 
 <section anchor='gloss'><name>Glossary</name>
     <t> This document often uses the following acronyms:
        </t><dl spacing='compact'>
-       <dt>6BBR:</dt><dd> 6LoWPAN Backbone Router </dd>
-       <dt>6LBR:</dt><dd> 6LoWPAN Border Router </dd>
-       <dt>6LN:</dt><dd> 6LoWPAN Node  </dd>
-       <dt>6LR:</dt><dd> 6LoWPAN Router </dd>
+
+
        <dt>CMO:</dt><dd> Control Message Option</dd>
        <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
-       <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph </dd>
+       <dt>DAG:</dt><dd> Directed Acyclic Graph </dd>
+       <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph; A DAG
+       with only one vertice (i.e., node) that has no outgoing edge (i.e., link)
+       </dd>
        <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
        <dt>MOP:</dt><dd> RPL Mode of Operation</dd>
-       <dt>NA:</dt><dd>  Neighbor Advertisement </dd>
-       <dt>NCE:</dt><dd>  Neighbor Cache Entry  </dd>
-       <dt>ND:</dt><dd>  Neighbor Discovery  </dd>
-       <dt>NDP:</dt><dd>  Neighbor Discovery Protocol </dd>
-       <dt>NS:</dt><dd>  Neighbor Solicitation  </dd>
-       <dt>P-DAO:</dt><dd> A Projected DAO is a DAO message sent by the RPL Root to install a Projected Route. </dd>
-       <dt>PDR</dt><dd> P-DAO Request </dd>
-       <dt>RA:</dt><dd>  Router Advertisement  </dd>
-       <dt>RAN:</dt><dd> RPL-Aware Node </dd>
-       <dt>RS:</dt><dd>  Router Solicitation  </dd>
-       <dt>RPL:</dt><dd> IPv6 Routing Protocol for LLNs
-       <xref target='RFC6550'/> </dd>
+       <dt>P-DAO:</dt><dd> Projected DAO </dd>
+       <dt>PDR:</dt><dd> P-DAO Request </dd>
+       <dt>RAN:</dt><dd> RPL-Aware Node (either a RPL Router or a RPL-Aware Leaf)</dd>
+       <dt>RAL:</dt><dd> RPL-Aware Leaf </dd>
+       <dt>RPI:</dt><dd> RPL Packet Information </dd>
+       <dt>RPL:</dt><dd> IPv6 Routing Protocol for LLNs <xref target='RFC6550'/>
+       </dd>
        <dt>RPO:</dt><dd> A Route Projection Option; it can be a VIO or an SRVIO.    </dd>
        <dt>RTO:</dt><dd> RPL Target Option </dd>
+       <dt>RUL:</dt><dd> RPL-Unaware Leaf </dd>
        <dt>SIO:</dt><dd> RPL Sibling Information Option</dd>
        <dt>SRVIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing Mode P-DAO messages.    </dd>
+       <dt>SubDAG:</dt><dd> A DODAG rooted at a node which is a child of that
+       node and a subset of a larger DAG</dd>
        <dt>TIO:</dt><dd> RPL Transit Information Option</dd>
-
        <dt>VIO:</dt><dd> A Via Information Option, used in Storing Mode P-DAO messages.    </dd>
-       </dl><t>
-    </t>
+       </dl>
+
 </section>	<!-- Glossary -->
 
 <section anchor='new'><name>Other Terms</name>
@@ -271,6 +261,7 @@
     <dt>Projected Route:</dt><dd>
 	A Projected Route is a serial path or path Segment that is computed,
     installed and maintained remotely by a RPL Root.</dd>
+    <dt>Projected DAO:</dt><dd> A Projected DAO is a DAO message sent by the RPL Root to install a Projected Route. </dd>
     <dt>Track:</dt><dd>
     The term Track is used in this document to refer to a complex path,
     e.g., a DODAG, that incorporates redundant Projected Routes towards a
@@ -278,6 +269,16 @@
     </dd>
     </dl>
 </section>	<!-- end section "Other Terms" -->
+
+
+  <section anchor='lo'><name>References</name>
+    <t>
+	In this document, readers will encounter terms and concepts
+	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref> and
+    <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
+    </t>
+  </section>	<!-- end section "References" -->
+
 </section>	<!-- end section "Terminology" -->
 
 
