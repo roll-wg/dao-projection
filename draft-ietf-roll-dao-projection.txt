@@ -6,9 +6,9 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Updates: 6550 (if approved)                                  R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 18 March 2021                                       M. Gillmore
+Expires: 20 March 2021                                       M. Gillmore
                                                                    Itron
-                                                       14 September 2020
+                                                       16 September 2020
 
 
                   Root initiated routing state in RPL
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 March 2021.
+   This Internet-Draft will expire on 20 March 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 1]
+Thubert, et al.           Expires 20 March 2021                 [Page 1]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 2]
+Thubert, et al.           Expires 20 March 2021                 [Page 2]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -165,7 +165,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 3]
+Thubert, et al.           Expires 20 March 2021                 [Page 3]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -221,7 +221,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 4]
+Thubert, et al.           Expires 20 March 2021                 [Page 4]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -277,7 +277,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 5]
+Thubert, et al.           Expires 20 March 2021                 [Page 5]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 6]
+Thubert, et al.           Expires 20 March 2021                 [Page 6]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -389,7 +389,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 7]
+Thubert, et al.           Expires 20 March 2021                 [Page 7]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -445,7 +445,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 8]
+Thubert, et al.           Expires 20 March 2021                 [Page 8]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -467,19 +467,19 @@ Internet-Draft               DAO Projection               September 2020
 
                 Figure 2: New PDR-ACK Control Message Format
 
-   TrackID:  The RPLInstanceID of the Track that was created.  Set to 0
-      when no Track is created.
+   TrackID:  The RPLInstanceID of the Track that was created.  The value
+      of 0x00 is used to when no Track was created.
 
-   Track Lifetime:  Indicates that remaining Lifetime for the Track, 0
-      if the Track was destroyed or not created.
+   Track Lifetime:  Indicates that remaining Lifetime for the Track,
+      expressed in Lifetime Units; a value of zero (0x00) indicates that
+      the Track was destroyed or not created.
 
    PDRSequence:  8-bit wrapping sequence number.  It is incremented at
       each PDR message and echoed in the PDR-ACK.
 
    PDR-ACK Status:  8-bit field indicating the completion.
 
-      The PDR-ACK Status is further substructured as indicated in
-      Figure 3.
+      The PDR-ACK Status is substructured as indicated in Figure 3:
 
                                0 1 2 3 4 5 6 7
                               +-+-+-+-+-+-+-+-+
@@ -501,7 +501,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                 [Page 9]
+Thubert, et al.           Expires 20 March 2021                 [Page 9]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 10]
+Thubert, et al.           Expires 20 March 2021                [Page 10]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -568,29 +568,28 @@ Internet-Draft               DAO Projection               September 2020
    C:  1-bit flag.  Set to indicate that the following Via Addresses are
       expressed as one or more SRH-6LoRH as defined in section 5.1 of
       [RFC8138].  Figure 4 illustrates the case where the "C" flag is
-      not set, meaning that the Via Addresses are expressed in full 128
-      bits.
+      not set, meaning that the Via Addresses are expressed in 128 bits.
 
    TrackID:  8-bit field indicating the topology Instance associated
       with the Track.  The tuple (Target Address, TrackID) forms a
       unique ID of the Track in the RPL domain.
 
    SegmentID:  8-bit field that identifies a Segment within a Track.  A
-      Value of 0 is used to signal a serial Track.
+      Value of 0 is used to signal a serial Track, i.e., made of a
+      single segment.
 
    Segment Sequence:  8-bit unsigned integer.  The Segment Sequence
       obeys the operation in section 7.2 of [RPL] and the lollipop
-      starts at 255.  When the Root of the DODAG needs to update a
-      single Segment in a Track, but does not need to modify the rest of
-      the Track, it increments the Segment Sequence but not the Track
-      Sequence.  The Segment information indicated in the RTO deprecates
-      any state for the Segment indicated by the SegmentID within the
-      indicated Track and sets up the new information.  A RTO with a
-      Segment Sequence that is not as fresh as the current one is
-      ignored.  a RTO for a given target with the same (TrackID, Track
-      Sequence, SegmentID, Segment Sequence) indicates a retry; it MUST
-      NOT change the Segment and MUST be propagated or answered as the
-      first copy.
+      starts at 255.  When the Root of the DODAG needs to refresh or
+      update a Segment in a Track, it increments the Segment Sequence
+      individually for that Segment.  The Segment information indicated
+      in the RTO deprecates any state for the Segment indicated by the
+      SegmentID within the indicated Track and sets up the new
+      information.  A RTO with a Segment Sequence that is not as fresh
+      as the current one is ignored.  a RTO for a given target with the
+      same (TrackID, SegmentID, Segment Sequence) indicates a retry; it
+      MUST NOT change the Segment and MUST be propagated or answered as
+      the first copy.
 
    Segment Lifetime:  8-bit unsigned integer.  The length of time in
       Lifetime Units (obtained from the Configuration option) that the
@@ -609,17 +608,15 @@ Internet-Draft               DAO Projection               September 2020
       needed if the compression of the addresses change inside the
       Segment and different SRH-6LoRH Types are used.
 
+   An RPO MUST contain at least one Via Address, and a Via Address MUST
+   NOT be present more than once, otherwise the RPO MUST be ignored.
 
 
 
-
-Thubert, et al.           Expires 18 March 2021                [Page 11]
+Thubert, et al.           Expires 20 March 2021                [Page 11]
 
 Internet-Draft               DAO Projection               September 2020
 
-
-   An RPO MUST contain at least one Via Address, and a Via Address MUST
-   NOT be present more than once, otherwise the RPO MUST be ignored.
 
 5.4.  Sibling Information Option
 
@@ -669,7 +666,10 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 12]
+
+
+
+Thubert, et al.           Expires 20 March 2021                [Page 12]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 13]
+Thubert, et al.           Expires 20 March 2021                [Page 13]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -736,10 +736,10 @@ Internet-Draft               DAO Projection               September 2020
 
    Like a classical DAO message, a P-DAO causes a change of state only
    if it is "new" per section 9.2.2.  "Generation of DAO Messages" of
-   the RPL specification [RPL]; this is determined using the Track
-   Sequence and the Segment Sequence information from the RPO as opposed
-   to the Path Sequence from a TIO.  Also, a Path Lifetime of 0 in an
-   RPO indicates that a route is to be removed.
+   the RPL specification [RPL]; this is determined using the Segment
+   Sequence information from the RPO as opposed to the Path Sequence
+   from a TIO.  Also, a Segment Lifetime of 0 in an RPO indicates that
+   the projected route associated to the Segment is to be removed.
 
    There are two kinds of operation for the Projected Routes, the
    Storing Mode and the Non-Storing Mode.
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 14]
+Thubert, et al.           Expires 20 March 2021                [Page 14]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 15]
+Thubert, et al.           Expires 20 March 2021                [Page 15]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 16]
+Thubert, et al.           Expires 20 March 2021                [Page 16]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 17]
+Thubert, et al.           Expires 20 March 2021                [Page 17]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 18]
+Thubert, et al.           Expires 20 March 2021                [Page 18]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 19]
+Thubert, et al.           Expires 20 March 2021                [Page 19]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 20]
+Thubert, et al.           Expires 20 March 2021                [Page 20]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 21]
+Thubert, et al.           Expires 20 March 2021                [Page 21]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 22]
+Thubert, et al.           Expires 20 March 2021                [Page 22]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 23]
+Thubert, et al.           Expires 20 March 2021                [Page 23]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1341,7 +1341,7 @@ A.1.  Loose Source Routing in Non-storing Mode
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 24]
+Thubert, et al.           Expires 20 March 2021                [Page 24]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 25]
+Thubert, et al.           Expires 20 March 2021                [Page 25]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1453,7 +1453,7 @@ A.2.  Transversal Routes in storing and non-storing modes
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 26]
+Thubert, et al.           Expires 20 March 2021                [Page 26]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 27]
+Thubert, et al.           Expires 20 March 2021                [Page 27]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1565,7 +1565,7 @@ B.1.  Using storing mode P-DAO in non-storing mode MOP
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 28]
+Thubert, et al.           Expires 20 March 2021                [Page 28]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1621,7 +1621,7 @@ B.2.  Projecting a storing-mode transversal route
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 29]
+Thubert, et al.           Expires 20 March 2021                [Page 29]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 30]
+Thubert, et al.           Expires 20 March 2021                [Page 30]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1733,7 +1733,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 31]
+Thubert, et al.           Expires 20 March 2021                [Page 31]
 
 Internet-Draft               DAO Projection               September 2020
 
@@ -1789,4 +1789,4 @@ Internet-Draft               DAO Projection               September 2020
 
 
 
-Thubert, et al.           Expires 18 March 2021                [Page 32]
+Thubert, et al.           Expires 20 March 2021                [Page 32]

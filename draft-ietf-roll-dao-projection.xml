@@ -483,13 +483,13 @@
 
           <dl spacing='normal'>
               <dt>TrackID:</dt><dd>
-             The RPLInstanceID of the Track that was created. Set to 0 when no
-             Track is created.
+             The RPLInstanceID of the Track that was created. The value of 0x00 is used to when no Track was created.
               </dd>
 
               <dt>Track Lifetime:</dt><dd>
-             Indicates that remaining Lifetime for the Track, 0 if the Track was
-             destroyed or not created.
+             Indicates that remaining Lifetime for the Track, expressed in
+             Lifetime Units; a value of zero (0x00)
+              indicates that the Track was destroyed or not created.
               </dd>
 
               <dt>PDRSequence:</dt><dd> 8-bit wrapping sequence number.
@@ -500,7 +500,7 @@
               <dt>PDR-ACK Status:</dt><dd> <t>8-bit field indicating
             the completion.
             </t><t>
-            The PDR-ACK Status is further substructured as indicated in <xref target='rpst'/>.</t>
+            The PDR-ACK Status is substructured as indicated in <xref target='rpst'/>:</t>
 
               </dd>
             </dl>
@@ -586,7 +586,7 @@
               <dt>C:</dt><dd>1-bit flag. Set to indicate that the following
               Via Addresses are expressed as one or more SRH-6LoRH as defined in section 5.1 of <xref target='RFC8138'/>. <xref target='viao'/>
               illustrates the case where the "C" flag is not set, meaning that
-              the Via Addresses are expressed in full 128 bits.
+              the Via Addresses are expressed in 128 bits.
               </dd>
 
               <dt>TrackID:</dt><dd>8-bit field indicating the topology Instance
@@ -596,20 +596,19 @@
 
 
               <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
-               within a Track. A Value of 0 is used to signal a serial Track.
+               within a Track. A Value of 0 is used to signal a serial Track, i.e., made of a single segment.
               </dd>
 
               <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
               The Segment Sequence obeys the operation in section 7.2 of
               <xref target='RFC6550'/> and the lollipop starts at 255. When the
-              Root of the DODAG needs to update a single Segment in a Track,
-              but does not need to modify the rest of the Track, it
-              increments the Segment Sequence but not the Track Sequence.
+              Root of the DODAG needs to refresh or update a Segment in a Track,
+              it increments the Segment Sequence individually for that Segment.
               The Segment information indicated in the RTO deprecates any state
               for the Segment indicated by the SegmentID within the indicated
               Track and sets up the new information. A RTO with a Segment
               Sequence that is not as fresh as the current one is ignored.
-              a RTO for a given target with the same (TrackID, Track Sequence,
+              a RTO for a given target with the same (TrackID,
               SegmentID, Segment Sequence) indicates a retry; it MUST NOT
               change the Segment and MUST be propagated or answered as the first
               copy.</dd>
@@ -762,10 +761,9 @@
      </t> <t>
     Like a classical DAO message, a P-DAO causes a change of state only if it is
     "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
-    RPL specification</xref>; this is determined using the Track Sequence and
+    RPL specification</xref>; this is determined using
     the Segment Sequence information from the RPO as opposed to the Path
-    Sequence from a TIO. Also, a Path Lifetime of 0 in  an RPO indicates that a
-    route is to be removed.
+    Sequence from a TIO. Also, a Segment Lifetime of 0 in an RPO indicates that the projected route associated to the Segment is to be removed.
      </t> <t>
     There are two kinds of operation for the Projected Routes, the Storing Mode
     and the Non-Storing Mode.
