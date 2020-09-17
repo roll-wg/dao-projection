@@ -79,9 +79,6 @@
     classical distributed operation of RPL, either in terms of the size of a
     source-route header or in terms of path length, which impacts both the
     latency and the packet delivery ratio.
-    Projected Routes may be installed in either Storing and Non-Storing Modes,
-    potentially resulting in hybrid situations where the Mode of some Projected
-    Routes is different from that of the main RPL Instance.
 	  </t>
 	</abstract>
     </front>
@@ -106,7 +103,7 @@
     the related RPL information in the packets.
     The  <xref target='I-D.ietf-6tisch-architecture'>
     "6TiSCH Architecture"</xref> uses RPL for its routing operations.
-	 </t>
+    </t>
     <t>
     The 6TiSCH Architecture also leverages the <xref target='RFC8655'>
     "Deterministic Networking Architecture"</xref> centralized model
@@ -130,48 +127,48 @@
     Those extensions enable loose source routing down in RPL Non-Storing Mode
     and transversal routes inside the DODAG regardless of the RPL Mode of
     Operation (MOP).
-	 </t>
+    </t>
     <t>
     As opposed to the classical RPL operations where routes are injected by the
     Target nodes, the protocol extensions enable the Root of a DODAG to project
     the routes that are needed onto the nodes where they should be installed.
     This specification uses the term Projected Route to refer to those routes.
+    </t>
+    <t>
+    A Projected Route may be installed in either Storing and Non-Storing Mode,
+    potentially resulting in hybrid situations where the Mode of the Projected
+    Route is different from that of the main RPL Instance.
     A Projected Route may be a stand-alone end-to-end path to a Target or a
     Segment in a more complex forwarding graph called a Track.
-    <!--
-    Possibly with the assistance of an external PCE that could have a better
-    visibility on the larger system, the Root computes optimized and redundant
-    paths and uses this draft to install the corresponding Projected Routes.
-    -->
     </t>
     <t>
     The concept of a Track was introduced in the 6TiSCH architecture, as a
-    complex path with redundant forwarding solutions along the way.
+    complex path to a Target destination with redundant forwarding solutions
+    along the way.
     A node at the ingress of more than one Segment in a Track may use any
     combination of those Segments to forward a packet towards the Target.
     </t>
     <t>
 
     The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
-    Available Wireless (RAW) Architecture/Framework"</xref> extends the
-    forwarding plane operations to leverage that redundancy with the Packet ARQ,
-    Replication, Elimination, and Overhearing (PAREO) functions, taking
-    advantage of multiple forms of diversity, including space and time, for a higher reliability.
+    Available Wireless (RAW) Architecture/Framework"</xref> enables a dynamic
+    path selection within the Track to increase the transmission diversity and
+    combat diverse causes of packet loss.
      </t>
     <t>
-    The RAW Architecture also considers the dynamic path selection
-    within a Track at forwarding time. To that effect, it defines
-    the Path Selection Engine (PSE), which is the counter-part of the PCE to
-    perform rapid local adjustments of the forwarding tables within the
-    diversity that the PCE has selected for the Track.
+    To that effect, RAW defines the Path Selection Engine (PSE) as a complement of the PCE operating in the dataplane.
+    The PSE controls the use of the Packet ARQ, Replication, Elimination, and
+    Overhearing (PAREO) functions over the Track segments.
     </t>
     <t>
-    RAW differentiates the time scale at which the PCE computes the Track (slow,
-    globally optimized, based on statistical metrics) and the time scale at
-    which the PSE makes the forwarding decision for a packet or a small
-    collection of packets (fast, but with a scope limited to the Track). This
-    provides a dynamic balance between the reliability and availability
-    requirements of the flows and the need to conserve energy  and spectrum.
+    While the time scale at which the PCE (re)computes the Track can be long,
+    for an operation based on long-term statistical metrics to perform global
+    optimizations at the scale of the whole network,
+    the PSE makes forwarding decision at the time scale of one or a small
+    collection of packets, using a knowledge that is changing rapidly but
+    limited in scope of the Track itself.
+    This way, the PSE can provide a dynamic balance between the reliability and
+    availability requirements of the flows and the need to conserve energy and spectrum.
 	 </t>
     <t>
     Projected Routes must be used with the parsimony to limit the amount of
@@ -259,13 +256,14 @@
     </t><dl spacing='compact'>
 
     <dt>Projected Route:</dt><dd>
-	A Projected Route is a serial path or path Segment that is computed,
-    installed and maintained remotely by a RPL Root.</dd>
-    <dt>Projected DAO:</dt><dd> A Projected DAO is a DAO message sent by the RPL Root to install a Projected Route. </dd>
+	A Projected Route is a serial path that is computed, installed and maintained remotely by a RPL Root.</dd>
+    <dt>Projected DAO:</dt><dd> A DAO message used to install a Projected Route. </dd>
     <dt>Track:</dt><dd>
-    The term Track is used in this document to refer to a complex path,
-    e.g., a DODAG, that incorporates redundant Projected Routes towards a
-    destination using diversity to increase the reliability.
+    A complex path with redundant Segments to a destination.
+    </dd>
+    <dt>TrackID:</dt><dd>
+    A RPL Local InstanceID with the 'D' bit set. It is associated with a Target
+    address that is the Track destination.
     </dd>
     </dl>
 </section>	<!-- end section "Other Terms" -->
@@ -361,11 +359,12 @@
      for a particular Target address. A Track is uniquely identified within the
      RPL domain by the tuple (Target address, TrackID).
      </t><t>
-     When packet is placed on a Track, a
-     RPL Packet Information (RPI) is added with the TrackID as RPLInstanceID.
-     The RPLInstanceID has the 'D' flag set, indicating that the destination
-     address in the IPv6 header is the Target that is used to identify the
-     Track.
+     The TrackID is always represented with the 'D' flag set.and associated with
+     a Target address. When a packet is placed on a Track, a RPL Packet
+     Information (RPI) is added (see <xref target='I-D.ietf-roll-useofrplinfo'/>)
+     with the TrackID as RPLInstanceID, in which case the 'D' flag set indicates
+     that the destination address in the IPv6 header is the Target that is used
+     to identify the Track.
      </t>
      </li>
      <li>
@@ -596,7 +595,7 @@
 
 
               <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
-               within a Track. A Value of 0 is used to signal a serial Track, i.e., made of a single segment.
+               within a Track. A Value of 0 is used to signal a serial path, i.e., made of a single segment.
               </dd>
 
               <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
@@ -630,9 +629,13 @@
               to the egress nodes. If the "C" flag is set,
               the fields Via Address 1 .. Via Address n in <xref target='viao'/>
               are replaced by one or more of the headers illustrated in Fig. 6
-              of <xref target='RFC8138'/>. More than one SRH-6LoRH is needed if
-              the compression of the addresses change inside the Segment and
-              different SRH-6LoRH Types are used.
+              of <xref target='RFC8138'/>. In the case of a VIO, or if
+              <xref target='RFC8138'/> is turned off, then the Root MUST use
+              only one SRH-6LoRH, and the compression is the same for all
+              addresses. If <xref target='RFC8138'/> is turned on, then the
+              Root SHOULD optimize the size of the SRVIO; in that case, more
+              than one SRH-6LoRH are needed if the compression of the addresses
+              change inside the Segment and different SRH-6LoRH Types are used.
               </dd>
             </dl>
                <t>
@@ -1147,7 +1150,7 @@
 
 
    <section anchor='RPLPDRflagReg'>
-   <name>New SubRegistry for the Projected DAO Request (PDR) Flags</name>
+   <name>SubRegistry for the Projected DAO Request Flags</name>
 
    <t>
    IANA is required to create a registry for the 8-bit Projected DAO Request
@@ -1187,11 +1190,11 @@
     </tbody>
         </table>
 
-   </section> <!-- New SubRegistry for the Projected DAO Request (PDR) Flags -->
+   </section> <!-- SubRegistry for the Projected DAO Request Flags -->
 
 
    <section anchor='RPLPDRackflagReg'>
-   <name>New SubRegistry for the PDR-ACK Flags</name>
+   <name>SubRegistry for the PDR-ACK Flags</name>
 
    <t>
    IANA is required to create an subregistry for the 8-bit PDR-ACK Flags field.
@@ -1207,14 +1210,14 @@
     No bit is currently defined for the PDR-ACK Flags.
    </t>
 
-   </section> <!-- New SubRegistry for the PDR-ACK Flags -->
+   </section> <!-- SubRegistry for the PDR-ACK Flags -->
 
 
 
 <section anchor='iana-stats-nonrej'>
-<name>New Subregistry for the PDR-ACK Acceptance Status values </name>
+<name>Subregistry for the PDR-ACK Acceptance Status Values </name>
  <t>
-	IANA is requested to create a new subregistry for the PDR-ACK Acceptance
+	IANA is requested to create a Subregistry for the PDR-ACK Acceptance
     Status values.
 </t>
 <ul spacing='normal'>
@@ -1236,13 +1239,13 @@
    </table>
 
 
-</section><!-- New Subregistry for the PDR-ACK Acceptance Status values -->
+</section><!-- Subregistry for the PDR-ACK Acceptance Status Values -->
 
 
 <section anchor='iana-stats-rej'>
-<name>New Subregistry for the PDR-ACK Rejection Status values</name>
+<name>Subregistry for the PDR-ACK Rejection Status Values</name>
  <t>
-	IANA is requested to create a new subregistry for the PDR-ACK Rejection
+	IANA is requested to create a Subregistry for the PDR-ACK Rejection
     Status values.
 </t>
 <ul spacing='normal'>
@@ -1261,15 +1264,15 @@
 
    </table>
 
-</section><!-- New Subregistry for the PDR-ACK Rejection Status values -->
+</section><!-- Subregistry for the PDR-ACK Rejection Status Values -->
 
 
 
    <section anchor='RPLRPOflagReg'>
-   <name>New SubRegistry for the Route Projection Options (RPO) Flags</name>
+   <name>SubRegistry for the Route Projection Options Flags</name>
 
    <t>
-   IANA is requested to create a new subregistry for the 5-bit Route Projection Options
+   IANA is requested to create a Subregistry for the 5-bit Route Projection Options
    (RPO) Flags field. Each bit is tracked with the following qualities:
    </t>
    <ul>
@@ -1282,11 +1285,11 @@
    No bit is currently defined for the Route Projection Options (RPO) Flags.
    </t>
 
-   </section> <!-- New SubRegistry for the Route Projection Options (RPO) Flags -->
+   </section> <!-- SubRegistry for the Route Projection Options Flags -->
 
 
    <section anchor='RPLSIOflagReg'>
-   <name>New SubRegistry for the Sibling Information Option (SIO) Flags</name>
+   <name>SubRegistry for the Sibling Information Option Flags</name>
 
    <t>
    IANA is required to create a registry for the 5-bit Sibling Information
@@ -1321,7 +1324,7 @@
     </tbody>
         </table>
 
-   </section> <!-- New SubRegistry for the Sibling Information Option (SIO) Flags -->
+   </section> <!-- SubRegistry for the Sibling Information Option Flags -->
 
 
 
@@ -1352,6 +1355,7 @@
     </middle>
     <back>
 
+   <displayreference   target="I-D.ietf-roll-useofrplinfo"     to="USEofRPLinfo"/>
    <displayreference   target="RFC6550"        to="RPL"/>
    <displayreference   target="I-D.pthubert-raw-architecture"   to="RAW-ARCHI"/>
    <displayreference   target="I-D.ietf-6tisch-architecture"    to="6TiSCH-ARCHI"/>
@@ -1378,6 +1382,8 @@
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
+
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-roll-useofrplinfo.xml'/>
 
       <reference anchor='PCE' target='https://datatracker.ietf.org/doc/charter-ietf-pce/'>
          <front>
