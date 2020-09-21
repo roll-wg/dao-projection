@@ -124,9 +124,17 @@
     This draft proposes protocol extensions to RPL that enable the Root to
     install a limited amount of centrally-computed routes in a RPL graph, on
     behalf of a PCE that may be collocated or separated from the Root.
-    Those extensions enable loose source routing down in RPL Non-Storing Mode
-    and transversal routes inside the DODAG regardless of the RPL Mode of
-    Operation (MOP).
+    Those extensions enable loose source routing down and transversal routes
+    inside the main DODAG running a base RPL Instance.
+    </t>
+    <t>
+    This specification expects that the base RPL Instance is operated in RPL
+    Non-Storing Mode of Operation (MOP) to sustain the exchanges with the Root.
+    In that Mode, the
+    Root has enough information to build a basic DODAG topology based on
+    parents and children, but lacks the knowledge of siblings. This document
+    adds the capability for nodes to advertise sibling information in order to
+    improve the topological awareness of the Root.
     </t>
     <t>
     As opposed to the classical RPL operations where routes are injected by the
@@ -177,14 +185,6 @@
     the transmission links. The methods used to learn the node capabilities and
     the resources that are available in the devices and in the network are out
     of scope for this document.
-    </t>
-    <t>
-    This specification expects that a base RPL Instance is operated in RPL
-    Non-Storing Mode to sustain the exchanges with the Root. In that Mode, the
-    Root has enough information to build a basic DODAG topology based on
-    parents and children, but lacks the knowledge of siblings. This document
-    adds the capability for nodes to advertise sibling information in order to
-    improve the topological awareness of the Root.
     </t>
     <t>
     This specification uses the RPL Root as a proxy to the PCE. The PCE may be
@@ -262,8 +262,7 @@
     A complex path with redundant Segments to a destination.
     </dd>
     <dt>TrackID:</dt><dd>
-    A RPL Local InstanceID with the 'D' bit set. It is associated with a Target
-    address that is the Track destination.
+    A RPL Local InstanceID with the 'D' bit set. The TrackId is associated with a Target address that is the Track destination.
     </dd>
     </dl>
 </section>	<!-- end section "Other Terms" -->
@@ -350,21 +349,23 @@
      </li>
      <li>
      <t>
-     A PCE that installs a more specific (say, Traffic Engineered) and possibly
-     complex path (i.e., a Track) towards a particular Target MUST use a Local
-     RPL Instance (see section 5 of <xref target='RFC6550'/>) associated to that
-     Target to identify the path.
+     The PCE may use P-DAOs to install a specific (say, Traffic Engineered) and possibly complex path, that we refer to as a Track, towards a particular Target. In that case it MUST use a Local RPL Instance (see section 5 of <xref target='RFC6550'/>) associated to that Target to identify the Track.
+
      </t><t>
-     We refer to that Local RPLInstanceID as TrackID. A TrackID MUST be unique
-     for a particular Target address. A Track is uniquely identified within the
-     RPL domain by the tuple (Target address, TrackID).
+     We refer to the local RPLInstanceID as TrackID. The TrackID MUST be unique for a particular Target IPv6 address. The Track is uniquely identified within the RPL domain by the tuple (Target address, TrackID) where the TrackID is always represented with the 'D' flag set.
+
      </t><t>
-     The TrackID is always represented with the 'D' flag set.and associated with
-     a Target address. When a packet is placed on a Track, a RPL Packet
-     Information (RPI) is added (see <xref target='I-D.ietf-roll-useofrplinfo'/>)
-     with the TrackID as RPLInstanceID, in which case the 'D' flag set indicates
-     that the destination address in the IPv6 header is the Target that is used
-     to identify the Track.
+     The Track where a packet is placed is signaled by a RPL Packet Information (RPI) (see <xref target='I-D.ietf-roll-useofrplinfo'/>) in the outer chain of IPv6 Headers. The RPI contains the TrackID as RPLInstanceID and the 'D' flag is set to indicate that the destination address in the IPv6 header is the Target that is used to identify the Track, more in <xref target='routing'/>.
+
+     </t>
+
+     </li>
+     <li><t>
+
+     The PCE may also install a projected Route as a complement to the main DODAG, e.g., using the Storing-Mode Mode along a Source-Routed path in order to enable loose source routing and reduce the Routing Header.
+     In that case, the global RPLInstanceID of the main DODAG is signaled in
+     place of the TrackId on the P-DAO, and the RPI  in the packet indicates
+     the global RPLInstanceID, more in <xref target='loose'/>.
      </t>
      </li>
      <li>
@@ -398,14 +399,17 @@
 
                <t>
     The P-DAO Request (PDR) message is sent to the Root to request a new that
-    the PCE establishes a new a projected route as a full path of a collection
-    of Segments in a Track. Exactly one Target Options MUST be present.
+    the PCE establishes a new a projected route from self ot the Target
+    indicated in the Target Option as a full path of a collection
+    of Segments in a Track. Exactly one Target Option MUST be present, more in
+    <xref target='req'/>.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
     information on the requested path.
     -->
     </t>
     <t>
+    The RPL Control Code for the PDR is 0x09, to be confirmed by IANA.
     The format of PDR Base Object is as follows:
     </t>
 
@@ -415,7 +419,7 @@
   0                   1                   2                   3
   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   TrackID     |K|R|   Flags   |  PDRLifetime  | PDRSequence   |
+ |   TrackID     |K|R|   Flags   |  ReqLifetime  | PDRSequence   |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  |   Option(s)...
  +-+-+-+-+-+-+-+-+
@@ -434,7 +438,9 @@
               <dt>R:</dt><dd>The 'R' flag is set to indicate that the Requested
               path should be redundant.
               </dd>
-              <dt>PDRLifetime:</dt><dd> <t>8-bit unsigned integer.</t>
+              <dt>Flags:</dt><dd>Reserved. The Flags field MUST initialized to zero by the sender and MUST be ignored by the receiver
+              </dd>
+              <dt>ReqLifetime:</dt><dd> <t>8-bit unsigned integer.</t>
               <t>
               The requested lifetime for the Track expressed in Lifetime Units
               (obtained from the DODAG Configuration option).
@@ -462,7 +468,9 @@
     <section anchor='rpldisackl'><name>New PDR-ACK Control Message</name>
     <t>
     The new PDR-ACK is sent as a response to a PDR message with the 'K' flag
-    set. Its format is as follows:
+    set.
+    The RPL Control Code for the PDR-ACK is 0x0A, to be confirmed by IANA.
+    Its format is as follows:
     </t>
 
 <figure anchor='disackfmt'><name>New PDR-ACK Control Message Format</name>
@@ -485,6 +493,9 @@
              The RPLInstanceID of the Track that was created. The value of 0x00 is used to when no Track was created.
               </dd>
 
+              <dt>Flags:</dt><dd>Reserved. The Flags field MUST initialized to zero by the sender and MUST be ignored by the receiver
+              </dd>
+
               <dt>Track Lifetime:</dt><dd>
              Indicates that remaining Lifetime for the Track, expressed in
              Lifetime Units; a value of zero (0x00)
@@ -501,8 +512,6 @@
             </t><t>
             The PDR-ACK Status is substructured as indicated in <xref target='rpst'/>:</t>
 
-              </dd>
-            </dl>
 
 
  <figure anchor='rpst' suppress-title='false'><name>PDR-ACK status Format</name>
@@ -512,7 +521,10 @@
    |E|R|  Value    |
    +-+-+-+-+-+-+-+-+
 </artwork>
- </figure><dl  spacing='normal'>
+ </figure>
+
+
+    <dl  spacing='normal'>
 	<dt>E:</dt><dd> 1-bit flag. Set to indicate a rejection. When not set, a value of 0
     indicates Success/Unqualified acceptance and other values indicate "not an
     outright rejection".</dd>
@@ -522,6 +534,15 @@
     setting of the 'E' flag as indicated respectively in
     <xref target='iana-ack-status'/> and <xref target='iana-nack-status'/>.
     </dd>
+
+	</dl>
+
+    </dd>
+
+    <dt>Reserved:</dt><dd>The Reserved field MUST initialized to zero by the
+    sender and MUST be ignored by the receiver
+    </dd>
+
 	</dl>
 
     </section> <!-- New PDR-ACK Control Message -->
@@ -542,7 +563,7 @@
     </t><t>
     The format of RPOs is as follows:
     </t>
-<figure anchor='viao'><name>Via Information option format (uncompressed form)</name>
+<figure anchor='viao'><name>Route Projection Option format (uncompressed form)</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -576,7 +597,7 @@
 </figure>
 
           <dl spacing='normal'>
-              <dt>Option Type:</dt><dd>0x0A for VIO, 0x0B for SRVIO
+              <dt>Option Type:</dt><dd>0x0B for VIO, 0x0C for SRVIO
                                      (to be confirmed by IANA)</dd>
 
               <dt>Option Length:</dt><dd>In bytes; variable, depending on the number
@@ -588,14 +609,22 @@
               the Via Addresses are expressed in 128 bits.
               </dd>
 
+              <dt>Flags:</dt><dd>Reserved. The Flags field MUST initialized to zero by the sender and MUST be ignored by the receiver
+              </dd>
+
+
+              <dt>Reserved:</dt><dd>The Reserved field MUST initialized to zero by the sender and MUST be ignored by the receiver
+              </dd>
+
               <dt>TrackID:</dt><dd>8-bit field indicating the topology Instance
-               associated with the Track. The tuple (Target Address, TrackID)
-               forms a unique ID of the Track in the RPL domain.
+               associated with the Track. This field carries either a TrackID, such that the tuple (Target Address, TrackID)
+               forms a unique ID of the Track in the RPL domain, or the glocal InstanceID of the main DODAG, in which case the RPO adds a route
+               to the main DODAG as an individual Segment.
               </dd>
 
 
               <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
-               within a Track. A Value of 0 is used to signal a serial path, i.e., made of a single segment.
+               within a Track or the main DODAG as indicated by the TrackId field. A Value of 0 is used to signal a serial path, i.e., made of a single segment.
               </dd>
 
               <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
@@ -619,7 +648,7 @@
               period starts when a new Segment Sequence is seen. A value of 255
               (0xFF) represents infinity. A value of zero (0x00)
               indicates a loss of reachability. A DAO message that
-              contains a Via Information option with a Path Lifetime of
+              contains a Via Information option with a Segment Lifetime of
               zero for a Target is referred as a No-Path (for that Target) in
               this document.</dd>
 
@@ -657,7 +686,7 @@
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |   Type        | Option Length |Comp.|B|D|Flags|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            Step of Rank       |        Sibling Rank           |
+    |            Step of Rank       |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
     +                                                               +
@@ -679,7 +708,7 @@
 </figure>
 
           <dl spacing='normal'>
-              <dt>Option Type:</dt><dd>0x0C (to be confirmed by IANA)</dd>
+              <dt>Option Type:</dt><dd>0x0D (to be confirmed by IANA)</dd>
 
               <dt>Option Length:</dt><dd>In bytes; variable, depending on the number
               of Via Addresses.</dd>
@@ -705,6 +734,9 @@
               same DODAG. When not set, the Sibling DODAGID is indicated.
 
               </dd>
+
+              <dt>Flags:</dt><dd>Reserved. The Flags field MUST initialized to zero by the sender and MUST be ignored by the receiver
+              </dd>
               <dt>Opaque:</dt><dd>MAY be used to carry information that the node
               and the Root understand, e.g., a particular representation of the
               Link properties such as a proprietary Link Quality Information
@@ -717,12 +749,9 @@
               Step of Rank <xref target='RFC6550'/> as computed by the Objective
               Function between this node and the sibling.
               </dd>
-              <dt>Sibling Rank:</dt><dd>16-bit unsigned integer. When non-zero,
-              this is the Rank <xref target='RFC6550'/> as exposed by the
-              sibling in DIO messages.
+
+              <dt>Reserved:</dt><dd>The Reserved field MUST initialized to zero by the sender and MUST be ignored by the receiver
               </dd>
-
-
 
               <dt>Sibling DODAGID:</dt><dd>2 to 16 bytes, the DODAGID of the
               sibling in a <xref target='RFC8138'/> compressed form as indicated
@@ -819,6 +848,52 @@
     for this document.
     </t-->
 
+      <section anchor='req'><name>Requesting a Track</name>
+
+      <t>
+      A Node is free to ask the Root for a new Track with a PDR message, for a duration indicated in a Requested Lifetime field. Upon that Request, the
+      Root install the necessary Segments and answers with a PDR-ACK indicated the granted Track Lifetime. When the Track Lifetime returned in the
+      PDR-ACK is close to elapse, the resquesting Node needs to resend a PDR using the TrackID in the PDR-ACK to get the lifetime of the Track prolonged, else the Track will time out and the Root will tear down the
+      whole structure.
+      </t>
+      <t>
+      The Segment Lifetime in the P-DAO messages does not need to be aligned to
+      the Requested Lifetime in the PDR, or between P-DAO messages for different Segments. The Root may use shorter lifetimes for the Segments
+      and renew them faster than the Track is, or longer lifetimes in which case it will need to tear down the Segments if the Track is not renewed.
+      </t>
+      <t>
+      The Root is free to install which ever Segments it wants, and change them overtime, to serve the Track as needed, without notifying the
+      resquesting Node. If the Track fails and cannot be reestablished, the
+      Root notifies the resquesting Node asynchronously with a PDR-ACK
+      with a Track Lifetime of 0, indicating that the Track has failed, and
+      a PDR-ACK Status indicating the reason of the fault.
+      </t>
+      <t>
+      All the Segments MUST be of a same mode, either Storing or Non-Storing.
+      All the Segments MUST be created with the same TrackId and Target in
+      the P-DAO.
+      </t>
+      </section><!-- Requesting a Track  -->
+
+      <section anchor='routing'><name>Routing over a Track</name>
+      <t>
+      Sending a packet over a Track implies the addition of a RPI to indicate the Track, in association with the IPv6 destination. In case of a
+      Non-Storing Mode Projected Route, a Source Routing Header is needed as
+      well.
+      </t>
+      <t>
+      The Destination IPv6 Address of a packet that is place in a Track MUST be
+      that of the Target of Track. The outer header of the packet MUST contain an RPI that indicates the TrackId as RPL Instance ID.
+      </t>
+      <t>
+      If the Track Ingress is the originator of the packet and the Track Egress (i.e., the Target) is the destination of the packet, there is no
+      need of an encapsulation. Else, i.e., if the Track Ingress is forwarding
+      a packet into the Track, or if the the final destination is reached via
+      is not the Target, but reached over the Track via the Track Egress, then
+      an IP-in-IP encapsulation is needed.
+      </t>
+      </section><!-- Routing over a Track  -->
+
     <section anchor='nspdao'><name>Non-Storing Mode Projected Route</name>
 
     <t>
@@ -869,7 +944,7 @@
       that routing happens via the Target, the router inserts the source routing
       header in the packet to reach the Target.
       In order to add a source-routing header, the router encapsulates the
-      packet with an IP-in-IP header and a non-storing mode source routing
+      packet with an IP-in-IP header and a Non-Storing Mode source routing
       header (SRH) <xref target='RFC6554'/>.
       In the uncompressed form the source of the packet would be self, the
       destination would be the first Via Address in the SRVIO, and the SRH would
@@ -947,7 +1022,7 @@
      Segment that must be installed. The P-DAO message contains the ordered list
      of hops along the Segment as a direct sequence of Via Information options
      that are preceded by one or more RPL Target options to which they relate.
-     Each Via Information option contains a Path Lifetime for which the state is
+     Each Via Information option contains a Segment Lifetime for which the state is
      to be maintained.
      </t><t>
      The Root sends the P-DAO directly to the egress node of the Segment.
@@ -1006,7 +1081,7 @@
      (suggested status 11 to be confirmed by IANA).
     </t>
     <t>
-     A Path Lifetime of 0 in a Via Information option is used to clean up the
+     A Segment Lifetime of 0 in a Via Information option is used to clean up the
      state. The P-DAO is forwarded as described above, but the DAO
      is interpreted as a No-Path DAO and results in cleaning up existing state
      as opposed to refreshing an existing one or installing a new one.
@@ -1132,13 +1207,13 @@
 
           <tr><td align='center'>5</td>
 
-          <td align='left'>Non-Storing mode of operation with Projected Routes</td>
+          <td align='left'>Non-Storing Mode of operation with Projected Routes</td>
 
           <td align='left'>This document</td></tr>
 
           <tr><td align='center'>6</td>
 
-          <td align='left'>Storing mode of operation with Projected Routes</td>
+          <td align='left'>Storing Mode of operation with Projected Routes</td>
 
           <td align='left'>This document</td></tr>
     </tbody>
@@ -1398,7 +1473,9 @@
     </references>
 
 	<section><name>Applications</name>
-      <section><name>Loose Source Routing in Non-storing Mode</name>
+
+       <section anchor='loose'><name>Loose Source Routing</name>
+
 
 	  <t>A RPL implementation operating in a very constrained LLN typically uses
       the Non-Storing Mode of Operation as represented in <xref target='nost'/>.
@@ -1409,7 +1486,7 @@
       the DODAG by recursively concatenating this information.
       </t>
 
-          <figure anchor='nost'><name>RPL non-storing mode of operation </name>
+          <figure anchor='nost'><name>RPL Non-Storing Mode of operation </name>
             <artwork>
            ------+---------
                  |          Internet
@@ -1464,18 +1541,18 @@
       </t>
 
       <t>
-      This specification enables to store source-routed or storing mode state in
+      This specification enables to store source-routed or Storing Mode state in
       intermediate routers, which enables to limit the excursion of the source
       route headers in deep networks.
       Once a P-DAO exchange has taken place for a given Target, if the Root
-      operates in non storing mode, then it may elide the sequence of routers
+      operates in non Storing Mode, then it may elide the sequence of routers
       that is installed in the network from its source route headers to
       destination that are reachable via that Target, and the source route
       headers effectively become loose.
       </t>
 
-      </section>
-    <section><name>Transversal Routes in storing and non-storing modes</name>
+      </section> <!-- Loose Source Routing -->
+    <section><name>Transversal Routes</name>
 
       <t>
       RPL is optimized for Point-to-Multipoint (P2MP) and Multipoint-to-Point
@@ -1486,20 +1563,20 @@
       between 2 nodes always happens via a common parent, as illustrated in
       <xref target='stretch'/>:
         </t><ul spacing='normal'>
-        <li> in non-storing mode, all packets
-     routed within the DODAG flow all the way up to the Root of the DODAG. If
-     the destination is in the same DODAG, the Root must encapsulate the packet
-     to place a Routing Header that has the strict source route information down
-     the DODAG to the destination. This will be the case even if the destination
-     is relatively close to the source and the Root is relatively far off.
-        </li>
-        <li>In storing mode, unless the destination is a child of the source,
+        <li>In Storing Mode, unless the destination is a child of the source,
      the packets will follow the default route up the DODAG as well.
      If the destination is in the same DODAG, they will eventually reach a
      common parent that has a route to the destination; at worse, the common
      parent may also be the Root. From that common parent, the packet will
      follow a path down the DODAG that is optimized for the Objective Function
      that was used to build the DODAG.</li>
+        <li> in Non-Storing Mode, all packets
+     routed within the DODAG flow all the way up to the Root of the DODAG. If
+     the destination is in the same DODAG, the Root must encapsulate the packet
+     to place a Routing Header that has the strict source route information down
+     the DODAG to the destination. This will be the case even if the destination
+     is relatively close to the source and the Root is relatively far off.
+        </li>
         </ul><t>
      </t>
 
@@ -1525,24 +1602,13 @@
           </figure>
 
 
-          <!--
-      In NSM, all peer-to-peer routes travel all the way to the Root, which adds
-      a source routing header and forwards the packet down to the destination,
-      resulting in the longest stretch and overload of the radio bandwidth near
-      the Root. A controller, for Instance collocated with the RPL Root, with
-      enough topological awareness of the connectivity between nodes, would be
-      able to compute more direct routes, avoiding the vicinity of the Root
-      whenever possible.
-      </t>
 
-      	  <t>With the initial specifications of RPL  <xref target="RFC6550"/>, the
-     P2P path from a source to a destination is often stretched
-
-          -->
      <t>
      It results that it is often beneficial to enable transversal P2P routes,
      either if the RPL route presents a stretch from shortest path, or if the
-     new route is engineered with a different objective.
+     new route is engineered with a different objective, and that it is
+     even more critical in Non-Storing Mode than it is in Storing Mode, because
+     the routing stretch is wider.
      For that reason, earlier work at the IETF introduced the
      <xref target='RFC6997'>"Reactive Discovery of Point-to-Point Routes in
      Low Power and Lossy Networks"</xref>, which specifies a distributed method for
@@ -1570,7 +1636,7 @@
        </artwork>
           </figure>
             <t>
-      This specification enables to store source-routed or storing mode state in
+      This specification enables to store source-routed or Storing Mode state in
       intermediate routers, which enables to limit the stretch of a P2P route
       and maintain the characteristics within a given SLA. An example of service
       using this mechanism oculd be a control loop that would be installed in a
@@ -1586,12 +1652,12 @@
 
     <section><name>Examples</name>
 
-        <section><name>Using storing mode P-DAO in non-storing mode MOP</name>
+        <section><name>Using Storing Mode P-DAO in Non-Storing Mode MOP</name>
 <t>
-    In non-storing mode, the DAG Root maintains the knowledge of the whole DODAG
+    In Non-Storing Mode, the DAG Root maintains the knowledge of the whole DODAG
     topology, so when both the source and the destination
     of a packet are in the DODAG, the Root can determine the common
-    parent that would have been used in storing mode, and thus the list of nodes
+    parent that would have been used in Storing Mode, and thus the list of nodes
     in the path between the common parent and the destination. For Instance in
     the diagram shown in <xref target='exmp'/>, if the source is node 41
     and the destination is node 52, then the common parent is node 22.
@@ -1624,7 +1690,7 @@
 
 
     <t>
-     With this draft, the Root can install a storing mode routing states along a
+     With this draft, the Root can install a Storing Mode routing states along a
      Segment that is either from itself to the destination, or from one or more
      common parents for a particular source/destination pair towards that
      destination (in this particular
@@ -1668,7 +1734,7 @@
     </t><t>
     When 35 receives from its child a packet to node 56, it adds the routing
     header to node 56 in the packet header. In this case nothing changes for
-    the node 46 acting as non storing mode.
+    the node 46 acting as non Storing Mode.
 
     </t><t>
       The life time of the DAO may be dynamically changed by the Root.
