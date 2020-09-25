@@ -1,6 +1,56 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE rfc SYSTEM "rfc2629-xhtml.ent">
 
+<!--
+[Roll] Transit vs. Target in P DAO
+
+Hello Rahul,
+
+Yes, this gets quite a lot of things to put together but in the end it is not so complicated if you have a picture to look at.
+I’ll make some for the interim.
+
+My to do’s on this draft for the next version:
+
+- Align the “serial” vs. “Complex” Track terminology between 6TiSCH, RAW n’ ROLL.
+
+- Create an initial format for FIO based in DetNet.
+  -> Do you see any more field we’d like to see in there, e.g., the capability to inject a Track in another?
+
+- Describe that the TIO points on the tunnel egress, and that routes via the tunnel are signaled as targets in RTOs
+  -> a side effect is that the sequence and lifetimes are now taken from the TIO so they are not needed in the (SR)VIO. This makes good sense IMHO.
+  -> should the route to the egress be automatically added? There could be times where only some flows should go there. Maybe we could use a flag in the TIO to signal it?
+
+
+The Track Egress is the Root of DODAG that we build and we call  it a Track.
+For a Track, the RPLInstanceID is a local one, that is associated to the Track Egress, and we call it a TrackID.
+
+Now, trying to make work the below, it seems better that instead of using a TIO, we could signal the Egress and TrackID in the DAO itself as follows:
+
+        0                   1                   2                   3
+        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |    TrackID    |K|D|   Flags   |   Reserved    | DAOSequence   |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                                                               |
+       +                                                               +
+       |                                                               |
+       +                        Track Egress                           +
+       |                                                               |
+       +                                                               +
+       |                                                               |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |   Option(s)...
+       +-+-+-+-+-+-+-+-+
+
+                      Figure 16: The DAO Base Object
+
+
+This seems to make more sense than using a TIO.
+
+
+Pascal
+
+-->
 
 <?rfc toc="yes"?>
 <?rfc tocompact="yes"?>
@@ -14,7 +64,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-12" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-13" >
 
 <front>
 
@@ -72,7 +122,7 @@
 
         <abstract>
 	  <t>
-     This document enables a RPL Root to install and maintain Projected Routes
+     This document updates RFC 6775 to enable a RPL Root to install and maintain Projected Routes
      within its DODAG, along a selected set of nodes that may or may
      not include self, for a chosen duration. This potentially enables routes
     that are more optimized or resilient than those obtained with the
@@ -100,12 +150,12 @@
     the Root often acts as the Border Router to connect the RPL domain to the
     Internet. The Root is responsible to select the RPL Instance that is used
     to forward a packet coming from the Internet into the RPL domain and set
-    the related RPL information in the packets.
-    The  <xref target='I-D.ietf-6tisch-architecture'>
-    "6TiSCH Architecture"</xref> uses RPL for its routing operations.
+    the related RPL information in the packets. 6TiSCH uses RPL for its routing operations.
     </t>
     <t>
-    The 6TiSCH Architecture also leverages the <xref target='RFC8655'>
+
+    The <xref target='I-D.ietf-6tisch-architecture'>
+    "6TiSCH Architecture"</xref> also leverages the <xref target='RFC8655'>
     "Deterministic Networking Architecture"</xref> centralized model
     whereby the device resources and capabilities are exposed to an external
     controller which installs routing states into the network based on some
@@ -117,8 +167,7 @@
     Based on heuristics of usage, path length, and knowledge of device capacity
     and available resources such as battery levels and reservable buffers, a
     PCE with a global visibility on the system can compute P2P routes that are
-    more optimized
-    for the current needs as expressed by the objective function.
+    more optimized for the current needs as expressed by the objective function.
     </t>
     <t>
     This draft proposes protocol extensions to RPL that enable the Root to
@@ -146,37 +195,35 @@
     A Projected Route may be installed in either Storing and Non-Storing Mode,
     potentially resulting in hybrid situations where the Mode of the Projected
     Route is different from that of the main RPL Instance.
-    A Projected Route may be a stand-alone end-to-end path to a Target or a
-    Segment in a more complex forwarding graph called a Track.
+    A Projected Route may be a stand-alone end-to-end path or a Segment in a more complex forwarding graph called a Track.
     </t>
     <t>
     The concept of a Track was introduced in the 6TiSCH architecture, as a
-    complex path to a Target destination with redundant forwarding solutions
+    complex path to a Track Egress with redundant forwarding solutions
     along the way.
     A node at the ingress of more than one Segment in a Track may use any
-    combination of those Segments to forward a packet towards the Target.
+    combination of those Segments to forward a packet towards the Track Egress.
     </t>
     <t>
-
     The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture/Framework"</xref> enables a dynamic
     path selection within the Track to increase the transmission diversity and
     combat diverse causes of packet loss.
      </t>
     <t>
-    To that effect, RAW defines the Path Selection Engine (PSE) as a complement of the PCE operating in the dataplane.
-    The PSE controls the use of the Packet ARQ, Replication, Elimination, and
-    Overhearing (PAREO) functions over the Track segments.
+    To that effect, RAW defines the Path Selection Engine (PSE) as a dataplane extension of the PCE that dynamically controls the forwarding operation of
+    the packets within a Track, using Packet ARQ, Replication, Elimination, and
+    Overhearing (PAREO) functions over the Track segments, to provide a dynamic
+    balance between the reliability and availability requirements of the flows
+    and the need to conserve energy and spectrum.
     </t>
     <t>
-    While the time scale at which the PCE (re)computes the Track can be long,
-    for an operation based on long-term statistical metrics to perform global
-    optimizations at the scale of the whole network,
-    the PSE makes forwarding decision at the time scale of one or a small
-    collection of packets, using a knowledge that is changing rapidly but
-    limited in scope of the Track itself.
-    This way, the PSE can provide a dynamic balance between the reliability and
-    availability requirements of the flows and the need to conserve energy and spectrum.
+    The time scale at which the PCE (re)computes the Track can be long,
+    using long-term statistical metrics to perform global optimizations at the
+    scale of the whole network. Conversely, the PSE makes forwarding decisions
+    at the time scale of one or a small collection of packets, based on a
+    knowledge that is limited in scope to the Track itself, so it can be
+    refreshed at a fast pace.
 	 </t>
     <t>
     Projected Routes must be used with the parsimony to limit the amount of
@@ -190,7 +237,7 @@
     This specification uses the RPL Root as a proxy to the PCE. The PCE may be
     collocated with the Root, or may reside in an external Controller. In that
     case, the PCE exchanges control messages with the Root over a Southbound
-    API, that is out of scope for this specification.
+    API that is out of scope for this specification.
     The algorithm to compute the paths and the protocol used by an external PCE
     to obtain the topology of the network from the Root are also out of scope.
     </t>
@@ -225,7 +272,7 @@
        <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
        <dt>DAG:</dt><dd> Directed Acyclic Graph </dd>
        <dt>DODAG:</dt><dd> Destination-Oriented Directed Acyclic Graph; A DAG
-       with only one vertice (i.e., node) that has no outgoing edge (i.e., link)
+       with only one vertex (i.e., node) that has no outgoing edge (i.e., link)
        </dd>
        <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
        <dt>MOP:</dt><dd> RPL Mode of Operation</dd>
@@ -237,7 +284,7 @@
        <dt>RPL:</dt><dd> IPv6 Routing Protocol for LLNs <xref target='RFC6550'/>
        </dd>
        <dt>RPO:</dt><dd> A Route Projection Option; it can be a VIO or an SRVIO.    </dd>
-       <dt>RTO:</dt><dd> RPL Target Option </dd>
+       <dt>RTO:</dt><dd> RPL Target Option</dd>
        <dt>RUL:</dt><dd> RPL-Unaware Leaf </dd>
        <dt>SIO:</dt><dd> RPL Sibling Information Option</dd>
        <dt>SRVIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing Mode P-DAO messages.    </dd>
@@ -262,7 +309,7 @@
     A complex path with redundant Segments to a destination.
     </dd>
     <dt>TrackID:</dt><dd>
-    A RPL Local InstanceID with the 'D' bit set. The TrackId is associated with a Target address that is the Track destination.
+    A RPL Local InstanceID with the 'D' bit set. The TrackID is associated with a IPv6 Address to the Track Egress Node.
     </dd>
     </dl>
 </section>	<!-- end section "Other Terms" -->
@@ -281,56 +328,64 @@
 
     <section anchor='ext6550'><name>Updating RFC 6550</name>
 
+
+	<t>
+   This specification extends the Destination Advertisement Object (DAO)
+   message with the Projected DAO (P-DAO); the P-DAO is used by the Root of the
+   main DODAG to install Projected Routes between nodes within the DODAG.
+   </t>
    <t>
-   This specification introduces two new RPL Control Messages to enable a RPL
-   Aware Node (RAN) to request the establisment of a Track from self to a Target.
-   The RAN makes its request by sending a new P-DAO Request (PDR) Message to
-   the Root. The Root confirms with a new PDR-ACK message back to the requester
-   RAN, see <xref target='pdaoreq'/> for more.
+   A P-DAO message signals a sequential Segment called a Projected Route that can be
+   used as a Serial Track. Segments can also be combined to form a DODAG called
+   a Complex Track and rooted at the Track Egress. The local RPLInstanceID of
+   the Track is called the TrackID. A P-DAO message signals the Track Egress in
+   the DODAGID field of the DAO Base Object, and the TrackID in the
+   RPLInstanceID field.
    </t>
-
-	<t>
-   Section 6.7 of <xref target='RFC6550'/> specifies the RPL Control Message
-   Options (CMO) to be placed in RPL messages such as the Destination
-   Advertisement Object (DAO) message.
-   The RPL Target Option (RTO) and the Transit Information Option (TIO) are such
-   options.
+   <t>
+   Section 6 of <xref target='RFC6550'/> introduces the RPL Control Message Options (CMO), such as the RPL Target Option (RTO) and the Transit Information Option (TIO), that can be placed in RPL messages such as the DAO.
    </t>
-
-	<t>
-   In Non-Storing Mode, the TIO option is used in the DAO message to inform the
-   root of the parent-child relationships within the DODAG, and the Root has a full knowledge of the DODAG structure.
-   The TIO applies to the RTOs that preceed it immediately in the message.
-   Options may be factorized; multiple TIOs may be
-   present to indicate multiple routes to the one or more contiguous addresses
-   indicated in the RTOs that immediately precede the TIOs in the RPL message.
+   <t>
+   In RPL Non-Storing Mode, the TIO and RTO are used in combination in the DAO message to inform the root of the parent-child relationships within the DODAG, and the Root has a full knowledge of the DODAG structure.
+   Options may be factorized; multiple RTOs may be present to signal a collection of children that can be reached via the parent indicated in at
+   least one TIO that follows the RTOs.
    </t>
   <t>
-   This specification introduces two new CMOs referred to as Route Projection
-   Options (RPO) to install Projected Routes. One RPO is the Via Information
-   Option (VIO) and the other is the Source-Routed VIO (SRVIO). The VIO
-   installs a route on each hop along a Projected Route (in a fashion analogous
-   to RPL Storing Mode) whereas the SRVIO installs a source-routing state at the
-   ingress node, which uses that state to encapsulate a packet with an IPv6
-   Routing Header in a fashion similar to RPL Non-Storing Mode.
-   </t>
-
-	<t>
-   Like the TIO, the RPOs MUST be preceded by exactly one RTO to which they
-   apply, and SRVIOs MAY be factorized, though VIOs MUST NOT be. Factorized
-   contiguous SRVIOs indicate alternate paths to the Target, more in
-   <xref target='rplrpo'/>.
+   The Projected Routes model generalizes the concept of parent with that of a
+   Track through which both children and siblings may be reached. Two new CMOs referred to as Route Projection Options (RPO) are introduced for use in P-DAO messages as a multihop alternative to the TIO. One RPO, the Via Information Option (VIO), installs a route on one hop along a Storing Mode Projected Route. The other RPO, the Source-Routed VIO (SRVIO) installs a source-routing state at the Segment ingress, which uses that state to encapsulate a packet with an IPv6 Routing Header along a Non-Storing Mode Projected Route.
    </t>
    <t>
-   This specification also introduces a new CMO to enable a RAN to advertise
-   a selection of its candidate neighbors as siblings to the Root, using a new
-   Sibling Information Option (SIO) as specified in <xref target='rplsib'/>.
+   In a PDA, the RTOs can be factorized, but the CMOs cannot.
+   A P-DAO contains one or more RTOs that indicate the destinations that can be
+   reached via the Track, and either one SRVIO that signals the full
+   segemnt or a sequence of VIOs that are placed in the order of hops between the Track Ingress and the penultimate hop before the Track Egress, one VIO per hop.
+   In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored. In Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state at each hop.
+   </t>
+   <t>
+   This specification adds another CMO to enable a RPL Aware Node (RAN) to advertise a selection of its candidate neighbors as siblings to the Root,
+   using a new Sibling Information Option (SIO) as specified in <xref target='rplsib'/>. The selection process is out of scope.
    </t>
 
+   <t>
+   Two new RPL Control Messages are also introduced, to enable a RAN
+   to request the establishment of a Track between self as the Track Ingress
+   Node and a Track Egress.
+   The RAN makes its request by sending a new P-DAO Request (PDR) Message to
+   the Root. The Root confirms with a new PDR-ACK message back to the requester
+   RAN, see <xref target='pdaoreq'/> for more. A positive PDR-ACK indicates that
+   the Track was built and that the Roots commits to maintain the Track for a
+   negotiated lifetime.
+   </t>
+   <t>
+   In the case of a complex Track, each Segment is maintained independently and
+   asynchronously by the Root, with its own lifetime that may be shorter, the
+   same, or longer than that of the Track. The Root may use an asynchronous
+   PDR-ACK with an negative status to indicate that the Track was terminated before its time.
+   </t>
   </section> <!-- Extending RFC 6550 -->
 
 
-     <section><name>Identifying a Path</name>
+     <section><name>Identifying a Track</name>
      <t>
      It must be noted that RPL has a concept of Instance to represent different
      routing topologies but does not have a concept of an administrative
@@ -344,27 +399,28 @@
      <li>
      If the PCE needs to influence a particular Instance to add better routes
      in conformance with the routing objectives in that Instance, it may do so
-     as long as it does not create a loop. A Projected Route is always
-     preferred over a route that is learned via RPL.
+     at will, provided that it does not create a loop.
+     A Projected Route is always preferred over a route that is learned via the
+     main RPL Instance.
      </li>
      <li>
      <t>
-     The PCE may use P-DAOs to install a specific (say, Traffic Engineered) and possibly complex path, that we refer to as a Track, towards a particular Target. In that case it MUST use a Local RPL Instance (see section 5 of <xref target='RFC6550'/>) associated to that Target to identify the Track.
+     The PCE may use P-DAOs to install a specific (say, Traffic Engineered) and possibly complex path, that we refer to as a Track, to a particular endpoint that is the Track Egress. In that case it MUST use a Local RPL Instance (see section 5 of <xref target='RFC6550'/>) associated to an IPv6 address of the Track Egress to identify the Track.
 
      </t><t>
-     We refer to the local RPLInstanceID as TrackID. The TrackID MUST be unique for a particular Target IPv6 address. The Track is uniquely identified within the RPL domain by the tuple (Target address, TrackID) where the TrackID is always represented with the 'D' flag set.
+     We refer to the local RPLInstanceID as TrackID. The TrackID MUST be unique for a particular IPv6 address. The Track is uniquely identified within the RPL domain by the tuple (Track Egress Address, TrackID) where the TrackID is always represented with the 'D' flag set.
 
      </t><t>
-     The Track where a packet is placed is signaled by a RPL Packet Information (RPI) (see <xref target='I-D.ietf-roll-useofrplinfo'/>) in the outer chain of IPv6 Headers. The RPI contains the TrackID as RPLInstanceID and the 'D' flag is set to indicate that the destination address in the IPv6 header is the Target that is used to identify the Track, more in <xref target='routing'/>.
+     The Track where a packet is placed is signaled by a RPL Packet Information (RPI) (see <xref target='I-D.ietf-roll-useofrplinfo'/>) in the outer chain of IPv6 Headers. The RPI contains the TrackID as RPLInstanceID and the 'D' flag is set to indicate that the destination address in the IPv6 header is the Track Egress Address that is used to identify the Track, more in <xref target='routing'/>.
 
      </t>
 
      </li>
      <li><t>
 
-     The PCE may also install a projected Route as a complement to the main DODAG, e.g., using the Storing-Mode Mode along a Source-Routed path in order to enable loose source routing and reduce the Routing Header.
+     The PCE may also install a projected Route as a complement to the main DODAG, e.g., using the Storing-Mode Mode along a path down the main DODAG in order to enable loose source routing and reduce the Routing Header.
      In that case, the global RPLInstanceID of the main DODAG is signaled in
-     place of the TrackId on the P-DAO, and the RPI  in the packet indicates
+     place of the TrackID on the P-DAO, and the RPI  in the packet indicates
      the global RPLInstanceID, more in <xref target='loose'/>.
      </t>
      </li>
@@ -377,9 +433,8 @@
      </li>
      </ul>
      <t>
-     A Projected Route is a serial path that may represent the end-to-end route or only a Segment in a complex Track, in which case multiple Projected
-     Routes are installed with  the same tuple (Target address, TrackID) and a
-     different Segment ID each.
+     A Projected Route is a sequence of hops that may represent an end-to-end
+     Serial Track, or only a Segment in a Complex Track, in which case multiple Projected Routes are installed with the same tuple (Track Egress address, TrackID) and a different Segment ID each.
      </t>
 
     <t>
@@ -399,9 +454,9 @@
 
                <t>
     The P-DAO Request (PDR) message is sent to the Root to request a new that
-    the PCE establishes a new a projected route from self ot the Target
-    indicated in the Target Option as a full path of a collection
-    of Segments in a Track. Exactly one Target Option MUST be present, more in
+    the PCE establishes a new a projected route from self to the Track Egress
+    indicated in the TIO as a full path of a collection
+    of Segments in a Track. Exactly one TIO MUST be present, more in
     <xref target='req'/>.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
@@ -456,7 +511,7 @@
               <xref target='RFC6550'/>.
               </t><t>
               The PDRSequence is used to correlate a PDR-ACK message with the
-              PDR message that triggeted it. It is incremented at each PDR
+              PDR message that triggered it. It is incremented at each PDR
               message and echoed in the PDR-ACK by the Root.
               </t>
               </dd>
@@ -555,11 +610,11 @@
     </xref> specification using the address of the Root found in the DODAGID
     field of DIO messages as Compression Reference.
     </t><t>
-    An RPO indicates a Projected Route that can be a serial Track in full or
-    a Segment of a more complex Track. In Non-Storing Mode, multiple RPO
-    may be placed after a same Target Option to reflect different Segments
+    An RPO indicates a Projected Route that can be a Serial Track in full or
+    a Segment of a more Complex Track. In Non-Storing Mode, multiple RPO
+    may be placed after a TIO to reflect different Segments
     originated at this node. The Track is identified by a
-    TrackID that is a Local RPLInstanceID to the Target of the Track.
+    TrackID that is a Local RPLInstanceID to the Track Egress of the Track.
     </t><t>
     The format of RPOs is as follows:
     </t>
@@ -617,14 +672,14 @@
               </dd>
 
               <dt>TrackID:</dt><dd>8-bit field indicating the topology Instance
-               associated with the Track. This field carries either a TrackID, such that the tuple (Target Address, TrackID)
-               forms a unique ID of the Track in the RPL domain, or the glocal InstanceID of the main DODAG, in which case the RPO adds a route
+               associated with the Track. This field carries either a TrackID, such that the tuple (Track Egress Address, TrackID)
+               forms a unique ID of the Track in the RPL domain, or the global InstanceID of the main DODAG, in which case the RPO adds a route
                to the main DODAG as an individual Segment.
               </dd>
 
 
               <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
-               within a Track or the main DODAG as indicated by the TrackId field. A Value of 0 is used to signal a serial path, i.e., made of a single segment.
+               within a Track or the main DODAG as indicated by the TrackID field. A Value of 0 is used to signal a Serial Track, i.e., made of a single segment.
               </dd>
 
               <dt>Segment Sequence:</dt><dd>8-bit unsigned integer.
@@ -636,7 +691,7 @@
               for the Segment indicated by the SegmentID within the indicated
               Track and sets up the new information. A RTO with a Segment
               Sequence that is not as fresh as the current one is ignored.
-              a RTO for a given target with the same (TrackID,
+              a RTO for a given Track Egress with the same (TrackID,
               SegmentID, Segment Sequence) indicates a retry; it MUST NOT
               change the Segment and MUST be propagated or answered as the first
               copy.</dd>
@@ -649,22 +704,23 @@
               (0xFF) represents infinity. A value of zero (0x00)
               indicates a loss of reachability. A DAO message that
               contains a Via Information option with a Segment Lifetime of
-              zero for a Target is referred as a No-Path (for that Target) in
+              zero for a Track Egress is referred as a No-Path (for that Track Egress) in
               this document.</dd>
 
 
               <dt>Via Address:</dt><dd> The collection of Via Addresses along
               one Segment, indicated in the order of the path from the ingress
               to the egress nodes. If the "C" flag is set,
-              the fields Via Address 1 .. Via Address n in <xref target='viao'/>
+              the fields Via Address 1 to Via Address n in <xref target='viao'/>
               are replaced by one or more of the headers illustrated in Fig. 6
               of <xref target='RFC8138'/>. In the case of a VIO, or if
               <xref target='RFC8138'/> is turned off, then the Root MUST use
-              only one SRH-6LoRH, and the compression is the same for all
-              addresses. If <xref target='RFC8138'/> is turned on, then the
+              only one SRH-6LoRH per RPO, and the compression is the same for
+              all the addresses.
+              If <xref target='RFC8138'/> is turned on, then the
               Root SHOULD optimize the size of the SRVIO; in that case, more
               than one SRH-6LoRH are needed if the compression of the addresses
-              change inside the Segment and different SRH-6LoRH Types are used.
+              changes inside the Segment and different SRH-6LoRH Types are used.
               </dd>
             </dl>
                <t>
@@ -778,11 +834,8 @@
 
     <t>
     This draft adds a capability to RPL whereby the Root of a DODAG projects a
-    route by sending one or more extended DAO message called Projected-DAO
-    (P-DAO) messages to an
-    arbitrary router in the DODAG, indicating one or more sequence(s) of routers
-    inside the DODAG via which the Target(s) indicated in the RPL Target
-    Option(s) (RTO) can be reached.
+    Track by sending one or more extended DAO message called Projected-DAO
+    (P-DAO) messages to chosen routers in the DODAG, indicating one or more sequence(s) of routers inside the DODAG via which the Target(s) indicated in the RPL Target Option(s) (RTO) can be reached.
      </t> <t>
     A P-DAO is sent from a global address of the Root to a global address of the
     recipient, and MUST be confirmed by a DAO-ACK, which is sent back to a
@@ -803,9 +856,9 @@
      <li>
     The Non-Storing Mode is discussed in <xref target='nspdao'/>.
     It uses an SRVIO that carries a list of Via Addresses to be used as a
-    source-routed path to the Target. The recipient of the P-DAO is the
-    ingress router of the source-routed path. Upon a Non-Storing Mode P-DAO, the
-    ingress router installs a source-routed state to the Target and replies to
+    source-routed Segment to the Track Egress. The recipient of the P-DAO is the
+    ingress router of the source-routed Segment. Upon a Non-Storing Mode P-DAO, the
+    ingress router installs a source-routed state to the Track Egress and replies to
     the Root directly with a DAO-ACK message.
      </li>
     <li>
@@ -814,7 +867,7 @@
     egress of the path, including the list of all intermediate routers in the
     data path order.
     The Via Addresses indicate the routers in which the routing state to the
-    Target have to be installed via the next Via Address in the VIO.
+    Track Egress have to be installed via the next Via Address in the VIO.
     In normal operations, the P-DAO is propagated along the chain of Via Routers
     from the egress router of the path till the ingress one, which confirms the
     installation to the Root with a DAO-ACK message.
@@ -870,7 +923,7 @@
       </t>
       <t>
       All the Segments MUST be of a same mode, either Storing or Non-Storing.
-      All the Segments MUST be created with the same TrackId and Target in
+      All the Segments MUST be created with the same TrackID and Track Egress in
       the P-DAO.
       </t>
       </section><!-- Requesting a Track  -->
@@ -882,14 +935,15 @@
       well.
       </t>
       <t>
-      The Destination IPv6 Address of a packet that is place in a Track MUST be
-      that of the Target of Track. The outer header of the packet MUST contain an RPI that indicates the TrackId as RPL Instance ID.
+      The Destination IPv6 Address of a packet that is placed in a Track MUST be
+      that of the Track Egress of Track. The outer header of the packet MUST contain an RPI that indicates the TrackID as RPL Instance ID.
       </t>
       <t>
-      If the Track Ingress is the originator of the packet and the Track Egress (i.e., the Target) is the destination of the packet, there is no
-      need of an encapsulation. Else, i.e., if the Track Ingress is forwarding
+      If the Track Ingress is the originator of the packet and the Track Egress
+      is the destination of the packet, there is no need for an encapsulation.
+      Else, i.e., if the Track Ingress is forwarding
       a packet into the Track, or if the the final destination is reached via
-      is not the Target, but reached over the Track via the Track Egress, then
+      is not the Track Egress, but reached over the Track via the Track Egress, then
       an IP-in-IP encapsulation is needed.
       </t>
       </section><!-- Routing over a Track  -->
@@ -898,10 +952,10 @@
 
     <t>
     As illustrated in <xref target='nsdf'/>, a P-DAO that carries an SRVIO
-    enables the Root to install a source-routed path towards a Target in any
+    enables the Root to install a source-routed path towards a Track Egress in any
     particular router; with this path information the router can add a source
     routed header reflecting the Projected Route to any packet for which the current
-    destination either is the said Target or can be reached via the Target.
+    destination either is the said Track Egress or can be reached via the Track Egress.
     </t>
 
           <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
@@ -919,7 +973,7 @@
       o  o o  o o    o   o   o  o  o             | Source  . Path
       o   o    o  o     o  o    o  o  o          | Route   . From
      o  o   o  o   o         o   o o             | Path    . Root
-        o  o  o  o             o    Target       V         . To
+        o  o  o  o             o    Track Egress V         . To
        o       o               o    o                      | Desti-
      o          o             o     o                      | nation
                                    destination             V
@@ -941,14 +995,14 @@
     </t>
     <t>
       When forwarding a packet to a destination for which the router determines
-      that routing happens via the Target, the router inserts the source routing
-      header in the packet to reach the Target.
+      that routing happens via the Track Egress, the router inserts the source
+      routing header in the packet with the destination set to the Track Egress.
       In order to add a source-routing header, the router encapsulates the
       packet with an IP-in-IP header and a Non-Storing Mode source routing
       header (SRH) <xref target='RFC6554'/>.
       In the uncompressed form the source of the packet would be self, the
       destination would be the first Via Address in the SRVIO, and the SRH would
-      contain the list of the remaining Via Addresses and then the Target.
+      contain the list of the remaining Via Addresses and then the Track Egress.
     </t>
     <t>
       In the case of a loose source-routed path, there MUST be either a neighbor
@@ -964,8 +1018,8 @@
       Dispatch"</xref> to compress the RPL artifacts as indicated in
       <xref target='RFC8138'/>. In that case, the router indicates self as
       encapsulator in an IP-in-IP 6LoRH Header, and places the list of Via
-      Addresses in the order of the VIO and then the Target in the SRH 6LoRH
-      Header.
+      Addresses in the order of the VIO and then the Track Egress in the SRH
+      6LoRH Header.
       </t>
       <t>In case of a forwarding error along a Source Route path, the node that
       fails to forward SHOULD send an ICMP error with a code "Error in Source
@@ -986,12 +1040,11 @@
 
       <t>
       As illustrated in <xref target='sdf'/>, the Storing Mode route projection
-      is used by the Root to install a routing state towards a Target in the
-      routers along a Segment between an ingress and an egress router;
+      is used by the Root to install a routing state in the
+      routers along a Segment between an Ingress and an Egress router
       this enables the routers to forward along that Segment any packet for
-      which the next loose hop is the said Target, for Instance a loose source
-      routed packet for which the next loose hop is the Target, or a packet for
-      which the router has a routing state to the final destination via the Target.
+      which the next loose hop is the Egress node, for instance a loose source
+      routed packet for which the next loose hop is the Egress node, or a packet for which the router has a routing state to the final destination via the Egress node.
       </t>
       <figure anchor='sdf'><name>Projecting a route</name>
         <artwork>
@@ -1032,7 +1085,7 @@
      VIO.
      </t><t>
 
-     The egress node of the Segment is the only node in the path that does not
+     The Egress node of the Segment is the only node in the path that does not
      install a route in response to the P-DAO; it is expected to be already able
      to route to the Target(s) on its own. It may either be the Target, or may
      have some existing information to reach the Target(s), such as a connected
@@ -1753,13 +1806,12 @@
 
 
    <t>In this example, say that a PCE determines that a path must be installed
-   between node S and node D via routers A, B and C, in order to serve the needs
+   between node I and node D via routers A, B and E, in order to serve the needs
    of a particular application.
    </t><t>
-   The Root sends a P-DAO with a Target option indicating the destination D and
-   a sequence Via Information option, one for S, which is the ingress router of
-   the Segment, one for A and then for B, which are an intermediate routers, and
-   one for C, which is the egress router.
+   The Root sends a P-DAO to node E, with an RTO indicating the destination D,
+   a TIO optionally indicating the Track Egress in the Parent Address field,
+   and a sequence of Via Information options indicating the hops, one for S, which is the ingress router of the Segment, one for A, and then one for B, which are respectively the intermediate and penultimate routers.
    </t>
        <figure anchor='pdao2'><name>P-DAO from Root</name>
             <artwork>
@@ -1775,7 +1827,7 @@
           o o   o |    o  o  o o   o
          o  o o  | o    o   o   o  o  o
          o   o   V  o     o  o    o  o  o
-        S  A  B  C   D         o   o o
+        S  A  B  E   D         o   o o
         o          o             o     o
                           LLN
        </artwork>
