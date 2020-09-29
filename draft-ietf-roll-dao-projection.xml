@@ -11,44 +11,11 @@ I’ll make some for the interim.
 
 My to do’s on this draft for the next version:
 
-- Align the “serial” vs. “Complex” Track terminology between 6TiSCH, RAW n’ ROLL.
-
 - Create an initial format for FIO based in DetNet.
   -> Do you see any more field we’d like to see in there, e.g., the capability to inject a Track in another?
 
-- Describe that the DAO points on the tunnel egress, and that routes via the tunnel are signaled as targets in RTOs
-  -> a side effect is that the sequence and lifetimes are now taken from the TIO so they are not needed in the (SR)VIO. This makes good sense IMHO.
-  -> should the route to the egress be automatically added? There could be times where only some flows should go there. Maybe we could use a flag in the TIO to signal it?
 
 
-The Track Egress is the Root of DODAG that we build and we call  it a Track.
-For a Track, the RPLInstanceID is a local one, that is associated to the Track Egress, and we call it a TrackID.
-
-Now, trying to make work the below, it seems better that instead of using a TIO, we could signal the Egress and TrackID in the DAO itself as follows:
-
-        0                   1                   2                   3
-        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |    TrackID    |K|D|   Flags   |   Reserved    | DAOSequence   |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |                                                               |
-       +                                                               +
-       |                                                               |
-       +                        Track Egress                           +
-       |                                                               |
-       +                                                               +
-       |                                                               |
-       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Option(s)...
-       +-+-+-+-+-+-+-+-+
-
-                      Figure 16: The DAO Base Object
-
-
-This seems to make more sense than using a TIO.
-
-
-Pascal
 
 -->
 
@@ -64,7 +31,7 @@ Pascal
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-13" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-14" >
 
 <front>
 
