@@ -305,7 +305,8 @@ My to do’s on this draft for the next version:
    P-DAO message signals a Projected Route using new CMOs presented therein.
    </t>
   <t>
-   A Projected Route can be an additional route of higher precedence within the main DODAG, in which case it is installed with the RPLInstanceID and DODAGID of the main DODAG.
+   A Projected Route can be an additional route of higher precedence within the main DODAG, in which case it is installed with a DAO using the parameters of the main DODAG, typically a global RPLInstanceID and the DODAGID field
+   elided as shown in Section 6.4.1. of <xref target='RFC6550'/>.
 
    </t>
   <t>
@@ -333,7 +334,7 @@ My to do’s on this draft for the next version:
 </figure>
 
   <t>
-  A P-DAO message
+  A P-DAO message for a Local Instance (i.e. a Track)
    signals the IPv6 Address of the Track Egress in the DODAGID field of the DAO
    Base Object, and the TrackID in the RPLInstanceID field, as shown in
    <xref target='p-dao-fmt'/>.
@@ -353,10 +354,10 @@ My to do’s on this draft for the next version:
    P-DAO messages as a multihop alternative to the TIO. One RPO is the Via Information Option (VIO); the VIO installs a state at each hop along a Storing Mode Projected Route. The other is the Source-Routed VIO (SRVIO); the SRVIO installs a source-routing state at the Segment ingress, which uses that state to encapsulate a packet with a  Source-Routing Header along a Non-Storing Mode Projected Route.
    </t>
    <t>
-   Like in a DAO message, the RTOs can be factorized in a P-DAO, but the CMOs cannot.
+   Like in a DAO message, the RTOs can be factorized in a P-DAO, but the RPOs cannot.
    A P-DAO contains one or more RTOs that indicate the destinations that can be
-   reached via the Track, and either one SRVIO or one VIO signal the sequence of hops between the Track Ingress and the (penultimate) node before the Track Egress.
-   In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored. In Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state at each hop.
+   reached via the Track, and exactly one RPO that signals the sequence of nodes between the Track Ingress and the Track Egress, both included.
+   In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored. In Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state at each hop. In both cases the Track Ingress generates the P-DAO-ACK when the installation is successful.
    </t>
    <t>
    This specification adds another CMO called the Sibling Information Option (SIO) that is used by a RPL Aware Node (RAN) to advertise a selection of its candidate neighbors as siblings to the Root, more in <xref target='rplsib'/>. The sibling selection process is out of scope.
@@ -399,8 +400,8 @@ My to do’s on this draft for the next version:
      To achieve this, the PCE MAY install a Storing Mode Projected Route along a path down the main (Non-Storing Mode) DODAG. This enables a loose source routing and reduces the size of the Source Routing Header, see <xref target='loose'/>.
      </t>
      <t>
-     When adding a Storing Mode Projected Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and set the DODAGID field to the Segment Egress. The Projected Route provides a longer match to the Egress than the default route via the Root, so it is preferred. Once the Projected Route is installed, the intermediate nodes listed in the VIO between the first (excluded) and the last (included) can be elided in a Source-Route Header that signals that
-     Segment.
+     When adding a Storing Mode Projected Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT use the DODAGID field. The Projected Route provides a longer match to the Egress than the default route via the Root, so it is preferred. Once the Projected Route is installed, the intermediate nodes listed in the VIO after first one (i.e. the ingress) can be elided in a Source-Route Header uses that Segment. The Source-Route Header can now loosely indicate (one of) the Target(s) as the next entry after the ingress.
+
      </t>
      </li>
      <li>
@@ -623,8 +624,7 @@ My to do’s on this draft for the next version:
 
     <t>The RPOs indicate a series of IPv6 addresses that can be compressed using
     the method defined in the <xref target='RFC8138'>"6LoWPAN Routing Header"
-    </xref> specification using the address of the Root found in the DODAGID
-    field of DIO messages as Compression Reference.
+    </xref> specification using the DODAGID of the DAO message when it is indicated, else the DODAGID of the main Instance as Compression Reference.
     </t><t>
     An RPO indicates a Projected Route that can be a Serial Track in full or
     a Segment of a more Complex Track. In Non-Storing Mode, multiple RPO
@@ -885,7 +885,7 @@ My to do’s on this draft for the next version:
     <li>
     The Storing Mode is discussed in <xref target='spdao'/>. It uses a single
     VIO, within which are signaled one Via Address per consecutive hop,
-    from the ingress to the egress of the path, including the list of all
+    from the ingress to the egress of the path, including the strict list of all
     intermediate routers in the data path order.
     The Via Addresses indicate the routers in which the routing state to the
     Track Egress have to be installed via the next Via Address in the VIO.
@@ -1094,9 +1094,8 @@ My to do’s on this draft for the next version:
      ingress and an egress routers,
      the Root sends a unicast P-DAO message to the egress router of the routing
      Segment that must be installed. The P-DAO message contains the ordered list
-     of hops along the Segment as a direct sequence of Via Information options
-     that are preceded by one or more RPL Target options to which they relate.
-     Each Via Information option contains a Segment Lifetime for which the state is
+     of hops along the Segment as a VIO with a direct sequence of Via Addresses
+     that is preceded by one or more RPL Target options to which the Track leads. The VIO contains a Segment Lifetime for which the state is
      to be maintained.
      </t><t>
      The Root sends the P-DAO directly to the egress node of the Segment.
@@ -1107,8 +1106,12 @@ My to do’s on this draft for the next version:
      The Egress node of the Segment is the only node in the path that does not
      install a route in response to the P-DAO; it is expected to be already able
      to route to the Target(s) on its own. It may either be the Target, or may
+     <!--
      have some existing information to reach the Target(s), such as a connected
      route or an already installed Projected Route.
+     -->
+     have a connected route to reach the Target(s), as a direct neighbor.
+
     <!-- If it cannot reach the Target, then the egress node may lookup the address on the relevant interfaces. -->
      If one of the Targets cannot be located, the node MUST answer to the Root
      with a negative DAO-ACK listing the Target(s) that could not be located
@@ -1827,8 +1830,7 @@ My to do’s on this draft for the next version:
    of a particular application.
    </t><t>
    The Root sends a P-DAO to node E, with an RTO indicating the destination D,
-   a TIO optionally indicating the Track Egress in the Parent Address field,
-   and a sequence of Via Information options indicating the hops, one for S, which is the ingress router of the Segment, one for A, and then one for B, which are respectively the intermediate and penultimate routers.
+   a VIA with Via Addresses indicating the sequence of nodes, first I, which is the ingress router of the Segment, then A and B, which are the intermediate routers, and finally E that is the egress router.
    </t>
        <figure anchor='pdao2'><name>P-DAO from Root</name>
             <artwork>
@@ -1844,19 +1846,19 @@ My to do’s on this draft for the next version:
           o o   o |    o  o  o o   o
          o  o o  | o    o   o   o  o  o
          o   o   V  o     o  o    o  o  o
-        S  A  B  E   D         o   o o
+        I  A  B  E   D         o   o o
         o          o             o     o
                           LLN
        </artwork>
           </figure>
 
-   <t>Upon reception of the P-DAO, C validates that it can reach D, e.g. using
+   <t>Upon reception of the P-DAO, E validates that it can reach D, e.g. using
    IPv6 Neighbor Discovery, and if so, propagates the P-DAO unchanged to B.
    </t><t>
-   B checks that it can reach C and of so, installs a route towards D via C.
+   B checks that it can reach E and if so, installs a route towards D via E.
    Then it propagates the P-DAO to A.
    </t><t>
-   The process recurses till the P-DAO reaches S, the ingress of the Segment,
+   The process recurses till the P-DAO reaches I, the ingress of the Segment,
    which installs a route to D via A and sends a DAO-ACK to the Root.
     </t>
 
@@ -1873,8 +1875,8 @@ My to do’s on this draft for the next version:
               /    o   o    o
            /   o o    o  o  o o   o
          |  o o  o o    o   o   o  o  o
-         |   o   o  o     o  o    o  o  o
-        S  A  B  C   D         o   o o
+         /   o   o  o     o  o    o  o  o
+        I  A  B  E   D         o   o o
         o          o             o     o
                           LLN
        </artwork>
