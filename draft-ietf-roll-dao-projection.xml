@@ -645,8 +645,10 @@ My to do’s on this draft for the next version:
 
     <t>
     The Sibling Information Option (SIO) provides indication on siblings that
-    could be used by the Root to form Projected Routes.
-    The format of SIOs is as follows:
+    could be used by the Root to form Projected Routes. One or more SIO(s) may be placed in the DAO messages that are sent to the Root in Non-Storing Mode.
+    </t>
+    <t>
+    The format of the SIO is as follows:
     </t>
 <figure anchor='siof'><name>Sibling Information Option Format</name>
               <artwork align="center">
@@ -679,13 +681,13 @@ My to do’s on this draft for the next version:
           <dl spacing='normal'>
               <dt>Option Type:</dt><dd>0x0D (to be confirmed by IANA)</dd>
 
-              <dt>Option Length:</dt><dd>In bytes; variable, depending on the number
-              of Via Addresses.</dd>
+              <dt>Option Length:</dt><dd>In bytes, the size of the option.</dd>
 
               <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
               SRH-6LoRH Type as defined in figure 7 in section 5.1 of
               <xref target='RFC8138'/> that corresponds to the compression used
-              for the Sibling Address.
+              for the Sibling Address and its DODAGID if resent. The Compression
+              refernce is the Root of the main DODAG.
               </dd>
               <dt>Reserved for Flags:</dt><dd>MUST be set to zero by the sender
               and MUST be ignored by the receiver.
@@ -709,7 +711,7 @@ My to do’s on this draft for the next version:
               <dt>Opaque:</dt><dd>MAY be used to carry information that the node
               and the Root understand, e.g., a particular representation of the
               Link properties such as a proprietary Link Quality Information
-              for packets received from the sibling. An industraial Alliance
+              for packets received from the sibling. An industrial Alliance
               that uses RPL for a particular use / environment MAY redefine the
               use of this field to fit its needs.
               </dd>
@@ -909,9 +911,7 @@ My to do’s on this draft for the next version:
       If the Track Ingress is the originator of the packet and the Track Egress
       is the destination of the packet, there is no need for an encapsulation.
       Else, i.e., if the Track Ingress is forwarding
-      a packet into the Track, or if the the final destination is reached via
-      is not the Track Egress, but reached over the Track via the Track Egress, then
-      an IP-in-IP encapsulation is needed.
+      a packet into the Track, or if the the final destination is reached over the Track via the Track Egress but is located beyond it, then an IP-in-IP encapsulation is needed.
       </t>
      <t>
      A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
@@ -919,8 +919,7 @@ My to do’s on this draft for the next version:
      it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
      </t>
      <t>
-      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped. That Destination may be the next Hop in a Non-Storing Mode Track.
-
+      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped.
 
      </t>
      <!-- TODO: add config parm to the local Instance -->
@@ -931,7 +930,7 @@ My to do’s on this draft for the next version:
      that is used to install the Track. For instance, the use of compression per
      <xref target='RFC8138'/> is determined by whether it is used in the main
      instance, e.g., by setting the "T" flag
-     <xref target='I-D.thubert-roll-turnon-rfc8138'/> in the RPL
+     <xref target='I-D.ietf-roll-turnon-rfc8138'/> in the RPL
      configuration option.
    </t>
     </section><!-- Forwarding along a Track -->
@@ -941,10 +940,7 @@ My to do’s on this draft for the next version:
 
     <t>
     As illustrated in <xref target='nsdf'/>, a P-DAO that carries an SRVIO
-    enables the Root to install a source-routed path towards a Track Egress in any
-    particular router; with this path information the router can add a source
-    routed header reflecting the Projected Route to any packet for which the current
-    destination either is the said Track Egress or can be reached via the Track Egress.
+    enables the Root to install a source-routed path towards a Track Egress in any particular router.
     </t>
 
           <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
@@ -955,17 +951,18 @@ My to do’s on this draft for the next version:
               +-----+
               |     | Border Router
               |     |  (RPL Root)
-              +-----+                   |  P  ^            |
-                 |                      | DAO | ACK        | Loose
-           o    o   o    o     router   V     |            | Source
-       o o   o  o   o  o  o      o  o            | P-DAO   . Route
-      o  o o  o o    o   o   o  o  o             | Source  . Path
-      o   o    o  o     o  o    o  o  o          | Route   . From
-     o  o   o  o   o         o   o o             | Path    . Root
-        o  o  o  o             o    Track Egress V         . To
-       o       o               o    o                      | Desti-
-     o          o             o     o                      | nation
-                                   destination             V
+              +-----+                    |  P  ^ ACK
+                 |        Track          | DAO |
+           o    o   o  o  Ingress X      V     |   X
+       o o   o  o   o  o     o   X   o             X Source
+      o  o o  o o    o   o  o    X  o  o           X Routed
+      o   o    °  o     o   o   o X     o          X Segment
+     o  o   o  o   o  o    o  o     X Track        X
+        o  o  o  o             o     Egress
+
+       o       o               o    o
+     o          o             o     o
+                                   destination
 
                        LLN
                        </artwork>
@@ -974,42 +971,47 @@ My to do’s on this draft for the next version:
     A route indicated by an SRVIO may be loose, meaning that the node that owns
     the next listed Via Address is not necessarily a neighbor. Without proper
     loop avoidance mechanisms, the interaction of loose source routing and other
-    mechanisms may effectively cause loops. In order to avoid those loops, if
-    the router that installs a Projected Route does not have a connected route
-    (a direct adjacency) to the next soure routed hop and fails to locate it as
-    a neighbor or a neighbor of a neighbor, then it MUST ensure that it has
-    <!-- a loopless path to it that will not interact with the Projected Route, for Instance  -->
-    another Projected Route to the next loose hop under the control of the same
-    route computation system, otherwise the P-DAO is rejected.
+    mechanisms may effectively cause loops.
+
     </t>
     <t>
       When forwarding a packet to a destination for which the router determines
       that routing happens via the Track Egress, the router inserts the source
       routing header in the packet with the destination set to the Track Egress.
-      In order to add an RH, the router encapsulates the
-      packet with an IP-in-IP header and a Non-Storing Mode source routing
-      header (SRH) <xref target='RFC6554'/>.
-      In the uncompressed form the source of the packet would be self, the
-      destination would be the first Via Address in the SRVIO, and the SRH would
-      contain the list of the remaining Via Addresses and then the Track Egress.
+
     </t>
+    <t>
+      In order to signal the Segment, the router encapsulates the
+      packet with an IP-in-IP header and a Routing Header as follows:
+    </t>
+    <ul>
+    <li>
+      In the uncompressed form the source of the packet is this router, the
+      destination is the first Via Address in the SRVIO, and the RH is a
+      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
+      list of the remaining Via Addresses terminating by the Track Egress.
+    </li>
+    <li>
+    <t>
+    The preferred alternate in a network where 6LoWPAN Header Compression
+    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
+    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
+    Dispatch"</xref> to compress the RPL artifacts as indicated in
+    <xref target='RFC8138'/>.
+    </t>
+    <t>
+    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the SRVIO, also terminating by the Track Egress.
+    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='I-D.ietf-roll-turnon-rfc8138'/>.
+
+    </t>
+    </li>
+    </ul>
     <t>
       In the case of a loose source-routed path, there MUST be either a neighbor
       that is adjacent to the
       loose next hop, on which case the packet is forwarded to that neighbor, or
-      a source-routed path to the loose next hop; in the latter case,
-      another encapsulation takes place and the process possibly recurses;
-      otherwise the packet is dropped.
+      another Track to the loose next hop for which this node is Ingress; in the latter case, another encapsulation takes place and the process possibly recurses; otherwise the packet is dropped.
      </t>
-    <t>
-      In practice, the router will normally use the <xref target='RFC8025'>
-      "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
-      Dispatch"</xref> to compress the RPL artifacts as indicated in
-      <xref target='RFC8138'/>. In that case, the router indicates self as
-      encapsulator in an IP-in-IP 6LoRH Header, and places the list of Via
-      Addresses in the order of the SRVIO and then the Track Egress in the SRH
-      6LoRH Header.
-      </t>
       <t>In case of a forwarding error along a Source Route path, the node that
       fails to forward SHOULD send an ICMP error with a code "Error in Source
       Routing Header" back to the source of the packet, as described in section
@@ -1026,15 +1028,11 @@ My to do’s on this draft for the next version:
 
     <section anchor='spdao'><name>Storing Mode Projected Route</name>
 
+    <t>
+    As illustrated in <xref target='sdf'/>, a P-DAO that carries a VIO
+    enables the Root to install a stateful route towards a collection of Targets along a Segment between a Track Ingress and a Track Egress.
+    </t>
 
-      <t>
-      As illustrated in <xref target='sdf'/>, the Storing Mode route projection
-      is used by the Root to install a routing state in the
-      routers along a Segment between an Ingress and an Egress router
-      this enables the routers to forward along that Segment any packet for
-      which the next loose hop is the Egress node, for instance a loose source
-      routed packet for which the next loose hop is the Egress node, or a packet for which the router has a routing state to the final destination via the Egress node.
-      </t>
       <figure anchor='sdf'><name>Projecting a route</name>
         <artwork>
         ------+---------
@@ -1058,13 +1056,9 @@ My to do’s on this draft for the next version:
 
 
     <t>
-     In order to install the relevant routing state along the Segment between an
-     ingress and an egress routers,
-     the Root sends a unicast P-DAO message to the egress router of the routing
-     Segment that must be installed. The P-DAO message contains the ordered list
-     of hops along the Segment as a VIO with a direct sequence of Via Addresses
-     that is preceded by one or more RPL Target options to which the Track leads. The VIO contains a Segment Lifetime for which the state is
-     to be maintained.
+     In order to install the relevant routing state along the Segment ,
+     the Root sends a unicast P-DAO message to the Track Egress router of the routing Segment that is being installed. The P-DAO message contains a VIO with the direct sequence of Via Addresses. The VIO follows
+     one or more RTOs indicating the Targets to which the Track leads. The VIO contains a Segment Lifetime for which the state is to be maintained.
      </t><t>
      The Root sends the P-DAO directly to the egress node of the Segment.
      In that P-DAO, the destination IP address matches the last Via Address in the VIO. This is how the egress recognizes its role. In a similar fashion,
@@ -1073,15 +1067,8 @@ My to do’s on this draft for the next version:
 
      The Egress node of the Segment is the only node in the path that does not
      install a route in response to the P-DAO; it is expected to be already able
-     to route to the Target(s) on its own. It may either be the Target, or may
-     <!--
-     have some existing information to reach the Target(s), such as a connected
-     route or an already installed Projected Route.
-     -->
-     have a connected route to reach the Target(s), as a direct neighbor.
-
-    <!-- If it cannot reach the Target, then the egress node may lookup the address on the relevant interfaces. -->
-     If one of the Targets cannot be located, the node MUST answer to the Root
+     to route to the Target(s) on its own.
+     If one of the Targets is not known, the node MUST answer to the Root
      with a negative DAO-ACK listing the Target(s) that could not be located
      (suggested status 10 to be confirmed by IANA).
     </t><t>
@@ -1093,33 +1080,23 @@ My to do’s on this draft for the next version:
      </t><t>
 
      The address of the predecessor to be used as destination of the propagated
-     DAO message is found in the Via Information option the precedes the one
+     DAO message is found in the Via Address the precedes the one
      that contain the address of the propagating node, which is used as source
-     of the packet.
+     of the message.
 
     </t><t>
-     Upon receiving a propagated DAO, an intermediate router as well as the
-     ingress router install a route towards the DAO Target(s) via its
-     successor in the P-DAO; the router locates its address in the VIO, and uses as next hop the address found in the previous Via Address field
-     in the VIO. The router MAY install additional routes towards the
+     Upon receiving a propagated DAO, all except the Egress Router MUST install a route towards the DAO Target(s) via their successor in the VIO. The router MAY install additional routes towards the
      VIA Addresses that are the VIO after the next one, if any, but
      in case of a conflict or a lack of resource, the route(s) to the Target(s) have precedence.
 
-    </t><t>
-     The process recurses till the P-DAO is propagated to ingress router of
-     the Segment, which answers with a DAO-ACK to the Root.
-     </t>
-     <t>Also, the path indicated in a P-DAO may be loose, in which case the
-     reachability to the next hop has to be asserted. Each router along the
-     path indicated in a P-DAO is expected to be able to reach its successor,
-     either with a connected route (direct neighbor), or by routing, for Instance
-     following a route installed previously by a DAO or a P-DAO message.
-     If that route is not connected then a recursive lookup may take place at
-     packet forwarding time to find the next hop to reach the Target(s).
-     If it does not and cannot reach the next router in the P-DAO,
+     </t><t>
+     If a router cannot reach its predecessor in the VIO,
      the router MUST answer to the Root with a negative DAO-ACK
      indicating the successor that is unreachable
      (suggested status 11 to be confirmed by IANA).
+    </t><t>
+     The process continues till the P-DAO is propagated to ingress router of
+     the Segment, which answers with a DAO-ACK to the Root.
     </t>
     <t>
      A Segment Lifetime of 0 in a Via Information option is used to clean up the
@@ -1475,7 +1452,7 @@ My to do’s on this draft for the next version:
    <displayreference   target="RFC6550"        to="RPL"/>
    <displayreference   target="I-D.pthubert-raw-architecture"   to="RAW-ARCHI"/>
    <displayreference   target="I-D.ietf-6tisch-architecture"    to="6TiSCH-ARCHI"/>
-   <displayreference   target="I-D.thubert-roll-turnon-rfc8138" to="TURN-ON_RFC8138"/>
+   <displayreference   target="I-D.ietf-roll-turnon-rfc8138" to="TURN-ON_RFC8138"/>
 
     <references><name>Normative References</name>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
@@ -1483,6 +1460,7 @@ My to do’s on this draft for the next version:
 	 <!--
      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4919.xml'/>
      -->
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6554.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
@@ -1494,7 +1472,7 @@ My to do’s on this draft for the next version:
 	   <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-6tisch-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.pthubert-raw-architecture.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.thubert-roll-turnon-rfc8138.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-roll-turnon-rfc8138.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
@@ -1582,7 +1560,7 @@ My to do’s on this draft for the next version:
       </t>
 
       <t>
-      This specification enables to store source-routed or Storing Mode state in
+      This specification enables to store a Storing Mode state in
       intermediate routers, which enables to limit the excursion of the source
       route headers in deep networks.
       Once a P-DAO exchange has taken place for a given Target, if the Root
@@ -1688,194 +1666,6 @@ My to do’s on this draft for the next version:
       </section>
       </section>
 
-
-
-
-    <section><name>Examples</name>
-
-        <section><name>Using Storing Mode P-DAO in Non-Storing Mode MOP</name>
-<t>
-    In Non-Storing Mode, the DAG Root maintains the knowledge of the whole DODAG
-    topology, so when both the source and the destination
-    of a packet are in the DODAG, the Root can determine the common
-    parent that would have been used in Storing Mode, and thus the list of nodes
-    in the path between the common parent and the destination. For Instance in
-    the diagram shown in <xref target='exmp'/>, if the source is node 41
-    and the destination is node 52, then the common parent is node 22.
-    </t>
-       <figure anchor='exmp'><name>Example DODAG forming a logical tree topology</name>
-            <artwork>
-           ------+---------
-                 |          Internet
-                 |
-              +-----+
-              |     | Border Router
-              |     |  (RPL Root)
-              +-----+
-               | \  \____
-              /   \       \
-            o 11   o 12     o  13
-           /       |       /  \
-         o 22      o 23   o 24  o 25
-        /  \       | \      \
-      o 31   o 32  o   o     o 35
-     /      /      |    \    |    \
-    o 41   o 42    o     o   o 45   o 46
-    |      |       |     |    \     |
-    o 51   o 52    o 53  o     o 55 o 56
-
-                       LLN
-       </artwork>
-          </figure>
-
-
-
-    <t>
-     With this draft, the Root can install a Storing Mode routing states along a
-     Segment that is either from itself to the destination, or from one or more
-     common parents for a particular source/destination pair towards that
-     destination (in this particular
-     example, this would be the Segment made of nodes 22, 32, 42).
-    </t><!--t>
-     If the predecessor can route to the successor node, then it installs a
-     route to the Targets via the successor. If that route is not connected then
-     a recursive lookup will take place to reach the Target(s). From there,
-     the node strips the last Via Information option and either answers to the
-     Root with a positive DAO-ACK that contains the list of Targets that could
-     be routed to, or propagates the DAO to its own predecessor.
-    </t-->
-    <t> In the example below, say that there is a lot of traffic to nodes 55 and
-    56 and the Root decides to reduce the size of routing headers to those
-    destinations. The Root can first send a DAO to node 45 indicating Target 55
-    and a Via Segment (35, 45), as well as another DAO to node 46 indicating
-    Target 56 and a Via Segment (35, 46). This will save one entry in the
-    RH on both sides. The Root may then send a DAO to node 35
-    indicating Targets 55 and 56 a Via Segment (13, 24, 35) to fully optimize
-    that path.</t>
-    <t>
-    Alternatively, the Root may send a DAO to node 45 indicating Target 55
-    and a Via Segment (13, 24, 35, 45) and then a DAO to node 46 indicating
-    Target 56 and a Via Segment (13, 24, 35, 46), indicating the same DAO
-    Sequence.
-    </t>
-    <!--
-    <t>
-    It may happen that the nodes along the path do not have enough resources
-    to store an additional route to the destination (node 46). As the Root has a
-    complete knowledge of the DAG, some nodes may have more compute and storing
-    resources so that they can be elected as specific nodes (it is the case of
-    node 35 for Instance). Let's take the case where node
-    45 send packets to node 56. node 46 is unable to store any route.
-
-    </t><t>
-    In this case the Root send the new DAO message to node 35 (well known node
-    for its compute and storing capabilities) with the RH to node
-    56 (Segment 35 - 46).
-
-    </t><t>
-    When 35 receives from its child a packet to node 56, it adds the routing
-    header to node 56 in the packet header. In this case nothing changes for
-    the node 46 acting as non Storing Mode.
-
-    </t><t>
-      The life time of the DAO may be dynamically changed by the Root.
-      Once the routing state expires, and packets are router back to their
-      original mode (through the Root), the Root may accordingly decide to
-      refresh the state if the conditions that triggered the decision to install
-      the state still holds, after potentially adjusting the life time.
-    </t>
-    -->
-
-
-    </section>
-
-
-    <section><name>Projecting a Storing Mode transversal route</name>
-
-
-   <t>In this example, say that a PCE determines that a path must be installed
-   between node I and node D via routers A, B and E, in order to serve the needs
-   of a particular application.
-   </t><t>
-   The Root sends a P-DAO to node E, with an RTO indicating the destination D,
-   a VIA with Via Addresses indicating the sequence of nodes, first I, which is the ingress router of the Segment, then A and B, which are the intermediate routers, and finally E that is the egress router.
-   </t>
-       <figure anchor='pdao2'><name>P-DAO from Root</name>
-            <artwork>
-              ------+---------
-                    |          Internet
-                    |
-                 +-----+
-                 |     | Border Router
-                 |     |  (RPL Root)
-                 +-----+
-                    | P-DAO message to C
-              o    |   o    o
-          o o   o |    o  o  o o   o
-         o  o o  | o    o   o   o  o  o
-         o   o   V  o     o  o    o  o  o
-        I  A  B  E   D         o   o o
-        o          o             o     o
-                          LLN
-       </artwork>
-          </figure>
-
-   <t>Upon reception of the P-DAO, E validates that it can reach D, e.g. using
-   IPv6 Neighbor Discovery, and if so, propagates the P-DAO unchanged to B.
-   </t><t>
-   B checks that it can reach E and if so, installs a route towards D via E.
-   Then it propagates the P-DAO to A.
-   </t><t>
-   The process recurses till the P-DAO reaches I, the ingress of the Segment,
-   which installs a route to D via A and sends a DAO-ACK to the Root.
-    </t>
-
-          <figure anchor='pdao3'><name>P-DAO-ACK to Root</name>
-            <artwork>
-              ------+---------
-                    |          Internet
-                    |
-                 +-----+
-                 |     | Border Router
-                 |     |  (RPL Root)
-                 +-----+
-                  ^ P-DAO-ACK from S
-              /    o   o    o
-           /   o o    o  o  o o   o
-         |  o o  o o    o   o   o  o  o
-         /   o   o  o     o  o    o  o  o
-        I  A  B  E   D         o   o o
-        o          o             o     o
-                          LLN
-       </artwork>
-          </figure>
-
-             <t>
-   As a result, a transversal route is installed that does not need to follow
-   the DODAG structure.
-   </t>
-       <figure anchor='opti'><name>Projected Transversal Route</name>
-            <artwork>
-              ------+---------
-                    |          Internet
-                    |
-                 +-----+
-                 |     | Border Router
-                 |     |  (RPL Root)
-                 +-----+
-                    |
-              o    o   o    o
-          o o   o  o   o  o  o o   o
-         o  o o  o o    o   o   o  o  o
-         o   o    o  o     o  o    o  o  o
-        S>>A>>>B>>C>>>D         o   o o
-        o          o             o     o
-                          LLN
-       </artwork>
-          </figure>
-    </section>
-
-    </section>
     </back>
 
 
