@@ -6,13 +6,13 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Updates: 6550 (if approved)                                  R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 5 April 2021                                        M. Gillmore
+Expires: 8 April 2021                                        M. Gillmore
                                                                    Itron
-                                                          2 October 2020
+                                                          5 October 2020
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-14
+                   draft-ietf-roll-dao-projection-15
 
 Abstract
 
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 April 2021.
+   This Internet-Draft will expire on 8 April 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 1]
+Thubert, et al.           Expires 8 April 2021                  [Page 1]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -82,10 +82,10 @@ Table of Contents
      5.2.  Identifying a Track . . . . . . . . . . . . . . . . . . .  16
      5.3.  Forwarding Along a Track  . . . . . . . . . . . . . . . .  17
      5.4.  Non-Storing Mode Projected Route  . . . . . . . . . . . .  18
-     5.5.  Storing Mode Projected Route  . . . . . . . . . . . . . .  19
+     5.5.  Storing Mode Projected Route  . . . . . . . . . . . . . .  20
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .  21
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  21
-     7.1.  New RPL Control Codes . . . . . . . . . . . . . . . . . .  21
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  22
+     7.1.  New RPL Control Codes . . . . . . . . . . . . . . . . . .  22
      7.2.  New RPL Control Message Options . . . . . . . . . . . . .  22
      7.3.  SubRegistry for the Projected DAO Request Flags . . . . .  22
      7.4.  SubRegistry for the PDR-ACK Flags . . . . . . . . . . . .  23
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 2]
+Thubert, et al.           Expires 8 April 2021                  [Page 2]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -165,7 +165,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 3]
+Thubert, et al.           Expires 8 April 2021                  [Page 3]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -221,7 +221,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 4]
+Thubert, et al.           Expires 8 April 2021                  [Page 4]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -277,7 +277,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 5]
+Thubert, et al.           Expires 8 April 2021                  [Page 5]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 6]
+Thubert, et al.           Expires 8 April 2021                  [Page 6]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -389,7 +389,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 7]
+Thubert, et al.           Expires 8 April 2021                  [Page 7]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -445,7 +445,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 8]
+Thubert, et al.           Expires 8 April 2021                  [Page 8]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -501,7 +501,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                  [Page 9]
+Thubert, et al.           Expires 8 April 2021                  [Page 9]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 10]
+Thubert, et al.           Expires 8 April 2021                 [Page 10]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 11]
+Thubert, et al.           Expires 8 April 2021                 [Page 11]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 12]
+Thubert, et al.           Expires 8 April 2021                 [Page 12]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 13]
+Thubert, et al.           Expires 8 April 2021                 [Page 13]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 14]
+Thubert, et al.           Expires 8 April 2021                 [Page 14]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 15]
+Thubert, et al.           Expires 8 April 2021                 [Page 15]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 16]
+Thubert, et al.           Expires 8 April 2021                 [Page 16]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -927,12 +927,32 @@ Internet-Draft               DAO Projection                 October 2020
       compression, it is the last hop of the last SRH-6LoRH of the outer
       header in either case.
 
-   *  If the Track Ingress is the originator of the packet and the Track
-      Egress is the destination of the packet, there is no need for an
-      encapsulation.  Else, i.e., if the Track Ingress is forwarding a
-      packet into the Track, or if the the final destination is reached
-      over the Track via the Track Egress but is located beyond it, then
-      an IP-in-IP encapsulation is needed.
+   *  This draft conforms the principles of [USEofRPLinfo] with regards
+      to packet forwarding and encapsulation along a Track.
+
+      -  In that case, the Track is the DODAG, the Track Ingress is a
+         RAL, and the Track Egress is the Root.
+
+      -  If the Track Ingress is the originator of the packet and the
+         Track Egress is the destination of the packet, there is no need
+         for an encapsulation.
+
+      -  But since the RPL Instance a Local one, the final destination
+         in the outer header of a packet sent along a Track MUST be the
+         Track Egress.  So the Track Ingress MUST encapsulate its own
+         traffic if the destination is reached over the Track via the
+         Track Egress but is located beyond it (this is a MAY for a
+         Global Instance in [USEofRPLinfo])
+
+      -  Traffic that is injected in the Track is processed as external,
+         so it is subject to encapsulation.
+
+
+
+Thubert, et al.           Expires 8 April 2021                 [Page 17]
+
+Internet-Draft               DAO Projection                 October 2020
+
 
       A packet that is being routed over the RPL Instance associated to
       a first Non-Storing Mode Track MAY be placed (encapsulated) in a
@@ -946,13 +966,6 @@ Internet-Draft               DAO Projection                 October 2020
       this node or a direct neighbor, or a Target of another Segment of
       the same Track for which this node is ingress, otherwise the
       packet MUST be dropped.
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 17]
-
-Internet-Draft               DAO Projection                 October 2020
-
 
    All properties of a Track operations are inherited form the main RPL
    Instance that is used to install the Track.  For instance, the use of
@@ -989,6 +1002,14 @@ Internet-Draft               DAO Projection                 October 2020
 
                   Figure 7: Projecting a Non-Storing Route
 
+
+
+
+Thubert, et al.           Expires 8 April 2021                 [Page 18]
+
+Internet-Draft               DAO Projection                 October 2020
+
+
    A route indicated by an SRVIO may be loose, meaning that the node
    that owns the next listed Via Address is not necessarily a neighbor.
    Without proper loop avoidance mechanisms, the interaction of loose
@@ -1001,14 +1022,6 @@ Internet-Draft               DAO Projection                 October 2020
 
    In order to signal the Segment, the router encapsulates the packet
    with an IP-in-IP header and a Routing Header as follows:
-
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 18]
-
-Internet-Draft               DAO Projection                 October 2020
-
 
    *  In the uncompressed form the source of the packet is this router,
       the destination is the first Via Address in the SRVIO, and the RH
@@ -1043,28 +1056,21 @@ Internet-Draft               DAO Projection                 October 2020
    to the Root.  Failure to follow these steps may result in packet loss
    and wasted resources along the source route path that is broken.
 
+
+
+
+
+
+Thubert, et al.           Expires 8 April 2021                 [Page 19]
+
+Internet-Draft               DAO Projection                 October 2020
+
+
 5.5.  Storing Mode Projected Route
 
    As illustrated in Figure 8, a P-DAO that carries a VIO enables the
    Root to install a stateful route towards a collection of Targets
    along a Segment between a Track Ingress and a Track Egress.
-
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 19]
-
-Internet-Draft               DAO Projection                 October 2020
-
 
            ------+---------
                  |          Internet
@@ -1106,21 +1112,22 @@ Internet-Draft               DAO Projection                 October 2020
    negative DAO-ACK listing the Target(s) that could not be located
    (suggested status 10 to be confirmed by IANA).
 
+
+
+
+
+
+Thubert, et al.           Expires 8 April 2021                 [Page 20]
+
+Internet-Draft               DAO Projection                 October 2020
+
+
    If the egress node can reach all the Targets, then it forwards the
    P-DAO with unchanged content to its loose predecessor in the Segment
    as indicated in the list of Via Information options, and recursively
    the message is propagated unchanged along the sequence of routers
    indicated in the P-DAO, but in the reverse order, from egress to
    ingress.
-
-
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 20]
-
-Internet-Draft               DAO Projection                 October 2020
-
 
    The address of the predecessor to be used as destination of the
    propagated DAO message is found in the Via Address the precedes the
@@ -1163,20 +1170,20 @@ Internet-Draft               DAO Projection                 October 2020
    a) rogue nodes b) via replay of messages c) if use of P-DAO messages
    could in fact deal with any threats?
 
+
+
+
+Thubert, et al.           Expires 8 April 2021                 [Page 21]
+
+Internet-Draft               DAO Projection                 October 2020
+
+
 7.  IANA Considerations
 
 7.1.  New RPL Control Codes
 
    This document extends the IANA Subregistry created by RFC 6550 for
    RPL Control Codes as indicated in Table 1:
-
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 21]
-
-Internet-Draft               DAO Projection                 October 2020
-
 
           +======+=============================+===============+
           | Code | Description                 | Reference     |
@@ -1222,14 +1229,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-
-
-
-
-
-
-
-Thubert, et al.           Expires 5 April 2021                 [Page 22]
+Thubert, et al.           Expires 8 April 2021                 [Page 22]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 23]
+Thubert, et al.           Expires 8 April 2021                 [Page 23]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1341,7 +1341,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 24]
+Thubert, et al.           Expires 8 April 2021                 [Page 24]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 25]
+Thubert, et al.           Expires 8 April 2021                 [Page 25]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1453,7 +1453,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 26]
+Thubert, et al.           Expires 8 April 2021                 [Page 26]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1509,7 +1509,7 @@ A.1.  Loose Source Routing
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 27]
+Thubert, et al.           Expires 8 April 2021                 [Page 27]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1565,7 +1565,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 28]
+Thubert, et al.           Expires 8 April 2021                 [Page 28]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1621,7 +1621,7 @@ A.2.  Transversal Routes
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 29]
+Thubert, et al.           Expires 8 April 2021                 [Page 29]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection                 October 2020
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 30]
+Thubert, et al.           Expires 8 April 2021                 [Page 30]
 
 Internet-Draft               DAO Projection                 October 2020
 
@@ -1733,4 +1733,4 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 5 April 2021                 [Page 31]
+Thubert, et al.           Expires 8 April 2021                 [Page 31]

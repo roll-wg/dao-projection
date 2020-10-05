@@ -31,7 +31,7 @@ My to do’s on this draft for the next version:
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-14" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true"  obsoletes="" updates="6550" consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-15" >
 
 <front>
 
@@ -908,11 +908,28 @@ My to do’s on this draft for the next version:
      </li>
      <li>
       <t>
+      This draft conforms the principles of
+      <xref target='I-D.ietf-roll-useofrplinfo'/> with regards to packet
+      forwarding and encapsulation along a Track.
+      </t>
+      <ul>
+      <li>
+      In that case,
+      the Track is the DODAG, the Track Ingress is a RAL, and the Track Egress
+      is the Root.
+      </li><li>
       If the Track Ingress is the originator of the packet and the Track Egress
       is the destination of the packet, there is no need for an encapsulation.
-      Else, i.e., if the Track Ingress is forwarding
-      a packet into the Track, or if the the final destination is reached over the Track via the Track Egress but is located beyond it, then an IP-in-IP encapsulation is needed.
-      </t>
+      </li><li>
+      But since the RPL Instance a Local one, the final destination in
+      the outer header of a packet sent along a Track MUST be the Track Egress.
+      So the Track Ingress MUST encapsulate its own traffic if the destination
+      is reached over the Track via the Track Egress but is located beyond it (this is a MAY for a Global Instance in <xref target='I-D.ietf-roll-useofrplinfo'/>)
+      </li><li>
+      Traffic that is injected in the Track is processed as external, so it is
+      subject to encapsulation.
+      </li>
+      </ul>
      <t>
      A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
      On the other hand, a Storing Mode Track must be strict and a packet that
