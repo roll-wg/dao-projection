@@ -56,11 +56,11 @@ A_._._.B_._._.C_._._.D_._._.E <
 
 A is Track ingress, E is track Egress. C is stitching point. F and G are E’s neighbors, “external” to the Track, and reachable from A over the Track A->E.
 In a general manner we want:
-•	PDAO 1 signals A->B->C
-•	PDAO 2 signals C->B->E
-•	PDAO 3 signals F and G via the A->E Track
+•	P-DAO 1 signals A->B->C
+•	P-DAO 2 signals C->B->E
+•	P-DAO 3 signals F and G via the A->E Track
 
-PDAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
+P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
 
 
 1) Storing mode Segments
@@ -71,42 +71,42 @@ Note that the storing mode signaling imposes strict continuity in a segment. Thi
 
 Case 1.1) Stitched Segments
 
-1.	storing mode PDAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E, F, G
-2.	storing mode PDAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A’s namespace, Target = E, F, G
+1.	storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E, F, G
+2.	storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A’s namespace, Target = E, F, G
 
 E recognizes that it is egress because it is a Target and a segment endpoint.
 
 Packets along the Track have source= A, destination = E | F | G, and RPI = 129.
-From PDAO 2: A forwards to B and B forwards to C.
-From PDAO 1: C forwards to D and D forwards to E.
+From P-DAO 2: A forwards to B and B forwards to C.
+From P-DAO 1: C forwards to D and D forwards to E.
 
 
 Case 1.2) External routes
 
-1.	storing mode PDAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E
-2.	storing mode PDAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A’s namespace, Target = E
-3.	non storing mode PDAO 3 is then sent to A. It has Root = A, SR-VIO = E, Track ID 129 from A’s namespace, Target = F, G
+1.	storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E
+2.	storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A’s namespace, Target = E
+3.	non storing mode P-DAO 3 is then sent to A. It has Root = A, SR-VIO = E, Track ID 129 from A’s namespace, Target = F, G
 
-From PDAO 3: A encapsulates packets with dest =   F | G as below;
+From P-DAO 3: A encapsulates packets with dest =   F | G as below;
 Packets along the Track have source= A, destination = E, and RPI = 129.
-From PDAO 2: A forwards to B and B forwards to C.
-From PDAO 1: C forwards to D and D forwards to E.
+From P-DAO 2: A forwards to B and B forwards to C.
+From P-DAO 1: C forwards to D and D forwards to E.
 E decapsulates if encapsulated packet.
 
 
 
 Case 1.3) Segment Routing
 
-1.	storing mode PDAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E
-2.	storing mode PDAO 2 is then sent to B. It has Root = A, VIO = A, B, Track ID 129 from A’s namespace, Target = B, C
-3.	non storing mode PDAO 3 is then sent to A. It has Root = A, SR-VIO = C, E, Track ID 129 from A’s namespace, Target = F, G
+1.	storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A’s namespace, Target = E
+2.	storing mode P-DAO 2 is then sent to B. It has Root = A, VIO = A, B, Track ID 129 from A’s namespace, Target = B, C
+3.	non storing mode P-DAO 3 is then sent to A. It has Root = A, SR-VIO = C, E, Track ID 129 from A’s namespace, Target = F, G
 
 
-From PDAO 3: A encapsulates packets with dest =   F | G as below;
+From P-DAO 3: A encapsulates packets with dest =   F | G as below;
 Packets from A have source= A, destination = C, SRH = E, and RPI = 129.
-From PDAO 2: A forwards to B.
+From P-DAO 2: A forwards to B.
 B forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
-From PDAO 1: C forwards to D and D forwards to E.
+From P-DAO 1: C forwards to D and D forwards to E.
 E decapsulates if encapsulated packet.
 
 
@@ -118,42 +118,42 @@ A->B->C and C->D->E are Tracks expressed as non-storing P-DAOs.
 
 Case 2.1 Stitched Tracks
 
-1.	non storing mode PDAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E, F, G
-2.	non storing mode PDAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A’s namespace, Target = E, F, G
+1.	non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E, F, G
+2.	non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A’s namespace, Target = E, F, G
 
-From PDAO 2: A encapsulates packets with dest =  E | F | G. The outer header has source = A, destination = B, SRH = C and RPI = 129.
+From P-DAO 2: A encapsulates packets with dest =  E | F | G. The outer header has source = A, destination = B, SRH = C and RPI = 129.
 Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
-From PDAO 1: C  encapsulates packets with dest =  E | F | G. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+From P-DAO 1: C  encapsulates packets with dest =  E | F | G. The outer header has source= C, destination = D, SRH = E and RPI = 131.
 E decapsulates.
 
 
 Case 2.2 External routes
 
-1.	non storing mode PDAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E
-2.	non storing mode PDAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A’s namespace, Target = E
-3.	non storing mode PDAO 3 is then sent to A. It has Root = A, SR-VIO = E, Track ID 141 from A’s namespace, Target = F, G
+1.	non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E
+2.	non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A’s namespace, Target = E
+3.	non storing mode P-DAO 3 is then sent to A. It has Root = A, SR-VIO = E, Track ID 141 from A’s namespace, Target = F, G
 
 
-From PDAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = E, and RPI = 141.
+From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = E, and RPI = 141.
 This may recurse with:
-From PDAO 2: A encapsulates packets with dest =  E. The outer header has source = A, destination = B, SRH = C and RPI = 129.
+From P-DAO 2: A encapsulates packets with dest =  E. The outer header has source = A, destination = B, SRH = C and RPI = 129.
 Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
-From PDAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
 E decapsulates if encapsulated.
 
 
 Case 2.3 Segment Routing
 
-1.	non storing mode PDAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E
-2.	non storing mode PDAO 2 is then sent to A. It has Root = A, VIO = B,  Track ID 129 from A’s namespace, Target = C, E
-3.	non storing mode PDAO 3 is then sent to A. It has Root = A, SR-VIO = C, E, Track ID 141 from A’s namespace, Target = F, G
+1.	non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C’s namespace, Target = E
+2.	non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B,  Track ID 129 from A’s namespace, Target = C, E
+3.	non storing mode P-DAO 3 is then sent to A. It has Root = A, SR-VIO = C, E, Track ID 141 from A’s namespace, Target = F, G
 
 
-From PDAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = C, SRH = E, and RPI = 141.
+From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = C, SRH = E, and RPI = 141.
 This may recurse with:
-From PDAO 2: A encapsulates packets with dest =  C | E . The outer header has source = A, destination = B, and RPI = 129.
+From P-DAO 2: A encapsulates packets with dest =  C | E . The outer header has source = A, destination = B, and RPI = 129.
 B decapsulates forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
-From PDAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
 E decapsulates, twice for dest =   F | G.
 
 
@@ -176,7 +176,7 @@ E decapsulates, twice for dest =   F | G.
 <rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902'
 tocInclude="true" indexInclude="true" obsoletes="" updates="" consensus="true"
 submissionType="IETF" xml:lang="en" version="3"
-docName="draft-ietf-roll-dao-projection-15" >
+docName="draft-ietf-roll-dao-projection-16" >
 
 <front>
 
@@ -380,8 +380,6 @@ docName="draft-ietf-roll-dao-projection-15" >
 <section anchor='gloss'><name>Glossary</name>
     <t> This document often uses the following acronyms:
        </t><dl spacing='compact'>
-
-
        <dt>CMO:</dt><dd> Control Message Option</dd>
        <dt>DAO:</dt><dd> Destination Advertisement Object</dd>
        <dt>DAG:</dt><dd> Directed Acyclic Graph </dd>
@@ -389,9 +387,9 @@ docName="draft-ietf-roll-dao-projection-15" >
        with only one vertex (i.e., node) that has no outgoing edge (i.e., link)
        </dd>
        <dt>LLN:</dt><dd> Low-Power and Lossy Network </dd>
-       <dt>NMPR:</dt><dd> Non-Storing Mode Projected Route  </dd>
        <dt>MOP:</dt><dd> RPL Mode of Operation</dd>
        <dt>P-DAO:</dt><dd> Projected DAO </dd>
+       <dt>P-Route:</dt><dd> Projected Route </dd>
        <dt>PDR:</dt><dd> P-DAO Request </dd>
        <dt>RAN:</dt><dd> RPL-Aware Node (either a RPL Router or a RPL-Aware Leaf)</dd>
        <dt>RAL:</dt><dd> RPL-Aware Leaf </dd>
@@ -400,13 +398,12 @@ docName="draft-ietf-roll-dao-projection-15" >
        <dt>RTO:</dt><dd> RPL Target Option</dd>
        <dt>RUL:</dt><dd> RPL-Unaware Leaf </dd>
        <dt>SIO:</dt><dd> RPL Sibling Information Option</dd>
-       <dt>SR-VIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing Mode P-DAO messages.    </dd>
-       <dt>SMPR:</dt><dd> Storing Mode Projected Route  </dd>
+       <dt>SR-VIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing-Mode P-DAO messages.    </dd>
        <!--
        <dt>SubDAG:</dt><dd> A DODAG rooted at a node which is a child of that
        node and a subset of a larger DAG</dd> -->
        <dt>TIO:</dt><dd> RPL Transit Information Option</dd>
-       <dt>SF-VIO:</dt><dd> A Via Information Option, used in Storing Mode P-DAO messages.    </dd>
+       <dt>SF-VIO:</dt><dd> A Via Information Option, used in Storing-Mode P-DAO messages.    </dd>
        <dt>VIO:</dt><dd> A Via Information Option; it can be a SF-VIO or an SR-VIO.    </dd>
        </dl>
 
@@ -449,12 +446,13 @@ docName="draft-ietf-roll-dao-projection-15" >
 
 
     <section anchor='ext6550'><name>Extending RFC 6550</name>
-    <section anchor='extPDAO'><name>Projected DAO</name>
+    <section anchor='extP-DAO'><name>Projected DAO</name>
 
 
    <t>
    Section 6 of <xref target='RFC6550'/> introduces the RPL Control Message
-   Options (CMO), including the RPL Target Option (RTO) and Transit Information Option (TIO), which can be placed in RPL messages such as the Destination Advertisement Object (DAO).
+   Options (CMO), including the RPL Target Option (RTO) and Transit Information
+   Option (TIO), which can be placed in RPL messages such as the Destination Advertisement Object (DAO).
    This specification extends the DAO message with the Projected DAO (P-DAO); a
    P-DAO message signals a Projected Route to one or more Targets using the new
    CMOs presented therein. This specification enables to combine one or more
@@ -463,15 +461,27 @@ docName="draft-ietf-roll-dao-projection-15" >
    </t>
    <t>
    The Track is assimilated with the DODAG formed for a Local RPL Instance.
-   The local RPLInstanceID of the Track is called the TrackID, more in <xref target='trkid'/>. A P-DAO message for a Track signals the TrackID in the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field of the Projected DAO Base Object; that field is elided in the case of the main RPL Instance. The Track Ingress is the Root of the Track, as shown in  <xref target='p-dao-fmt'/>.
+   The local RPLInstanceID of the Track is called the TrackID, more in
+   <xref target='trkid'/>. A P-DAO message for a Track signals the TrackID in
+   the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field
+   of the Projected DAO Base Object; that field is elided in the case of the
+   main RPL Instance. The Track Ingress is the Root of the Track, as shown in
+   <xref target='p-dao-fmt'/>.
+   </t>
+   <t>
+   This specification defines the new  "Projected DAO" (P) flag.
+   The 'P' flag is encoded in bit position 2 (to be confirmed by IANA) of the Flags field in the
+   DAO Base Object. The Root MUST set it to 1 in a Projected DAO message.
+   Otherwise it MUST be set to 0. It is set to 0 in legacy implementations as
+   specified respectively in Sections 20.11 and 6.4 of <xref target='RFC6550'/>.
 .  </t>
 
-<figure anchor='p-dao-fmt'><name>Projected DAO Format for a Track</name>
+<figure anchor='p-dao-fmt'><name>Projected DAO Base Object</name>
               <artwork align="center">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|    TrackID    |K|D|   Flags   |   Reserved    | DAOSequence   |
+|    TrackID    |K|D|P|  Flags  |   Reserved    | DAOSequence   |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                                                               |
 +                                                               +
@@ -486,6 +496,26 @@ docName="draft-ietf-roll-dao-projection-15" >
  </artwork>
 </figure>
 
+
+  <t> New fields:</t>
+  <dl  spacing='normal'>
+
+  <dt>TrackID:</dt>
+    <dd> In the case of a P-DAO, the RPLInstanceID field is called TrackID.
+    This is a naming convenience but does not change the semantics and format of
+    the RPLInstanceID that is used as TrackID.
+    </dd>
+
+  <dt>P:</dt>
+    <dd> <t>1-bit flag (position to be confirmed by IANA).</t>
+          <t>
+          The 'P' flag is set to 1 by the Root to signal a Projected DAO,
+          and it is set to 0 otherwise.
+          </t>
+          </dd>
+
+  </dl>
+
   <t>
    In RPL Non-Storing Mode, the TIO and RTO are combined in a DAO message to
    inform the DODAG Root of all the edges in the DODAG, which are formed by the
@@ -495,12 +525,12 @@ docName="draft-ietf-roll-dao-projection-15" >
    </t>
   <t>
    New CMOs called the Via Information Options (VIO) are introduced for use in
-   P-DAO messages as a multihop alternative to the TIO. One VIO is the Stateful Via Information Option (SF-VIO); the SF-VIO installs Storing Mode Projected Route (SMPR) along a strict segment. The other is the Source-Routed SF-VIO (SR-VIO); the SR-VIO installs a Non-Storing Mode Projected Route (NMPR) at the Track Ingress, which uses that state to encapsulate a packet with a Routing Header (RH) to the Track Egress.
+   P-DAO messages as a multihop alternative to the TIO. One VIO is the Stateful VIO(SF-VIO); the SF-VIO installs Storing-Mode Projected Route along a strict segment. The other is the Source-Routed VIO (SR-VIO); the SR-VIO installs a Non-Storing-Mode Projected Route at the Track Ingress, which uses that state to encapsulate a packet with a Routing Header (RH) to the Track Egress.
    </t>
    <t>
-   Like in a DAO message, the RTOs can be factorized in a P-DAO, but the Via Options cannot.
+   Like in a DAO message, the RTOs can be factorized in a P-DAO, but the Via Information Options cannot.
    A P-DAO contains one or more RTOs that indicate the destinations that can be
-   reached via the Track, and exactly one Via Option that signals a sequence of nodes.
+   reached via the Track, and exactly one VIOthat signals a sequence of nodes.
    In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored. In Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state to the Track Egress at each hop. In both cases the Track Ingress is the owner of the Track, and it generates the P-DAO-ACK when the installation is successful.
    </t>
 
@@ -522,7 +552,7 @@ docName="draft-ietf-roll-dao-projection-15" >
    Node and a Track Egress.
    The RAN makes its request by sending a new P-DAO Request (PDR) Message to
    the Root. The Root confirms with a new PDR-ACK message back to the requester
-   RAN, see <xref target='pdaoreq'/> for more. A positive PDR-ACK indicates that
+   RAN, see <xref target='P-DAOreq'/> for more. A positive PDR-ACK indicates that
    the Track was built and that the Roots commits to maintain the Track for the
    negotiated lifetime.
    In the case of a complex Track, each Segment is maintained independently and
@@ -625,7 +655,7 @@ docName="draft-ietf-roll-dao-projection-15" >
 
     <section anchor='rplccmo'><name>New RPL Control Messages and Options</name>
 
-    <section anchor='pdaoreq'><name>New P-DAO Request Control Message</name>
+    <section anchor='P-DAOreq'><name>New P-DAO Request Control Message</name>
 
                <t>
     The P-DAO Request (PDR) message is sent by a Node in the main DODAG to the Root. It is a request to establish or refresh a Track.
@@ -774,12 +804,12 @@ docName="draft-ietf-roll-dao-projection-15" >
 
      <section anchor='rplrpo'><name>Via Information Options</name>
 
-    <t>An Via Option signals the ordered list of IPv6 Via Addresses that constitutes the hops of either a Serial Track or a Segment of a more Complex Track.
-    An Via Option MUST contain at least one Via Address, and a Via Address MUST NOT be
-    present more than once, otherwise the Via Option MUST be ignored.
-    The format of the Via Options is as follows:
+    <t>An VIOsignals the ordered list of IPv6 Via Addresses that constitutes the hops of either a Serial Track or a Segment of a more Complex Track.
+    An VIOMUST contain at least one Via Address, and a Via Address MUST NOT be
+    present more than once, otherwise the VIOMUST be ignored.
+    The format of the Via Information Options is as follows:
     </t>
-<figure anchor='viao'><name>Via Information Option format (uncompressed form)</name>
+<figure anchor='viao'><name>VIOformat (uncompressed form)</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -833,12 +863,12 @@ docName="draft-ietf-roll-dao-projection-15" >
               Root of the DODAG needs to refresh or update a Segment in a Track,
               it increments the Segment Sequence individually for that Segment.
               </t><t>
-              The Segment information indicated in the Via Option deprecates any state
+              The Segment information indicated in the VIOdeprecates any state
               for the Segment indicated by the SegmentID within the indicated
               Track and sets up the new information.
 
               </t><t>
-              An Via Option with a Segment
+              An VIOwith a Segment
               Sequence that is not as fresh as the current one is ignored.
               </t><t>
               A VIO for a given DODAGID with the same (TrackID,
@@ -862,7 +892,7 @@ docName="draft-ietf-roll-dao-projection-15" >
 
               </t><t>
               A P-DAO message that
-              contains a Via Information option with a Segment Lifetime of
+              contains a VIOwith a Segment Lifetime of
               zero is referred as a No-Path P-DAO in this document.
               </t>
               </dd>
@@ -878,7 +908,7 @@ docName="draft-ietf-roll-dao-projection-15" >
               In a SF-VIO, the list is a strict path between direct neighbors, from the segment ingress to egress, both included. In an SR-VIO, the list starts at the first hop and ends at a Track Egress. The list in an SR-VIO may be loose, provided that each listed node has a path to the next listed node, e.g., via a segment or another Track.
               </t><t>
               In the case of a SF-VIO, or if <xref target='RFC8138'/> is not used in the data packets, then the Root MUST use
-              only one SRH-6LoRH per Via Option, and the compression is the same for
+              only one SRH-6LoRH per Via Information Option, and the compression is the same for
               all the addresses, as shown in <xref target='viao'/>.
               </t><t>
               In case of an SR-VIO, and if <xref target='RFC8138'/> is in use in the main DODAG, then the Root SHOULD optimize the size of the SR-VIO; more than one SRH-6LoRH may be present, e.g., if the compression level changes inside the Segment and different SRH-6LoRH Types are required. The content of the SR-VIO starting at the first SRH-6LoRH header is thus verbatim the one that the Track Ingress places in the packet encapsulation to reach the Track Ingress.
@@ -991,33 +1021,33 @@ docName="draft-ietf-roll-dao-projection-15" >
 
     </section> <!-- New RPL Control Messages and Options -->
 
-    <section anchor='pdao'><name>Projected DAO</name>
+    <section anchor='P-DAO'><name>Projected DAO</name>
 
     <t>
     This draft adds a capability to RPL whereby the Root of a main DODAG installs
-    a Track as a collection of Projected Routes, using a Projected-DAO (P-DAO) message to maintain each individual route. The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a Via Information Option (VIO).
+    a Track as a collection of Projected Routes, using a Projected-DAO (P-DAO) message to maintain each individual route. The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a VIO(VIO).
     A P-DAO message MUST contain exactly one VIO, which is either a SF-VIO or an
-    SR-VIO, and MUST follow one or more RTOs. There can be at most one such sequence of RTO(s) and an Via Option. A track is indentified by a tupple DODAGID, TrackID and  each route within a Track is indexed by a SegmentID.
+    SR-VIO, and MUST follow one or more RTOs. There can be at most one such sequence of RTO(s) and an Via Information Option. A track is indentified by a tupple DODAGID, TrackID and  each route within a Track is indexed by a SegmentID.
      </t> <t>
     A P-DAO MUST be sent from the address of the Root that serves as DODAGID for the main DODAG. It MUST be sent to a GUA or a ULA of either the ingress or the egress of the Segment, more below. If the 'K' Flag is present in the P-DAO, and unless the P-DAO does not reach it, the ingress of the Segment is the node that acknowledges the message, using a DAO-ACK that MUST be sent back to the address that serves as DODAGID for the main DODAG.
      </t> <t>
     Like a classical DAO message, a P-DAO causes a change of state only if it is
     "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
     RPL specification</xref>; this is determined using
-    the Segment Sequence information from the Via Option as opposed to the Path
-    Sequence from a TIO. Also, a Segment Lifetime of 0 in an Via Option indicates that the projected route associated to the Segment is to be removed.
+    the Segment Sequence information from the VIOas opposed to the Path
+    Sequence from a TIO. Also, a Segment Lifetime of 0 in an VIOindicates that the projected route associated to the Segment is to be removed.
      </t> <t>
     There are two kinds of operation for the Projected Routes, the Storing Mode
     and the Non-Storing Mode.
     </t><ul spacing='normal'>
      <li>
-    The Non-Storing Mode is discussed in <xref target='nspdao'/>. A Non-Storing
+    The Non-Storing Mode is discussed in <xref target='nsP-DAO'/>. A Non-Storing
     Mode P-DAO carries an SR-VIO with the loose list of Via Addresses that forms a
     source-routed Segment to the Track Egress. The recipient of the P-DAO is the
     Track Ingress; it MUST install a source-routed state to the Track Egress and reply to the Root directly using a DAO-ACK message if requested to.
      </li>
     <li>
-    The Storing Mode is discussed in <xref target='spdao'/>.  A Storing Mode
+    The Storing Mode is discussed in <xref target='sP-DAO'/>.  A Storing Mode
     P-DAO carries a SF-VIO with the strict list of Via Addresses from the ingress to the egress of the Segment in the data path order.
     The routers listed in the Via Addresses, except the egress, MUST install a routing state to the Target(s) via the next Via Address in the SF-VIO.
     In normal operations, the P-DAO is propagated along the chain of Via Routers
@@ -1042,7 +1072,7 @@ docName="draft-ietf-roll-dao-projection-15" >
     6LoRH information SHOULD be present in the ICMP message.
        </t> <t>
     The sender and exact operation depend on the Mode and is described in
-    <xref target='nspdao'/> and <xref target='spdao'/> respectively.
+    <xref target='nsP-DAO'/> and <xref target='sP-DAO'/> respectively.
     </t>
     <!--t>
     Note: The Target of a route that is installed by a P-DAO is not necessarily
@@ -1093,10 +1123,10 @@ docName="draft-ietf-roll-dao-projection-15" >
      <t>
      The Root MAY use P-DAO messages to add better routes in the main (Global)
      Instance in conformance with the routing objectives in that Instance.
-     To achieve this, the Root MAY install an SMPR along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
+     To achieve this, the Root MAY install an Storing-Mode P-Route along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
      </t>
      <t>
-     When adding an SMPR to the main RPL Instance, the Root MUST set the RPLInstanceID field of the P-DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT use the DODAGID field. A Projected Route provides a longer match to the Target Address than the default route via the Root, so it is preferred.
+     When adding an Storing-Mode P-Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the P-DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT use the DODAGID field. A Projected Route provides a longer match to the Target Address than the default route via the Root, so it is preferred.
      </t>
      <t>
      Once the Projected Route is installed, the intermediate nodes listed in the SF-VIO after first one (i.e. The ingress) can be elided from the RH in packets sent along the Segment signaled in the P-DAO. The resulting loose source routing header indicates (one of) the Target(s) as the next entry after the ingress.
@@ -1123,10 +1153,10 @@ docName="draft-ietf-roll-dao-projection-15" >
       <section anchor='inst'><name>Installing a Track</name>
 
    <t>
-   A Storing Mode P-DAO contains an SF-VIO that signals the strict sequence of consecutive nodes to form a segment between a segment ingress and a segment egress (both included). It installs a route of a higher precedence along the segment towards the Targets indicated in the Target Options. The segment is included in a DODAG indicated by the P-DAO Base Object, that may be the one formed by the main RPL Instance, or a Track associated with a local RPL Instance. A Track Egress is signaled as a Target in the P-DAO, and as the last entry is an SF-VIO of a last segment towards that Egress.
+   A Storing-Mode P-DAO contains an SF-VIO that signals the strict sequence of consecutive nodes to form a segment between a segment ingress and a segment egress (both included). It installs a route of a higher precedence along the segment towards the Targets indicated in the Target Options. The segment is included in a DODAG indicated by the P-DAO Base Object, that may be the one formed by the main RPL Instance, or a Track associated with a local RPL Instance. A Track Egress is signaled as a Target in the P-DAO, and as the last entry is an SF-VIO of a last segment towards that Egress.
    </t>
    <t>
-   A Non-Storing Mode P-DAO signals a strict or loose sequence of nodes between the Track Ingress (excluded) and a Track Egress (included). It installs a source-routed path of a higher precedence within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet.
+   A Non-Storing-Mode P-DAO signals a strict or loose sequence of nodes between the Track Ingress (excluded) and a Track Egress (included). It installs a source-routed path of a higher precedence within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet.
    </t>
    <t>
    The next entry in the sequence must be either a neighbor of the previous entry, or reachable as a Target via another Projected Route, either Storing or Non-Storing.
@@ -1141,163 +1171,16 @@ docName="draft-ietf-roll-dao-projection-15" >
    they are visible from the track Ingress.
    </t>
 
-      </section><!-- Installing a Track  -->
-     <section anchor='routing'><name>Forwarding Along a Track</name>
-
-     <t>
-     This draft leverages the RPL Forwarding model follows:
-     </t><ul spacing='normal'>
-     <li>
-      <t>
-     In the data packets, the Track DODAGID and the TrackID MUST be respectively signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI that MUST be placed in the outer chain of IPv6 Headers.
-      </t>
-     <t>
-     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
-      </t>
-     <t>
-     The 'D' flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
-     in <xref target='routing'/>.
-
-     </t>
-
-
-     </li>
-     <li>
-      <t>
-      This draft conforms the principles of
-      <xref target='I-D.ietf-roll-useofrplinfo'/> with regards to packet
-      forwarding and encapsulation along a Track.
-      </t>
-      <ul>
-      <li>
-      In that case,
-      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
-      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in  <xref target='I-D.ietf-roll-useofrplinfo'/> apply.
-      </li><li>
-      If the Track Ingress is the originator of the packet and the Track Egress
-      is the destination of the packet, there is no need for an encapsulation.
-      </li><li>
-      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
-      </li>
-      </ul>
-     <t>
-     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
-     On the other hand, a Storing Mode Track must be strict and a packet that
-     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
-     </t>
-     <t>
-      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped.
-
-     </t>
-     <!-- TODO: add config parm to the local Instance -->
-     </li>
-     </ul>
+    <section anchor='sP-DAO'><name>Storing-Mode P-Route</name>
     <t>
-     All properties of a Track operations are inherited form the main RPL Instance
-     that is used to install the Track. For instance, the use of compression per
-     <xref target='RFC8138'/> is determined by whether it is used in the main
-     instance, e.g., by setting the "T" flag
-     <xref target='I-D.ietf-roll-turnon-rfc8138'/> in the RPL
-     configuration option.
-   </t>
-    </section><!-- Forwarding along a Track -->
-
-
-    <section anchor='nspdao'><name>Non-Storing Mode Projected Route</name>
-
-    <t>
-    As illustrated in <xref target='nsdf'/>, a P-DAO that carries an SR-VIO
-    enables the Root to install a source-routed path towards a Track Egress in any particular router.
+    Profile 1 extends RPL opertation in a Non-Storing Mode network with
+    Storing-Mode Projected Routes that install segments along the main DODAG
+    and enable to loose source routing  between the Root and the targets.
     </t>
-
-          <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
-            <artwork>
-           ------+---------
-                 |          Internet
-                 |
-              +-----+
-              |     | Border Router
-              |     |  (RPL Root)
-              +-----+                    |  P  ^ ACK
-                 |        Track          | DAO |
-           o    o   o  o  Ingress X      V     |   X
-       o o   o  o   o  o     o   X   o             X Source
-      o  o o  o o    o   o  o    X  o  o           X Routed
-      o   o    °  o     o   o   o X     o          X Segment
-     o  o   o  o   o  o    o  o     X Track        X
-        o  o  o  o             o     Egress
-
-       o       o               o    o
-     o          o             o     o
-                                   destination
-
-                       LLN
-                       </artwork>
-          </figure>
-    <t>
-    A route indicated by an SR-VIO may be loose, meaning that the node that owns
-    the next listed Via Address is not necessarily a neighbor. Without proper
-    loop avoidance mechanisms, the interaction of loose source routing and other
-    mechanisms may effectively cause loops.
-
-    </t>
-    <t>
-      When forwarding a packet to a destination for which the router determines
-      that routing happens via the Track Egress, the router inserts the source
-      routing header in the packet with the destination set to the Track Egress.
-
-    </t>
-    <t>
-      In order to signal the Segment, the router encapsulates the
-      packet with an IP-in-IP header and a Routing Header as follows:
-    </t>
-    <ul>
-    <li>
-      In the uncompressed form the source of the packet is this router, the
-      destination is the first Via Address in the SR-VIO, and the RH is a
-      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
-      list of the remaining Via Addresses terminating by the Track Egress.
-    </li>
-    <li>
-    <t>
-    The preferred alternate in a network where 6LoWPAN Header Compression
-    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
-    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
-    Dispatch"</xref> to compress the RPL artifacts as indicated in
-    <xref target='RFC8138'/>.
-    </t>
-    <t>
-    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the SR-VIO, also terminating by the Track Egress.
-    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='I-D.ietf-roll-turnon-rfc8138'/>.
-
-    </t>
-    </li>
-    </ul>
-    <t>
-      In the case of a loose source-routed path, there MUST be either a neighbor
-      that is adjacent to the
-      loose next hop, on which case the packet is forwarded to that neighbor, or
-      another Track to the loose next hop for which this node is Ingress; in the latter case, another encapsulation takes place and the process possibly recurses; otherwise the packet is dropped.
-     </t>
-      <t>In case of a forwarding error along a Source Route path, the node that
-      fails to forward SHOULD send an ICMP error with a code "Error in Source
-      Routing Header" back to the source of the packet, as described in section
-      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
-      encapsulating node SHOULD stop using the source route path for a period
-      of time and it SHOULD send an ICMP message with a Code "Error in
-      Projected Route" to the Root. Failure to follow these steps may result
-      in packet loss and wasted resources along the source route path that
-      is broken.
-      </t>
-      </section>
-
-
-
-    <section anchor='spdao'><name>Storing Mode Projected Route</name>
-
     <t>
     As illustrated in <xref target='sdf'/>, a P-DAO that carries a SF-VIO
-    enables the Root to install a stateful route towards a collection of Targets along a Segment between a Track Ingress and a Track Egress.
+    enables the Root to install a stateful route towards a collection of Targets
+    along a Segment between a Track Ingress and a Track Egress.
     </t>
 
       <figure anchor='sdf'><name>Projecting a route</name>
@@ -1366,18 +1249,724 @@ docName="draft-ietf-roll-dao-projection-15" >
      the Segment, which answers with a DAO-ACK to the Root.
     </t>
     <t>
-     A Segment Lifetime of 0 in a Via Information option is used to clean up the
+     A Segment Lifetime of 0 in a VIOis used to clean up the
      state. The P-DAO is forwarded as described above, but the DAO
      is interpreted as a No-Path DAO and results in cleaning up existing state
      as opposed to refreshing an existing one or installing a new one.
     </t>
-      <t>In case of a forwarding error along an SMPR, the node
+      <t>In case of a forwarding error along an Storing-Mode P-Route, the node
       that fails to forward SHOULD send an ICMP error with a code "Error in
       Projected Route" to the Root. Failure to do so may result in packet loss
       and wasted resources along the Projected Route that is broken.
       </t>
-      </section>  <!-- "Storing Mode Projected DAO" -->
-    </section>  <!-- "Projected DAO" -->
+
+    </section>  <!-- Storing-Mode P-Route -->
+
+
+
+    <section anchor='nsP-DAO'><name>Non-Storing-Mode P-Route</name>
+
+    <t>
+    As illustrated in <xref target='nsdf'/>, a P-DAO that carries an SR-VIO
+    enables the Root to install a source-routed path from a Track Ingress towards
+    a Target along the main DODAG.
+    </t>
+
+          <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
+            <artwork>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+                    |  P  ^ ACK
+                 |        Track          | DAO |
+           o    o   o  o  Ingress X      V     |   X
+       o o   o  o   o  o     o   X   o             X Source
+      o  o o  o o    o   o  o    X  o  o           X Routed
+      o   o    °  o     o   o   o X     o          X Segment
+     o  o   o  o   o  o    o  o     X Track        X
+        o  o  o  o             o     Egress
+
+       o       o               o    o
+     o          o             o     o
+                                   destination
+
+                       LLN
+                       </artwork>
+          </figure>
+    <!--t>
+    A route indicated by an SR-VIO may be loose, meaning that the node that owns
+    the next listed Via Address is not necessarily a neighbor. Without proper
+    loop avoidance mechanisms, the interaction of loose source routing and other
+    mechanisms may effectively cause loops.
+
+    </t-->
+    <t>
+
+      When forwarding a packet to a destination for which the router determines
+      that routing happens via a Track Target, the router inserts the Source
+      Routing Header in the packet with the final destination at the Track Egress.
+    </t>
+    <t>
+      In order to signal the Segment, the router encapsulates the
+      packet with an IP-in-IP header and a Routing Header as follows:
+    </t>
+    <ul>
+    <li>
+      In the uncompressed form the source of the packet is this router, the
+      destination is the first Via Address in the SR-VIO, and the RH is a
+      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
+      list of the remaining Via Addresses terminating by the Track Egress.
+    </li>
+    <li>
+    <t>
+    The preferred alternate in a network where 6LoWPAN Header Compression
+    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
+    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
+    Dispatch"</xref> to compress the RPL artifacts as indicated in
+    <xref target='RFC8138'/>.
+    </t>
+    <t>
+    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the SR-VIO, also terminating by the Track Egress.
+    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='I-D.ietf-roll-turnon-rfc8138'/>.
+
+    </t>
+    </li>
+    </ul>
+    <t>
+      In the case of a loose source-routed path, there MUST be either a neighbor
+      that is adjacent to the
+      loose next hop, on which case the packet is forwarded to that neighbor, or
+      another Track to the loose next hop for which this node is Ingress; in the latter case, another encapsulation takes place and the process possibly recurses; otherwise the packet is dropped.
+     </t>
+      <t>In case of a forwarding error along a Source Route path, the node that
+      fails to forward SHOULD send an ICMP error with a code "Error in Source
+      Routing Header" back to the source of the packet, as described in section
+      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
+      encapsulating node SHOULD stop using the source route path for a period
+      of time and it SHOULD send an ICMP message with a Code "Error in
+      Projected Route" to the Root. Failure to follow these steps may result
+      in packet loss and wasted resources along the source route path that
+      is broken.
+      </t>
+  </section> <!-- Non-Storing-Mode P-Route -->
+
+      </section><!-- Installing a Track  -->
+     <section anchor='routing'><name>Forwarding Along a Track</name>
+
+     <t>
+     This draft leverages the RPL Forwarding model follows:
+     </t><ul spacing='normal'>
+     <li>
+      <t>
+     In the data packets, the Track DODAGID and the TrackID MUST be respectively signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI that MUST be placed in the outer chain of IPv6 Headers.
+      </t>
+     <t>
+     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
+      </t>
+     <t>
+     The 'D' flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
+     in <xref target='routing'/>.
+
+     </t>
+
+
+     </li>
+     <li>
+      <t>
+      This draft conforms the principles of
+      <xref target='I-D.ietf-roll-useofrplinfo'/> with regards to packet
+      forwarding and encapsulation along a Track.
+      </t>
+      <ul>
+      <li>
+      In that case,
+      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
+      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in  <xref target='I-D.ietf-roll-useofrplinfo'/> apply.
+      </li><li>
+      If the Track Ingress is the originator of the packet and the Track Egress
+      is the destination of the packet, there is no need for an encapsulation.
+      </li><li>
+      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
+      </li>
+      </ul>
+     <t>
+     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
+     On the other hand, a Storing Mode Track must be strict and a packet that
+     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
+     </t>
+     <t>
+      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped.
+
+     </t>
+     <!-- TODO: add config parm to the local Instance -->
+     </li>
+     </ul>
+    <t>
+     All properties of a Track operations are inherited form the main RPL Instance
+     that is used to install the Track. For instance, the use of compression per
+     <xref target='RFC8138'/> is determined by whether it is used in the main
+     instance, e.g., by setting the "T" flag
+     <xref target='I-D.ietf-roll-turnon-rfc8138'/> in the RPL
+     configuration option.
+   </t>
+    </section><!-- Forwarding along a Track -->
+
+    </section><!-- Projected DAO  -->
+
+<!--
+
+    Say we have
+
+                                    -.-.-. F
+    A-.-.-.B-.-.-.C-.-.-.D-.-.-.E <
+                                    -.-.-. G
+
+
+    A is Track ingress, E is track Egress. C is stitching point. F and G are E's neighbors, "external" to the Track, and reachable from A over the Track A->E.
+    In a general manner we want:
+
+      *   P-DAO 1 signals A->B->C
+      *   P-DAO 2 signals C->B->E
+      *   P-DAO 3 signals F and G via the A->E Track
+
+    P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
+
+
+    1) Storing mode Segments
+    -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+    A->B->C and C->D->E are segments of a same Track.
+    Note that the storing mode signaling imposes strict continuity in a segment. This may also avoid weird loops.
+
+    Case 1.1) Stitched Segments
+
+
+      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E, F, G
+      2.  storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A's namespace, Target = E, F, G
+
+    E recognizes that it is egress because it is a Target and a segment endpoint.
+
+    Packets along the Track have source= A, destination = E | F | G, and RPI = 129.
+    >From P-DAO 2: A forwards to B and B forwards to C.
+    >From P-DAO 1: C forwards to D and D forwards to E.
+
+
+    Case 1.2) External routes
+
+
+      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E
+      2.  storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A's namespace, Target = E
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = E, Track ID 129 from A's namespace, Target = F, G
+
+    >From P-DAO 3: A encapsulates packets with dest =   F | G as below;
+    Packets along the Track have source= A, destination = E, and RPI = 129.
+    >From P-DAO 2: A forwards to B and B forwards to C.
+    >From P-DAO 1: C forwards to D and D forwards to E.
+    E decapsulates if encapsulated packet.
+
+
+
+    Case 1.3) Segment Routing
+
+
+      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E
+      2.  storing mode P-DAO 2 is then sent to B. It has Root = A, VIO = A, B, Track ID 129 from A's namespace, Target = B, C
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = C, E, Track ID 129 from A's namespace, Target = F, G
+
+
+    >From P-DAO 3: A encapsulates packets with dest =   F | G as below;
+    Packets from A have source= A, destination = C, SRH = E, and RPI = 129.
+    >From P-DAO 2: A forwards to B.
+    B forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
+    >From P-DAO 1: C forwards to D and D forwards to E.
+    E decapsulates if encapsulated packet.
+
+
+
+    2) Non Storing mode joining Tracks
+    -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+    A->B->C and C->D->E are Tracks expressed as non-storing P-DAOs.
+
+    Case 2.1 Stitched Tracks
+
+
+      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, Target = E, F, G
+      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A's namespace, Target = E, F, G
+
+    >From P-DAO 2: A encapsulates packets with dest =  E | F | G. The outer header has source = A, destination = B, SRH = C and RPI = 129.
+    Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
+    >From P-DAO 1: C  encapsulates packets with dest =  E | F | G. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+    E decapsulates.
+
+
+    Case 2.2 External routes
+
+
+      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, Target = E
+      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A's namespace, Target = E
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = E, Track ID 141 from A's namespace, Target = F, G
+
+
+
+    >From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = E, and RPI = 141.
+    This may recurse with:
+    >From P-DAO 2: A encapsulates packets with dest =  E. The outer header has source = A, destination = B, SRH = C and RPI = 129.
+    Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
+    >From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+    E decapsulates if encapsulated.
+
+
+    Case 2.3 Segment Routing
+
+
+      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, (Target = E i simplicit)
+      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B,  Track ID 129 from A's namespace, Target = C, E
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = C, E, Track ID 141 from A's namespace, Target = F, G
+
+
+    >From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = C, SRH = E, and RPI = 141.
+    This may recurse with:
+    >From P-DAO 2: A encapsulates packets with dest =  C | E . The outer header has source = A, destination = B, and RPI = 129.
+    B decapsulates forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
+    >From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+    E decapsulates, twice for dest =   F | G.
+
+
+
+
+
+-->
+    <section anchor='prof'><name>Profiles</name>
+    <t>
+    This document provides a set of tools that may or may not be needed by
+    an implementation depending on the type of application it serves.
+    This sections described profiles that can be implemented separately and
+    can be used to discriminate what an implementation can and cannot do.
+    </t>
+
+    <dl>
+    <dt> Profile 0 </dt><dd>
+      Profile 0 is the legacy support of <xref target='RFC6550'/> Non-Storing
+      Mode. It provides the minimal common functionality that must be
+      implemented as a prerequisite to all the Track-supporting profiles.
+      The other Profiles extend Profile 0 with selected capabilities that this
+      specification introduces on top.
+    </dd>
+    <dt> Profile 1 (Storing-Mode P-Route Segments along the main DODAG) </dt><dd>
+      Profile 1 does not
+      create new paths; it combines Storing and Non-Storing Modes to balance the
+      size of the routing header in the packet and the amount of state in the
+      intermediate routers in a Non-Storing Mode RPL DODAG.
+    </dd>
+    <dt> Profile 2 (Non-Storing-Mode P-Route Segments along the main DODAG)</dt><dd>
+      Profile 2 extends Profile 0 with Strict Source-Routing Non-Storing-Mode Projected Routes along the main DODAG. Profile 2 provides the same capability to compress the SRH in packets down the main DODAG as Profile 1, but it require an encapsulation, in order to insert an additional SRH between the loose source routing hops.
+    </dd>
+    <dt> Profile 3 </dt><dd>
+      Profile 3 and above
+      build Tracks that do not necessarily follow the main DODAG. In order to
+      form the best path possible, those Profiles require the support of
+      Sibling Information Option to inform the Root of additional possible hops.
+      Profile 3 extends Profile 1 with additional Storing-Mode Projected Routes
+      that install segments that do not follow the main DODAG. Segments can be
+      associated in a Track rooted at an Ingress node, but there is no explicit
+      Egress node, and no source routing operation.
+    </dd>
+    <dt> Profile 4 </dt><dd>
+      Profile 4 extends Profile 2 with Strict Source-Routing Non-Storing-Mode Projected Routes to form Tracks inside the main DODAG. A Track is formed
+      as one or more strict source source routed paths between the Root that
+      is the Track Ingress, and the Track Egress that is the last node
+
+    </dd>
+    <dt> Profile 5 </dt><dd>
+      Profile 5 Combines Profile 4 with Profile 1 and enables to loose source
+      routing between the Ingress and the Egress of the Track. As in Profile 1,
+      Storing-Mode Projected Routes connect the dots in the loose source route.
+    </dd>
+    <dt> Profile 6 </dt><dd>
+      Profile 6 Combines Profile 4 with Profile 2 and also enables to loose
+      source routing between the Ingress and the Egress of the Track.
+
+    </dd>
+    </dl>
+
+
+    </section><!-- Profiles -->
+
+    <section><name>Example Track Signaling</name>
+<t>
+The remainder of the section provides an example of how a Track can be signaled
+</t>
+
+<figure anchor='reft'><name>Reference Track</name>
+              <artwork align="center">
+                               ===&gt; F
+A ===&gt; B ===&gt; C ===&gt; D===&gt; E &lt;
+                               ===&gt; G
+
+ </artwork>
+</figure>
+
+<t>
+A is Track ingress, E is track Egress. C is stitching point. F and G are E’s neighbors, “external” to the Track, and reachable from A over the Track A->E.
+</t>
+
+<t>
+In a general manner we want:
+</t>
+
+<ul>
+<li>P-DAO 1 signals C==&gt;B==&gt;E</li>
+<li>P-DAO 2 signals A==&gt;B==&gt;C</li>
+<li>P-DAO 3 signals F and G via the A==&gt;E Track</li>
+</ul>
+
+<t>
+P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
+</t>
+
+
+
+    <section><name>Using Storing-Mode Segments</name>
+<t>
+    A==&gt;B==&gt;C and C==&gt;D==&gt;E are segments of a same Track.
+    Note that the storing mode signaling imposes strict continuity in a segment.
+    One benefit of strict routing is that loops are avoided along the Track.
+</t>
+
+    <section><name>Stitched Segments</name>
+
+<t>Storing-Mode P-DAO 1 and 2 are sent to E and C, as follows:</t>
+
+        <table anchor="PDAOcase11"><name>P-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'>Field</th>
+              <th align='left'>P-DAO 1 sent to E:</th>
+              <th align='left'>P-DAO 2 sent to C:</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Storing</td>
+              <td align='left'>Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 129)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>C, D, E</td>
+              <td align='left'>A, B, C</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'>E, F, G</td>
+              <td align='left'>E, F, G</td></tr>
+
+    </tbody>
+        </table>
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase11"><name>RIB setting</name>
+   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Control Message</th>
+              <th align='left'>Adjacency</th>
+              <th align='left'>Destination</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>F</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>G</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>D</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>E</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>E</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>E</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>C</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>D</td>
+              <td align='left'>D</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>C</td>
+              <td align='left'>C</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>C</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>C</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>C</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>B</td>
+              <td align='left'>B</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>G</td></tr>
+
+
+    </tbody>
+        </table>
+<t>
+    E recognizes that it is the Track Egress because it is both a Target and a
+    Segment Endpoint.
+</t>
+<t>
+    The encapsulating headers of packets that are forwarded along the Track have
+    the following settings:
+</t>
+
+
+        <table anchor="Packetcase11"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>IPv6 Source Address</th>
+              <th align='center'>IPv6 Destination Address</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>A</td>
+              <td align='center'>either E, F, or G</td>
+              <td align='center'>(A, 129)</td></tr>
+    </tbody>
+        </table>
+<t>
+Now, say that A has a packet for F. Using the RIB above:
+</t>
+<ul>
+<li>From P-DAO 2: A forwards to B and B forwards to C.</li>
+<li>From P-DAO 1: C forwards to D and D forwards to E.</li>
+<li>From Neighbor Cache Entry: C delivers the packet to F.</li>
+</ul>
+
+    </section><!-- Stitched Segments -->
+
+    <section><name>External routes</name>
+<t>Storing-Mode P-DAO 1 and 2, and Non-Storing-Mode P-DAO 3, are sent to E, C
+ and A, respectively, as follows:</t>
+
+        <table anchor="PDAOcase12"><name>-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'> </th>
+              <th align='left'>P-DAO 1 sent to E:</th>
+              <th align='left'>P-DAO 2 sent to C:</th>
+              <th align='left'>P-DAO 3 sent to A:</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Storing</td>
+              <td align='left'>Storing</td>
+              <td align='left'>Non-Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 129)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>C, D, E</td>
+              <td align='left'>A, B, C</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'>E</td>
+              <td align='left'>E</td>
+              <td align='left'>F, G</td></tr>
+
+    </tbody>
+        </table>
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase12"><name>RIB setting</name>
+   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Control Message</th>
+              <th align='left'>Adjacency / SRH</th>
+              <th align='left'>Destination</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>F</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>G</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>D</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>E</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'>C</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>D</td>
+              <td align='left'>D</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>C</td>
+              <td align='left'>C</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>C</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>B</td>
+              <td align='left'>B</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>E</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>E</td>
+              <td align='left'>G</td></tr>
+
+
+    </tbody>
+        </table>
+
+<t>
+    The encapsulating headers of packets that are forwarded along the Track have
+    the following settings:
+</t>
+
+
+        <table anchor="Packetcase12"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Address</th>
+              <th align='center'>IPv6 Destination Address</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>A</td>
+              <td align='center'>E</td>
+              <td align='center'>(A, 129)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>A</td>
+              <td align='center'>F or G</td>
+              <td align='center'>(A, 129)</td></tr>
+    </tbody>
+        </table>
+<t>
+Now, say that A has a packet for F. Using the RIB above:
+</t>
+<ul>
+<li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer gheader above.
+Now the packet destination is E.</li>
+<li>From P-DAO 2: A forwards to B and B forwards to C.</li>
+<li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
+<li>From Neighbor Cache Entry: C delivers packets to F or G.</li>
+</ul>
+    </section><!-- External routes -->
+
+    <section><name>Segment Routing</name>
+    </section><!-- Segment Routing -->
+
+
+
+    </section><!-- Using Storing-Mode Segments -->
+
+
+
+
+    <section><name>Using Non-Storing-Mode joining Tracks</name>
+
+
+    <section><name>Stitched Tracks</name>
+    </section><!-- Stitched Tracks -->
+
+    <section><name>External routes</name>
+    </section><!-- External routes -->
+
+    <section><name>Segment Routing</name>
+    </section><!-- Segment Routing -->
+
+
+    </section><!-- Using Non-Storing-Mode joining Tracks -->
+
+
+
+
+
+
+    </section><!-- Example Signaling -->
 
 
 
@@ -1556,13 +2145,13 @@ docName="draft-ietf-roll-dao-projection-15" >
 
           <tr><td align='center'>0x0B</td>
 
-          <td align='left'>Stateful Via Information option (SF-VIO)</td>
+          <td align='left'>Stateful VIO(SF-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
           <tr><td align='center'>0x0C</td>
 
-          <td align='left'>Source-Routed Via Information option (SR-VIO)</td>
+          <td align='left'>Source-Routed VIO(SR-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
@@ -1739,7 +2328,7 @@ docName="draft-ietf-roll-dao-projection-15" >
 
    <t>
    IANA is requested to create a Subregistry for the 5-bit Via Information Options
-   (Via Option) Flags field. Each bit is tracked with the following qualities:
+   (Via Information Option) Flags field. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -1748,7 +2337,7 @@ docName="draft-ietf-roll-dao-projection-15" >
    </ul>
 
  <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>.
-   No bit is currently defined for the Via Information Options (Via Option) Flags.
+   No bit is currently defined for the Via Information Options (Via Information Option) Flags.
    </t>
 
    </section> <!-- SubRegistry for the Via Information Options Flags -->
@@ -1794,6 +2383,28 @@ docName="draft-ietf-roll-dao-projection-15" >
 
 
 
+
+<section anchor="iana-P-DAO"><name>New Destination Advertisement Object Flag</name>
+
+
+<t>
+   This document modifies the "Destination Advertisement Object (DAO) Flags"
+   registry initially
+   created in Section 20.11 of <xref target='RFC6550'/> .
+</t><t>
+  <xref target='extP-DAO'/> also defines one new entry in the Registry as follows:
+    </t>
+
+   <table  anchor="iana-P-DAOtbl">
+      <name>New Destination Advertisement Object (DAO) Flag</name>
+   <thead>
+      <tr><td>Bit Number</td><td>Capability Description</td><td>Reference</td></tr>
+   </thead><tbody>
+      <tr><td>2 (suggested)</td><td>Projected DAO (P)</td><td>THIS RFC</td></tr>
+   </tbody>
+   </table>
+
+   </section>
 
 
 
