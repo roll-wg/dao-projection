@@ -1645,8 +1645,8 @@ P-DAO 3 being loose, it can only be non-storing. Note that since the Root is alw
    <thead>
 
           <tr><th align='center'>Field</th>
-              <th align='left'>P-DAO 1 sent to E:</th>
-              <th align='left'>P-DAO 2 sent to C:</th></tr>
+              <th align='left'>P-DAO 1 to E</th>
+              <th align='left'>P-DAO 2 to C</th></tr>
 
    </thead>
    <tbody>
@@ -1676,7 +1676,7 @@ P-DAO 3 being loose, it can only be non-storing. Note that since the Root is alw
 
           <tr><th align='center'>Node</th>
               <th align='left'>Control Message</th>
-              <th align='left'>Adjacency</th>
+              <th align='left'>Next Hop(s)</th>
               <th align='left'>Destination</th></tr>
 
    </thead>
@@ -1771,8 +1771,8 @@ P-DAO 3 being loose, it can only be non-storing. Note that since the Root is alw
         <table anchor="Packetcase11"><name>Packet header settings</name>
    <thead>
 
-          <tr><th align='center'>IPv6 Source Address</th>
-              <th align='center'>IPv6 Destination Address</th>
+          <tr><th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
               <th align='center'>TrackID in RPI</th></tr>
 
    </thead>
@@ -1794,16 +1794,17 @@ Now, say that A has a packet for F. Using the RIB above:
     </section><!-- Stitched Segments -->
 
     <section><name>External routes</name>
+
 <t>Storing-Mode P-DAO 1 and 2, and Non-Storing-Mode P-DAO 3, are sent to E, C
  and A, respectively, as follows:</t>
 
-        <table anchor="PDAOcase12"><name>-DAO Messages</name>
+        <table anchor="PDAOcase12"><name>P-DAO Messages</name>
    <thead>
 
           <tr><th align='center'> </th>
-              <th align='left'>P-DAO 1 sent to E:</th>
-              <th align='left'>P-DAO 2 sent to C:</th>
-              <th align='left'>P-DAO 3 sent to A:</th></tr>
+              <th align='left'>P-DAO 1 to E</th>
+              <th align='left'>P-DAO 2 to C</th>
+              <th align='left'>P-DAO 3 to A</th></tr>
 
    </thead>
    <tbody>
@@ -1838,7 +1839,7 @@ Now, say that A has a packet for F. Using the RIB above:
 
           <tr><th align='center'>Node</th>
               <th align='left'>Control Message</th>
-              <th align='left'>Adjacency / SRH</th>
+              <th align='left'>Next Hop(s)</th>
               <th align='left'>Destination</th></tr>
 
    </thead>
@@ -1908,8 +1909,8 @@ Now, say that A has a packet for F. Using the RIB above:
    <thead>
 
           <tr><th align='center'>Header</th>
-          <th align='center'>IPv6 Source Address</th>
-              <th align='center'>IPv6 Destination Address</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
               <th align='center'>TrackID in RPI</th></tr>
 
    </thead>
@@ -1928,7 +1929,7 @@ Now, say that A has a packet for F. Using the RIB above:
 Now, say that A has a packet for F. Using the RIB above:
 </t>
 <ul>
-<li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer gheader above.
+<li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
 Now the packet destination is E.</li>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
@@ -1937,6 +1938,144 @@ Now the packet destination is E.</li>
     </section><!-- External routes -->
 
     <section><name>Segment Routing</name>
+
+<t>Storing-Mode P-DAO 1 and 2, and Non-Storing-Mode P-DAO 3, are sent to E, B
+ and A, respectively, as follows:</t>
+
+        <table anchor="PDAOcase13"><name>P-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'> </th>
+              <th align='left'>P-DAO 1 to E</th>
+              <th align='left'>P-DAO 2 to B</th>
+              <th align='left'>P-DAO 3 to A</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Storing</td>
+              <td align='left'>Storing</td>
+              <td align='left'>Non-Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 129)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>C, D, E</td>
+              <td align='left'>A, B</td>
+              <td align='left'>C, E</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'>E</td>
+              <td align='left'>B, C</td>
+              <td align='left'>F, G</td></tr>
+
+    </tbody>
+        </table>
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase13"><name>RIB setting</name>
+   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Control Message</th>
+              <th align='left'>Next Hop(s)</th>
+              <th align='left'>Destination</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>F</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>G</td>
+              <td align='left'>G</td></tr>
+
+          <tr><td align='center'>D</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>E</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'>C</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>D</td>
+              <td align='left'>D</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>E</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>C</td>
+              <td align='left'>C</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>NS(EARO)</td>
+              <td align='left'>B</td>
+              <td align='left'>B</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>C</td></tr>
+
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>C,E</td>
+              <td align='left'>F</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>C, E</td>
+              <td align='left'>G</td></tr>
+
+
+    </tbody>
+        </table>
+
+<t>
+    The encapsulating headers of packets that are forwarded along the Track have
+    the following settings:
+</t>
+
+
+        <table anchor="Packetcase13"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>A</td>
+              <td align='center'>C or E</td>
+              <td align='center'>(A, 129)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>A</td>
+              <td align='center'>F or G</td>
+              <td align='center'>(A, 129)</td></tr>
+    </tbody>
+        </table>
+<t>
+Now, say that A has a packet for F. Using the RIB above:
+</t>
+<ul>
+<li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
+Now the destination in the IPv6 Header is C, and a SRH signals the final destination is E.</li>
+<li>From P-DAO 2: A forwards to B and B forwards to C; C processes the SRH and sets the destination in the IPv6 Header to E.</li>
+<li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
+<li>From Neighbor Cache Entry: C delivers packets to F or G.</li>
+</ul>
+
     </section><!-- Segment Routing -->
 
 
