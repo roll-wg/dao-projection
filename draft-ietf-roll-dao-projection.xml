@@ -174,7 +174,7 @@ E decapsulates, twice for dest =   F | G.
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
 <rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902'
-tocInclude="true" indexInclude="true" obsoletes="" updates="" consensus="true"
+tocInclude="true" indexInclude="true" obsoletes="" updates="6554" consensus="true"
 submissionType="IETF" xml:lang="en" version="3"
 docName="draft-ietf-roll-dao-projection-16" >
 
@@ -1416,130 +1416,6 @@ docName="draft-ietf-roll-dao-projection-16" >
 
     </section><!-- Projected DAO  -->
 
-<!--
-
-    Say we have
-
-                                    -.-.-. F
-    A-.-.-.B-.-.-.C-.-.-.D-.-.-.E <
-                                    -.-.-. G
-
-
-    A is Track ingress, E is track Egress. C is stitching point. F and G are E's neighbors, "external" to the Track, and reachable from A over the Track A->E.
-    In a general manner we want:
-
-      *   P-DAO 1 signals A->B->C
-      *   P-DAO 2 signals C->B->E
-      *   P-DAO 3 signals F and G via the A->E Track
-
-    P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
-
-
-    1) Storing mode Segments
-    -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-
-    A->B->C and C->D->E are segments of a same Track.
-    Note that the storing mode signaling imposes strict continuity in a segment. This may also avoid weird loops.
-
-    Case 1.1) Stitched Segments
-
-
-      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E, F, G
-      2.  storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A's namespace, Target = E, F, G
-
-    E recognizes that it is egress because it is a Target and a segment endpoint.
-
-    Packets along the Track have source= A, destination = E | F | G, and RPI = 129.
-    >From P-DAO 2: A forwards to B and B forwards to C.
-    >From P-DAO 1: C forwards to D and D forwards to E.
-
-
-    Case 1.2) External routes
-
-
-      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E
-      2.  storing mode P-DAO 2 is then sent to C. It has Root = A, VIO = A, B, C, Track ID 129 from A's namespace, Target = E
-      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = E, Track ID 129 from A's namespace, Target = F, G
-
-    >From P-DAO 3: A encapsulates packets with dest =   F | G as below;
-    Packets along the Track have source= A, destination = E, and RPI = 129.
-    >From P-DAO 2: A forwards to B and B forwards to C.
-    >From P-DAO 1: C forwards to D and D forwards to E.
-    E decapsulates if encapsulated packet.
-
-
-
-    Case 1.3) Segment Routing
-
-
-      1.  storing mode P-DAO 1 is sent to E. It has Root = A, VIO = C, D, E, Track ID 129 from A's namespace, Target = E
-      2.  storing mode P-DAO 2 is then sent to B. It has Root = A, VIO = A, B, Track ID 129 from A's namespace, Target = B, C
-      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = C, E, Track ID 129 from A's namespace, Target = F, G
-
-
-    >From P-DAO 3: A encapsulates packets with dest =   F | G as below;
-    Packets from A have source= A, destination = C, SRH = E, and RPI = 129.
-    >From P-DAO 2: A forwards to B.
-    B forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
-    >From P-DAO 1: C forwards to D and D forwards to E.
-    E decapsulates if encapsulated packet.
-
-
-
-    2) Non Storing mode joining Tracks
-    -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
-
-    A->B->C and C->D->E are Tracks expressed as non-storing P-DAOs.
-
-    Case 2.1 Stitched Tracks
-
-
-      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, Target = E, F, G
-      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A's namespace, Target = E, F, G
-
-    >From P-DAO 2: A encapsulates packets with dest =  E | F | G. The outer header has source = A, destination = B, SRH = C and RPI = 129.
-    Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
-    >From P-DAO 1: C  encapsulates packets with dest =  E | F | G. The outer header has source= C, destination = D, SRH = E and RPI = 131.
-    E decapsulates.
-
-
-    Case 2.2 External routes
-
-
-      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, Target = E
-      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B, C, Track ID 129 from A's namespace, Target = E
-      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = E, Track ID 141 from A's namespace, Target = F, G
-
-
-
-    >From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = E, and RPI = 141.
-    This may recurse with:
-    >From P-DAO 2: A encapsulates packets with dest =  E. The outer header has source = A, destination = B, SRH = C and RPI = 129.
-    Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
-    >From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
-    E decapsulates if encapsulated.
-
-
-    Case 2.3 Segment Routing
-
-
-      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, VIO = D, E, Track ID 131 from C's namespace, (Target = E i simplicit)
-      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, VIO = B,  Track ID 129 from A's namespace, Target = C, E
-      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = C, E, Track ID 141 from A's namespace, Target = F, G
-
-
-    >From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = C, SRH = E, and RPI = 141.
-    This may recurse with:
-    >From P-DAO 2: A encapsulates packets with dest =  C | E . The outer header has source = A, destination = B, and RPI = 129.
-    B decapsulates forwards to C based on a sibling connected route; C consumes the RH and makes the destination E.
-    >From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
-    E decapsulates, twice for dest =   F | G.
-
-
-
-
-
--->
     <section anchor='prof'><name>Profiles</name>
     <t>
     This document provides a set of tools that may or may not be needed by
@@ -1669,121 +1545,117 @@ P-DAO 3 being loose, it can only be non-storing. Note that since the Root is alw
 
     </tbody>
         </table>
+
 <t>As a result the RIBs are set as follows:</t>
 
         <table anchor="RIBcase11"><name>RIB setting</name>
    <thead>
 
           <tr><th align='center'>Node</th>
-              <th align='left'>Control Message</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
               <th align='left'>Next Hop(s)</th>
-              <th align='left'>Destination</th></tr>
+              <th align='left'>TrackID</th></tr>
 
    </thead>
    <tbody>
 
           <tr><td align='center'>E</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>F</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>G</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>F, G</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
 
           <tr><td align='center'>D</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>E</td>
-              <td align='left'>E</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>F, G</td>
               <td align='left'>P-DAO 1</td>
               <td align='left'>E</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 1</td>
-              <td align='left'>E</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>(A, 129)</td></tr>
 
           <tr><td align='center'>C</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>D</td>
-              <td align='left'>D</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E, F, G</td>
               <td align='left'>P-DAO 1</td>
               <td align='left'>D</td>
-              <td align='left'>E</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 1</td>
-              <td align='left'>D</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 1</td>
-              <td align='left'>D</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>(A, 129)</td></tr>
+
 
           <tr><td align='center'>B</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>C</td>
-              <td align='left'>C</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E, F, G</td>
               <td align='left'>P-DAO 2</td>
               <td align='left'>C</td>
-              <td align='left'>E</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>C</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>C</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>(A, 129)</td></tr>
 
           <tr><td align='center'>A</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>B</td>
-              <td align='left'>B</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>E, F, G</td>
               <td align='left'>P-DAO 2</td>
               <td align='left'>B</td>
-              <td align='left'>E</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>B</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>B</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>(A, 129)</td></tr>
 
 
     </tbody>
         </table>
+
+
+
+
 <t>
     E recognizes that it is the Track Egress because it is both a Target and a
     Segment Endpoint.
 </t>
 <t>
-    The encapsulating headers of packets that are forwarded along the Track have
+    Packets originated by A to E, F, or G, do not require an encapsulation.
+    In any fashion,
+    the outer headers of the packets that are forwarded along the Track have
     the following settings:
 </t>
 
 
-        <table anchor="Packetcase11"><name>Packet header settings</name>
-   <thead>
+   <table anchor="Packetcase11"><name>Packet header settings</name>  <thead>
 
-          <tr><th align='center'>IPv6 Source Addr.</th>
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
               <th align='center'>IPv6 Dest. Addr.</th>
               <th align='center'>TrackID in RPI</th></tr>
 
    </thead>
    <tbody>
-          <tr><td align='center'>A</td>
-              <td align='center'>either E, F, or G</td>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>A</td>
+              <td align='center'>E, F or G</td>
               <td align='center'>(A, 129)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X != A</td>
+              <td align='center'>E, F or G</td>
+              <td align='center'>N/A</td></tr>
     </tbody>
         </table>
 <t>
-Now, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB above:
 </t>
 <ul>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
@@ -1832,9 +1704,85 @@ Now, say that A has a packet for F. Using the RIB above:
 
     </tbody>
         </table>
+
 <t>As a result the RIBs are set as follows:</t>
 
         <table anchor="RIBcase12"><name>RIB setting</name>
+   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
+              <th align='left'>Next Hop(s)</th>
+              <th align='left'>TrackID</th></tr>
+
+   </thead>
+      <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>F, G</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+          <tr><td align='center'>D</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+          <tr><td align='center'>C</td>
+              <td align='left'>D</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>C</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>C</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>B</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>A</td>
+              <td align='left'>F, G</td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>E</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+    </tbody>
+        </table>
+
+        <!--
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase12o"><name>RIB setting</name>
    <thead>
 
           <tr><th align='center'>Node</th>
@@ -1889,6 +1837,10 @@ Now, say that A has a packet for F. Using the RIB above:
           <tr><td align='center'> </td>
               <td align='left'>P-DAO 3</td>
               <td align='left'>E</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>E</td>
               <td align='left'>F</td></tr>
           <tr><td align='center'> </td>
               <td align='left'>P-DAO 3</td>
@@ -1898,9 +1850,11 @@ Now, say that A has a packet for F. Using the RIB above:
 
     </tbody>
         </table>
+        -->
 
 <t>
-    The encapsulating headers of packets that are forwarded along the Track have
+    Packets from A to E do not require an encapsulation. In any fashion,
+    the outer headers of the packets that are forwarded along the Track have
     the following settings:
 </t>
 
@@ -1920,13 +1874,13 @@ Now, say that A has a packet for F. Using the RIB above:
               <td align='center'>E</td>
               <td align='center'>(A, 129)</td></tr>
           <tr><td align='center'>Inner</td>
-              <td align='center'>A</td>
-              <td align='center'>F or G</td>
-              <td align='center'>(A, 129)</td></tr>
+              <td align='center'>X</td>
+              <td align='center'>E (X != A), F or G</td>
+              <td align='center'>N/A</td></tr>
     </tbody>
         </table>
 <t>
-Now, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB above:
 </t>
 <ul>
 <li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
@@ -1979,72 +1933,81 @@ Now the packet destination is E.</li>
 <t>As a result the RIBs are set as follows:</t>
 
         <table anchor="RIBcase13"><name>RIB setting</name>
-   <thead>
+           <thead>
 
           <tr><th align='center'>Node</th>
-              <th align='left'>Control Message</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
               <th align='left'>Next Hop(s)</th>
-              <th align='left'>Destination</th></tr>
+              <th align='left'>TrackID</th></tr>
 
    </thead>
-   <tbody>
+      <tbody>
 
           <tr><td align='center'>E</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>F</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>G</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>F, G</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
 
           <tr><td align='center'>D</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>E</td>
-              <td align='left'>E</td></tr>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
 
           <tr><td align='center'>C</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>D</td>
-              <td align='left'>D</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E</td>
               <td align='left'>P-DAO 1</td>
               <td align='left'>D</td>
-              <td align='left'>E</td></tr>
+              <td align='left'>(A, 129)</td></tr>
 
           <tr><td align='center'>B</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>C</td>
-              <td align='left'>C</td></tr>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
 
           <tr><td align='center'>A</td>
-              <td align='left'>NS(EARO)</td>
               <td align='left'>B</td>
-              <td align='left'>B</td></tr>
-          <tr><td align='center'> </td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>(A, 129)</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>C</td>
               <td align='left'>P-DAO 2</td>
               <td align='left'>B</td>
-              <td align='left'>C</td></tr>
+              <td align='left'>(A, 129)</td></tr>
 
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 3</td>
-              <td align='left'>C,E</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
+          <tr><td align='center'>"</td>
+              <td align='left'>E, F, G</td>
               <td align='left'>P-DAO 3</td>
               <td align='left'>C, E</td>
-              <td align='left'>G</td></tr>
+              <td align='left'>(A, 129)</td></tr>
+
 
 
     </tbody>
         </table>
 
+
+
 <t>
-    The encapsulating headers of packets that are forwarded along the Track have
+    Packets from A to E do not require an encapsulation, but carry a SRH via C.
+    In any fashion,
+    the outer headers of the packets that are forwarded along the Track have
     the following settings:
 </t>
-
-
         <table anchor="Packetcase13"><name>Packet header settings</name>
    <thead>
 
@@ -2057,23 +2020,24 @@ Now the packet destination is E.</li>
    <tbody>
           <tr><td align='center'>Outer</td>
               <td align='center'>A</td>
-              <td align='center'>C or E</td>
+              <td align='center'>C till C then E</td>
               <td align='center'>(A, 129)</td></tr>
           <tr><td align='center'>Inner</td>
-              <td align='center'>A</td>
-              <td align='center'>F or G</td>
-              <td align='center'>(A, 129)</td></tr>
+              <td align='center'>X</td>
+              <td align='center'>E (X != A), F or G</td>
+              <td align='center'>N/A</td></tr>
     </tbody>
         </table>
 <t>
-Now, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB above:
 </t>
 <ul>
 <li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
 Now the destination in the IPv6 Header is C, and a SRH signals the final destination is E.</li>
-<li>From P-DAO 2: A forwards to B and B forwards to C; C processes the SRH and sets the destination in the IPv6 Header to E.</li>
+<li>From P-DAO 2: A forwards to B and B forwards to C.</li>
+<li>From P-DAO 3: C processes the SRH and sets the destination in the IPv6 Header to E.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
-<li>From Neighbor Cache Entry: C delivers packets to F or G.</li>
+<li>From the Neighbor Cache Entry: C delivers packets to F or G.</li>
 </ul>
 
     </section><!-- Segment Routing -->
@@ -2087,25 +2051,573 @@ Now the destination in the IPv6 Header is C, and a SRH signals the final destina
 
     <section><name>Using Non-Storing-Mode joining Tracks</name>
 
+<t>
+    A==&gt;B==&gt;C and C==&gt;D==&gt;E are Tracks expressed as non-storing P-DAOs.
+
+</t>
 
     <section><name>Stitched Tracks</name>
+
+    <t>
+    Non-Storing Mode P-DAO 1 and 2 are sent to C and A respectively, as follows:
+    </t>
+
+        <table anchor="PDAOcase21"><name>P-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'> </th>
+              <th align='left'>P-DAO 1 to C</th>
+              <th align='left'>P-DAO 2 to A</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Non-Storing</td>
+              <td align='left'>Non-Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>C</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(C, 131)</td>
+              <td align='left'>(A, 129)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>D, E</td>
+              <td align='left'>B, C</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'>F, G</td>
+              <td align='left'>E, F, G</td></tr>
+
+    </tbody>
+        </table>
+
+
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase21"><name>RIB setting</name>
+           <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
+              <th align='left'>Next Hop(s)</th>
+              <th align='left'>TrackID</th></tr>
+
+   </thead>
+      <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>F, G</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>D</td>
+              <td align='left'>E</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>C</td>
+              <td align='left'>D</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E, F, G</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D, E</td>
+              <td align='left'>(C, 131)</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>C</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>A</td>
+              <td align='left'>B</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>C, E, F, G</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B, C</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+    </tbody>
+        </table>
+
+
+
+<t>
+    Packets from A to E, F and G do not require an encapsulation, though it is
+    preferred that A encapsulates and C decapsulates. Either way, they
+    carry a SRH via B and C, and C needs to encapsulate to E, F, or G
+    to add an SRH via D and E.
+    The encapsulating headers of packets that are forwarded along the Track
+    between C and E have the following settings:
+</t>
+
+
+        <table anchor="Packetcase21"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>C</td>
+              <td align='center'>D till D then E</td>
+              <td align='center'>(C, 131)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X</td>
+              <td align='center'>E, F, or G</td>
+              <td align='center'>N/A</td></tr>
+    </tbody>
+        </table>
+
+
+<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<ul>
+<li>From P-DAO 2:
+A encapsulates the packet with destination of F in the Track signaled by P-DAO 2. The outer header has source A, destination B, an SRH that indicates C as the next loose hop, and a RPI indicating a TrackId of 129 from A's namespace.
+</li>
+<li>From the SRH:
+Packets forwarded by B have source A, destination C , a consumed SRH, and a RPI indicating a TrackId of 129 from A's namespace. C decapsulates.
+</li>
+<li>
+From P-DAO 1:
+C encapsulates the packet with destination of F in the Track signaled by P-DAO 1. The outer header has source C, destination D, an SRH that indicates E as the next loose hop, and a RPI indicating a TrackId of 131 from C's namespace. E decapsulates.
+</li>
+</ul>
+
     </section><!-- Stitched Tracks -->
 
     <section><name>External routes</name>
+
+    <t>
+    Non-Storing Mode P-DAO 1 is sent to C and Non-Storing Mode P-DAO 2 and 3 are sent A, as follows:
+    </t>
+
+        <table anchor="PDAOcase22"><name>P-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'> </th>
+              <th align='left'>P-DAO 1 to C</th>
+              <th align='left'>P-DAO 2 to A</th>
+              <th align='left'>P-DAO 3 to A</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Non-Storing</td>
+              <td align='left'>Non-Storing</td>
+              <td align='left'>Non-Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>C</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(C, 131)</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 141)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>D, E</td>
+              <td align='left'>B, C</td>
+              <td align='left'>E</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'>E</td>
+              <td align='left'>E</td>
+              <td align='left'>F, G</td></tr>
+
+    </tbody>
+        </table>
+
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase22"><name>RIB setting</name>
+                   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
+              <th align='left'>Next Hop(s)</th>
+              <th align='left'>TrackID</th></tr>
+
+   </thead>
+      <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>F, G</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>D</td>
+              <td align='left'>E</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>C</td>
+              <td align='left'>D</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D, E</td>
+              <td align='left'>(C, 131)</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>C</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>A</td>
+              <td align='left'>B</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>C, E</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B, C</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+          <tr><td align='center'>"</td>
+              <td align='left'>F, G</td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>E</td>
+              <td align='left'>(A, 141)</td></tr>
+
+
+    </tbody>
+        </table>
+
+<t>
+    The encapsulating headers of packets that are forwarded along the Track
+    between C and E have the following settings:
+</t>
+
+
+        <table anchor="Packetcase22"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>C</td>
+              <td align='center'>D till D then E</td>
+              <td align='center'>(C, 131)</td></tr>
+          <tr><td align='center'>Middle</td>
+              <td align='center'>A</td>
+              <td align='center'>E</td>
+              <td align='center'>(A, 141)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X</td>
+              <td align='center'>E, F or G</td>
+              <td align='center'>N/A</td></tr>
+    </tbody>
+        </table>
+
+    <!--
+          1.  non storing mode P-DAO 1 is sent to C. It has Root = C, SRVIO = D, E, Track ID 131 from C's namespace, Target = E
+      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, SRVIO = B, C, Track ID 129 from A's namespace, Target = E
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = E, Track ID 141 from A's namespace, Target = F, G
+
+
+
+    >From P-DAO 3: A encapsulates packets with dest =   F | G. The outer header has source = A, destination = E, and RPI = 141.
+    This may recurse with:
+    >From P-DAO 2: A encapsulates packets with dest =  E. The outer header has source = A, destination = B, SRH = C and RPI = 129.
+    Packets forwarded by B have source= A, destination = C , SRH =, and RPI = 129. C decapsulates.
+    >From P-DAO 1: C  encapsulates packets with dest =  E. The outer header has source= C, destination = D, SRH = E and RPI = 131.
+    E decapsulates if encapsulated.
+    -->
+
+
+<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<ul>
+<li>
+From P-DAO 3: A encapsulates the packet with destination of F in the Track signaled by P-DAO 3. The outer header has source A, destination E, and a RPI indicating a TrackId of 141 from A's namespace. This recurses with:
+</li>
+<li>
+From P-DAO 2: A encapsulates the packet with destination of E in the Track signaled by P-DAO 2. The outer header has source A, destination B, an SRH that indicates C as the next loose hop, and a RPI indicating a TrackId of 129 from A's namespace.
+</li>
+<li>
+From the SRH:
+Packets forwarded by B have source A, destination C , a consumed SRH, and a RPI indicating a TrackId of 129 from A's namespace. C decapsulates.
+</li>
+<li>
+From P-DAO 1:
+C encapsulates the packet with destination of E in the Track signaled by P-DAO 1. The outer header has source C, destination D, an SRH that indicates E as the next loose hop, and a RPI indicating a TrackId of 131 from C's namespace. E decapsulates.
+</li>
+</ul>
+
     </section><!-- External routes -->
 
     <section><name>Segment Routing</name>
+
+
+
+    <t>
+    Non-Storing Mode P-DAO 1 is sent to C and Non-Storing Mode P-DAO 2 and 3 are sent A, as follows:
+    </t>
+
+        <table anchor="PDAOcase23"><name>P-DAO Messages</name>
+   <thead>
+
+          <tr><th align='center'> </th>
+              <th align='left'>P-DAO 1 to C</th>
+              <th align='left'>P-DAO 2 to A</th>
+              <th align='left'>P-DAO 3 to A</th></tr>
+
+   </thead>
+   <tbody>
+
+          <tr><td align='center'>Mode</td>
+              <td align='left'>Non-Storing</td>
+              <td align='left'>Non-Storing</td>
+              <td align='left'>Non-Storing</td></tr>
+          <tr><td align='center'>Track Ingress</td>
+              <td align='left'>C</td>
+              <td align='left'>A</td>
+              <td align='left'>A</td></tr>
+          <tr><td align='center'>TrackID</td>
+              <td align='left'>(C, 131)</td>
+              <td align='left'>(A, 129)</td>
+              <td align='left'>(A, 141)</td></tr>
+          <tr><td align='center'>VIO</td>
+              <td align='left'>D, E</td>
+              <td align='left'>B</td>
+              <td align='left'>C, E</td></tr>
+          <tr><td align='center'>Targets</td>
+              <td align='left'></td>
+              <td align='left'>C</td>
+              <td align='left'>F, G</td></tr>
+
+    </tbody>
+        </table>
+
+
+
+<t>As a result the RIBs are set as follows:</t>
+
+        <table anchor="RIBcase23"><name>RIB setting</name>
+                   <thead>
+
+          <tr><th align='center'>Node</th>
+              <th align='left'>Destination</th>
+              <th align='left'>Origin</th>
+              <th align='left'>Next Hop(s)</th>
+              <th align='left'>TrackID</th></tr>
+
+   </thead>
+      <tbody>
+
+          <tr><td align='center'>E</td>
+              <td align='left'>F, G</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>D</td>
+              <td align='left'>E</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>C</td>
+              <td align='left'>D</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E</td>
+              <td align='left'>P-DAO 1</td>
+              <td align='left'>D, E</td>
+              <td align='left'>(C, 131)</td></tr>
+
+          <tr><td align='center'>B</td>
+              <td align='left'>C</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+
+          <tr><td align='center'>A</td>
+              <td align='left'>B</td>
+              <td align='left'>ND</td>
+              <td align='left'>Neighbor</td>
+              <td align='left'>Any</td></tr>
+
+          <tr><td align='center'>"</td>
+              <td align='left'>C</td>
+              <td align='left'>P-DAO 2</td>
+              <td align='left'>B, C</td>
+              <td align='left'>(A, 129)</td></tr>
+
+
+          <tr><td align='center'>"</td>
+              <td align='left'>E, F, G</td>
+              <td align='left'>P-DAO 3</td>
+              <td align='left'>C, E</td>
+              <td align='left'>(A, 141)</td></tr>
+
+
+    </tbody>
+        </table>
+
+<t>
+    The encapsulating headers of packets that are forwarded along the Track
+    between A and B have the following settings:
+</t>
+
+
+        <table anchor="Packetcase231"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>A</td>
+              <td align='center'>B till D then E</td>
+              <td align='center'>(A, 129)</td></tr>
+          <tr><td align='center'>Middle</td>
+              <td align='center'>A</td>
+              <td align='center'>C</td>
+              <td align='center'>(A, 141)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X</td>
+              <td align='center'>E, F or G</td>
+              <td align='center'>N/A</td></tr>
+    </tbody>
+        </table>
+
+ <t>
+    The encapsulating headers of packets that are forwarded along the Track
+    between B and C have the following settings:
+</t>
+
+
+        <table anchor="Packetcase232"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>A</td>
+              <td align='center'>C</td>
+              <td align='center'>(A, 141)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X</td>
+              <td align='center'>E, F or G</td>
+              <td align='center'>N/A</td></tr>
+    </tbody>
+        </table>
+
+<t>
+    The encapsulating headers of packets that are forwarded along the Track
+    between C and E have the following settings:
+</t>
+
+
+        <table anchor="Packetcase233"><name>Packet header settings</name>
+   <thead>
+
+          <tr><th align='center'>Header</th>
+          <th align='center'>IPv6 Source Addr.</th>
+              <th align='center'>IPv6 Dest. Addr.</th>
+              <th align='center'>TrackID in RPI</th></tr>
+
+   </thead>
+   <tbody>
+          <tr><td align='center'>Outer</td>
+              <td align='center'>C</td>
+              <td align='center'>D till D then E</td>
+              <td align='center'>(C, 131)</td></tr>
+          <tr><td align='center'>Middle</td>
+              <td align='center'>A</td>
+              <td align='center'>E</td>
+              <td align='center'>(A, 141)</td></tr>
+          <tr><td align='center'>Inner</td>
+              <td align='center'>X</td>
+              <td align='center'>E, F or G</td>
+              <td align='center'>N/A</td></tr>
+    </tbody>
+        </table>
+
+    <!--
+
+      1.  non storing mode P-DAO 1 is sent to C. It has Root = C, SRVIO = D, E, Track ID 131 from C's namespace, (Target = E is implicit)
+      2.  non storing mode P-DAO 2 is then sent to A. It has Root = A, SRVIO = B,  Track ID 129 from A's namespace, Target = C
+      3.  non storing mode P-DAO 3 is then sent to A. It has Root = A, SRVIO = C, E, Track ID 141 from A's namespace, Target = F, G
+
+  -->
+
+<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<ul>
+<li>From P-DAO 3: A encapsulates the packet with destination of F in the Track signaled by P-DAO 3. The outer header has source A, destination C, an SRH that indicates E as the next loose hop, and a RPI indicating a TrackId of 141 from A's namespace. This recurses with:
+</li>
+<li>
+From P-DAO 2: A encapsulates the packet with destination of C in the Track signaled by P-DAO 2. The outer header has source A, destination B, and a RPI indicating a TrackId of 129 from A's namespace. B decapsulates forwards to C based on a sibling connected route.
+</li>
+<li>
+From the SRH: C consumes the SRH and makes the destination E.
+</li>
+<li>
+From P-DAO 1:
+C encapsulates the packet with destination of E in the Track signaled by P-DAO 1. The outer header has source C, destination D, an SRH that indicates E as the next loose hop, and a RPI indicating a TrackId of 131 from C's namespace. E decapsulates.
+</li>
+</ul>
+
     </section><!-- Segment Routing -->
 
 
-    </section><!-- Using Non-Storing-Mode joining Tracks -->
+  </section><!-- Using Non-Storing-Mode joining Tracks -->
 
 
-
-
-
-
-    </section><!-- Example Signaling -->
+</section><!-- Example Track Signaling -->
 
 
 
