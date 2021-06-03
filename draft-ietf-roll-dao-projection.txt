@@ -12,7 +12,7 @@ Expires: 5 December 2021                                     M. Gillmore
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-17
+                   draft-ietf-roll-dao-projection-18
 
 Abstract
 
