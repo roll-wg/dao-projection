@@ -299,13 +299,20 @@ docName="draft-ietf-roll-dao-projection-18" >
 
     <dt>Projected Route:</dt><dd>
 	A RPL Projected Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE.</dd>
+    <dt>Segment:</dt><dd>
+    A strict sequence of node along which a route is installed.
+    With this specification, a Segment is installed by the Root of the main DODAG using Storing-Mode P-DAO messages.
+    </dd>
     <dt>Projected DAO:</dt><dd> A DAO message used to install a Projected Route. </dd>
     <dt>Track:</dt><dd>
     A DODAG that provides a complex path from or to a Root that is the destination
     of the DODAG. The Root is the Track Ingress, and the forward direction for packets is down the DODAG, from the Track Ingress to one of the possibly multiple Track Egress Nodes.
+    The DODAG may be strictly connected, meaning that the vertices are adjacent, or loosely connected, meaning that the vertices are connected using Segments that are associated to the same Track.
+    With this specification, a Track is installed by the Root of the main DODAG using Non-Storing-Mode P-DAO messages.
     </dd>
     <dt>TrackID:</dt><dd>
-    A RPL Local InstanceID with the D bit set to 0. The TrackID is associated with the IPv6 Address of the Track Ingress that is used to signal the DODAG Root. The owner of the namespace is the Track Ingress.
+    A RPL Local InstanceID with the D bit set to 0. The TrackID is associated with the IPv6 Address of the Track Ingress that is used to signal the DODAG Root, and together they form a unique identification of the Track
+    (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
     </dd>
     </dl>
 </section>	<!-- end section "Other Terms" -->
