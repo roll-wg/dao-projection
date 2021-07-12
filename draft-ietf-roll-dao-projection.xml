@@ -1,47 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE rfc SYSTEM "rfc2629-xhtml.ent">
 
-<!--
-[Roll] Transit vs. Target in P DAO
-
-Hello Rahul,
-
-Yes, this gets quite a lot of things to put together but in the end it is not so complicated if you have a picture to look at.
-I’ll make some for the interim.
-
-My to do’s on this draft for the next version:
-
-- Create an initial format for FIO based in DetNet.
-  -> Do you see any more field we’d like to see in there, e.g., the capability to inject a Track in another?
-
-
-
-
-
-From: Pascal Thubert (pthubert)
-Sent: vendredi 27 novembre 2020 08:43
-To: Routing Over Low power and Lossy networks <roll@ietf.org>
-Subject: RE: IETF 109 open Questions on P-DAO
-
-Dear all:
-
-Updating the list:
-
-1)	Lifetime Unit: could we use a different unit for P-DAO?
-A: new P flag)	How to differentiate a P-DAO from a normal DAO in a local instance; new flag?
-A: no)	Make P-DAO bidirectional?
-A: the ingress only and it proposes the trackID)	Who sends the PDR? Does it have to be the ingress? If it was egress it could propose a TrackId from its namespace. Else could the ingress be the root?
-done)	Maintaining the sibling state. Should we have text on using RFC 8505 there?
-A: ingress was removed since it is the Ingress)	Whether ingress and egress are listed in NPO? Today they are both, ingress to indicate the packet source in case of encapsulation and for SRH-6LoRH compression reference and egress to build the full SRH-6LoRH. Note that the ingress must consume the first entry and use it as source.
-8)	Error flows, which ICMP errors and to which root? The draft should present the flows.
-A: always provided by in PDR, pick an unused one for Root selected)	how can the Main Root find an available TrackID?
-
-Keep safe;
-
-Pascal
-
-
--->
 
 <?rfc toc="yes"?>
 <?rfc tocompact="yes"?>
@@ -414,12 +373,12 @@ docName="draft-ietf-roll-dao-projection-18" >
    </t>
   <t>
    New CMOs called the Via Information Options (VIO) are introduced for use in
-   P-DAO messages as a multihop alternative to the TIO. One VIO is the Stateful VIO(SF-VIO); the SF-VIO installs Storing-Mode Projected Route along a strict segment. The other is the Source-Routed VIO (SR-VIO); the SR-VIO installs a Non-Storing-Mode Projected Route at the Track Ingress, which uses that state to encapsulate a packet with a Routing Header (RH) to the Track Egress.
+   P-DAO messages as a multihop alternative to the TIO. One VIO is the Stateful VIO (SF-VIO); the SF-VIO installs Storing-Mode Projected Route along a strict segment. The other is the Source-Routed VIO (SR-VIO); the SR-VIO installs a Non-Storing-Mode Projected Route at the Track Ingress, which uses that state to encapsulate a packet with a Routing Header (RH) to the Track Egress.
    </t>
    <t>
    Like in a DAO message, the RTOs can be factorized in a P-DAO, but the Via Information Options cannot.
    A P-DAO contains one or more RTOs that indicate the destinations that can be
-   reached via the Track, and exactly one VIOthat signals a sequence of nodes.
+   reached via the Track, and exactly one VIO that signals a sequence of nodes.
    In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored. In Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state to the Track Egress at each hop. In both cases the Track Ingress is the owner of the Track, and it generates the P-DAO-ACK when the installation is successful.
    </t>
 
@@ -695,12 +654,12 @@ docName="draft-ietf-roll-dao-projection-18" >
 
      <section anchor='rplrpo'><name>Via Information Options</name>
 
-    <t>An VIOsignals the ordered list of IPv6 Via Addresses that constitutes the hops of either a Serial Track or a Segment of a more Complex Track.
-    An VIOMUST contain at least one Via Address, and a Via Address MUST NOT be
-    present more than once, otherwise the VIOMUST be ignored.
+    <t>A VIO signals the ordered list of IPv6 Via Addresses that constitutes the hops of either a Serial Track or a Segment of a more Complex Track.
+    A VIO MUST contain at least one Via Address, and a Via Address MUST NOT be
+    present more than once, otherwise the VIO MUST be ignored.
     The format of the Via Information Options is as follows:
     </t>
-<figure anchor='viao'><name>VIOformat (uncompressed form)</name>
+<figure anchor='viao'><name>VIO format (uncompressed form)</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -754,13 +713,13 @@ docName="draft-ietf-roll-dao-projection-18" >
               Root of the DODAG needs to refresh or update a Segment in a Track,
               it increments the Segment Sequence individually for that Segment.
               </t><t>
-              The Segment information indicated in the VIOdeprecates any state
+              The Segment information indicated in the VIO deprecates any state
               for the Segment indicated by the SegmentID within the indicated
               Track and sets up the new information.
 
               </t><t>
-              An VIOwith a Segment
-              Sequence that is not as fresh as the current one is ignored.
+              A VIO with a Segment Sequence that is not as fresh as the current
+              one is ignored.
               </t><t>
               A VIO for a given DODAGID with the same (TrackID,
               SegmentID, Segment Sequence) indicates a retry; it MUST NOT
@@ -768,7 +727,6 @@ docName="draft-ietf-roll-dao-projection-18" >
               copy.
               </t>
               </dd>
-
 
               <dt>Segment Lifetime:</dt><dd>
               <t>8-bit unsigned integer. The length
@@ -783,7 +741,7 @@ docName="draft-ietf-roll-dao-projection-18" >
 
               </t><t>
               A P-DAO message that
-              contains a VIOwith a Segment Lifetime of
+              contains a VIO with a Segment Lifetime of
               zero is referred as a No-Path P-DAO in this document.
               </t>
               </dd>
@@ -796,9 +754,14 @@ docName="draft-ietf-roll-dao-projection-18" >
               <dt>Via Address:</dt><dd>
               <t>An IPv6 address along the Segment.
               </t><t>
-              In a SF-VIO, the list is a strict path between direct neighbors, from the Segment Ingress to Egress, both included. The router that processes an SF-VIO MAY create additional routing state towards the nodes after self via the node immediatelt after self in the SF-VIO, but in case of memory shortage the routes to the Targets have precedence since they are the ones that the router commits to store.</t><t>
+              In a SF-VIO, the list is a strict path between direct neighbors, from the Segment Ingress to Egress, both included. The router that processes an SF-VIO MAY create additional routing state towards the nodes after self via the node immediately after self in the SF-VIO, but in case of memory shortage the routes to the Targets have precedence since they are the ones that the router commits to store.</t><t>
 
-              In an SR-VIO, the list starts at the first hop and ends at a Track Egress. In that case, the Track Egress MUST be considered as an implicit Target, so it MUST NOT be listed it in a RPL Target Option. The list in an SR-VIO may be loose, provided that each listed node has a path to the next listed node, e.g., via a segment or another Track.
+              In an SR-VIO, the list includes the egress but not the ingress node.
+              It starts at the first hop and ends at a Track Egress. In that
+              case, the Track Egress MUST be considered as an implicit Target,
+              so it MUST NOT be listed it in a RPL Target Option. The list in an
+              SR-VIO may be loose, provided that each listed node has a path to
+              the next listed node, e.g., via a segment or another Track.
               </t><t>
               In the case of a SF-VIO, or if <xref target='RFC8138'/> is not used in the data packets, then the Root MUST use
               only one SRH-6LoRH per Via Information Option, and the compression is the same for
@@ -921,17 +884,17 @@ docName="draft-ietf-roll-dao-projection-18" >
 
     <t>
     This draft adds a capability to RPL whereby the Root of a main DODAG installs
-    a Track as a collection of Projected Routes, using a Projected-DAO (P-DAO) message to maintain each individual route. The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a VIO(VIO).
+    a Track as a collection of Projected Routes, using a Projected-DAO (P-DAO) message to maintain each individual route. The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a VIO.
     A P-DAO message MUST contain exactly one VIO, which is either a SF-VIO or an
-    SR-VIO, and MUST follow one or more RTOs. There can be at most one such sequence of RTO(s) and an Via Information Option. A track is indentified by a tupple DODAGID, TrackID and  each route within a Track is indexed by a SegmentID.
+    SR-VIO, and MUST follow one or more RTOs. There can be at most one such sequence of RTO(s) and an Via Information Option. A track is identified by a tuple DODAGID, TrackID and  each route within a Track is indexed by a SegmentID.
      </t> <t>
     A P-DAO MUST be sent from the address of the Root that serves as DODAGID for the main DODAG. It MUST be sent to a GUA or a ULA of either the ingress or the egress of the Segment, more below. If the 'K' Flag is present in the P-DAO, and unless the P-DAO does not reach it, the ingress of the Segment is the node that acknowledges the message, using a DAO-ACK that MUST be sent back to the address that serves as DODAGID for the main DODAG.
      </t> <t>
     Like a classical DAO message, a P-DAO causes a change of state only if it is
     "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
     RPL specification</xref>; this is determined using
-    the Segment Sequence information from the VIOas opposed to the Path
-    Sequence from a TIO. Also, a Segment Lifetime of 0 in an VIOindicates that the projected route associated to the Segment is to be removed.
+    the Segment Sequence information from the VIO as opposed to the Path
+    Sequence from a TIO. Also, a Segment Lifetime of 0 in a VIO indicates that the projected route associated to the Segment is to be removed.
      </t> <t>
     There are two kinds of operation for the Projected Routes, the Storing Mode
     and the Non-Storing Mode.
@@ -1074,14 +1037,18 @@ docName="draft-ietf-roll-dao-projection-18" >
 
     <section anchor='sP-DAO'><name>Storing-Mode P-Route</name>
     <t>
-    Profile 1 extends RPL opertation in a Non-Storing Mode network with
+    Profile 1 extends RPL operation in a Non-Storing Mode network with
     Storing-Mode Projected Routes that install segments along the main DODAG
     and enable to loose source routing  between the Root and the targets.
     </t>
+
+    <section anchor='isP-DAO'><name>Installing a Storing-Mode P-Route</name>
     <t>
     As illustrated in <xref target='sdf'/>, a P-DAO that carries a SF-VIO
     enables the Root to install a stateful route towards a collection of Targets
-    along a Segment between a Track Ingress and a Track Egress.
+    along a Segment between a Track Ingress and a Track Egress using a
+    projected DAO Message.
+
     </t>
 
       <figure anchor='sdf'><name>Projecting a route</name>
@@ -1115,7 +1082,6 @@ docName="draft-ietf-roll-dao-projection-18" >
      In that P-DAO, the destination IP address matches the last Via Address in the SF-VIO. This is how the egress recognizes its role. In a similar fashion,
      the ingress node recognizes its role as it matches first Via Address in the SF-VIO.
      </t><t>
-
      The Egress node of the Segment is the only node in the path that does not
      install a route in response to the P-DAO; it is expected to be already able
      to route to the Target(s) on its own.
@@ -1139,27 +1105,47 @@ docName="draft-ietf-roll-dao-projection-18" >
      Upon receiving a propagated DAO, all except the Egress Router MUST install a route towards the DAO Target(s) via their successor in the SF-VIO. The router MAY install additional routes towards the
      VIA Addresses that are the SF-VIO after the next one, if any, but
      in case of a conflict or a lack of resource, the route(s) to the Target(s) have precedence.
-
-     </t><t>
+     </t>
+     <t>
      If a router cannot reach its predecessor in the SF-VIO,
      the router MUST answer to the Root with a negative DAO-ACK
      indicating the successor that is unreachable
      (suggested status 11 to be confirmed by IANA).
-    </t><t>
-     The process continues till the P-DAO is propagated to ingress router of
-     the Segment, which answers with a DAO-ACK to the Root.
     </t>
     <t>
-     A Segment Lifetime of 0 in a VIOis used to clean up the
-     state. The P-DAO is forwarded as described above, but the DAO
-     is interpreted as a No-Path DAO and results in cleaning up existing state
-     as opposed to refreshing an existing one or installing a new one.
+     The process continues till the P-DAO is propagated to ingress router of
+     the Segment, which answers with a DAO-ACK to the Root. The Root always
+     expects a DAO-ACK, either from the Track Ingress with a positive status
+     or from any node along the segment with a negative status. If the DAO-ACK
+     is not received, the Root may retry the DAO with the same TID, or tear
+     down the route.
     </t>
-      <t>In case of a forwarding error along an Storing-Mode P-Route, the node
-      that fails to forward SHOULD send an ICMP error with a code "Error in
-      Projected Route" to the Root. Failure to do so may result in packet loss
-      and wasted resources along the Projected Route that is broken.
-      </t>
+
+    </section>  <!-- Installing a Storing-Mode P-Route -->
+
+    <section anchor='issuesP-DAO'><name>Maintaining and Tearing Down a
+          Storing-Mode P-Route</name>
+    <t>
+     A Segment Lifetime of 0 in a VIO is used to clean up the state. The P-DAO
+     is forwarded as described above, but the DAO is interpreted as a No-Path
+     DAO and results in cleaning up existing state as opposed to refreshing an
+     existing one or installing a new one.
+    </t>
+    <t>
+     Note that the continuity of the segment may be broken; this happens if the
+     bidirectional connectivity between contiguous hops of the segment is lost.
+     In that case the Root needs to send the projected DAO to one or more
+     intermediate node(s) as opposed to the egress node, indicating a portion
+     of segment that is being replaced or cleaned up. At the extreme, the P-DAO
+     updates only one node, in which case it contains only one VIO.
+    </t>
+     <t>In case of a forwarding error along an Storing-Mode P-Route, the node
+     that fails to forward SHOULD send an ICMP error with a code "Error in
+     Projected Route" to the Root. Failure to do so may result in packet loss
+     and wasted resources along the Projected Route that is broken.
+     </t>
+
+    </section>  <!-- Maintaining and Tearing Down a Storing-Mode P-Route -->
 
     </section>  <!-- Storing-Mode P-Route -->
 
@@ -2525,17 +2511,41 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
     <section><name>Security Considerations</name>
 
-	<t>This draft uses messages that are already present in RPL
-     <xref target='RFC6550'/> with optional secured versions. The same secured
-     versions may be used with this draft, and whatever security is deployed for
+
+     <t>
+   It is worth noting that with <xref target='RFC6550'/>, every
+   node in the LLN is RPL-aware and can inject any RPL-based attack in the
+   network. This draft uses messages that are already present in RPL
+   <xref target='RFC6550'/> with optional secured versions. The same secured
+   versions may be used with this draft, and whatever security is deployed for
      a given network also applies to the flows in this draft.
 
-	</t>
-	<t> TODO: should probably consider how P-DAO messages could be abused by
+ </t>
+ <t>
+	The LLN nodes depend on the 6LBR and the RPL participants for their
+    operation.
+	A trust model must be put in place to ensure that the right devices are
+	acting in these roles, so as to avoid threats such as black-holing,
+    (see <xref target='RFC7416'/> section 7). This trust model could be
+    at a minimum based on a Layer-2 Secure joining and the Link-Layer security.
+    This is a generic 6LoWPAN requirement, see Req5.1 in Appendix B.5 of <xref target='RFC8505'/>.
+ </t><t>
+    In a general manner, the Security Considerations in <xref target='RFC6550'/>,
+    and <xref target='RFC7416'/> apply to this specification as well.
+    The Link-Layer security is needed in particular to prevent
+    Denial-Of-Service attacks whereby a rogue router creates a high churn in the
+    RPL network by constantly injected forged P-DAO messages and using up all
+    the available storage in the attacked routers.
 
-    a) rogue nodes b) via replay of messages c) if use of P-DAO messages could in fact deal with any threats?
+ </t> <t>
+    Additionally, the trust model could include a role validation (e.g., using a
+    role-based authorization) to ensure that the node that
+    claims to be a RPL Root is entitled to do so. That trust should propagate
+    from egress to ingress in the case of a Storing Mode P-DAO.
 
 	</t>
+
+
 </section>
 <section anchor='IANAcon'><name>IANA Considerations</name>
 
@@ -2698,13 +2708,13 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
           <tr><td align='center'>0x0B</td>
 
-          <td align='left'>Stateful VIO(SF-VIO)</td>
+          <td align='left'>Stateful VIO (SF-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
           <tr><td align='center'>0x0C</td>
 
-          <td align='left'>Source-Routed VIO(SR-VIO)</td>
+          <td align='left'>Source-Routed VIO (SR-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
@@ -3008,6 +3018,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7102.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7416.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.pthubert-raw-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
