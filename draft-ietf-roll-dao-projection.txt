@@ -12,7 +12,7 @@ Expires: 28 January 2022                                     M. Gillmore
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-19
+                   draft-ietf-roll-dao-projection-20
 
 Abstract
 
@@ -1407,7 +1407,7 @@ Internet-Draft               DAO Projection                    July 2021
    packet is forwarded to the next hop along that segment, a common
    neighbor with the loose next hop, on which case the packet is
    forwarded to that neighbor, or another Track to the loose next hop
-   for which this node or a neighbor is Ingress.  In the latter case,
+   for which this node or a neighbor is Ingress; in the latter case,
    another encapsulation takes place and the process possibly recurses;
    otherwise the packet is dropped.
 
