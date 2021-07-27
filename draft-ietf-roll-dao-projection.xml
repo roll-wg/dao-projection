@@ -159,7 +159,7 @@ docName="draft-ietf-roll-dao-projection-19" >
     a packet inside the Track.
     </t>
     <t>
-    The <xref target='I-D.pthubert-raw-architecture'>"Reliable and
+    The <xref target='I-D.ietf-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture/Framework"</xref> defines the Path Selection Engine (PSE) that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.
      </t>
     <t>
@@ -1223,10 +1223,13 @@ docName="draft-ietf-roll-dao-projection-19" >
     </li>
     </ul>
     <t>
-      In the case of a loose source-routed path, there MUST be either a neighbor
-      that is adjacent to the
+      In the case of a loose source-routed path, there MUST be either a segment
+      for the same Track to the loose next hop, on which case the packet is
+      forwarded to the next hop along that segment, a common neighbor with the
       loose next hop, on which case the packet is forwarded to that neighbor, or
-      another Track to the loose next hop for which this node is Ingress; in the latter case, another encapsulation takes place and the process possibly recurses; otherwise the packet is dropped.
+      another Track to the loose next hop for which this node or a neighbor is
+      Ingress. In the latter case, another encapsulation takes place and the
+      process possibly recurses; otherwise the packet is dropped.
      </t>
       <t>In case of a forwarding error along a Source Route path, the node that
       fails to forward SHOULD send an ICMP error with a code "Error in Source
@@ -2997,16 +3000,13 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
    <displayreference   target="RFC9008"     to="USEofRPLinfo"/>
    <displayreference   target="RFC6550"        to="RPL"/>
-   <displayreference   target="I-D.pthubert-raw-architecture"   to="RAW-ARCHI"/>
+   <displayreference   target="I-D.ietf-raw-architecture"   to="RAW-ARCHI"/>
    <displayreference   target="RFC9030"    to="6TiSCH-ARCHI"/>
    <displayreference   target="RFC9035" to="TURN-ON_RFC8138"/>
 
     <references><name>Normative References</name>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
-	 <!--
-     <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4919.xml'/>
-     -->
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6553.xml'/>
@@ -3020,7 +3020,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7416.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.pthubert-raw-architecture.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
