@@ -291,7 +291,7 @@ docName="draft-ietf-roll-dao-projection-20" >
     With this specification, a Track is installed by the Root of the main DODAG using Non-Storing-Mode P-DAO messages.
     </t>
     </dd>
-    <dt>SubTrack:</dt><dd>A Track within a Track. As the SR-VIO can only signal a loose sequence of nodes, it takes a number of them to signal a
+    <dt>subTrack:</dt><dd>A Track within a Track. As the SR-VIO can only signal a loose sequence of nodes, it takes a number of them to signal a
     complex Track. Each SR-VIO for the same tackId but a different Segment ID signals a different subTrack that the Track Ingress adds to the topology.
     </dd>
     <dt>TrackID:</dt><dd>
@@ -1304,9 +1304,9 @@ docName="draft-ietf-roll-dao-projection-20" >
      <t>
      This specification also allows to add Segments to an existing Track by
      first installing the new Segment(s) with one Storing-Mode P-DAO each
-     associated to the same TrackID, and then joining with a subtrack
+     associated to the same TrackID, and then joining with a subTrack
      signaled by a non-storing mode P-DAO to the ingress and also associated
-     to the same TrackID. That subtrack may be an addition to the Track or a replacement, as indicated above.
+     to the same TrackID. That subTrack may be an addition to the Track or a replacement, as indicated above.
      </t>
 
      <t>A misbehaving Segment may be modified by injecting a new Storing-Mode
