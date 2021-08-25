@@ -152,7 +152,7 @@ docName="draft-ietf-roll-dao-projection-20" >
     The concept of a Track was introduced in the 6TiSCH architecture, as a
     potentially complex path with redundant forwarding solutions along the way.
     With this specification, a Track is a DODAG formed by a RPL local Instance
-    that is rooted at the Track Ingress.  If there is a single Track Egress,
+    that is Rooted at the Track Ingress.  If there is a single Track Egress,
     then the Track is reversible to form another DODAG by reversing the
     direction of each edge. A node at the ingress of more
     than one Segment in a Track may use one or more of these Segments to forward
@@ -160,7 +160,10 @@ docName="draft-ietf-roll-dao-projection-20" >
     </t>
     <t>
     The <xref target='I-D.ietf-raw-architecture'>"Reliable and
-    Available Wireless (RAW) Architecture/Framework"</xref> defines the Path Selection Engine (PSE) that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.
+    Available Wireless (RAW) Architecture/Framework"</xref> extends the
+    definition of Track, as being composed to east
+
+    defines the Path Selection Engine (PSE) that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.
      </t>
     <t>
     The PSE is a dataplane extension of the PCE; it controls the forwarding
@@ -186,16 +189,20 @@ docName="draft-ietf-roll-dao-projection-20" >
     of scope for this document.
     </t>
     <t>
+    There specification considers that there's a unique PCE
+    with full view of the network. Distributing the function for a large network is out of scope.
     This specification uses the RPL Root as a proxy to the PCE. The PCE may be
     collocated with the Root, or may reside in an external Controller.
-
-     </t>
+    In that case, the protocol between the Root and the PCE is out of scope
+    and abstracted by / mapped to RPL inside the DODAG.
+    </t>
     <t>
-    In that case, the PCE exchanges control messages with the Root over a
-    Southbound API that is out of scope for this specification.
     The algorithm to compute the paths and the protocol used by an external PCE
     to obtain the topology of the network from the Root are also out of scope.
-    </t>
+    The effectiveness of the route computation by the PCE depends on the quality of the metrics that are reported from the RPL network. Which metrics are used and how they are reported is out of scope,  but the expectation is that they are mostly of statistical nature, and
+    provide visibility on link throughput, latency, stability and availability
+    over relatively long periods, more in <xref target='I-D.ietf-raw-architecture'/>.
+     </t>
     </section>
 
 	<!-- **************************************************************** -->
@@ -241,7 +248,7 @@ docName="draft-ietf-roll-dao-projection-20" >
        <dt>SIO:</dt><dd> RPL Sibling Information Option</dd>
        <dt>SR-VIO:</dt><dd> A Source-Routed Via Information Option, used in Non-Storing-Mode P-DAO messages.    </dd>
        <!--
-       <dt>SubDAG:</dt><dd> A DODAG rooted at a node which is a child of that
+       <dt>SubDAG:</dt><dd> A DODAG Rooted at a node which is a child of that
        node and a subset of a larger DAG</dd> -->
        <dt>TIO:</dt><dd> RPL Transit Information Option</dd>
        <dt>SF-VIO:</dt><dd> A Via Information Option, used in Storing-Mode P-DAO messages.    </dd>
@@ -258,21 +265,40 @@ docName="draft-ietf-roll-dao-projection-20" >
 
     <dt>Projected Route:</dt><dd>
 	A RPL Projected Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE.</dd>
-    <dt>Segment:</dt><dd>
-    A strict sequence of node along which a route is installed.
-    With this specification, a Segment is installed by the Root of the main DODAG using Storing-Mode P-DAO messages.
-    </dd>
+
     <dt>Projected DAO:</dt><dd> A DAO message used to install a Projected Route. </dd>
+    <dt>Segment:</dt><dd>
+    A serial path formed by a strict sequence of nodes, along which a route is
+    installed.
+    With this specification, a Segment is installed by the Root of the main
+    DODAG using Storing-Mode P-DAO messages. A Segment is typically used as
+    the topological edge of a Track.
+    East-West Segments are oriented from Ingress (East) to Egress (West).
+    North/South Segments can be bidirectional; to avoid loops, measures must be
+    taken to ensure that a given packet flows either Northwards or Southwards
+    along a bidirectional Segment, but never bounces back.
+    </dd>
     <dt>Track:</dt><dd>
-    A DODAG that provides a complex path from or to a Root that is the destination
-    of the DODAG. The Root is the Track Ingress, and the forward direction for packets is down the DODAG, from the Track Ingress to one of the possibly multiple Track Egress Nodes.
-    The DODAG may be strictly connected, meaning that the vertices are adjacent, or loosely connected, meaning that the vertices are connected using Segments that are associated to the same Track.
+    <t>A networking graph that can be used as a "path" to transport packets
+    with equivalent treatment; as opposed to the usual understanding of a path
+    (see for instance the definition of "path" in section 1.1 of <xref target=
+    "RFC9049"/>), a Track may fork and rejoin to enable the RAW PAREO operations.
+    </t>
+    <t> The Root is the Track Ingress, and the forward direction for packets
+    is East-West from the Track Ingress to one of the possibly multiple Track
+    Egress Nodes.
+    The Track may be strictly connected, meaning that the vertices are adjacent, or loosely connected, meaning that the vertices are connected using Segments that are associated to the same Track.
     With this specification, a Track is installed by the Root of the main DODAG using Non-Storing-Mode P-DAO messages.
+    </t>
+    </dd>
+    <dt>SubTrack:</dt><dd>A Track within a Track. As the SR-VIO can only signal a loose sequence of nodes, it takes a number of them to signal a
+    complex Track. Each SR-VIO for the same tackId but a different Segment ID signals a different subTrack that the Track Ingress adds to the topology.
     </dd>
     <dt>TrackID:</dt><dd>
     A RPL Local InstanceID with the D bit set to 0. The TrackID is associated with the IPv6 Address of the Track Ingress that is used to signal the DODAG Root, and together they form a unique identification of the Track
     (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
     </dd>
+
     </dl>
 </section>	<!-- end section "Other Terms" -->
 
@@ -301,11 +327,28 @@ docName="draft-ietf-roll-dao-projection-20" >
    Section 6 of <xref target='RFC6550'/> introduces the RPL Control Message
    Options (CMO), including the RPL Target Option (RTO) and Transit Information
    Option (TIO), which can be placed in RPL messages such as the Destination Advertisement Object (DAO).
+   </t>
+   <t>
    This specification extends the DAO message with the Projected DAO (P-DAO); a
    P-DAO message signals a Projected Route to one or more Targets using the new
-   CMOs presented therein. This specification enables to combine one or more
-   Projected Routes into a DODAG called a Track, that is traversed to reach the
-   Targets.
+   CMOs presented therein. This provides a RPL-based signaling to build the
+   Tracks as designed in the 6TiSCH Architecture  <xref target='RFC9030'/>.
+   The Track may be set up for many reasons, including as a bypass to lower the
+   load at the Root, or to enable urgent traffic to flow more directly. The
+   signaling should not be stuck behind high traffic levels. The expectation
+   is that the P-DAO message is sent as high QoS level, above that of data
+   traffic, typically the Network Control precedence.
+   </t>
+   <t>
+   This specification enables to combine one or more Projected Routes into a
+   DODAG called a Track, that is traversed to reach the Targets. When the main
+   RPL domain is operated in non-storing mode, a Track provides reachability
+   to one or more destinations within the DODAG, which bypasses the Root and
+   improves the latency for the redirected flows. Note that this specification
+   does not provide policies to decide which flows go in which Track. Routes
+   to specific destinations over a Track are always more specific than the
+   default via the Root, and any packet reaching the Track Ingress for a
+   destination that is reachable over the Track will be injected in the Track.
    </t>
    <t>
    The Track is assimilated with the DODAG formed for a Local RPL Instance.
@@ -699,10 +742,10 @@ docName="draft-ietf-roll-dao-projection-20" >
               <dt>Option Length:</dt><dd>In bytes; variable, depending on the number of Via Addresses and the compression.</dd>
 
 
-              <dt>SegmentID:</dt><dd>8-bit field that identifies a Segment
-               within a Track or the main DODAG as indicated by the TrackID field. The value of 0 is used to signal a Serial Track, i.e., made of a single segment.
+              <dt>SegmentID:</dt><dd>8-bit field that identifies a component
+               of a Track or the main DODAG as indicated by the TrackID field. The value of 0 is used to signal a Serial Track, i.e., made of a single segment. In an SF-VIO, the SegmentID indicates an actual Segment. In an an SR-VIO, it indicates a serial subTrack
+               that is added to the overall topology of the Track.
               </dd>
-
 
               <dt>Segment Sequence:</dt><dd>
               <t>8-bit unsigned integer.
@@ -1244,6 +1287,45 @@ docName="draft-ietf-roll-dao-projection-20" >
   </section> <!-- Non-Storing-Mode P-Route -->
 
       </section><!-- Installing a Track  -->
+
+
+     <section anchor='maintain'><name>Maintaining a Track</name>
+     <t>
+     Adding or rerouting a Track may affect the traffic that is transported
+     over the Track, e.g., packets can be misordered if the new path is
+     faster than the old.  For critical flows that require timely and/or
+     in-order delivery, it might be necessary to deploy the PAREO functions  <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track.
+     </t>
+     <t>This specification allows to add subTracks to a Track by sending a non-storing mode P-DAO to the ingress associated to the same TrackID,
+     and a new Segment ID. It is also possible to replace a subTrack by
+     sending a non-storing mode P-DAO to the ingress with the same Segment ID
+     as the replaced subTrack and an incremented Segment Sequence.
+     </t>
+     <t>
+     This specification also allows to add Segments to an existing Track by
+     first installing the new Segment(s) with one Storing-Mode P-DAO each
+     associated to the same TrackID, and then joining with a subtrack
+     signaled by a non-storing mode P-DAO to the ingress and also associated
+     to the same TrackID. That subtrack may be an addition to the Track or a replacement, as indicated above.
+     </t>
+
+     <t>A misbehaving Segment may be modified by injecting a new Storing-Mode
+     P-DAO, with the same SegmentID and an incremented Segment Sequence. The
+     new Segment MUST be installed with the full new path from the Segment
+     Ingress to Egress, both included.
+     When a node that is on both the old and the new Segments this updates the state associated to the path.
+     </t>
+     <t>
+     Once the new segment is installed, the sequences of nodes that are no
+     more in the Segment MUST be removed one contigious sequence at a time,
+     with the one or more nodes listed in the SF-VIO, and a Segment Lifetime of 0. Nodes along the sequence clean up their state and pass the message
+     to the previous node in the list; the first is the list sends the DAO-ACK
+     back ot the Root.
+     </t>
+    </section> <!-- Maintaining a Track -->
+
+
+
      <section anchor='routing'><name>Forwarding Along a Track</name>
 
      <t>
@@ -1392,7 +1474,7 @@ In a general manner we want:
 </ul>
 
 <t>
-P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
+P-DAO 3 being loose, it can only be non-storing. Note that since the Root is always the ingress of a Track, and all SR-VIOs are now Track, the Root being signaled in the DAO base object can now be elided in the VIA list in SR-VIO. This enables the construction by the main Root of the RFC 8138 optimized SRH-6LoRH in the SR-VIO, to be placed as is in the packet by the Root.
 </t>
 
 
@@ -2991,8 +3073,11 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 
 <section><name>Acknowledgments</name>
-<t>The authors wish to acknowledge JP Vasseur, Remy Liubing, James Pylakutty and
-   Patrick Wetterwald for their contributions to the ideas developed here.</t>
+<t>The authors wish to acknowledge JP Vasseur, Remy Liubing, James Pylakutty and Patrick Wetterwald for their contributions to the ideas developed here.
+  Special thanks to SVR Anand for global contribution to 6TiSCH, RAW and this
+  document, as well as text suggestions that were incorporated, and to Michael
+  Richardson for his useful recommendations based on his global view of the
+  system.</t>
 </section>
 
     </middle>
@@ -3028,6 +3113,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9049.xml'/>
 
       <reference anchor='PCE' target='https://datatracker.ietf.org/doc/charter-ietf-pce/'>
          <front>
