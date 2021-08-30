@@ -328,6 +328,24 @@ docName="draft-ietf-roll-dao-projection-20" >
 
 
     <section anchor='ext6550'><name>Extending RFC 6550</name>
+    <t>
+    This specification extends RPL <xref target='RFC6550'/> to enable
+    the Root to install east-west routes inside a main DODAG that is
+    operated as non-storing mode. A Projected DAO (P-DAO) message contains
+    a new Via Information Option that can be seen as a multihop Transit Information Option and installs a strict or a loose sequence of hops
+    to form a track Segment or a Track Leg. A P-DAO Request (PDR) message
+    enables a Track Ingress to request the Track from the Root. In the
+    context of this specification, the installed route appears as a more
+    specific route to the Track targets, and the Track ingress routes
+    all the packets towards the targets are routed via the Track.
+    </t>
+    <t>To ensure that the PDR and P-DAO messages can flow at all time,
+    it is RECOMMENDED that the nodes involved in a Track mantain
+    multiple parents in the  main DODAG, advertise them all to the Root,
+    and use them in turn to retry similar packets. It is also
+    RECOMMENDED that the Root uses diverse source route paths to retry
+    similar messages ot the nodes in the Track.
+    </t>
     <section anchor='extP-DAO'><name>Projected DAO</name>
 
 

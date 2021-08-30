@@ -6,9 +6,9 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Updates: 6554 (if approved)                                  R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 28 February 2022                                    M. Gillmore
+Expires: 3 March 2022                                        M. Gillmore
                                                                    Itron
-                                                          27 August 2021
+                                                          30 August 2021
 
 
                   Root initiated routing state in RPL
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 February 2022.
+   This Internet-Draft will expire on 3 March 2022.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 1]
+Thubert, et al.           Expires 3 March 2022                  [Page 1]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -73,16 +73,16 @@ Table of Contents
      2.3.  Other Terms . . . . . . . . . . . . . . . . . . . . . . .   6
      2.4.  References  . . . . . . . . . . . . . . . . . . . . . . .   7
    3.  Extending RFC 6550  . . . . . . . . . . . . . . . . . . . . .   7
-     3.1.  Projected DAO . . . . . . . . . . . . . . . . . . . . . .   7
+     3.1.  Projected DAO . . . . . . . . . . . . . . . . . . . . . .   8
      3.2.  Sibling Information Option  . . . . . . . . . . . . . . .  10
      3.3.  P-DAO Request . . . . . . . . . . . . . . . . . . . . . .  10
-     3.4.  Extending the RPI . . . . . . . . . . . . . . . . . . . .  10
+     3.4.  Extending the RPI . . . . . . . . . . . . . . . . . . . .  11
    4.  Extending RFC 6553  . . . . . . . . . . . . . . . . . . . . .  11
-   5.  Extending RFC 8138  . . . . . . . . . . . . . . . . . . . . .  11
+   5.  Extending RFC 8138  . . . . . . . . . . . . . . . . . . . . .  12
    6.  New RPL Control Messages and Options  . . . . . . . . . . . .  12
      6.1.  New P-DAO Request Control Message . . . . . . . . . . . .  12
      6.2.  New PDR-ACK Control Message . . . . . . . . . . . . . . .  13
-     6.3.  Via Information Options . . . . . . . . . . . . . . . . .  14
+     6.3.  Via Information Options . . . . . . . . . . . . . . . . .  15
      6.4.  Sibling Information Option  . . . . . . . . . . . . . . .  18
    7.  Projected DAO . . . . . . . . . . . . . . . . . . . . . . . .  20
      7.1.  Requesting a Track  . . . . . . . . . . . . . . . . . . .  21
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 2]
+Thubert, et al.           Expires 3 March 2022                  [Page 2]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -165,7 +165,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 3]
+Thubert, et al.           Expires 3 March 2022                  [Page 3]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -221,7 +221,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 4]
+Thubert, et al.           Expires 3 March 2022                  [Page 4]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -277,7 +277,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 5]
+Thubert, et al.           Expires 3 March 2022                  [Page 5]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022                [Page 6]
+Thubert, et al.           Expires 3 March 2022                  [Page 6]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -374,6 +374,33 @@ Internet-Draft               DAO Projection                  August 2021
 
 3.  Extending RFC 6550
 
+   This specification extends RPL [RPL] to enable the Root to install
+   east-west routes inside a main DODAG that is operated as non-storing
+   mode.  A Projected DAO (P-DAO) message contains a new Via Information
+   Option that can be seen as a multihop Transit Information Option and
+   installs a strict or a loose sequence of hops to form a track Segment
+   or a Track Leg. A P-DAO Request (PDR) message enables a Track Ingress
+   to request the Track from the Root.  In the context of this
+   specification, the installed route appears as a more specific route
+   to the Track targets, and the Track ingress routes all the packets
+   towards the targets are routed via the Track.
+
+
+
+
+
+Thubert, et al.           Expires 3 March 2022                  [Page 7]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
+   To ensure that the PDR and P-DAO messages can flow at all time, it is
+   RECOMMENDED that the nodes involved in a Track mantain multiple
+   parents in the main DODAG, advertise them all to the Root, and use
+   them in turn to retry similar packets.  It is also RECOMMENDED that
+   the Root uses diverse source route paths to retry similar messages ot
+   the nodes in the Track.
+
 3.1.  Projected DAO
 
    Section 6 of [RPL] introduces the RPL Control Message Options (CMO),
@@ -386,14 +413,6 @@ Internet-Draft               DAO Projection                  August 2021
    Targets using the new CMOs presented therein.  This provides a RPL-
    based signaling to build the Tracks as designed in the 6TiSCH
    Architecture [6TiSCH-ARCHI].  The Track may be set up for many
-
-
-
-Thubert, et al.         Expires 28 February 2022                [Page 7]
-
-Internet-Draft               DAO Projection                  August 2021
-
-
    reasons, including as a bypass to lower the load at the Root, or to
    enable urgent traffic to flow more directly.  The signaling should
    not be stuck behind high traffic levels.  The expectation is that the
@@ -423,6 +442,14 @@ Internet-Draft               DAO Projection                  August 2021
    This specification defines the new "Projected DAO" (P) flag.  The 'P'
    flag is encoded in bit position 2 (to be confirmed by IANA) of the
    Flags field in the DAO Base Object.  The Root MUST set it to 1 in a
+
+
+
+Thubert, et al.           Expires 3 March 2022                  [Page 8]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
    Projected DAO message.  Otherwise it MUST be set to 0.  It is set to
    0 in Legacy implementations as specified respectively in Sections
    20.11 and 6.4 of [RPL]. .
@@ -442,13 +469,6 @@ Internet-Draft               DAO Projection                  August 2021
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
      |   Option(s)...
      +-+-+-+-+-+-+-+-+
-
-
-
-Thubert, et al.         Expires 28 February 2022                [Page 8]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
                     Figure 1: Projected DAO Base Object
 
@@ -473,6 +493,19 @@ Internet-Draft               DAO Projection                  August 2021
    whole Track through which both children and siblings of the Track
    Egress are reachable.
 
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires 3 March 2022                  [Page 9]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
    New CMOs called the Via Information Options (VIO) are introduced for
    use in P-DAO messages as a multihop alternative to the TIO.  One VIO
    is the Stateful VIO (SF-VIO); the SF-VIO installs Storing-Mode
@@ -491,20 +524,6 @@ Internet-Draft               DAO Projection                  August 2021
    direction, installing a Storing Mode state to the Track Egress at
    each hop.  In both cases the Track Ingress is the owner of the Track,
    and it generates the P-DAO-ACK when the installation is successful.
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.         Expires 28 February 2022                [Page 9]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
 3.2.  Sibling Information Option
 
@@ -535,6 +554,14 @@ Internet-Draft               DAO Projection                  August 2021
    Track.  The Root may use an asynchronous PDR-ACK with an negative
    status to indicate that the Track was terminated before its time.
 
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 10]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
 3.4.  Extending the RPI
 
    Sending a Packet within a RPL Local Instance requires the presence of
@@ -549,18 +576,6 @@ Internet-Draft               DAO Projection                  August 2021
 
    Projected-Route 'P':  1-bit flag.  It is set to 1 if this packet is
       sent over a projected route and set to 0 otherwise.
-
-
-
-
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 10]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
 4.  Extending RFC 6553
 
@@ -595,6 +610,14 @@ Internet-Draft               DAO Projection                  August 2021
    'O', 'R' and 'F' flags:  See [RFC6553].  Those flags MUST be set to 0
       by the sender and ignored by the receiver if the 'P' flag is set.
 
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 11]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
    Projected-Route 'P':  1-bit flag as defined in Section 3.4.
 
    RPLInstanceID:  See [RFC6553].  Indicates the TrackId if the 'P' flag
@@ -610,13 +633,6 @@ Internet-Draft               DAO Projection                  August 2021
    operation.  The format of the RPI-6LoRH is not suited for Projected
    routes since the O,R,F flags are not used and the Rank is unknown and
    ignored.
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 11]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
    This specification introduces a new 6LoRH, the P-RPI-6LoRH, with a
    type of 7.  The P-RPI-6LoRH header is usually a a Critical 6LoWPAN
@@ -650,6 +666,14 @@ Internet-Draft               DAO Projection                  August 2021
    MUST be present in the message.  The RTO signals the Track Egress,
    more in Section 7.1.
 
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 12]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
    The RPL Control Code for the PDR is 0x09, to be confirmed by IANA.
    The format of PDR Base Object is as follows:
 
@@ -665,14 +689,6 @@ Internet-Draft               DAO Projection                  August 2021
 
    TrackID:  8-bit field indicating the RPLInstanceID associated with
       the Track.
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 12]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
    K:  The 'K' flag is set to indicate that the recipient is expected to
       send a PDR-ACK back.
@@ -701,6 +717,19 @@ Internet-Draft               DAO Projection                  August 2021
    flag set.  The RPL Control Code for the PDR-ACK is 0x0A, to be
    confirmed by IANA.  Its format is as follows:
 
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 13]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -722,13 +751,6 @@ Internet-Draft               DAO Projection                  August 2021
    Track Lifetime:  Indicates that remaining Lifetime for the Track,
       expressed in Lifetime Units; the value of zero (0x00) indicates
       that the Track was destroyed or not created.
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 13]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
    PDRSequence:  8-bit wrapping sequence number.  It is incremented at
       each PDR message and echoed in the PDR-ACK.
@@ -754,6 +776,16 @@ Internet-Draft               DAO Projection                  August 2021
    Reserved:  The Reserved field MUST initialized to zero by the sender
       and MUST be ignored by the receiver
 
+
+
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 14]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
 6.3.  Via Information Options
 
    A VIO signals the ordered list of IPv6 Via Addresses that constitutes
@@ -762,29 +794,6 @@ Internet-Draft               DAO Projection                  August 2021
    Address, and a Via Address MUST NOT be present more than once,
    otherwise the VIO MUST be ignored.  The format of the Via Information
    Options is as follows:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 14]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -824,6 +833,15 @@ Internet-Draft               DAO Projection                  August 2021
       Addresses and the compression.
 
    SegmentID:  8-bit field that identifies a component of a Track or the
+
+
+
+
+Thubert, et al.           Expires 3 March 2022                 [Page 15]
+
+Internet-Draft               DAO Projection                  August 2021
+
+
       main DODAG as indicated by the TrackID field.  The value of 0 is
       used to signal a Serial Track, i.e., made of a single segment/Leg.
       In an SF-VIO, the SegmentID indicates an actual Segment.  In an an
@@ -833,14 +851,6 @@ Internet-Draft               DAO Projection                  August 2021
    Segment Sequence:  8-bit unsigned integer.  The Segment Sequence
       obeys the operation in section 7.2 of [RPL] and the lollipop
       starts at 255.
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 15]
-
-Internet-Draft               DAO Projection                  August 2021
-
 
       When the Root of the DODAG needs to refresh or update a Segment in
       a Track, it increments the Segment Sequence individually for that
@@ -880,23 +890,17 @@ Internet-Draft               DAO Projection                  August 2021
       the SR-VIO since the state in the Ingress is erased whatever.  In
       a Storing Mode P-DAO that updates or removes a section of an
       already existing Segment, the list in the SF-VIO may represent
-      only the section of the Segment that is being updated; at the
-      extreme, the SF-VIO updates only one node, in which case it
-      contains only one IPv6 address.
 
 
 
-
-
-
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 16]
+Thubert, et al.           Expires 3 March 2022                 [Page 16]
 
 Internet-Draft               DAO Projection                  August 2021
 
+
+      only the section of the Segment that is being updated; at the
+      extreme, the SF-VIO updates only one node, in which case it
+      contains only one IPv6 address.
 
       For all other cases, the list in the VIO must be complete, with
       the strict sequence of hops in an SF-VIO and possibly a loose one
@@ -945,11 +949,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-
-
-
-
-Thubert, et al.         Expires 28 February 2022               [Page 17]
+Thubert, et al.           Expires 3 March 2022                 [Page 17]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 18]
+Thubert, et al.           Expires 3 March 2022                 [Page 18]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 19]
+Thubert, et al.           Expires 3 March 2022                 [Page 19]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 20]
+Thubert, et al.           Expires 3 March 2022                 [Page 20]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 21]
+Thubert, et al.           Expires 3 March 2022                 [Page 21]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 22]
+Thubert, et al.           Expires 3 March 2022                 [Page 22]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 23]
+Thubert, et al.           Expires 3 March 2022                 [Page 23]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1341,7 +1341,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 24]
+Thubert, et al.           Expires 3 March 2022                 [Page 24]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 25]
+Thubert, et al.           Expires 3 March 2022                 [Page 25]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1453,7 +1453,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 26]
+Thubert, et al.           Expires 3 March 2022                 [Page 26]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 27]
+Thubert, et al.           Expires 3 March 2022                 [Page 27]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1565,7 +1565,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 28]
+Thubert, et al.           Expires 3 March 2022                 [Page 28]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1621,7 +1621,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 29]
+Thubert, et al.           Expires 3 March 2022                 [Page 29]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 30]
+Thubert, et al.           Expires 3 March 2022                 [Page 30]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1733,7 +1733,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 31]
+Thubert, et al.           Expires 3 March 2022                 [Page 31]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1789,7 +1789,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 32]
+Thubert, et al.           Expires 3 March 2022                 [Page 32]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1845,7 +1845,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 33]
+Thubert, et al.           Expires 3 March 2022                 [Page 33]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1901,7 +1901,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 34]
+Thubert, et al.           Expires 3 March 2022                 [Page 34]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -1957,7 +1957,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 35]
+Thubert, et al.           Expires 3 March 2022                 [Page 35]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2013,7 +2013,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 36]
+Thubert, et al.           Expires 3 March 2022                 [Page 36]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2069,7 +2069,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 37]
+Thubert, et al.           Expires 3 March 2022                 [Page 37]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2125,7 +2125,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 38]
+Thubert, et al.           Expires 3 March 2022                 [Page 38]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2181,7 +2181,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 39]
+Thubert, et al.           Expires 3 March 2022                 [Page 39]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2237,7 +2237,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 40]
+Thubert, et al.           Expires 3 March 2022                 [Page 40]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2293,7 +2293,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 41]
+Thubert, et al.           Expires 3 March 2022                 [Page 41]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2349,7 +2349,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 42]
+Thubert, et al.           Expires 3 March 2022                 [Page 42]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2405,7 +2405,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 43]
+Thubert, et al.           Expires 3 March 2022                 [Page 43]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2461,7 +2461,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 44]
+Thubert, et al.           Expires 3 March 2022                 [Page 44]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2517,7 +2517,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 45]
+Thubert, et al.           Expires 3 March 2022                 [Page 45]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2573,7 +2573,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 46]
+Thubert, et al.           Expires 3 March 2022                 [Page 46]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2629,7 +2629,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 47]
+Thubert, et al.           Expires 3 March 2022                 [Page 47]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2685,7 +2685,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 48]
+Thubert, et al.           Expires 3 March 2022                 [Page 48]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2741,7 +2741,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 49]
+Thubert, et al.           Expires 3 March 2022                 [Page 49]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2797,7 +2797,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 50]
+Thubert, et al.           Expires 3 March 2022                 [Page 50]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2853,7 +2853,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 51]
+Thubert, et al.           Expires 3 March 2022                 [Page 51]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2909,7 +2909,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 52]
+Thubert, et al.           Expires 3 March 2022                 [Page 52]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -2965,7 +2965,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 53]
+Thubert, et al.           Expires 3 March 2022                 [Page 53]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -3021,7 +3021,7 @@ A.1.  Loose Source Routing
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 54]
+Thubert, et al.           Expires 3 March 2022                 [Page 54]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -3077,7 +3077,7 @@ A.2.  Transversal Routes
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 55]
+Thubert, et al.           Expires 3 March 2022                 [Page 55]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -3133,7 +3133,7 @@ Internet-Draft               DAO Projection                  August 2021
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 56]
+Thubert, et al.           Expires 3 March 2022                 [Page 56]
 
 Internet-Draft               DAO Projection                  August 2021
 
@@ -3189,4 +3189,4 @@ Authors' Addresses
 
 
 
-Thubert, et al.         Expires 28 February 2022               [Page 57]
+Thubert, et al.           Expires 3 March 2022                 [Page 57]
