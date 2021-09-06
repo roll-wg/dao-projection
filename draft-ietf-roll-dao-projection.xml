@@ -2755,6 +2755,92 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 
 
+    <section><name>Storing-Mode Main DODAG</name>
+
+<t>This specification expects that the main DODAG is operated in Non-Storing
+   Mode. The reasons for that limitation are mostlt related to LLN operations,
+   power and spectrum conservation:</t>
+   <ul>
+   <li>In Non-Storing Mode The Root already possesses the DODAG topology, so the
+   additional topological information is reduced to the siblings.
+   </li>
+   <li>The downwards routes are updated with unicast messages to the Root, which
+   ensures that the Root can reach back to the LLN nodes after a repair faster
+   than in the case of Storing Mode. Also the Root can control the use of the
+   path diversity in the DODAG to reach to the LLN nodes. For both reasons,
+   Non-Storing Mode provides better capabilities for the Root to maintain the
+   Projected Routes.
+   </li>
+   <li>
+   When the main DODAG is operated in Non-Storing Mode, Projected Routes enable
+   loose Source Routing, which is only an advantage in that mode. Storing Mode
+   does not use Routing Headers, and does not benefit from this capability.
+   </li>
+   </ul>
+
+<t>On the other hand, since RPL is a Layer-3 protocol, its applicability
+   extends beyond LLNs, e.g., on wired networks, as used by the ANIMA Autonomic
+   Control Plane (ACP) <xref target='RFC8994'/>. In a powered and wired network,
+   where the memory to store the needed routes is easily available, Storing
+   Mode usually makes more sense than Non-Storing as i reduces the route stretch
+   and lowers the load on the Root. In that case, the control path between the
+   Root and the LLN nodes is highly available compared to LLNs, and the nodes
+   can be reached to maintain the Projected Routes at most times. This section specifies the additions that are needed in Storing Mode.
+   </t>
+
+
+<t>In Storing Mode, the Root misses the Child to Parent relationship that forms
+   the main DODAG, as well as the sibling information. To provide that knowledge
+   the nodes in the network MUST send additional DAO messages that are unicast
+   to the Root as Non-Storing DAO messages are.
+   </t>
+
+<t>In the DAO message, the originating router advertises a set of neighbor
+   nodes using Sibling Information Options, regardless of the relative position
+   in the DODAG of the advertised node vs. this router.
+   To advertise a neighbor node, the router MUST have an active Address
+   Registration from that node using <xref target='RFC8505'/>, for an address
+   (ULA or GUA) that serves as identifier for the node.
+   </t>
+
+<t>The DAO message MUST be formed as follows:
+   </t>
+   <ul>
+   <li>
+   The originating router is identified by the source address of the DAO. That
+   address MUST be the one that this router registers to neighbor routers
+   so the Root can correlate the DAOs from those routers when they advertise
+   this router as their neighbor. The DAO contains one or more sequences of one
+   Transit Information Option and one or more Sibling Information Options.
+   There is no RPL Target Option so the Root is not confused into adding a
+   Storing Mode Router to the target.
+   </li>
+   <li>
+   The TIO is formed as in Storing Mode, and the Parent Address is not present.
+   The Path Sequence and Path Lifetime fields
+   are aligned with the values used in the Address Registration of the node(s) advertised in the SIO, as explained in Section 9.1. of
+   <xref target='RFC9010'/>.
+   Having similar values in all  nodes allows to factorise the TIO for multiple
+   SIOs as done with <xref target='RFC6550'/>.
+   </li>
+   <!--
+   <li>
+   The TIO is followed by one RPL Target Option that signals the router that
+   sends the information.  The Target Prefix in the RTO contains the address in
+   full and the "Advertiser address in Full" (F) <xref target='RFC9010'/> flag
+   is set to 1.
+   TODO Flag to indicate not to install a DAO route to Target?
+   </li>
+   -->
+   <li>The TIO is followed by one or more SIOs that provide an address (ULA or GUA) of the advertised neighbor router.
+   As opposed to Non-Storing Mode, this includes both siblings and parents.
+   </li>
+   </ul>
+
+</section><!-- Storing-Mode Main DODAG -->
+
+
+
     <section><name>Security Considerations</name>
 
 
@@ -3303,7 +3389,9 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8930.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8931.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8994.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9010.xml'/>
 
      <xi:include href="http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.irtf-panrg-path-properties.xml"/>
       <reference anchor='PCE' target='https://datatracker.ietf.org/doc/charter-ietf-pce/'>

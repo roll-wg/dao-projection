@@ -114,29 +114,30 @@ Thubert, et al.           Expires 10 March 2022                 [Page 2]
 Internet-Draft               DAO Projection               September 2021
 
 
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .  45
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  45
-     11.1.  New Elective 6LoWPAN Routing Header Type . . . . . . . .  45
-     11.2.  New Critical 6LoWPAN Routing Header Type . . . . . . . .  46
-     11.3.  New Subregistry For The RPL Option Flags . . . . . . . .  46
-     11.4.  New RPL Control Codes  . . . . . . . . . . . . . . . . .  47
-     11.5.  New RPL Control Message Options  . . . . . . . . . . . .  47
-     11.6.  SubRegistry for the Projected DAO Request Flags  . . . .  47
-     11.7.  SubRegistry for the PDR-ACK Flags  . . . . . . . . . . .  48
-     11.8.  Subregistry for the PDR-ACK Acceptance Status Values . .  48
-     11.9.  Subregistry for the PDR-ACK Rejection Status Values  . .  48
-     11.10. SubRegistry for the Via Information Options Flags  . . .  49
-     11.11. SubRegistry for the Sibling Information Option Flags . .  49
-     11.12. New Destination Advertisement Object Flag  . . . . . . .  50
-     11.13. Error in Projected Route ICMPv6 Code . . . . . . . . . .  50
-     11.14. New RPL Rejection Status values  . . . . . . . . . . . .  50
-   12. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  51
-   13. Normative References  . . . . . . . . . . . . . . . . . . . .  51
-   14. Informative References  . . . . . . . . . . . . . . . . . . .  52
-   Appendix A.  Applications . . . . . . . . . . . . . . . . . . . .  54
-     A.1.  Loose Source Routing  . . . . . . . . . . . . . . . . . .  54
-     A.2.  Transversal Routes  . . . . . . . . . . . . . . . . . . .  56
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  58
+   10. Storing-Mode Main DODAG . . . . . . . . . . . . . . . . . . .  45
+   11. Security Considerations . . . . . . . . . . . . . . . . . . .  46
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  47
+     12.1.  New Elective 6LoWPAN Routing Header Type . . . . . . . .  47
+     12.2.  New Critical 6LoWPAN Routing Header Type . . . . . . . .  47
+     12.3.  New Subregistry For The RPL Option Flags . . . . . . . .  47
+     12.4.  New RPL Control Codes  . . . . . . . . . . . . . . . . .  48
+     12.5.  New RPL Control Message Options  . . . . . . . . . . . .  48
+     12.6.  SubRegistry for the Projected DAO Request Flags  . . . .  49
+     12.7.  SubRegistry for the PDR-ACK Flags  . . . . . . . . . . .  49
+     12.8.  Subregistry for the PDR-ACK Acceptance Status Values . .  49
+     12.9.  Subregistry for the PDR-ACK Rejection Status Values  . .  50
+     12.10. SubRegistry for the Via Information Options Flags  . . .  50
+     12.11. SubRegistry for the Sibling Information Option Flags . .  51
+     12.12. New Destination Advertisement Object Flag  . . . . . . .  51
+     12.13. Error in Projected Route ICMPv6 Code . . . . . . . . . .  51
+     12.14. New RPL Rejection Status values  . . . . . . . . . . . .  52
+   13. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  52
+   14. Normative References  . . . . . . . . . . . . . . . . . . . .  52
+   15. Informative References  . . . . . . . . . . . . . . . . . . .  53
+   Appendix A.  Applications . . . . . . . . . . . . . . . . . . . .  56
+     A.1.  Loose Source Routing  . . . . . . . . . . . . . . . . . .  56
+     A.2.  Transversal Routes  . . . . . . . . . . . . . . . . . . .  57
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  59
 
 1.  Introduction
 
@@ -160,7 +161,6 @@ Internet-Draft               DAO Projection               September 2021
    Computation Element ([PCE]), and the objective functions are
    described in [RFC4655] and encoded in the PCE Protocol (PCEP) by
    [RFC5551].
-
 
 
 
@@ -1190,7 +1190,7 @@ Internet-Draft               DAO Projection               September 2021
 
    In case of a forwarding error along a Projected Route, an ICMPv6
    [RFC4443] error message is sent to the Root with a new Code "Error in
-   Projected Route" (See Section 11.13).  The Root can then repair by
+   Projected Route" (See Section 12.13).  The Root can then repair by
    updating the broken Segment and/or Tracks, and in the case of a
    broken Segment, remove the leftover sections of the segment using SF-
    VIOs with a lifetime of 0 indicating the section ot one or more nodes
@@ -1526,13 +1526,13 @@ Internet-Draft               DAO Projection               September 2021
       Encapsulator Address field, see as a similar case Figure 20 of
       [TURN-ON_RFC8138].
 
-   In the case of a loose source-routed path, there MUST be either a
-   segment for the same Track to the loose next hop, on which case the
-   packet is forwarded to the next hop along that segment, a common
-   neighbor with the loose next hop, on which case the packet is
-   forwarded to that neighbor, or another Track to the loose next hop
-   for which this node or a neighbor is Ingress; in the latter case,
-   another encapsulation takes place and the process possibly recurses;
+   In the case of a loose source-routed path, there MUST be a segment
+   for the same Track to the loose next hop, on which case the packet is
+   forwarded to the next hop along that segment, or a common neighbor
+   with the loose next hop, on which case the packet is forwarded to
+   that neighbor, or another Track to the loose next hop for which this
+   node or a neighbor is Ingress; in the last case, another
+   encapsulation takes place and the process possibly recurses;
    otherwise the packet is dropped.
 
    In case of a forwarding error along a Source Route path, the node
@@ -2466,7 +2466,83 @@ Thubert, et al.           Expires 10 March 2022                [Page 44]
 Internet-Draft               DAO Projection               September 2021
 
 
-10.  Security Considerations
+10.  Storing-Mode Main DODAG
+
+   This specification expects that the main DODAG is operated in Non-
+   Storing Mode.  The reasons for that limitation are mostlt related to
+   LLN operations, power and spectrum conservation:
+
+   *  In Non-Storing Mode The Root already possesses the DODAG topology,
+      so the additional topological information is reduced to the
+      siblings.
+
+   *  The downwards routes are updated with unicast messages to the
+      Root, which ensures that the Root can reach back to the LLN nodes
+      after a repair faster than in the case of Storing Mode.  Also the
+      Root can control the use of the path diversity in the DODAG to
+      reach to the LLN nodes.  For both reasons, Non-Storing Mode
+      provides better capabilities for the Root to maintain the
+      Projetced Routes.
+
+   *  When the main DODAG is operated in Non-Storing Mode, Projected
+      Routes enable loose Source Routing, which is only an advantage in
+      that mode.  Storing Mode does not use Routing Headers, and does
+      not benefit from this capability.
+
+   On the other hand, since RPL is a Layer-3 protocol, its applicability
+   extends beyond LLNs, e.g., on wired networks, as used by the ANIMA
+   Autonomic Control Plane (ACP) [RFC8994].  In a powered and wired
+   network, where the memory to store the needed routes is easily
+   available, Storing Mode usually makes more sense than Non-Storing as
+   i reduces the route stretch and lowers the load on the Root.  In that
+   case, the control path between the Root and the LLN nodes is highly
+   available compared to LLNs, and the nodes can be reached to maintain
+   the Projected Routes at most times.  This section specifies the
+   additions that are needed in Storing Mode.
+
+   In Storing Mode, the Root misses the Child to Parent relationship
+   that forms the main DODAG, as well as the sibling information.  To
+   provide that knowledge the nodes in the network MUST send additional
+   DAO messages that are unicast to the Root as Non-Storing DAO messages
+   are.
+
+   In the DAO message, the originating router advertises a set of
+   neighbor nodes using Sibling Information Options, regardless of the
+   relative position in the DODAG of the advertised node vs. this
+   router.  To advertise a neighbor node, the router MUST have an active
+   Address Registration from that node using [RFC8505], for an address
+   (ULA or GUA) that serves as identifier for the node.
+
+   The DAO message MUST be formed as follows:
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 45]
+
+Internet-Draft               DAO Projection               September 2021
+
+
+   *  The originating router is identified by the source address of the
+      DAO.  That address MUST be the one that this router registers to
+      neighbor routers so the Root can correlate the DAOs from those
+      routers when they advertise this router as their neighbor.  The
+      DAO contains one or more sequences of one Transit Information
+      Option and one or more Sibling Information Options.  There is no
+      RPL Target Option so the Root is not confused into adding a
+      Storing Mode Router to the target.
+
+   *  The TIO is formed as in Storing Mode, and the Parent Address is
+      not present.  The Path Sequence and Path Lifetime fields are
+      aligned with the values used in the Address Registration of the
+      node(s) advertised in the SIO, as explained in Section 9.1. of
+      [RFC9010].  Having similar values in all nodes allows to factorise
+      the TIO for multiple SIOs as done with [RPL].
+
+   *  The TIO is followed by one or more SIOs that provide an address
+      (ULA or GUA) of the advertised neighbor router.  As opposed to
+      Non-Storing Mode, this includes both siblings and parents.
+
+11.  Security Considerations
 
    It is worth noting that with [RPL], every node in the LLN is RPL-
    aware and can inject any RPL-based attack in the network.  This draft
@@ -2495,9 +2571,16 @@ Internet-Draft               DAO Projection               September 2021
    to be a RPL Root is entitled to do so.  That trust should propagate
    from egress to ingress in the case of a Storing Mode P-DAO.
 
-11.  IANA Considerations
 
-11.1.  New Elective 6LoWPAN Routing Header Type
+
+Thubert, et al.           Expires 10 March 2022                [Page 46]
+
+Internet-Draft               DAO Projection               September 2021
+
+
+12.  IANA Considerations
+
+12.1.  New Elective 6LoWPAN Routing Header Type
 
    This document updates the IANA registry titled "Elective 6LoWPAN
    Routing Header Type" that was created for [RFC8138] and assigns the
@@ -2512,17 +2595,7 @@ Internet-Draft               DAO Projection               September 2021
                        Table 21: New Elective 6LoWPAN
                             Routing Header Type
 
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 45]
-
-Internet-Draft               DAO Projection               September 2021
-
-
-11.2.  New Critical 6LoWPAN Routing Header Type
+12.2.  New Critical 6LoWPAN Routing Header Type
 
    This document updates the IANA registry titled "Critical 6LoWPAN
    Routing Header Type" that was created for [RFC8138] and assigns the
@@ -2537,7 +2610,7 @@ Internet-Draft               DAO Projection               September 2021
                        Table 22: New Critical 6LoWPAN
                             Routing Header Type
 
-11.3.  New Subregistry For The RPL Option Flags
+12.3.  New Subregistry For The RPL Option Flags
 
    IANA is required to create a subregistry for the 8-bit RPL Option
    Flags field, as detailed in Figure 2, under the "Routing Protocol for
@@ -2554,6 +2627,13 @@ Internet-Draft               DAO Projection               September 2021
    Registration procedure is "Standards Action" [RFC8126].  The initial
    allocation is as indicated in Table 26:
 
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 47]
+
+Internet-Draft               DAO Projection               September 2021
+
+
            +============+======================+===============+
            | Bit number | Indication When Set  | Reference     |
            +============+======================+===============+
@@ -2568,17 +2648,7 @@ Internet-Draft               DAO Projection               September 2021
 
                         Table 23: Initial PDR Flags
 
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 46]
-
-Internet-Draft               DAO Projection               September 2021
-
-
-11.4.  New RPL Control Codes
+12.4.  New RPL Control Codes
 
    This document extends the IANA Subregistry created by RFC 6550 for
    RPL Control Codes as indicated in Table 24:
@@ -2593,7 +2663,7 @@ Internet-Draft               DAO Projection               September 2021
 
                      Table 24: New RPL Control Codes
 
-11.5.  New RPL Control Message Options
+12.5.  New RPL Control Message Options
 
    This document extends the IANA Subregistry created by RFC 6550 for
    RPL Control Message Options as indicated in Table 25:
@@ -2610,7 +2680,17 @@ Internet-Draft               DAO Projection               September 2021
 
                   Table 25: RPL Control Message Options
 
-11.6.  SubRegistry for the Projected DAO Request Flags
+
+
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 48]
+
+Internet-Draft               DAO Projection               September 2021
+
+
+12.6.  SubRegistry for the Projected DAO Request Flags
 
    IANA is required to create a registry for the 8-bit Projected DAO
    Request (PDR) Flags field.  Each bit is tracked with the following
@@ -2625,15 +2705,6 @@ Internet-Draft               DAO Projection               September 2021
    Registration procedure is "Standards Action" [RFC8126].  The initial
    allocation is as indicated in Table 26:
 
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 47]
-
-Internet-Draft               DAO Projection               September 2021
-
-
           +============+========================+===============+
           | Bit number | Capability description | Reference     |
           +============+========================+===============+
@@ -2645,7 +2716,7 @@ Internet-Draft               DAO Projection               September 2021
 
                         Table 26: Initial PDR Flags
 
-11.7.  SubRegistry for the PDR-ACK Flags
+12.7.  SubRegistry for the PDR-ACK Flags
 
    IANA is required to create an subregistry for the 8-bit PDR-ACK Flags
    field.  Each bit is tracked with the following qualities:
@@ -2659,7 +2730,7 @@ Internet-Draft               DAO Projection               September 2021
    Registration procedure is "Standards Action" [RFC8126].  No bit is
    currently defined for the PDR-ACK Flags.
 
-11.8.  Subregistry for the PDR-ACK Acceptance Status Values
+12.8.  Subregistry for the PDR-ACK Acceptance Status Values
 
    IANA is requested to create a Subregistry for the PDR-ACK Acceptance
    Status values.
@@ -2667,6 +2738,13 @@ Internet-Draft               DAO Projection               September 2021
    *  Possible values are 6-bit unsigned integers (0..63).
 
    *  Registration procedure is "Standards Action" [RFC8126].
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 49]
+
+Internet-Draft               DAO Projection               September 2021
+
 
    *  Initial allocation is as indicated in Table 27:
 
@@ -2678,17 +2756,10 @@ Internet-Draft               DAO Projection               September 2021
 
             Table 27: Acceptance values of the PDR-ACK Status
 
-11.9.  Subregistry for the PDR-ACK Rejection Status Values
+12.9.  Subregistry for the PDR-ACK Rejection Status Values
 
    IANA is requested to create a Subregistry for the PDR-ACK Rejection
    Status values.
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 48]
-
-Internet-Draft               DAO Projection               September 2021
-
 
    *  Possible values are 6-bit unsigned integers (0..63).
 
@@ -2704,7 +2775,7 @@ Internet-Draft               DAO Projection               September 2021
 
               Table 28: Rejection values of the PDR-ACK Status
 
-11.10.  SubRegistry for the Via Information Options Flags
+12.10.  SubRegistry for the Via Information Options Flags
 
    IANA is requested to create a Subregistry for the 5-bit Via
    Information Options (Via Information Option) Flags field.  Each bit
@@ -2720,7 +2791,18 @@ Internet-Draft               DAO Projection               September 2021
    currently defined for the Via Information Options (Via Information
    Option) Flags.
 
-11.11.  SubRegistry for the Sibling Information Option Flags
+
+
+
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 50]
+
+Internet-Draft               DAO Projection               September 2021
+
+
+12.11.  SubRegistry for the Sibling Information Option Flags
 
    IANA is required to create a registry for the 5-bit Sibling
    Information Option (SIO) Flags field.  Each bit is tracked with the
@@ -2735,17 +2817,6 @@ Internet-Draft               DAO Projection               September 2021
    Registration procedure is "Standards Action" [RFC8126].  The initial
    allocation is as indicated in Table 29:
 
-
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 49]
-
-Internet-Draft               DAO Projection               September 2021
-
-
     +============+===================================+===============+
     | Bit number | Capability description            | Reference     |
     +============+===================================+===============+
@@ -2754,7 +2825,7 @@ Internet-Draft               DAO Projection               September 2021
 
                        Table 29: Initial SIO Flags
 
-11.12.  New Destination Advertisement Object Flag
+12.12.  New Destination Advertisement Object Flag
 
    This document modifies the "Destination Advertisement Object (DAO)
    Flags" registry initially created in Section 20.11 of [RPL] .
@@ -2770,7 +2841,7 @@ Internet-Draft               DAO Projection               September 2021
               Table 30: New Destination Advertisement Object
                                 (DAO) Flag
 
-11.13.  Error in Projected Route ICMPv6 Code
+12.13.  Error in Projected Route ICMPv6 Code
 
    In some cases RPL will return an ICMPv6 error message when a message
    cannot be forwarded along a Projected Route.  This ICMPv6 error
@@ -2779,28 +2850,22 @@ Internet-Draft               DAO Projection               September 2021
    IANA has defined an ICMPv6 "Code" Fields Registry for ICMPv6 Message
    Types.  ICMPv6 Message Type 1 describes "Destination Unreachable"
    codes.  This specification requires that a new code is allocated from
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 51]
+
+Internet-Draft               DAO Projection               September 2021
+
+
    the ICMPv6 Code Fields Registry for ICMPv6 Message Type 1, for "Error
    in Projected Route", with a suggested code value of 8, to be
    confirmed by IANA.
 
-11.14.  New RPL Rejection Status values
+12.14.  New RPL Rejection Status values
 
    This specification updates the Subregistry for the "RPL Rejection
    Status" values under the RPL registry, as follows:
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 50]
-
-Internet-Draft               DAO Projection               September 2021
-
 
              +---------------+------------------+-----------+
              | Value         | Meaning          | Reference |
@@ -2812,7 +2877,7 @@ Internet-Draft               DAO Projection               September 2021
 
                Table 31: Rejection values of the RPL Status
 
-12.  Acknowledgments
+13.  Acknowledgments
 
    The authors wish to acknowledge JP Vasseur, Remy Liubing, James
    Pylakutty and Patrick Wetterwald for their contributions to the ideas
@@ -2821,7 +2886,7 @@ Internet-Draft               DAO Projection               September 2021
    were incorporated, and to Michael Richardson for his useful
    recommendations based on his global view of the system.
 
-13.  Normative References
+14.  Normative References
 
    [INT-ARCHI]
               Braden, R., Ed., "Requirements for Internet Hosts -
@@ -2840,6 +2905,15 @@ Internet-Draft               DAO Projection               September 2021
               RFC 4443, DOI 10.17487/RFC4443, March 2006,
               <https://www.rfc-editor.org/info/rfc4443>.
 
+
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 52]
+
+Internet-Draft               DAO Projection               September 2021
+
+
    [RFC4655]  Farrel, A., Vasseur, J.-P., and J. Ash, "A Path
               Computation Element (PCE)-Based Architecture", RFC 4655,
               DOI 10.17487/RFC4655, August 2006,
@@ -2848,15 +2922,6 @@ Internet-Draft               DAO Projection               September 2021
    [RFC5551]  Gellens, R., Ed., "Lemonade Notifications Architecture",
               RFC 5551, DOI 10.17487/RFC5551, August 2009,
               <https://www.rfc-editor.org/info/rfc5551>.
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 51]
-
-Internet-Draft               DAO Projection               September 2021
-
 
    [RFC6282]  Hui, J., Ed. and P. Thubert, "Compression Format for IPv6
               Datagrams over IEEE 802.15.4-Based Networks", RFC 6282,
@@ -2891,28 +2956,23 @@ Internet-Draft               DAO Projection               September 2021
               RFC 8126, DOI 10.17487/RFC8126, June 2017,
               <https://www.rfc-editor.org/info/rfc8126>.
 
-14.  Informative References
+15.  Informative References
 
    [6LoWPAN]  Montenegro, G., Kushalnagar, N., Hui, J., and D. Culler,
               "Transmission of IPv6 Packets over IEEE 802.15.4
               Networks", RFC 4944, DOI 10.17487/RFC4944, September 2007,
               <https://www.rfc-editor.org/info/rfc4944>.
 
-   [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
-              Lossy Networks", RFC 7102, DOI 10.17487/RFC7102, January
-              2014, <https://www.rfc-editor.org/info/rfc7102>.
 
 
-
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 52]
+Thubert, et al.           Expires 10 March 2022                [Page 53]
 
 Internet-Draft               DAO Projection               September 2021
 
+
+   [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
+              Lossy Networks", RFC 7102, DOI 10.17487/RFC7102, January
+              2014, <https://www.rfc-editor.org/info/rfc7102>.
 
    [RFC6997]  Goyal, M., Ed., Baccelli, E., Philipp, M., Brandt, A., and
               J. Martocci, "Reactive Discovery of Point-to-Point Routes
@@ -2957,18 +3017,19 @@ Internet-Draft               DAO Projection               September 2021
               RFC 8025, DOI 10.17487/RFC8025, November 2016,
               <https://www.rfc-editor.org/info/rfc8025>.
 
+
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 54]
+
+Internet-Draft               DAO Projection               September 2021
+
+
    [RFC8138]  Thubert, P., Ed., Bormann, C., Toutain, L., and R. Cragie,
               "IPv6 over Low-Power Wireless Personal Area Network
               (6LoWPAN) Routing Header", RFC 8138, DOI 10.17487/RFC8138,
               April 2017, <https://www.rfc-editor.org/info/rfc8138>.
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 53]
-
-Internet-Draft               DAO Projection               September 2021
-
 
    [RFC8505]  Thubert, P., Ed., Nordmark, E., Chakrabarti, S., and C.
               Perkins, "Registration Extensions for IPv6 over Low-Power
@@ -2986,11 +3047,21 @@ Internet-Draft               DAO Projection               September 2021
               RFC 8931, DOI 10.17487/RFC8931, November 2020,
               <https://www.rfc-editor.org/info/rfc8931>.
 
+   [RFC8994]  Eckert, T., Ed., Behringer, M., Ed., and S. Bjarnason, "An
+              Autonomic Control Plane (ACP)", RFC 8994,
+              DOI 10.17487/RFC8994, May 2021,
+              <https://www.rfc-editor.org/info/rfc8994>.
+
    [RFC9008]  Robles, M.I., Richardson, M., and P. Thubert, "Using RPI
               Option Type, Routing Header for Source Routes, and IPv6-
               in-IPv6 Encapsulation in the RPL Data Plane", RFC 9008,
               DOI 10.17487/RFC9008, April 2021,
               <https://www.rfc-editor.org/info/rfc9008>.
+
+   [RFC9010]  Thubert, P., Ed. and M. Richardson, "Routing for RPL
+              (Routing Protocol for Low-Power and Lossy Networks)
+              Leaves", RFC 9010, DOI 10.17487/RFC9010, April 2021,
+              <https://www.rfc-editor.org/info/rfc9010>.
 
    [I-D.irtf-panrg-path-properties]
               Enghardt, T. and C. Krähenbühl, "A Vocabulary of Path
@@ -3001,6 +3072,15 @@ Internet-Draft               DAO Projection               September 2021
 
    [PCE]      IETF, "Path Computation Element",
               <https://datatracker.ietf.org/doc/charter-ietf-pce/>.
+
+
+
+
+
+Thubert, et al.           Expires 10 March 2022                [Page 55]
+
+Internet-Draft               DAO Projection               September 2021
+
 
 Appendix A.  Applications
 
@@ -3013,18 +3093,6 @@ A.1.  Loose Source Routing
    from the node directly to the Root, and the Root typically builds a
    source routed path to a destination down the DODAG by recursively
    concatenating this information.
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 54]
-
-Internet-Draft               DAO Projection               September 2021
-
 
               ------+---------
                     |          Internet
@@ -3065,19 +3133,7 @@ Internet-Draft               DAO Projection               September 2021
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 10 March 2022                [Page 55]
+Thubert, et al.           Expires 10 March 2022                [Page 56]
 
 Internet-Draft               DAO Projection               September 2021
 
@@ -3133,7 +3189,7 @@ A.2.  Transversal Routes
 
 
 
-Thubert, et al.           Expires 10 March 2022                [Page 56]
+Thubert, et al.           Expires 10 March 2022                [Page 57]
 
 Internet-Draft               DAO Projection               September 2021
 
@@ -3189,7 +3245,7 @@ Internet-Draft               DAO Projection               September 2021
 
 
 
-Thubert, et al.           Expires 10 March 2022                [Page 57]
+Thubert, et al.           Expires 10 March 2022                [Page 58]
 
 Internet-Draft               DAO Projection               September 2021
 
@@ -3245,4 +3301,4 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 10 March 2022                [Page 58]
+Thubert, et al.           Expires 10 March 2022                [Page 59]
