@@ -1305,12 +1305,12 @@ docName="draft-ietf-roll-dao-projection-20" >
     </li>
     </ul>
     <t>
-      In the case of a loose source-routed path, there MUST be either a segment
+      In the case of a loose source-routed path, there MUST be a segment
       for the same Track to the loose next hop, on which case the packet is
-      forwarded to the next hop along that segment, a common neighbor with the
+      forwarded to the next hop along that segment, or a common neighbor with the
       loose next hop, on which case the packet is forwarded to that neighbor, or
       another Track to the loose next hop for which this node or a neighbor is
-      Ingress; in the latter case, another encapsulation takes place and the
+      Ingress; in the last case, another encapsulation takes place and the
       process possibly recurses; otherwise the packet is dropped.
      </t>
       <t>In case of a forwarding error along a Source Route path, the node that
