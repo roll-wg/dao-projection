@@ -207,7 +207,8 @@ docName="draft-ietf-roll-dao-projection-20" >
 	 </t>
 -->
     <t>
-    Projected Routes require resources in the routers; the amount of state that
+    Projected Routes require resources such as routing table space in the
+    routers and bandwidth on the links; the amount of state that
     is installed in each node must be computed to fit within the node's memory,
     and the amount of rerouted traffic must fit within the capabilities of
     the transmission links. The methods used to learn the node capabilities and
@@ -296,14 +297,15 @@ docName="draft-ietf-roll-dao-projection-20" >
 
 <t>
    RPL is primarily designed to minimize the control plane activity, that is the
-   relative amount of routing protocol exchanges vs. data traffic; this approach
+   relative amount of routing protocol exchanges vs. data traffic. This approach
    is beneficial for situations where the power and bandwidth are scarce (e.g.,
    an IoT LLN where RPL is typically used today), but also in situations of high
    relative mobility between the nodes in the network (aka swarming, e.g.,
    within a variable set of vehicles with a similar global motion, or a toon of
-   drones), and in situations where the traffic is mostly directed from or to a
-   central node, such as the control traffic between routers and a controller of
-   a Software Defined Networking (SDN) infrastructure.
+   drones).
+   It is also simple and efficient in situations where the traffic is mostly
+   directed from or to a central node, such as the control traffic between
+   routers and a controller of a Software Defined Networking (SDN) infrastructure or an Autonomic Control Plane (ACP)
 </t>
 
     <t>RPL may form multiple topologies called instances. Instances can be
@@ -312,7 +314,8 @@ docName="draft-ietf-roll-dao-projection-20" >
     ships in the night, unbeknownst of one another.
     The RPL Root is responsible to select the RPL Instance that is used
     to forward a packet coming from the Backbone into the RPL domain and set
-    the related RPL information in the packets. 6TiSCH uses RPL for its routing operations.
+    the related RPL information in the packets. 6TiSCH leverages RPL for its
+    distributed routing operations.
     </t>
 <t>
    To reduce the routing exchanges, RPL leverages an anisotropic Distance Vector
@@ -352,29 +355,48 @@ docName="draft-ietf-roll-dao-projection-20" >
    hop-by-hop.
 </t>
 <t>Either way, the stretched routing is not adapted to use cases that require
-   high availability and reliability, such as; e.g., listed in RAW use cases
-   <xref target= 'I-D.ietf-raw-use-cases'/>.
-   Extra stretch is counter-productive to both reliability and latency, and
-   there's a need to better control the use of the available diversity, be it in
-   time, frequency, path or technology.
+   high availability and reliability, such as those listed in the RAW use cases
+   document <xref target= 'I-D.ietf-raw-use-cases'/>. Extra stretch is
+   counter-productive to both reliability and latency, and high reliability and
+   availability require a better control of the use of the available diversity,
+   be it expressed in time, frequency, path, or technology, than is available
+   with <xref target='RFC6550'/>.
 </t>
 <t>To complement RPL and eliminate routing stretch, this specification
-   introduces an hybrid mode for RPL, that combines both Storing and Non-Storing
-   modes to build Tracks from Ingress to Egress inside the DODAG. A Track is
+   introduces an hybrid mode that combines Storing and Non-Storing operations
+   to build Tracks from Ingress to Egress inside the DODAG. A Track is
    typically a collection of parallel loose source routed sequences of nodes
-   from Ingress to Egress, forming so-called Track Legs, and joined with strict
-   Segments. The Legs are expressed in RPL Non-Storing Modes and require an
-   encapsulation to add a Source Route Header, whereas the Segments are
-   expressed in Storing Mode. A Serial Track comprises a single Leg and provides
-   only one path between Ingress and Egress. A P-Route signals either
-   a Track Leg or a Segment, using extended RPL DAO messages, and a Track is installed and maintained with a collection of the so-called P-DAOs.
+   from Ingress to Egress, forming so-called Track Legs, that are joined with
+   strict Segments of other nodes. The Legs are expressed in RPL Non-Storing
+   Modes and require an encapsulation to add a Source Route Header, whereas
+   the Segments are expressed in Storing Mode. A Serial Track comprises a
+   single Leg and provides only one path between Ingress and Egress. A P-Route
+   signals either a Track Leg or a Segment, using extended RPL DAO messages,
+   and a Track is installed and maintained with Projected DAO (P-DAO) messages.
 </t>
 
-<t>But to provide redundancy, a Track
-   must be more complex, either as a collection of Legs that may be parallel or
-   cross at certain points, or as a more generic DODAG that is rooted at the
-   Ingress Node. This specification introduces the Via Information Option to
-   signal a sequence of hops in a Leg or a Segment.
+<t> A complex Track forms a graph that provides a collection of potential paths
+    to provide redundancy for the packets, either as a collection of Legs that
+    may be parallel or cross at certain points, or as a more generic DODAG
+    that is rooted at the Ingress Node. This specification introduces the Via
+    Information Option (VIO) to signal a sequence of hops in a Leg or a
+    Segment in the P-DAO messages.
+</t><t>
+   DetNet and RAW leverage a Controller Plane Function (CPF) called the Path Computation Element (PCE) <xref target="RFC4655"/> that interacts with
+   RAW Nodes over a Southbound API to set up Tracks. With this specification,
+   the PCE interacts with the Root and the Root translates that signaling into
+   RPL signaling. The topology is derived from the DODAG that is already
+   available at the Root in Non-Storing Mode. This specification introduces the
+   Sibling Information Option in the P-DAO messages to enrich that topological
+   knowledge and enable computing more and better routing alternatives.
+</t><t>
+   DetNet Forwarding Nodes
+   only understand the simple 1-to-1 forwarding sublayer transport operation
+   along a segment whereas the more sophisticated Relay nodes can also provide
+   service sublayer functions such as Replication and Elimination. One possible
+   mapping with this specification is to signal the Relay Nodes as the hops of
+   a Leg and the forwarding Nodes as the hops in a Segment that join the Relay
+   nodes as illustrated in <xref target="FigLegs"/>.
 </t>
 <figure anchor="FigLegs">
           <name>Segments and Tracks</name>
@@ -421,38 +443,26 @@ Ingress                    Segment 5                 Egress - Tgt 2
 ]]></artwork>
 </figure>
 
-<t>
-   DetNet and RAW leverage a Controller Plane Function (CPF) called the Path Computation Element (PCE) <xref target="RFC4655"/> that interacts with
-   RAW Nodes over a Southbound API to set up Tracks. With this specification,
-   the PCE interacts with the Root and the Root translates that signaling into
-   RPL signaling. The southbound interface is out of scope. Forwarding Nodes
-   only understand the simple 1-to-1 forwarding sublayer transport operation
-   along a segment whereas the more sophisticated Relay nodes can also provide
-   service sublayer functions such as Replication and Elimination. One possible
-   mapping with this specification is to signal the Relay Nodes as the hops of
-   a Leg and the forwarding Nodes as the hops in a Segment that joins the Relays
-   as illustrated in <xref target="FigLegs"/>.
-</t>
+
 <t>
    Note that while this specification enables to build both Segments inside a
    Leg (aka East-West), such as Segment 2 above which is within Leg 1, and Inter-Leg Segments (aka North-South), such as Segment 2 above which joins
-   Leg 1 and Leg 2, this specification does not signal to the Ingress which
-   Inter-Leg Segments are available, so the use of North-South Segments and
-   associated PAREO functions will require additional specification. With this
-   work, the only possibility is to define overlapping Legs as illustrated in
-   <xref target="FigLegs"/>, with Leg 3 that is congruent with Leg 1 till node B
-   and congruent with Leg 2 from node H on, abstracting Segment 5 as an
-   East-West Segment.
+   Leg 1 and Leg 2, it does not signal to the Ingress which Inter-Leg Segments
+   are available, so the use of North-South Segments and associated PAREO
+   functions is curently limited. The only possibility available at this time
+   is to define overlapping Legs as illustrated in <xref target="FigLegs"/>,
+   with Leg 3 that is congruent with Leg 1 till node B and congruent with Leg
+   2 from node H on, abstracting Segment 5 as an East-West Segment.
  </t>
 </section>	<!-- Main Concepts -->
 
-<section anchor='new'><name>Other Terms</name>
+<section anchor='new'><name>New Terms</name>
     <t>
     <!-- Removed reference from routing and 6tisch here to keep it simple
 	 This specification introduces the following terminology:-->
     </t><dl spacing='compact'>
 
-    <dt>P-Route:</dt><dd>
+    <dt>Projected Route:</dt><dd>
 	A RPL P-Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE.</dd>
 
     <dt>Projected DAO:</dt><dd> A DAO message used to install a P-Route. </dd>
@@ -555,7 +565,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     This specification extends RPL <xref target='RFC6550'/> to enable the Root
     to install east-west routes inside a main DODAG that is operated as
-    non-storing mode. A Projected DAO (P-DAO) message (see <xref target='extP-DAO'/>) contains a new Via Information Option that can be seen as a multihop Transit Information Option and installs a strict or a loose sequence of hops to form respectively a track Segment or a Track Leg.
+    non-storing mode. A Projected DAO (P-DAO) message (see <xref target='extP-DAO'/>) contains a new Via Information Option that installs a strict
+    or a loose sequence of hops to form respectively a track Segment or a
+    Track Leg.
     A new P-DAO Request (PDR) message (see <xref target='P-DAOreq'/>)
     enables a Track Ingress to request the Track from the  Root. In the
     context of this specification, the installed route appears as a more
@@ -653,6 +665,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Options may be factorized; multiple RTOs may be present to signal a collection of children that can be reached via the parent(s) indicated in the TIO(s) that follows the RTOs.
    This specification generalizes the case of a parent that can be used to reach a child with that of a whole Track through which both children and siblings of the Track Egress are reachable.
    </t>
+    </section> <!-- Projected DAO -->
+    <section anchor='extVIO'><name>Via Information Option</name>
   <t>
    New CMOs called the Via Information Options (VIO) are introduced for use in
    P-DAO messages as a multihop alternative to the TIO, more in <xref target=
@@ -665,13 +679,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
    <t>
    A P-DAO contains one or more RTOs to indicate the target (destinations) that
-   can be reached via the Track, and at most one VIO that signals the sequence of nodes to get there, more in <xref target= 'P-DAO'/>.
+   can be reached via the P-Route, and at most one VIO that signals the sequence of nodes to be followed, more in <xref target= 'P-DAO'/>.
    In Non-Storing Mode, the Root sends the P-DAO to the Track Ingress where the source-routing state is stored, whereas in Storing Mode, the P-DAO is sent to the Track Egress and forwarded along the Segment in the reverse direction, installing a Storing Mode state to the Track Egress at each hop, see
    <xref target= 'nsP-DAO'/> and <xref target= 'sP-DAO'/> respectively.
    In both cases the Track Ingress is the owner of the Track, and it generates the P-DAO-ACK when the installation is successful.
    </t>
 
-    </section> <!-- Projected DAO -->
+    </section> <!-- VIA Information OptionO -->
     <section anchor='extSIO'><name>Sibling Information Option</name>
    <t>
    This specification adds another CMO called the Sibling Information Option (SIO) that is used by a RPL Aware Node (RAN) to advertise a selection of its candidate neighbors as siblings to the Root, more in <xref target='rplsib'/>.
@@ -1203,599 +1217,16 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </section> <!-- New RPL Control Messages and Options -->
 
-    <section anchor='P-DAO'><name>Projected Routes</name>
 
-    <t>
-    This draft adds a capability whereby the Root of a main RPL DODAG installs
-    a Track as a collection of P-Routes, using a Projected-DAO (P-DAO) messages
-    to maintain each individual route. The P-DAO signals a collection of
-    Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via
-    a sequence of routers indicated in a VIO.
-    A P-DAO message MUST contain at most one VIO, which is either a SM-VIO or an
-    NSM-VIO, and which MUST follow one or more RTOs. There can be at most one
-    such sequence of RTO(s) and a Via Information Option. A track is identified
-    by a tuple DODAGID, TrackID and each route within a Track is indexed by a
-    SegmentID.
-     </t> <t>
-    A P-DAO MUST be sent from the address of the Root that serves as DODAGID for the main DODAG.
-    A P-DAO that creates or updates a Track Leg MUST be sent to a GUA or a ULA
-    of the Ingress of the Leg; it must contain the full list of hops in the
-    Leg unless the Leg is being removed.
-    A P-DAO that creates a new Track Segment MUST be sent to a GUA or a ULA
-    of the Segment Egress and signal the full list of hops in Segment; a
-    P-DAO that updates (including deletes) a section of a Segment MUST be
-    sent to the first node after the modified Segment and signal the full
-    list of hops in the section starting at the node that immediately
-    precedes the modified section.
-     </t> <t>
-    If the 'K' Flag is present in the P-DAO, and unless the P-DAO does not
-    reach it, the Ingress of the Leg, Segment, or updated section of the
-    Segment, is the node that acknowledges the message, using a DAO-ACK that
-    MUST be sent back to the address that serves as DODAGID for the main DODAG.
-     </t> <t>
-    Like a classical DAO message, a P-DAO causes a change of state only if it is
-    "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
-    RPL specification</xref>; this is determined using
-    the Segment Sequence information from the VIO as opposed to the Path
-    Sequence from a TIO. Also, a Segment Lifetime of 0 in a VIO indicates that the P-Route associated to the Segment is to be removed.
-     </t> <t>
-    There are two kinds of operation for the P-Routes, the Storing Mode
-    and the Non-Storing Mode.
-    </t><ul spacing='normal'>
-     <li>
-    The Non-Storing Mode is discussed in <xref target='nsP-DAO'/>. A Non-Storing
-    Mode P-DAO carries an NSM-VIO with the loose list of Via Addresses that forms a
-    source-routed Segment to the Track Egress. The recipient of the P-DAO is the
-    Track Ingress; it MUST install a source-routed state to the Track Egress and reply to the Root directly using a DAO-ACK message if requested to.
-     </li>
-    <li>
-    The Storing Mode is discussed in <xref target='sP-DAO'/>.  A Storing Mode
-    P-DAO carries a SM-VIO with the strict list of Via Addresses from the ingress to the egress of the Segment in the data path order.
-    The routers listed in the Via Addresses, except the egress, MUST install a routing state to the Target(s) via the next Via Address in the SM-VIO.
-    In normal operations, the P-DAO is propagated along the chain of Via Routers
-    from the egress router of the path till the ingress one, which confirms the
-    installation to the Root with a DAO-ACK message.
-     </li>
-     </ul>
-    <t>In case of a forwarding error along a P-Route, an ICMPv6
-    <xref target='RFC4443'/> error message is
-    sent to the Root with a new Code "Error in P-Route"
-    (See <xref target='ICMPv6ErrPRoute'/>).
-    The Root can then repair by updating the broken Segment and/or Tracks, and
-    in the case of a broken Segment, remove the leftover sections of the segment
-    using SM-VIOs with a lifetime of 0 indicating the section ot one or more
-    nodes being removed (See <xref target='maintain'/>).
-       </t> <t>
-    The portion of the invoking packet that is sent back in the ICMP message
-    SHOULD record at least up to the RH if one is present, and this hop of the
-    RH SHOULD be consumed by this node so that the destination in
-    the IPv6 header is the next hop that this node could not reach.
-    if a 6LoWPAN Routing Header (6LoRH) <xref target='RFC8138'/> is used to
-    carry the IPv6 routing information in the outer header then that whole
-    6LoRH information SHOULD be present in the ICMP message.
-       </t> <t>
-    The sender and exact operation depend on the Mode and is described in
-    <xref target='nsP-DAO'/> and <xref target='sP-DAO'/> respectively.
-    </t>
-    <!--t>
-    Note: The Target of a route that is installed by a P-DAO is not necessarily
-    inside the DODAG, though how the Root and the optional PCE obtain the
-    additional topological information to compute other routes is out of scope
-    for this document.
-    </t-->
-
-      <section anchor='req'><name>Requesting a Track</name>
-
-      <t>
-      A Node is free to ask the Root for a new Track for which it will be Ingress at any time.
-      This is done with a PDR message, that indicates the desired TrackID and the duration for which the Track should be established. Upon a PDR, the Root MAY install the necessary Segments, in which case it answers with a PDR-ACK indicating the granted Track Lifetime.
-      All the Segments MUST be of a same mode, either Storing or Non-Storing.
-      All the Segments MUST be created with the same TrackID and the same DODAGID signaled in the P-DAO.
-      </t>
-      <t>
-      The Root is free to design the Track as it wishes, and to change the Segments overtime to serve the Track as needed, without notifying the
-      resquesting Node.
-      The Segment Lifetime in the P-DAO messages does not need to be aligned to
-      the Requested Lifetime in the PDR, or between P-DAO messages for different Segments. The Root may use shorter lifetimes for the Segments
-      and renew them faster than the Track is, or longer lifetimes in which case it will need to tear down the Segments if the Track is not renewed.
-      </t>
-      <t>
-      When the Track Lifetime that was returned in the PDR-ACK is close to elapse, the resquesting Node needs to resend a PDR using the TrackID in the PDR-ACK to extend the lifetime of the Track, else the Track will time out and the Root will tear down the whole structure.
-      </t>
-      <t>
-      If the Track fails and cannot be restored, the
-      Root notifies the resquesting Node asynchronously with a PDR-ACK
-      with a Track Lifetime of 0, indicating that the Track has failed, and
-      a PDR-ACK Status indicating the reason of the fault.
-      </t>
-      </section><!-- Requesting a Track  -->
-
-
-     <section anchor='trkid'><name>Identifying a Track</name>
-
-     <t>
-     RPL defines the concept of an Instance to signal an individual
-     routing topology but does not have a concept of an administrative
-     distance, which exists in certain proprietary implementations to sort out
-     conflicts between multiple sources of routing information within one
-     routing topology.
-     </t>
-     <t>
-     This draft leverages the RPL Instance model as follows:
-     </t><ul spacing='normal'>
-     <li>
-     <t>
-     The Root MAY use P-DAO messages to add better routes in the main (Global)
-     Instance in conformance with the routing objectives in that Instance.
-     To achieve this, the Root MAY install an Storing-Mode P-Route along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
-     </t>
-     <t>
-     When adding an Storing-Mode P-Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the P-DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT use the DODAGID field. A P-Route provides a longer match to the Target Address than the default route via the Root, so it is preferred.
-     </t>
-     <t>
-     Once the P-Route is installed, the intermediate nodes listed in the SM-VIO after first one (i.e. The ingress) can be elided from the RH in packets sent along the Segment signaled in the P-DAO. The resulting loose source routing header indicates (one of) the Target(s) as the next entry after the ingress.
-
-     </t>
-     </li>
-     <li>
-     <t>
-     The Root MAY also use P-DAO messages to install a specific (say, Traffic Engineered) path as a single Segment, a single Track Leg with multiple segments, or a more complex structure, to a particular endpoint that is the Track Egress. In that case, the Root MUST install a Local RPL Instance (see section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID is used as TrackID.
-          </t>
-     <t>
-     In that case, the TrackID MUST be unique for the Global Unique IPv6 Address (GUA) or Unique-Local Address (ULA) of the Track Ingress that serves as DODAGID for the Track. The Track Ingress owns the namespace of its TrackIDs, so it can pick any unused value to request a new Track with a PDR. The Root is aware of all the active Tracks, so it can also pick any unused value to form Tracks without a PDR. To avoid a collision of the Root and the Track Ingress picking the same value at the same time, it is RECOMMENDED that the Track Ingress starts allocating the ID value of the Local RPLInstanceID (see section 5.1. of <xref target='RFC6550'/>) used as TrackIDs with the value 0 incrementing, while the Root starts with 63 decrementing.
-
-     </t>
-     <t>
-     This way, a Track is uniquely identified by the tuple (DODAGID, TrackID) where the TrackID is always represented with the D flag set to 0.
-     </t>
-     <t>
-     The Track Egress Address and the TrackID MUST be signaled in the P-DAO message as shown in <xref target='p-dao-fmt'/>.
-     </t>
-
-     </li>
-
-
-     </ul>
-     </section><!-- Identifying a Track -->
-
-      <section anchor='inst'><name>Installing a Track</name>
-
-   <t>
-   A Storing-Mode P-DAO contains an SM-VIO that signals the strict sequence of consecutive nodes to form a segment between a segment ingress and a segment egress (both included). It installs a route of a higher precedence along the segment towards the Targets indicated in the Target Options. The segment is included in a DODAG indicated by the P-DAO Base Object, that may be the one formed by the main RPL Instance, or a Track associated with a local RPL Instance. A Track Egress is signaled as a Target in the P-DAO, and as the last entry is an SM-VIO of a last segment towards that Egress.
-   </t>
-   <t>
-   A Non-Storing-Mode P-DAO signals a strict or loose sequence of nodes between the Track Ingress (excluded) and a Track Egress (included). It installs a source-routed path of a higher precedence within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet.
-   In order to avoid fragmentation, e.g., using <xref target='RFC4944'/>,
-   <xref target='RFC8930'/>, and/or <xref target='RFC8931'/> in a 6LoWPAN LLN,
-   it is RECOMMENDED to allow an MTU that is larger than 1280 in the main
-   DODAG and allows for the additional headers while exposing only 1280 to the
-   6LoWPAN Nodes as indicated by section 4 of <xref target='RFC4944'/>.
-   </t>
-   <t>
-   The next entry in the sequence must be either a neighbor of the previous entry, or reachable as a Target via another P-Route, either Storing or Non-Storing.
-   If it is reachable over a Storing Mode P-Route, the next entry in the loose sequence is the Target of a previous segment and the ingress of a next segment; the segments are associated with the same Track, which avoids the need of an encapsulation.
-   Conversely, if it is reachable over a Non-Storing Mode P-Route, the  next loose source routed hop of the inner Track is a Target of a previous Track and the ingress of a next Track, which requires a de- and a re-encapsulation.
-  </t>
- <t>
-   A Serial Track can be installed by a single P-Routes that signals the sequence of consecutive nodes, either in Storing Mode as a single-Segment Track, or in Non-Storing Mode as a single-Leg Track. A a single Leg Track can be installed as a loose Non-Storing Mode P-Route, in which case the next loose entry must recursively be reached over a Serial Track.
-   This is why a Segment of a Track MUST be installed before the Leg(s) that use it.
-   </t>
-   <t>
-   A Complex Track can be installed as a collection of P-Routes with the same DODAGID and Track ID. The Ingress of a Non-Storing Mode P-Route is the owner and Root of the DODAGID. The Ingress of a Storing Mode P-Route must be either the owner of the DODAGID, or a hop of a Leg of the same Track. In the latter case, the Targets of the P-Route must include the next hop of the Leg if there is one, to ensure forwarding continuity.
-   </t>
-
-    <section anchor='sP-DAO'><name>Installing a Track Segment with a Storing-Mode P-Route</name>
-    <!--
-    Profile 1 extends RPL operation in a Non-Storing Mode network with
-    Storing-Mode P-Routes that install Segments along the main DODAG
-    and enable to loose source routing  between the Root and the targets.
-   -->
-
-    <t>
-    As illustrated in <xref target='sdf'/>, a P-DAO that carries a SM-VIO
-    enables the Root to install a stateful route towards a collection of Targets
-    along a Segment between a Track Ingress and a Track Egress using a
-    projected DAO Message.
-
-    </t>
-
-      <figure anchor='sdf'><name>Projecting a route</name>
-        <artwork>
-        ------+---------
-              |          Internet
-              |
-           +-----+
-           |     | Border Router
-           |     |  (RPL Root)
-           +-----+                      |     ^                   |
-              |                         | DAO | ACK               |
-        o    o   o    o                 |     |                   |
-    o o   o  o   o  o  o o   o          |  ^       | Projected    .
-   o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
-   o   o    o  o     o  o    o  o  o    | ^        |              .
-  o  o   o  o   o         o   o o       v | DAO    v              .
-  o          o   LLN   o   o     o                                |
-      o o   o        o     o              Loose Source Route Path |
-   o       o      o    o                 From Root To Destination v
-    </artwork>
-         </figure>
-
-
-    <t>
-     In order to install the relevant routing state along the Segment ,
-     the Root sends a unicast P-DAO message to the Track Egress router of the routing Segment that is being installed. The P-DAO message contains a SM-VIO with the direct sequence of Via Addresses. The SM-VIO follows
-     one or more RTOs indicating the Targets to which the Track leads. The SM-VIO contains a Segment Lifetime for which the state is to be maintained.
-     </t><t>
-     The Root sends the P-DAO directly to the egress node of the Segment.
-     In that P-DAO, the destination IP address matches the last Via Address in the SM-VIO. This is how the egress recognizes its role. In a similar fashion,
-     the ingress node recognizes its role as it matches first Via Address in the SM-VIO.
-     </t><t>
-     The Egress node of the Segment is the only node in the path that does not
-     install a route in response to the P-DAO; it is expected to be already able
-     to route to the Target(s) on its own.
-     If one of the Targets is not known, the node MUST answer to the Root
-     with a negative DAO-ACK listing the Target(s) that could not be located
-     (suggested status 10 to be confirmed by IANA).
-    </t><t>
-     If the egress node can reach all the Targets, then it forwards the P-DAO
-     with unchanged content to its loose predecessor in the Segment as indicated
-     in the list of Via Information options, and recursively the message is propagated
-     unchanged along the sequence of routers indicated in the P-DAO, but in the
-     reverse order, from egress to ingress.
-     </t><t>
-
-     The address of the predecessor to be used as destination of the propagated
-     DAO message is found in the Via Address the precedes the one
-     that contain the address of the propagating node, which is used as source
-     of the message.
-
-    </t><t>
-     Upon receiving a propagated DAO, all except the Egress Router MUST install a route towards the DAO Target(s) via their successor in the SM-VIO. The router MAY install additional routes towards the
-     VIA Addresses that are the SM-VIO after the next one, if any, but
-     in case of a conflict or a lack of resource, the route(s) to the Target(s) have precedence.
-     </t>
-     <t>
-     If a router cannot reach its predecessor in the SM-VIO,
-     the router MUST answer to the Root with a negative DAO-ACK
-     indicating the successor that is unreachable
-     (suggested status 11 to be confirmed by IANA).
-    </t>
-    <t>
-     The process continues till the P-DAO is propagated to ingress router of
-     the Segment, which answers with a DAO-ACK to the Root. The Root always
-     expects a DAO-ACK, either from the Track Ingress with a positive status
-     or from any node along the segment with a negative status. If the DAO-ACK
-     is not received, the Root may retry the DAO with the same TID, or tear
-     down the route.
-    </t>
-
-    </section>  <!-- Installing a Track Segment with a Storing-Mode P-Route -->
-
-
-
-
-
-    <section anchor='nsP-DAO'><name>Installing a Track Leg with a Non-Storing Mode P-Route</name>
-
-    <t>
-    As illustrated in <xref target='nsdf'/>, a P-DAO that carries an NSM-VIO
-    enables the Root to install a source-routed path from a Track Ingress towards
-    a Target along the main DODAG.
-    </t>
-
-          <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
-            <artwork>
-           ------+---------
-                 |          Internet
-                 |
-              +-----+
-              |     | Border Router
-              |     |  (RPL Root)
-              +-----+                    |  P  ^ ACK
-                 |        Track          | DAO |
-           o    o   o  o  Ingress X      V     |   X
-       o o   o  o   o  o     o   X   o             X Source
-      o  o o  o o    o   o  o    X  o  o           X Routed
-      o   o    °  o     o   o   o X     o          X Segment
-     o  o   o  o   o  o    o  o     X Track        X
-        o  o  o  o             o     Egress
-
-       o       o               o    o
-     o          o             o     o
-                                   destination
-
-                       LLN
-                       </artwork>
-          </figure>
-    <!--t>
-    A route indicated by an NSM-VIO may be loose, meaning that the node that owns
-    the next listed Via Address is not necessarily a neighbor. Without proper
-    loop avoidance mechanisms, the interaction of loose source routing and other
-    mechanisms may effectively cause loops.
-
-    </t-->
-    <t>
-
-      When forwarding a packet to a destination for which the router determines
-      that routing happens via a Track Target, the router inserts the Source
-      Routing Header in the packet with the final destination at the Track Egress.
-    </t>
-    <t>
-      In order to signal the Segment, the router encapsulates the
-      packet with an IP-in-IP header and a Routing Header as follows:
-    </t>
-    <ul>
-    <li>
-      In the uncompressed form the source of the packet is this router, the
-      destination is the first Via Address in the NSM-VIO, and the RH is a
-      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
-      list of the remaining Via Addresses terminating by the Track Egress.
-    </li>
-    <li>
-    <t>
-    The preferred alternate in a network where 6LoWPAN Header Compression
-    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
-    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
-    Dispatch"</xref> to compress the RPL artifacts as indicated in
-    <xref target='RFC8138'/>.
-    </t>
-    <t>
-    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the Track Egress.
-    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
-
-    </t>
-    </li>
-    </ul>
-    <t>
-      In the case of a loose source-routed path, there MUST be a segment
-      for the same Track to the loose next hop, on which case the packet is
-      forwarded to the next hop along that segment, or a common neighbor with the
-      loose next hop, on which case the packet is forwarded to that neighbor, or
-      another Track to the loose next hop for which this node or a neighbor is
-      Ingress; in the last case, another encapsulation takes place and the
-      process possibly recurses; otherwise the packet is dropped.
-     </t>
-      <t>In case of a forwarding error along a Source Route path, the node that
-      fails to forward SHOULD send an ICMP error with a code "Error in Source
-      Routing Header" back to the source of the packet, as described in section
-      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
-      encapsulating node SHOULD stop using the source route path for a period
-      of time and it SHOULD send an ICMP message with a Code "Error in
-      P-Route" to the Root. Failure to follow these steps may result
-      in packet loss and wasted resources along the source route path that
-      is broken.
-      </t>
-  </section> <!-- Installing a Track Segment with a Storing-Mode P-Route -->
-
-      </section><!-- Installing a Track  -->
-
-
-    <section anchor='teardown'><name>Tearing Down a P-Route</name>
-    <t>
-    A P-DAO with a lifetime of 0 is interpreted as a No-Path DAO and results in
-    cleaning up existing state as opposed to refreshing an existing one or
-    installing a new one. To tear down a Track, the Root must tear down all the
-    Track Segments and Legs that compose it one by one.
-    </t>
-    <t>
-    The Root cleans up a Leg of a Track in the Ingress node by sending an NSM-VIO
-    to the Ingress with the TrackID and the SegmentID of the Leg being removed,
-    a Segment Lifetime of 0 and a newer Segment Sequence. Since the state is
-    located only the Ingress Node, it is simply removed; the SRH-6LoRH and the
-    Via Addresses of the NSM-VIO are not needed and can be omitted.
-    </t>
-    <t>
-    The Root cleans up a section of a Segment by sending an SM-VIO to the last
-    node of the Segment, with the TrackID and the SegmentID of the Segment being
-    updated, a Segment Lifetime of 0 and a newer Segment Sequence.
-    The Via Addresses in the SM-VIO indicates the section of the Segment being
-    modified, from the first to the last node that is impacted. This can be the
-    whole Segment if it is totally removed, or a sequence of one or more nodes
-    that have been bypassed by a Segment update.
-    </t>
-    <t>
-    The No-Path P-DAO is forwarded normally along the reverse list, even if the
-    intermediate node does not find a Segment state to clean up. This results in
-    cleaning up the existing Segment state if any, as opposed to refreshing an
-    existing one or installing a new one.
-    </t>
-    </section><!-- Tearing Down a P-Route -->
-
-     <section anchor='maintain'><name> Maintaining a Track</name>
-     <t>
-     Repathing a Track Segment or Leg may cause jitter and packet misordering.
-     For critical flows that require timely and/or
-     in-order delivery, it might be necessary to deploy the PAREO functions
-     <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track..
-     This specification allows to use more than one Leg for a Track, and 1+N
-     packet redundancy.
-     </t>
-    <t>
-     This section provides the steps to ensure that no packet is lost due to
-     the operation itself.
-     This is ensured by installing the new section from its last node to the
-     first, so when an intermediate node installs a route along the new section,
-     all the downstream nodes in the section have already installed their own.
-     The disabled section is removed when the packets in-flight are forwarded
-     along the new section as well.
-     </t>
-    <section anchor='maintainS'><name>Maintaining a Track Segment</name>
-
-    <t>
-    To modify a section of a Segment between a first node and a second, downstream
-    node (which can be the Ingress and Egress), while conserving those nodes
-    in the Segment, the Root sends an SM-VIO to the second node indicating the
-    sequence of nodes in the new section of the Segment. The SM-VIO indicates
-    the TrackID and the SegmentID of the Segment being updated, and a newer
-    Segment Sequence. The P-DAO is propagated from the second to the first node
-    and on the way, it updates the state on the nodes that are common to the old
-    and the new section of the Segment and creates a state in the new nodes.
-    </t>
-    <t>
-    When the state is updated in an intermediate node, that node might still
-    receive packets that were in flight from the ingress to self over the
-    old section of the Segment. Since the remainder of the Segment is already
-    updated, the packets are forwarded along the new version of the Segment from
-    that node on.
-    </t>
-    <t>
-    After a reasonable time to enable the deprecated sections to empty, the root
-    tears down the remaining section(s) of the old segments are teared down as
-    described in <xref target='teardown'/>.
-    </t>
-    </section>  <!-- Maintaining a Track Segment -->
-
-    <section anchor='maintainT'><name>Maintaining a Track Leg</name>
-
-     <t>This specification allows to add Legs to a Track by sending
-     a Non-Storing Mode P-DAO to the Ingress associated to the same TrackID,
-     and a new Segment ID. If the Leg is loose, then the Segments that join
-     the hops must be created first.  It makes
-     sense to add a new Leg before removing one that is misbehaving, and switch
-     to the new Leg before removing the old.
-     </t>
-     <t>
-     It is also possible to update a Track Leg by sending a Non-Storing Mode
-     P-DAO to the Ingress with the same Segment ID, an incremented Segment
-     Sequence, and the new complete listy of hops in the NSM-VIO.
-     Updating a live Leg means changing one or more of the intermediate loose
-     hops, and involves laying out new Segments from and to the new loose hops
-     before the NSM-VIO for the new Leg is issued.
-     </t>
-    <t>
-    Packets that are in flight over the old version of the Track Leg still
-    follow the old source route path over the old Segments.
-    After a reasonable time to enable the deprecated Segments to empty, the root
-    tears down those Segments as described in <xref target='teardown'/>.
-    </t>
-    </section>  <!-- Maintaining a Track Leg -->
-
-    </section> <!-- Maintaining a Track -->
-
-
-
-     <section anchor='routing'><name>Forwarding Along a Track</name>
-
-     <t>
-     This draft leverages the RPL Forwarding model follows:
-     </t><ul spacing='normal'>
-     <li>
-      <t>
-     In the data packets, the Track DODAGID and the TrackID MUST be respectively signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI that MUST be placed in the outer chain of IPv6 Headers.
-      </t>
-     <t>
-     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
-      </t>
-     <t>
-     The D flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
-     in <xref target='routing'/>.
-
-     </t>
-
-
-     </li>
-     <li>
-      <t>
-      This draft conforms the principles of
-      <xref target='RFC9008'/> with regards to packet
-      forwarding and encapsulation along a Track.
-      </t>
-      <ul>
-      <li>
-      In that case,
-      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
-      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in  <xref target='RFC9008'/> apply.
-      </li><li>
-      If the Track Ingress is the originator of the packet and the Track Egress
-      is the destination of the packet, there is no need for an encapsulation.
-      </li><li>
-      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
-      </li>
-      </ul>
-     <t>
-     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
-     On the other hand, a Storing Mode Track must be strict and a packet that
-     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
-     </t>
-     <t>
-      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped.
-
-     </t>
-     <!-- TODO: add config parm to the local Instance -->
-     </li>
-     </ul>
-    <t>
-     All properties of a Track operations are inherited form the main RPL Instance
-     that is used to install the Track. For instance, the use of compression per
-     <xref target='RFC8138'/> is determined by whether it is used in the main
-     instance, e.g., by setting the "T" flag
-     <xref target='RFC9035'/> in the RPL
-     configuration option.
-   </t>
-    </section><!-- Forwarding along a Track -->
-
-    </section><!-- Projected DAO  -->
-
-    <section anchor='prof'><name>Profiles</name>
-    <t>
-    This document provides a set of tools that may or may not be needed by
-    an implementation depending on the type of application it serves.
-    This sections described profiles that can be implemented separately and
-    can be used to discriminate what an implementation can and cannot do.
-    </t>
-
-    <dl>
-    <dt> Profile 0 </dt><dd>
-      Profile 0 is the Legacy support of <xref target='RFC6550'/> Non-Storing
-      Mode. It provides the minimal common functionality that must be
-      implemented as a prerequisite to all the Track-supporting profiles.
-      The other Profiles extend Profile 0 with selected capabilities that this
-      specification introduces on top.
-    </dd>
-    <dt> Profile 1 (Storing-Mode P-Route Segments along the main DODAG) </dt><dd>
-      Profile 1 does not
-      create new paths; it combines Storing and Non-Storing Modes to balance the
-      size of the routing header in the packet and the amount of state in the
-      intermediate routers in a Non-Storing Mode RPL DODAG.
-    </dd>
-    <dt> Profile 2 (Non-Storing-Mode P-Route Segments along the main DODAG)</dt><dd>
-      Profile 2 extends Profile 0 with Strict Source-Routing Non-Storing-Mode P-Routes along the main DODAG. Profile 2 provides the same capability to compress the SRH in packets down the main DODAG as Profile 1, but it require an encapsulation, in order to insert an additional SRH between the loose source routing hops.
-    </dd>
-    <dt> Profile 3 </dt><dd>
-      Profile 3 and above
-      build Tracks that do not necessarily follow the main DODAG. In order to
-      form the best path possible, those Profiles require the support of
-      Sibling Information Option to inform the Root of additional possible hops.
-      Profile 3 extends Profile 1 with additional Storing-Mode P-Routes
-      that install segments that do not follow the main DODAG.
-      If the Segment Ingress (in the SM-VIO) is the same as the IPv6 Address of
-      the Track Ingress (in the projected DAO base Object), the P-DAO creates an
-      implicit Track between the Segment Ingress and the Segment Egress.
-      </dd>
-    <dt> Profile 4 </dt><dd>
-      Profile 4 extends Profile 2 with Strict Source-Routing Non-Storing-Mode P-Routes to form Tracks inside the main DODAG. A Track is formed
-      as one or more strict source source routed paths between the Root that
-      is the Track Ingress, and the Track Egress that is the last node
-
-    </dd>
-    <dt> Profile 5 </dt><dd>
-      Profile 5 Combines Profile 4 with Profile 1 and enables to loose source
-      routing between the Ingress and the Egress of the Track. As in Profile 1,
-      Storing-Mode P-Routes connect the dots in the loose source route.
-    </dd>
-    <dt> Profile 6 </dt><dd>
-      Profile 6 Combines Profile 4 with Profile 2 and also enables to loose
-      source routing between the Ingress and the Egress of the Track.
-
-    </dd>
-    </dl>
-
-
-    </section><!-- Profiles -->
 
     <section><name>Example Track Signaling</name>
 <t>
-The remainder of the section provides an example of how a Track can be signaled
+   Before diving into how Track Segment and Legs are installed and maintained,
+   this section provides examples of what how routing works with projected
+   routes through variations of a simple example. Say we want to build a path
+   from A to E, so A can route packets to either E or its neighbors F and G
+   along A, B, C, D and E as opposed to via the Root.
+
 </t>
 
 <figure anchor='reft'><name>Reference Track</name>
@@ -1808,7 +1239,10 @@ A ===&gt; B ===&gt; C ===&gt; D===&gt; E &lt;
 </figure>
 
 <t>
-A is Track ingress, E is track Egress. C is stitching point. F and G are E’s neighbors, “external” to the Track, and reachable from A over the Track A->E.
+In this example,
+A is Track ingress, E is track Egress. C is stitching point. F and G, which are
+E’s neighbors, are “external” targets to the Track, and become reachable from A
+over the Track A->E.
 </t>
 
 <t>
@@ -2941,6 +2375,597 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 </section><!-- Example Track Signaling -->
 
 
+    <section anchor='P-DAO'><name>Projected Route Operations</name>
+
+    <t>
+    This draft adds a capability whereby the Root of a main RPL DODAG installs
+    a Track as a collection of P-Routes, using a Projected-DAO (P-DAO) messages
+    to maintain each individual route. The P-DAO signals a collection of
+    Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via
+    a sequence of routers indicated in a VIO.
+    A P-DAO message MUST contain at most one VIO, which is either a SM-VIO or an
+    NSM-VIO, and which MUST follow one or more RTOs. There can be at most one
+    such sequence of RTO(s) and a Via Information Option. A track is identified
+    by a tuple DODAGID, TrackID and each route within a Track is indexed by a
+    SegmentID.
+     </t> <t>
+    A P-DAO MUST be sent from the address of the Root that serves as DODAGID for the main DODAG.
+    A P-DAO that creates or updates a Track Leg MUST be sent to a GUA or a ULA
+    of the Ingress of the Leg; it must contain the full list of hops in the
+    Leg unless the Leg is being removed.
+    A P-DAO that creates a new Track Segment MUST be sent to a GUA or a ULA
+    of the Segment Egress and signal the full list of hops in Segment; a
+    P-DAO that updates (including deletes) a section of a Segment MUST be
+    sent to the first node after the modified Segment and signal the full
+    list of hops in the section starting at the node that immediately
+    precedes the modified section.
+     </t> <t>
+    If the 'K' Flag is present in the P-DAO, and unless the P-DAO does not
+    reach it, the Ingress of the Leg, Segment, or updated section of the
+    Segment, is the node that acknowledges the message, using a DAO-ACK that
+    MUST be sent back to the address that serves as DODAGID for the main DODAG.
+     </t> <t>
+    Like a classical DAO message, a P-DAO causes a change of state only if it is
+    "new" per section 9.2.2. "Generation of DAO Messages" of the <xref target='RFC6550'>
+    RPL specification</xref>; this is determined using
+    the Segment Sequence information from the VIO as opposed to the Path
+    Sequence from a TIO. Also, a Segment Lifetime of 0 in a VIO indicates that the P-Route associated to the Segment is to be removed.
+     </t> <t>
+    There are two kinds of operation for the P-Routes, the Storing Mode
+    and the Non-Storing Mode.
+    </t><ul spacing='normal'>
+     <li>
+    The Non-Storing Mode is discussed in <xref target='nsP-DAO'/>. A Non-Storing
+    Mode P-DAO carries an NSM-VIO with the loose list of Via Addresses that forms a
+    source-routed Segment to the Track Egress. The recipient of the P-DAO is the
+    Track Ingress; it MUST install a source-routed state to the Track Egress and reply to the Root directly using a DAO-ACK message if requested to.
+     </li>
+    <li>
+    The Storing Mode is discussed in <xref target='sP-DAO'/>.  A Storing Mode
+    P-DAO carries a SM-VIO with the strict list of Via Addresses from the ingress to the egress of the Segment in the data path order.
+    The routers listed in the Via Addresses, except the egress, MUST install a routing state to the Target(s) via the next Via Address in the SM-VIO.
+    In normal operations, the P-DAO is propagated along the chain of Via Routers
+    from the egress router of the path till the ingress one, which confirms the
+    installation to the Root with a DAO-ACK message.
+     </li>
+     </ul>
+    <t>In case of a forwarding error along a P-Route, an ICMPv6
+    <xref target='RFC4443'/> error message is
+    sent to the Root with a new Code "Error in P-Route"
+    (See <xref target='ICMPv6ErrPRoute'/>).
+    The Root can then repair by updating the broken Segment and/or Tracks, and
+    in the case of a broken Segment, remove the leftover sections of the segment
+    using SM-VIOs with a lifetime of 0 indicating the section ot one or more
+    nodes being removed (See <xref target='maintain'/>).
+       </t> <t>
+    The portion of the invoking packet that is sent back in the ICMP message
+    SHOULD record at least up to the RH if one is present, and this hop of the
+    RH SHOULD be consumed by this node so that the destination in
+    the IPv6 header is the next hop that this node could not reach.
+    if a 6LoWPAN Routing Header (6LoRH) <xref target='RFC8138'/> is used to
+    carry the IPv6 routing information in the outer header then that whole
+    6LoRH information SHOULD be present in the ICMP message.
+       </t> <t>
+    The sender and exact operation depend on the Mode and is described in
+    <xref target='nsP-DAO'/> and <xref target='sP-DAO'/> respectively.
+    </t>
+    <!--t>
+    Note: The Target of a route that is installed by a P-DAO is not necessarily
+    inside the DODAG, though how the Root and the optional PCE obtain the
+    additional topological information to compute other routes is out of scope
+    for this document.
+    </t-->
+
+      <section anchor='req'><name>Requesting a Track</name>
+
+      <t>
+      A Node is free to ask the Root for a new Track for which it will be Ingress at any time.
+      This is done with a PDR message, that indicates the desired TrackID and the duration for which the Track should be established. Upon a PDR, the Root MAY install the necessary Segments, in which case it answers with a PDR-ACK indicating the granted Track Lifetime.
+      All the Segments MUST be of a same mode, either Storing or Non-Storing.
+      All the Segments MUST be created with the same TrackID and the same DODAGID signaled in the P-DAO.
+      </t>
+      <t>
+      The Root is free to design the Track as it wishes, and to change the Segments overtime to serve the Track as needed, without notifying the
+      resquesting Node.
+      The Segment Lifetime in the P-DAO messages does not need to be aligned to
+      the Requested Lifetime in the PDR, or between P-DAO messages for different Segments. The Root may use shorter lifetimes for the Segments
+      and renew them faster than the Track is, or longer lifetimes in which case it will need to tear down the Segments if the Track is not renewed.
+      </t>
+      <t>
+      When the Track Lifetime that was returned in the PDR-ACK is close to elapse, the resquesting Node needs to resend a PDR using the TrackID in the PDR-ACK to extend the lifetime of the Track, else the Track will time out and the Root will tear down the whole structure.
+      </t>
+      <t>
+      If the Track fails and cannot be restored, the
+      Root notifies the resquesting Node asynchronously with a PDR-ACK
+      with a Track Lifetime of 0, indicating that the Track has failed, and
+      a PDR-ACK Status indicating the reason of the fault.
+      </t>
+      </section><!-- Requesting a Track  -->
+
+
+     <section anchor='trkid'><name>Identifying a Track</name>
+
+     <t>
+     RPL defines the concept of an Instance to signal an individual
+     routing topology but does not have a concept of an administrative
+     distance, which exists in certain proprietary implementations to sort out
+     conflicts between multiple sources of routing information within one
+     routing topology.
+     </t>
+     <t>
+     This draft leverages the RPL Instance model as follows:
+     </t><ul spacing='normal'>
+     <li>
+     <t>
+     The Root MAY use P-DAO messages to add better routes in the main (Global)
+     Instance in conformance with the routing objectives in that Instance.
+     To achieve this, the Root MAY install an Storing-Mode P-Route along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
+     </t>
+     <t>
+     When adding an Storing-Mode P-Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the P-DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT use the DODAGID field. A P-Route provides a longer match to the Target Address than the default route via the Root, so it is preferred.
+     </t>
+     <t>
+     Once the P-Route is installed, the intermediate nodes listed in the SM-VIO after first one (i.e. The ingress) can be elided from the RH in packets sent along the Segment signaled in the P-DAO. The resulting loose source routing header indicates (one of) the Target(s) as the next entry after the ingress.
+
+     </t>
+     </li>
+     <li>
+     <t>
+     The Root MAY also use P-DAO messages to install a specific (say, Traffic Engineered) path as a single Segment, a single Track Leg with multiple segments, or a more complex structure, to a particular endpoint that is the Track Egress. In that case, the Root MUST install a Local RPL Instance (see section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID is used as TrackID.
+          </t>
+     <t>
+     In that case, the TrackID MUST be unique for the Global Unique IPv6 Address (GUA) or Unique-Local Address (ULA) of the Track Ingress that serves as DODAGID for the Track. The Track Ingress owns the namespace of its TrackIDs, so it can pick any unused value to request a new Track with a PDR. The Root is aware of all the active Tracks, so it can also pick any unused value to form Tracks without a PDR. To avoid a collision of the Root and the Track Ingress picking the same value at the same time, it is RECOMMENDED that the Track Ingress starts allocating the ID value of the Local RPLInstanceID (see section 5.1. of <xref target='RFC6550'/>) used as TrackIDs with the value 0 incrementing, while the Root starts with 63 decrementing.
+
+     </t>
+     <t>
+     This way, a Track is uniquely identified by the tuple (DODAGID, TrackID) where the TrackID is always represented with the D flag set to 0.
+     </t>
+     <t>
+     The Track Egress Address and the TrackID MUST be signaled in the P-DAO message as shown in <xref target='p-dao-fmt'/>.
+     </t>
+
+     </li>
+
+
+     </ul>
+     </section><!-- Identifying a Track -->
+
+      <section anchor='inst'><name>Installing a Track</name>
+
+   <t>
+   A Storing-Mode P-DAO contains an SM-VIO that signals the strict sequence of consecutive nodes to form a segment between a segment ingress and a segment egress (both included). It installs a route of a higher precedence along the segment towards the Targets indicated in the Target Options. The segment is included in a DODAG indicated by the P-DAO Base Object, that may be the one formed by the main RPL Instance, or a Track associated with a local RPL Instance. A Track Egress is signaled as a Target in the P-DAO, and as the last entry is an SM-VIO of a last segment towards that Egress.
+   </t>
+   <t>
+   A Non-Storing-Mode P-DAO signals a strict or loose sequence of nodes between the Track Ingress (excluded) and a Track Egress (included). It installs a source-routed path of a higher precedence within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet.
+   In order to avoid fragmentation, e.g., using <xref target='RFC4944'/>,
+   <xref target='RFC8930'/>, and/or <xref target='RFC8931'/> in a 6LoWPAN LLN,
+   it is RECOMMENDED to allow an MTU that is larger than 1280 in the main
+   DODAG and allows for the additional headers while exposing only 1280 to the
+   6LoWPAN Nodes as indicated by section 4 of <xref target='RFC4944'/>.
+   </t>
+   <t>
+   The next entry in the sequence must be either a neighbor of the previous entry, or reachable as a Target via another P-Route, either Storing or Non-Storing.
+   If it is reachable over a Storing Mode P-Route, the next entry in the loose sequence is the Target of a previous segment and the ingress of a next segment; the segments are associated with the same Track, which avoids the need of an encapsulation.
+   Conversely, if it is reachable over a Non-Storing Mode P-Route, the  next loose source routed hop of the inner Track is a Target of a previous Track and the ingress of a next Track, which requires a de- and a re-encapsulation.
+  </t>
+ <t>
+   A Serial Track can be installed by a single P-Routes that signals the sequence of consecutive nodes, either in Storing Mode as a single-Segment Track, or in Non-Storing Mode as a single-Leg Track. A a single Leg Track can be installed as a loose Non-Storing Mode P-Route, in which case the next loose entry must recursively be reached over a Serial Track.
+   This is why a Segment of a Track MUST be installed before the Leg(s) that use it.
+   </t>
+   <t>
+   A Complex Track can be installed as a collection of P-Routes with the same DODAGID and Track ID. The Ingress of a Non-Storing Mode P-Route is the owner and Root of the DODAGID. The Ingress of a Storing Mode P-Route must be either the owner of the DODAGID, or a hop of a Leg of the same Track. In the latter case, the Targets of the P-Route must include the next hop of the Leg if there is one, to ensure forwarding continuity.
+   </t>
+
+    <section anchor='sP-DAO'><name>Installing a Track Segment with a Storing-Mode P-Route</name>
+    <!--
+    Profile 1 extends RPL operation in a Non-Storing Mode network with
+    Storing-Mode P-Routes that install Segments along the main DODAG
+    and enable to loose source routing  between the Root and the targets.
+   -->
+
+    <t>
+    As illustrated in <xref target='sdf'/>, a P-DAO that carries a SM-VIO
+    enables the Root to install a stateful route towards a collection of Targets
+    along a Segment between a Track Ingress and a Track Egress using a
+    projected DAO Message.
+
+    </t>
+
+      <figure anchor='sdf'><name>Projecting a route</name>
+        <artwork>
+        ------+---------
+              |          Internet
+              |
+           +-----+
+           |     | Border Router
+           |     |  (RPL Root)
+           +-----+                      |     ^                   |
+              |                         | DAO | ACK               |
+        o    o   o    o                 |     |                   |
+    o o   o  o   o  o  o o   o          |  ^       | Projected    .
+   o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
+   o   o    o  o     o  o    o  o  o    | ^        |              .
+  o  o   o  o   o         o   o o       v | DAO    v              .
+  o          o   LLN   o   o     o                                |
+      o o   o        o     o              Loose Source Route Path |
+   o       o      o    o                 From Root To Destination v
+    </artwork>
+         </figure>
+
+
+    <t>
+     In order to install the relevant routing state along the Segment ,
+     the Root sends a unicast P-DAO message to the Track Egress router of the routing Segment that is being installed. The P-DAO message contains a SM-VIO with the direct sequence of Via Addresses. The SM-VIO follows
+     one or more RTOs indicating the Targets to which the Track leads. The SM-VIO contains a Segment Lifetime for which the state is to be maintained.
+     </t><t>
+     The Root sends the P-DAO directly to the egress node of the Segment.
+     In that P-DAO, the destination IP address matches the last Via Address in the SM-VIO. This is how the egress recognizes its role. In a similar fashion,
+     the ingress node recognizes its role as it matches first Via Address in the SM-VIO.
+     </t><t>
+     The Egress node of the Segment is the only node in the path that does not
+     install a route in response to the P-DAO; it is expected to be already able
+     to route to the Target(s) on its own.
+     If one of the Targets is not known, the node MUST answer to the Root
+     with a negative DAO-ACK listing the Target(s) that could not be located
+     (suggested status 10 to be confirmed by IANA).
+    </t><t>
+     If the egress node can reach all the Targets, then it forwards the P-DAO
+     with unchanged content to its loose predecessor in the Segment as indicated
+     in the list of Via Information options, and recursively the message is propagated
+     unchanged along the sequence of routers indicated in the P-DAO, but in the
+     reverse order, from egress to ingress.
+     </t><t>
+
+     The address of the predecessor to be used as destination of the propagated
+     DAO message is found in the Via Address the precedes the one
+     that contain the address of the propagating node, which is used as source
+     of the message.
+
+    </t><t>
+     Upon receiving a propagated DAO, all except the Egress Router MUST install a route towards the DAO Target(s) via their successor in the SM-VIO. The router MAY install additional routes towards the
+     VIA Addresses that are the SM-VIO after the next one, if any, but
+     in case of a conflict or a lack of resource, the route(s) to the Target(s) have precedence.
+     </t>
+     <t>
+     If a router cannot reach its predecessor in the SM-VIO,
+     the router MUST answer to the Root with a negative DAO-ACK
+     indicating the successor that is unreachable
+     (suggested status 11 to be confirmed by IANA).
+    </t>
+    <t>
+     The process continues till the P-DAO is propagated to ingress router of
+     the Segment, which answers with a DAO-ACK to the Root. The Root always
+     expects a DAO-ACK, either from the Track Ingress with a positive status
+     or from any node along the segment with a negative status. If the DAO-ACK
+     is not received, the Root may retry the DAO with the same TID, or tear
+     down the route.
+    </t>
+
+    </section>  <!-- Installing a Track Segment with a Storing-Mode P-Route -->
+
+
+
+
+
+    <section anchor='nsP-DAO'><name>Installing a Track Leg with a Non-Storing Mode P-Route</name>
+
+    <t>
+    As illustrated in <xref target='nsdf'/>, a P-DAO that carries an NSM-VIO
+    enables the Root to install a source-routed path from a Track Ingress towards
+    a Target along the main DODAG.
+    </t>
+
+          <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
+            <artwork>
+           ------+---------
+                 |          Internet
+                 |
+              +-----+
+              |     | Border Router
+              |     |  (RPL Root)
+              +-----+                    |  P  ^ ACK
+                 |        Track          | DAO |
+           o    o   o  o  Ingress X      V     |   X
+       o o   o  o   o  o     o   X   o             X Source
+      o  o o  o o    o   o  o    X  o  o           X Routed
+      o   o    °  o     o   o   o X     o          X Segment
+     o  o   o  o   o  o    o  o     X Track        X
+        o  o  o  o             o     Egress
+
+       o       o               o    o
+     o          o             o     o
+                                   destination
+
+                       LLN
+                       </artwork>
+          </figure>
+    <!--t>
+    A route indicated by an NSM-VIO may be loose, meaning that the node that owns
+    the next listed Via Address is not necessarily a neighbor. Without proper
+    loop avoidance mechanisms, the interaction of loose source routing and other
+    mechanisms may effectively cause loops.
+
+    </t-->
+    <t>
+
+      When forwarding a packet to a destination for which the router determines
+      that routing happens via a Track Target, the router inserts the Source
+      Routing Header in the packet with the final destination at the Track Egress.
+    </t>
+    <t>
+      In order to signal the Segment, the router encapsulates the
+      packet with an IP-in-IP header and a Routing Header as follows:
+    </t>
+    <ul>
+    <li>
+      In the uncompressed form the source of the packet is this router, the
+      destination is the first Via Address in the NSM-VIO, and the RH is a
+      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
+      list of the remaining Via Addresses terminating by the Track Egress.
+    </li>
+    <li>
+    <t>
+    The preferred alternate in a network where 6LoWPAN Header Compression
+    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
+    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
+    Dispatch"</xref> to compress the RPL artifacts as indicated in
+    <xref target='RFC8138'/>.
+    </t>
+    <t>
+    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the Track Egress.
+    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
+
+    </t>
+    </li>
+    </ul>
+    <t>
+      In the case of a loose source-routed path, there MUST be a segment
+      for the same Track to the loose next hop, on which case the packet is
+      forwarded to the next hop along that segment, or a common neighbor with the
+      loose next hop, on which case the packet is forwarded to that neighbor, or
+      another Track to the loose next hop for which this node or a neighbor is
+      Ingress; in the last case, another encapsulation takes place and the
+      process possibly recurses; otherwise the packet is dropped.
+     </t>
+      <t>In case of a forwarding error along a Source Route path, the node that
+      fails to forward SHOULD send an ICMP error with a code "Error in Source
+      Routing Header" back to the source of the packet, as described in section
+      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
+      encapsulating node SHOULD stop using the source route path for a period
+      of time and it SHOULD send an ICMP message with a Code "Error in
+      P-Route" to the Root. Failure to follow these steps may result
+      in packet loss and wasted resources along the source route path that
+      is broken.
+      </t>
+  </section> <!-- Installing a Track Segment with a Storing-Mode P-Route -->
+
+      </section><!-- Installing a Track  -->
+
+
+    <section anchor='teardown'><name>Tearing Down a P-Route</name>
+    <t>
+    A P-DAO with a lifetime of 0 is interpreted as a No-Path DAO and results in
+    cleaning up existing state as opposed to refreshing an existing one or
+    installing a new one. To tear down a Track, the Root must tear down all the
+    Track Segments and Legs that compose it one by one.
+    </t>
+    <t>
+    The Root cleans up a Leg of a Track in the Ingress node by sending an NSM-VIO
+    to the Ingress with the TrackID and the SegmentID of the Leg being removed,
+    a Segment Lifetime of 0 and a newer Segment Sequence. Since the state is
+    located only the Ingress Node, it is simply removed; the SRH-6LoRH and the
+    Via Addresses of the NSM-VIO are not needed and can be omitted.
+    </t>
+    <t>
+    The Root cleans up a section of a Segment by sending an SM-VIO to the last
+    node of the Segment, with the TrackID and the SegmentID of the Segment being
+    updated, a Segment Lifetime of 0 and a newer Segment Sequence.
+    The Via Addresses in the SM-VIO indicates the section of the Segment being
+    modified, from the first to the last node that is impacted. This can be the
+    whole Segment if it is totally removed, or a sequence of one or more nodes
+    that have been bypassed by a Segment update.
+    </t>
+    <t>
+    The No-Path P-DAO is forwarded normally along the reverse list, even if the
+    intermediate node does not find a Segment state to clean up. This results in
+    cleaning up the existing Segment state if any, as opposed to refreshing an
+    existing one or installing a new one.
+    </t>
+    </section><!-- Tearing Down a P-Route -->
+
+     <section anchor='maintain'><name> Maintaining a Track</name>
+     <t>
+     Repathing a Track Segment or Leg may cause jitter and packet misordering.
+     For critical flows that require timely and/or
+     in-order delivery, it might be necessary to deploy the PAREO functions
+     <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track..
+     This specification allows to use more than one Leg for a Track, and 1+N
+     packet redundancy.
+     </t>
+    <t>
+     This section provides the steps to ensure that no packet is lost due to
+     the operation itself.
+     This is ensured by installing the new section from its last node to the
+     first, so when an intermediate node installs a route along the new section,
+     all the downstream nodes in the section have already installed their own.
+     The disabled section is removed when the packets in-flight are forwarded
+     along the new section as well.
+     </t>
+    <section anchor='maintainS'><name>Maintaining a Track Segment</name>
+
+    <t>
+    To modify a section of a Segment between a first node and a second, downstream
+    node (which can be the Ingress and Egress), while conserving those nodes
+    in the Segment, the Root sends an SM-VIO to the second node indicating the
+    sequence of nodes in the new section of the Segment. The SM-VIO indicates
+    the TrackID and the SegmentID of the Segment being updated, and a newer
+    Segment Sequence. The P-DAO is propagated from the second to the first node
+    and on the way, it updates the state on the nodes that are common to the old
+    and the new section of the Segment and creates a state in the new nodes.
+    </t>
+    <t>
+    When the state is updated in an intermediate node, that node might still
+    receive packets that were in flight from the ingress to self over the
+    old section of the Segment. Since the remainder of the Segment is already
+    updated, the packets are forwarded along the new version of the Segment from
+    that node on.
+    </t>
+    <t>
+    After a reasonable time to enable the deprecated sections to empty, the root
+    tears down the remaining section(s) of the old segments are teared down as
+    described in <xref target='teardown'/>.
+    </t>
+    </section>  <!-- Maintaining a Track Segment -->
+
+    <section anchor='maintainT'><name>Maintaining a Track Leg</name>
+
+     <t>This specification allows to add Legs to a Track by sending
+     a Non-Storing Mode P-DAO to the Ingress associated to the same TrackID,
+     and a new Segment ID. If the Leg is loose, then the Segments that join
+     the hops must be created first.  It makes
+     sense to add a new Leg before removing one that is misbehaving, and switch
+     to the new Leg before removing the old.
+     </t>
+     <t>
+     It is also possible to update a Track Leg by sending a Non-Storing Mode
+     P-DAO to the Ingress with the same Segment ID, an incremented Segment
+     Sequence, and the new complete listy of hops in the NSM-VIO.
+     Updating a live Leg means changing one or more of the intermediate loose
+     hops, and involves laying out new Segments from and to the new loose hops
+     before the NSM-VIO for the new Leg is issued.
+     </t>
+    <t>
+    Packets that are in flight over the old version of the Track Leg still
+    follow the old source route path over the old Segments.
+    After a reasonable time to enable the deprecated Segments to empty, the root
+    tears down those Segments as described in <xref target='teardown'/>.
+    </t>
+    </section>  <!-- Maintaining a Track Leg -->
+
+    </section> <!-- Maintaining a Track -->
+
+
+
+     <section anchor='routing'><name>Forwarding Along a Track</name>
+
+     <t>
+     This draft leverages the RPL Forwarding model follows:
+     </t><ul spacing='normal'>
+     <li>
+      <t>
+     In the data packets, the Track DODAGID and the TrackID MUST be respectively signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI that MUST be placed in the outer chain of IPv6 Headers.
+      </t>
+     <t>
+     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
+      </t>
+     <t>
+     The D flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
+     in <xref target='routing'/>.
+
+     </t>
+
+
+     </li>
+     <li>
+      <t>
+      This draft conforms the principles of
+      <xref target='RFC9008'/> with regards to packet
+      forwarding and encapsulation along a Track.
+      </t>
+      <ul>
+      <li>
+      In that case,
+      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
+      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in  <xref target='RFC9008'/> apply.
+      </li><li>
+      If the Track Ingress is the originator of the packet and the Track Egress
+      is the destination of the packet, there is no need for an encapsulation.
+      </li><li>
+      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
+      </li>
+      </ul>
+     <t>
+     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
+     On the other hand, a Storing Mode Track must be strict and a packet that
+     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
+     </t>
+     <t>
+      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is ingress, otherwise the packet MUST be dropped.
+
+     </t>
+     <!-- TODO: add config parm to the local Instance -->
+     </li>
+     </ul>
+    <t>
+     All properties of a Track operations are inherited form the main RPL Instance
+     that is used to install the Track. For instance, the use of compression per
+     <xref target='RFC8138'/> is determined by whether it is used in the main
+     instance, e.g., by setting the "T" flag
+     <xref target='RFC9035'/> in the RPL
+     configuration option.
+   </t>
+    </section><!-- Forwarding along a Track -->
+
+    </section><!-- Projected Route Operations -->
+
+    <section anchor='prof'><name>Profiles</name>
+    <t>
+    This document provides a set of tools that may or may not be needed by
+    an implementation depending on the type of application it serves.
+    This sections described profiles that can be implemented separately and
+    can be used to discriminate what an implementation can and cannot do.
+    </t>
+
+    <dl>
+    <dt> Profile 0 </dt><dd>
+      Profile 0 is the Legacy support of <xref target='RFC6550'/> Non-Storing
+      Mode. It provides the minimal common functionality that must be
+      implemented as a prerequisite to all the Track-supporting profiles.
+      The other Profiles extend Profile 0 with selected capabilities that this
+      specification introduces on top.
+    </dd>
+    <dt> Profile 1 (Storing-Mode P-Route Segments along the main DODAG) </dt><dd>
+      Profile 1 does not
+      create new paths; it combines Storing and Non-Storing Modes to balance the
+      size of the routing header in the packet and the amount of state in the
+      intermediate routers in a Non-Storing Mode RPL DODAG.
+    </dd>
+    <dt> Profile 2 (Non-Storing-Mode P-Route Segments along the main DODAG)</dt><dd>
+      Profile 2 extends Profile 0 with Strict Source-Routing Non-Storing-Mode P-Routes along the main DODAG. Profile 2 provides the same capability to compress the SRH in packets down the main DODAG as Profile 1, but it require an encapsulation, in order to insert an additional SRH between the loose source routing hops.
+    </dd>
+    <dt> Profile 3 </dt><dd>
+      Profile 3 and above
+      build Tracks that do not necessarily follow the main DODAG. In order to
+      form the best path possible, those Profiles require the support of
+      Sibling Information Option to inform the Root of additional possible hops.
+      Profile 3 extends Profile 1 with additional Storing-Mode P-Routes
+      that install segments that do not follow the main DODAG.
+      If the Segment Ingress (in the SM-VIO) is the same as the IPv6 Address of
+      the Track Ingress (in the projected DAO base Object), the P-DAO creates an
+      implicit Track between the Segment Ingress and the Segment Egress.
+      </dd>
+    <dt> Profile 4 </dt><dd>
+      Profile 4 extends Profile 2 with Strict Source-Routing Non-Storing-Mode P-Routes to form Tracks inside the main DODAG. A Track is formed
+      as one or more strict source source routed paths between the Root that
+      is the Track Ingress, and the Track Egress that is the last node
+
+    </dd>
+    <dt> Profile 5 </dt><dd>
+      Profile 5 Combines Profile 4 with Profile 1 and enables to loose source
+      routing between the Ingress and the Egress of the Track. As in Profile 1,
+      Storing-Mode P-Routes connect the dots in the loose source route.
+    </dd>
+    <dt> Profile 6 </dt><dd>
+      Profile 6 Combines Profile 4 with Profile 2 and also enables to loose
+      source routing between the Ingress and the Egress of the Track.
+
+    </dd>
+    </dl>
+
+
+    </section><!-- Profiles -->
+
+
 
     <section><name>Storing-Mode Main DODAG</name>
 
@@ -2966,8 +2991,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    </ul>
 
 <t>On the other hand, since RPL is a Layer-3 protocol, its applicability
-   extends beyond LLNs, e.g., on wired networks, as used by the ANIMA Autonomic
-   Control Plane (ACP) <xref target='RFC8994'/>. In a powered and wired network,
+   extends beyond LLNs, e.g., on wired networks, as used by the ANIMA ACP <xref target='RFC8994'/>. In a powered and wired network,
    where the memory to store the needed routes is easily available, Storing
    Mode usually makes more sense than Non-Storing as i reduces the route stretch
    and lowers the load on the Root. In that case, the control path between the
