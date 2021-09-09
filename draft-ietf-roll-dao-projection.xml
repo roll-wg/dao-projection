@@ -1967,8 +1967,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
     This specification introduces a new 6LoRH, the P-RPI-6LoRH, with a type of
     7 (suggested), to be used as both Elective and Critical 6LoRH Types,
     see <xref target='elec6lorhtbl'/> and <xref target='crit6lorhtbl'/>
-    respectively.
-    The P-RPI-6LoRH header is usually a a Critical 6LoWPAN Routing Header,  but it can be elective as well if an SRH-6LoRH is present and controls the routing decision.
+    respectively. The new 6LoRH MUST be used as a Critical 6LoRH, unless an SRH-6LoRH is present and controls the routing decision, in which case it
+    MAY be made Elective.
     </t>
     <t>
     The P-RPI-6LoRH is designed to compress the RPI along RPL P-Routes.
