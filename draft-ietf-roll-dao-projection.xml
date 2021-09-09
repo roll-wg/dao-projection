@@ -618,10 +618,10 @@ In a general manner the desired outcome is as follows:
 </ul>
 
 <t>
-Loose sequences of hops must be expressed in Non-Storing Mode, so P-DAO 3
-contains a NSM-VIO. Since the Root of the Track is always its Ingress and the
-Root address is signaled in the DAO base object, it is not needed in the via
-list in NSM-VIO, so the via list starts at the first loose hop.
+   Loose sequences of hops must be expressed in Non-Storing Mode, so P-DAO 3
+   contains a NSM-VIO. Since the Root of the Track is always its Ingress and the
+   Root address is signaled in the DAO base object, it is not needed in the via
+   list in NSM-VIO, so the via list starts at the first loose hop.
 </t>
 
 
@@ -1741,7 +1741,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 </section ><!-- Context and Goal -->
 
-  <section anchor='ext'><name>RFC Extensions</name>
+  <section anchor='ext'><name>Extending existing RFCs </name>
 
 
     <section anchor='ext6550'><name>Extending RFC 6550</name>
@@ -1883,13 +1883,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    Node and a Track Egress.
    The RAN makes its request by sending a new P-DAO Request (PDR) Message to
    the Root. The Root confirms with a new PDR-ACK message back to the requester
-   RAN, see <xref target='P-DAOreq'/> for more. A positive PDR-ACK indicates that
-   the Track was built and that the Roots commits to maintain the Track for the
-   negotiated lifetime.
-   In the case of a complex Track, each Segment is maintained independently and
-   asynchronously by the Root, with its own lifetime that may be shorter, the
-   same, or longer than that of the Track. The Root may use an asynchronous
-   PDR-ACK with an negative status to indicate that the Track was terminated before its time.
+   RAN, see <xref target='P-DAOreq'/> for more.
    </t>
     </section><!-- P-DAO Request -->
 
@@ -1897,13 +1891,20 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
          <t>
      Sending a Packet within a RPL Local Instance requires the presence of the abstract RPL Packet Information (RPI) described in section 11.2. of <xref target='RFC6550'/> in the outer IPv6 Header chain (see <xref target='RFC9008'/>). The RPI carries a local RPLInstanceID which, in association with either the source or the destination address in the IPv6 Header, indicates the RPL Instance that the packet follows.
 
-    </t>    <t>
+    </t>
+    <t>
     This specification extends <xref target='RFC6550'/> to create a new flag that signals that a packet is forwarded along a P-Route.
 
     </t>
     <dl>
-       <dt> Projected-Route 'P':</dt><dd> 1-bit flag. It is set to 1 if this packet is sent over a P-Route and set to 0 otherwise.</dd>
+       <dt> Projected-Route 'P':</dt><dd> 1-bit flag. It is set to 1 in the RPI
+       that is added in the encapsulation when a packet is sent over a Track.
+       It is set to 0 when a packet is forwarded along the main Track,
+       including when the packet follows a Segment that joins loose hops
+       of the main DODAG. The flag is not mutable en-route.</dd>
     </dl>
+    <t>The encoding of the 'P' flag in native format is shown in <xref target='ext6553'/> while the compressed format is indicated in <xref target='ext8138'/>.
+    </t>
     </section> <!-- Extending the RPI -->
   </section> <!-- Extending RFC 6550 -->
 
@@ -1944,10 +1945,11 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
               </dd>
               <dt> Projected-Route 'P':</dt><dd> 1-bit flag as defined in <xref target='extRPI'/>.
               </dd>
-              <dt>RPLInstanceID:</dt><dd> See <xref target='RFC6553'/>. Indicates the TrackId if the 'P' flag is set.
+              <dt>RPLInstanceID:</dt><dd> See <xref target='RFC6553'/>. Indicates the TrackId if the 'P' flag is set, as discussed in <xref target='extP-DAO'/>.
               </dd>
-              <dt>SenderRank:</dt><dd> See <xref target='RFC6553'/>. This field MUST be set to 0 by the sender and ignored by the receiver if the
-           'P'flag is set.
+              <dt>SenderRank:</dt><dd> See <xref target='RFC6553'/>. This
+              field MUST be set to 0 by the sender and ignored by the receiver
+              if the 'P'flag is set.
               </dd>
 
             </dl>
@@ -1962,7 +1964,10 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
     <t>Section 6.3 of <xref target='RFC8138'/> presents the formats of the
      6LoWPAN Routing Header of type 5 (RPI-6LoRH) that compresses the RPI for normal RPL operation. The format of the RPI-6LoRH is not suited for P-Routes since the O,R,F flags are not used and the Rank is unknown and ignored.
     </t><t>
-    This specification introduces a new 6LoRH, the P-RPI-6LoRH, with a type of 7.
+    This specification introduces a new 6LoRH, the P-RPI-6LoRH, with a type of
+    7 (suggested), to be used as both Elective and Critical 6LoRH Types,
+    see <xref target='elec6lorhtbl'/> and <xref target='crit6lorhtbl'/>
+    respectively.
     The P-RPI-6LoRH header is usually a a Critical 6LoWPAN Routing Header,  but it can be elective as well if an SRH-6LoRH is present and controls the routing decision.
     </t>
     <t>
@@ -1989,17 +1994,31 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
     </section> <!-- Extending RFC 8138 -->
 
-  </section><!-- RFC Extensions -->
+  </section><!-- Extending existing RFCs  -->
     <section anchor='rplccmo'><name>New RPL Control Messages and Options</name>
 
     <section anchor='P-DAOreq'><name>New P-DAO Request Control Message</name>
 
                <t>
-    The P-DAO Request (PDR) message is sent by a Node in the main DODAG to the Root.
-    It is a request to establish or refresh a Track where this node is Track Ingress.
-    The source IPv6 address of the PDR signals the Track Ingress of the requested Track,
-    and the TrackID is indicated in the message itself.
-    One and only one RPL Target Option MUST be present in the message.
+   The P-DAO Request (PDR) message is sent by a Node in the main DODAG to the
+   Root. It is a request to establish or refresh a Track where this node is
+   Track Ingress, and signals whether an acknowledgment called PDR-ACK is
+   requested or not.  A positive PDR-ACK indicates that the Track was built
+   and that the Roots commits to maintain the Track for the negotiated lifetime.
+   </t>
+   <t> The Root may use an asynchronous
+   PDR-ACK with an negative status to indicate that the Track was terminated
+   before its time. A status of "Transient Failure" (see <xref target=
+   "iana-stats-rej"/>) is an indication that the PDR may be retried after a
+   reasonable time that depends on the deployment. Other negative status
+   values indicate a permanent error; the tentative must be abandoned until
+   a corrective action is taken at the application layer or through network
+   management.
+   </t>
+   <t>
+   The source IPv6 address of the PDR signals the Track Ingress of the
+   requested Track, and the TrackID is indicated in the message itself.
+   One and only one RPL Target Option MUST be present in the message.
     The RTO signals the Track Egress, more in <xref target='req'/>.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
@@ -2118,7 +2137,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
     <dl  spacing='compact'>
 	<dt>E:</dt><dd> 1-bit flag. Set to indicate a rejection. When not set, the value of 0
-    indicates Success/Unqualified acceptance and other values indicate "not an
+    indicates Success/Unqualified Acceptance and other values indicate "not an
     outright rejection".</dd>
 	<dt>R:</dt><dd> 1-bit flag. Reserved, MUST be set to 0 by the sender and
     ignored by the receiver.</dd>
@@ -2277,7 +2296,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
               with a rejection status of "Out of Resources" as opposed to
               forwarding the DAO to its predecessor in the list. Other errors
               that prevent the installation of the route are reported with a
-              status of "unqualified rejection".</t>
+              status of "Unqualified Rejection".</t>
               <t>
               In the case of an NSM-VIO, the Ingress router that processes a new
               NSM-VIO MUST create a tunnel associated with the Track, and
@@ -2587,6 +2606,9 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    </t>
    <t>
    A Complex Track can be installed as a collection of P-Routes with the same DODAGID and Track ID. The Ingress of a Non-Storing Mode P-Route is the owner and Root of the DODAGID. The Ingress of a Storing Mode P-Route must be either the owner of the DODAGID, or a hop of a Leg of the same Track. In the latter case, the Targets of the P-Route must include the next hop of the Leg if there is one, to ensure forwarding continuity.
+   In the case of a Complex Track, each Segment is maintained independently and
+   asynchronously by the Root, with its own lifetime that may be shorter, the
+   same, or longer than that of the Track.
    </t>
 
     <section anchor='sP-DAO'><name>Installing a Track Segment with a Storing-Mode P-Route</name>
@@ -3426,7 +3448,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    <thead>
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
-      <tr><td>0</td><td>Unqualified acceptance</td><td>This document</td></tr>
+      <tr><td>0</td><td>Unqualified Acceptance</td><td>This document</td></tr>
    </tbody>
 
    </table>
@@ -3452,7 +3474,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    <thead>
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
-      <tr><td>0</td><td>Unqualified rejection</td><td>This document</td></tr>
+      <tr><td>0</td><td>Unqualified Rejection</td><td>This document</td></tr>
+      <tr><td>1</td><td>Transient Failure</td><td>This document</td></tr>
    </tbody>
 
    </table>
