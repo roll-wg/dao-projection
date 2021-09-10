@@ -96,35 +96,36 @@ docName="draft-ietf-roll-dao-projection-20" >
 	<section anchor='introduction'><name>Introduction</name>
 
 	   <t> RPL, the <xref target='RFC6550'>
-	 "Routing Protocol for Low Power and Lossy Networks"</xref> (LLNs),
-    is an anisotropic Distance Vector protocol that is well suited
-    for application in a variety of low energy Internet of Things (IoT)
-    networks where stretched P2P paths are acceptable vs. the signaling
-    and state overhead involved in maintaining shortest paths across.
-    RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
-    the Root often acts as the Border Router to connect the RPL domain to the
-    IP backbone and routes along that graph up, towards the Root, and down
-    towards the nodes.
+   "Routing Protocol for Low Power and Lossy Networks"</xref> (LLNs),
+   is an anisotropic Distance Vector protocol that is well-suited
+   for application in a variety of low energy Internet of Things (IoT)
+   networks where stretched P2P paths are acceptable vs. the signaling
+   and state overhead involved in maintaining shortest paths across.
     </t>
-
-    <t>
-    The <xref target='RFC9030'> "6TiSCH Architecture"</xref> leverages a centralized model similar to that of <xref target='RFC8655'>
-    "Deterministic Networking Architecture"</xref>,
-    whereby the device resources and capabilities are exposed to an external
-    controller which installs routing states into the network based on its own
-    objective functions that reside in that external entity.  With DetNet and
-    6TiSCH, the component of the controller that is responsible of computing
-    routes is called a Path Computation Element (<xref target='PCE'/>), and the objective functions are described in <xref target='RFC4655'/> and encoded in the PCE Protocol (PCEP) by <xref target='RFC5551'/>.
+<t>
+   RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
+   the Root often acts as the Border Router to connect the RPL domain to the
+   IP backbone and routes along that graph up, towards the Root, and down
+   towards the nodes.
     </t>
-    <t>
-    Based on heuristics of usage, path length, and knowledge of device capacity
-    and available resources such as battery levels and reservable buffers, the
-    PCE with a global visibility on the system can compute direct Peer to Peer
-    (P2P) routes that are optimized for the needs expressed by an objective function.
-    This document specifies protocol extensions to <xref target='RFC6550'/>
-    that enable the Root of a main DODAG to install (project) centrally-computed
-    routes inside the DODAG on behalf of a PCE.
+<t>
+   With this specification, a Path Computation Element <xref target='PCE'/> in
+   an external controller interacts with the RPL Root to compute centrally
+   shorter Peer to Peer (P2P) paths within the RPL DODAG.
+   The topological information that is passed to the PCE is derived from the
+   DODAG that is already available at the Root in RPL Non-Storing Mode. This
+   specification introduces protocol extensions that enrich the topological
+   information that is available at the Root and passed to the PCE.
     </t>
+<t>
+   Based on usage, path length, and knowledge of available resources such as
+   battery levels and reservable buffers in the nodes, the PCE with a global
+   visibility on the system can optimize the computed routes for the
+   application needs, including the capability to provide path redundancy.
+   This specification also introduces protocol extensions that enable the
+   Root to translates the computed paths into RPL and install them as
+   Projected Routes inside the DODAG on behalf of a PCE.
+   </t>
     </section>
 
 	<!-- **************************************************************** -->
@@ -324,12 +325,12 @@ docName="draft-ietf-roll-dao-projection-20" >
    latency as it introduces additional delay and chances of loss. As a result,
    <xref target='RFC6550'/> is not a good fit for the use cases listed in the
    RAW use cases document <xref target= 'I-D.ietf-raw-use-cases'/>, which demand
-   high availability and reliability, which in turn require both minimal and
-   diverse paths.
+   high availability and reliability, and as a consequence require both short
+   and diverse paths.
 </t>
 
 </section>	<!-- end section "RPL Applicability" -->
-<section anchor='onrplroute'><name>RPL Routing and Modes</name>
+<section anchor='onrplroute'><name>RPL Routing Modes</name>
 <t>
    RPL first forms a default route in each node towards the a Root, and those
    routes together coalesce as a Directed Acyclic Graph upwards.
@@ -357,17 +358,9 @@ docName="draft-ietf-roll-dao-projection-20" >
    connectivity is restored more slowly, time for the DV operation to operate
    hop-by-hop.
 </t>
-   <t>
-    This specification expects that the main RPL Instance is operated in RPL
-    Non-Storing Mode to sustain the exchanges with the Root. Based on its
-    comprehensive knowledge of the parent-child relationship, the Root can form
-    an abstracted view of the whole DODAG topology. This document adds the
-    capability for nodes to advertise additional sibling information to
-    complement the topological awareness of the Root.
-    </t>
 
     <t>
-    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build project routes onto the nodes where they should be installed. This specification uses the term Projected Route (P-Route) to refer to those routes.
+    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build and project routes onto the nodes where they should be installed. This specification uses the term Projected Route (P-Route) to refer to those routes.
     </t>
     <t>
     A P-Route may be installed in either Storing and Non-Storing Mode,
@@ -378,11 +371,11 @@ docName="draft-ietf-roll-dao-projection-20" >
     P-Routes can also be combined with other P-Routes to form a more complex forwarding graph called a Track.
     </t>
 
-</section>	<!-- end section "RPL Routing and Modes" -->
+</section>	<!-- end section "RPL Routing Modes" -->
 
 
 
-<section anchor='tracks'><name>On tracks</name>
+<section anchor='tracks'><name>On Tracks</name>
 
 <t> A Track is
    typically a collection of parallel loose source routed sequences of nodes
@@ -404,14 +397,6 @@ docName="draft-ietf-roll-dao-projection-20" >
 </t>
 
 
-   <t> A Track may be set up to reduce the load around the Root, or to
-   enable urgent traffic to flow more directly. Note that this specification
-   does not provide policies to decide which flows go in which Track.
-   In a Non-Storing Mode RPL Instance, the main DODAG provides a default route
-    via the Root, and the Tracks provide more specific routes to the Track
-    targets.
-   </t>
-
     <t>
     The concept of a Track was introduced in the <xref target='RFC9030'>
     "6TiSCH Architecture"</xref>, as a collection of potential paths that
@@ -428,7 +413,9 @@ docName="draft-ietf-roll-dao-projection-20" >
    When building a Track with RPL, the Track is assimilated with the DODAG
    formed for a Local RPL Instance.
    The local RPLInstanceID of the Track is used as the TrackID, more in
-   <xref target='trkid'/>. A P-DAO message for a Track signals the TrackID in
+   <xref target='trkid'/>. This does not change the semantics and format of the
+   RPLInstanceID that is used as TrackID.
+   A P-DAO message for a Track signals the TrackID in
    the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field
    of the Projected DAO Base Object; that field is elided in the case of the
    main RPL Instance. The Track Ingress is the Root of the Track, as shown in
@@ -438,160 +425,9 @@ docName="draft-ietf-roll-dao-projection-20" >
 </section><!-- On tracks -->
 
 
-<section anchor='inandout'><name>Scope and Expectations</name>
-
-    <t>
-    The <xref target='I-D.ietf-raw-architecture'>"Reliable and
-    Available Wireless (RAW) Architecture/Framework"</xref> extends the
-    definition of Track, as being composed of East-West directional segments
-    and north-south bidirectional segments. It also
-    defines the Path Selection Engine (PSE) that adapts the use of the path
-    redundancy within a Track to defeat the diverse causes of packet loss.
-    </t>
-    <t>
-    This specification prepares for RAW by setting up the Tracks, but does not
-    provide Ingress policy that selects which packets are routed through which
-    Track, and how the PSE may use the path redundancy within the Track.
-    By default, the use of the redundancy is limited to load balancing, and
-    all the segments are East-West unidirectional only.
-     </t>
 
 
-<!--
-    <t>
-    The PSE is a dataplane extension of the PCE; it controls the forwarding
-    operation of the packets within a Track, using Packet ARQ, Replication,
-    Elimination, and Overhearing (PAREO) functions over the Track segments, to
-    provide a dynamic balance between the reliability and availability
-    requirements of the flows and the need to conserve energy and spectrum.
-    </t>
-    <t>
-    The time scale at which the PCE (re)computes the Track can be long,
-    using long-term statistical metrics to perform global optimizations at the
-    scale of the whole network. Conversely, the PSE makes forwarding decisions
-    at the time scale of one or a small collection of packets, based on a
-    knowledge that is limited in scope to the Track itself, so it can be
-    refreshed at a fast pace.
-	 </t>
--->
-    <t>
-    Projected Routes require resources such as routing table space in the
-    routers and bandwidth on the links; the amount of state that
-    is installed in each node must be computed to fit within the node's memory,
-    and the amount of rerouted traffic must fit within the capabilities of
-    the transmission links. The methods used to learn the node capabilities and
-    the resources that are available in the devices and in the network are out
-    of scope for this document. The method to report the LLN link capacity and
-    reliability statistics are also out of scope. They may be fetched from the
-    nodes through network management functions or other forms of telemetry such
-    as OAM.
-    </t>
-    <t>
-    This specification expects a single PCE with a full view of the network. Distributing the PCE function for a large network is out of scope.
-    This specification uses the RPL Root as a proxy to the PCE. The PCE may be
-    collocated with the Root, or may reside in an external Controller.
-    In that case, the protocol between the Root and the PCE is out of scope
-    and abstracted by / mapped to RPL inside the DODAG; one possibility is for
-    the Root to transmit the RPL DAOs with the SIOs that detail the parent/child
-    and sibling information.
-    </t>
-    <t>
-    The algorithm to compute the paths and the protocol used by an external PCE
-    and the metrics and link statistics involved in the computation are also out
-    of scope. The effectiveness of the route computation by the PCE depends on
-    the quality of the metrics that are reported from the RPL network.
-    Which metrics are used and how they are reported is out of scope, but the
-    expectation is that they are mostly of long-term, statistical nature, and
-    provide visibility on link throughput, latency, stability and availability
-    over relatively long periods, more in <xref target='I-D.ietf-raw-architecture'/>.
-     </t>
-
-
-
-</section><!-- Scope and Expectations -->
-
-
-
-
-<section anchor='concepts'><name>Main Concepts</name>
-
-<t>
-   DetNet and RAW leverage a Controller Plane Function (CPF) called the Path Computation Element (PCE) <xref target="RFC4655"/> that interacts with
-   RAW Nodes over a Southbound API to set up Tracks. With this specification,
-   the PCE interacts with the Root and the Root translates that signaling into
-   RPL signaling. The topology is derived from the DODAG that is already
-   available at the Root in Non-Storing Mode. This specification introduces the
-   Sibling Information Option in the P-DAO messages to enrich that topological
-   knowledge and enable computing more and better routing alternatives.
-</t><t>
-   DetNet Forwarding Nodes
-   only understand the simple 1-to-1 forwarding sublayer transport operation
-   along a segment whereas the more sophisticated Relay nodes can also provide
-   service sublayer functions such as Replication and Elimination. One possible
-   mapping with this specification is to signal the Relay Nodes as the hops of
-   a Leg and the forwarding Nodes as the hops in a Segment that join the Relay
-   nodes as illustrated in <xref target="FigLegs"/>.
-</t>
-<figure anchor="FigLegs">
-          <name>Segments and Tracks</name>
-       <artwork align="center" name="" type="" alt="">
-<![CDATA[
-        CPF               CPF          CPF                 CPF
-
-                       Southbound API
-
-   _-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-
- _-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-
-
-                      +----------+
-                      | RPL Root |
-                      +----------+
-                        (      )
-              (                                  )
-        (              DODAG                              )
-          (                                           )
-  (                                                         )
-                                                                  )
-  <-    Leg 1            B,                            E ->
-  <--- Segment 1 A,B ---> <------- Segment 2 C,D,E ------->
-
-             FWD  --z  Relay --z   FWD  --z   FWD          Target 1
-         z-- Node  z--  Node  z--  Node  z--  Node --z     /
-      --z    (A)        (B) \      (C)        (D)  z--    /
-Track                        \                       Track
-Ingress                    Segment 5                 Egress - Tgt 2
-  (I)                           \                     (E)
-      --z                        \                 z--    \
-       z-- FWD   --z  FWD  --z  Relay --z  FWD  --z        \
-           Node   z-- Node  z-- Node   z-- Node            Target 3
-           (F)        (G)       (H)        (J)
-
-  <------ Segment 3 F,G,H ------> <---- Segment 4 J,E ---->
-  <-      Leg 2                  H,                    E ->
-
-  <--- Segment 1 A,B ---> <- S5-> <---- Segment 4 J,E ---->
-  <-      Leg 3          B,      H,                    E ->
-                                                                  )
-   (
-              (                                        )
-]]></artwork>
-</figure>
-
-
-<t>
-   Note that while this specification enables to build both Segments inside a
-   Leg (aka East-West), such as Segment 2 above which is within Leg 1, and Inter-Leg Segments (aka North-South), such as Segment 2 above which joins
-   Leg 1 and Leg 2, it does not signal to the Ingress which Inter-Leg Segments
-   are available, so the use of North-South Segments and associated PAREO
-   functions is curently limited. The only possibility available at this time
-   is to define overlapping Legs as illustrated in <xref target="FigLegs"/>,
-   with Leg 3 that is congruent with Leg 1 till node B and congruent with Leg
-   2 from node H on, abstracting Segment 5 as an East-West Segment.
- </t>
-</section>	<!-- Main Concepts -->
-
-
-    <section><name>Example Track Signaling</name>
+    <section><name>Serial Track Signaling</name>
 <t>
    This specification introduces the concept of a Projected Route (P-Route)
    along either a Track Leg or a Segment. A P-Route is installed and maintained
@@ -1759,6 +1595,164 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 </section><!-- Example Track Signaling -->
 
+
+<section anchor='concepts'><name>Complex Tracks</name>
+
+<t>To increase the reliability of the P2P transmission, this specification
+   enables to build a collection of Legs between the same Ingress and Egress Nodes and combine them with the same TrackID, as shown in <xref target="FigLegs"/>. Legs may cross at loose hops edges or remain parallel.
+</t><t>
+   The Segments that join the loose hops of a Leg are installed with the same TrackID as the Leg. But each individual Leg and Segment has its own
+   SegmentID which allows to manage it separately. When Legs cross within
+   respsective Segment, the next loose hop (the current destination of the
+   packet) indicates which Leg is being followed and a Segment that can reach
+   that next loose hop is selected.
+</t>
+<figure anchor="FigLegs">
+          <name>Segments and Tracks</name>
+       <artwork align="center" name="" type="" alt="">
+<![CDATA[
+        CPF               CPF          CPF                 CPF
+
+                       Southbound API
+
+   _-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-
+ _-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-._-
+
+                      +----------+
+                      | RPL Root |
+                      +----------+
+                        (      )
+              (                                  )
+        (              DODAG                              )
+          (                                           )
+  (                                                         )
+                                                                  )
+  <-    Leg 1            B,                            E ->
+  <--- Segment 1 A,B ---> <------- Segment 2 C,D,E ------->
+
+             FWD  --z  Relay --z   FWD  --z   FWD          Target 1
+         z-- Node  z--  Node  z--  Node  z--  Node --z     /
+      --z    (A)        (B) \      (C)        (D)  z--    /
+Track                        \                       Track
+Ingress                    Segment 5                 Egress - Tgt 2
+  (I)                           \                     (E)
+      --z                        \                 z--    \
+       z-- FWD   --z  FWD  --z  Relay --z  FWD  --z        \
+           Node   z-- Node  z-- Node   z-- Node            Target 3
+           (F)        (G)       (H)        (J)
+
+  <------ Segment 3 F,G,H ------> <---- Segment 4 J,E ---->
+  <-      Leg 2                  H,                    E ->
+
+  <--- Segment 1 A,B ---> <- S5-> <---- Segment 4 J,E ---->
+  <-      Leg 3          B,      H,                    E ->
+                                                                  )
+   (
+              (                                        )
+]]></artwork>
+</figure>
+
+
+<t>
+   Note that while this specification enables to build both Segments inside a
+   Leg (aka East-West), such as Segment 2 above which is within Leg 1, and Inter-Leg Segments (aka North-South), such as Segment 2 above which joins
+   Leg 1 and Leg 2, it does not signal to the Ingress which Inter-Leg Segments
+   are available, so the use of North-South Segments and associated PAREO
+   functions is curently limited. The only possibility available at this time
+   is to define overlapping Legs as illustrated in <xref target="FigLegs"/>,
+   with Leg 3 that is congruent with Leg 1 till node B and congruent with Leg
+   2 from node H on, abstracting Segment 5 as an East-West Segment.
+ </t>
+
+<t>
+   DetNet Forwarding Nodes only understand the simple 1-to-1 forwarding
+   sublayer transport operation along a segment whereas the more sophisticated
+   Relay nodes can also provide service sublayer functions such as Replication
+   and Elimination. One possible mapping between DetNet and this specification
+   is to signal the Relay Nodes as the hops of a Leg and the forwarding Nodes
+   as the hops in a Segment that join the Relay nodes as illustrated in <xref
+   target="FigLegs"/>.
+</t>
+</section>	<!-- Complex Tracks -->
+
+
+<section anchor='inandout'><name>Scope and Expectations</name>
+
+<t>
+    This specification expects that the main RPL Instance is operated in RPL
+    Non-Storing Mode to sustain the exchanges with the Root. Based on its
+    comprehensive knowledge of the parent-child relationship, the Root can form
+    an abstracted view of the whole DODAG topology. This document adds the
+    capability for nodes to advertise additional sibling information to
+    complement the topological awareness of the Root.
+ </t><t>
+    Projected Routes require resources such as routing table space in the
+    routers and bandwidth on the links; the amount of state that
+    is installed in each node must be computed to fit within the node's memory,
+    and the amount of rerouted traffic must fit within the capabilities of
+    the transmission links. The methods used to learn the node capabilities and
+    the resources that are available in the devices and in the network are out
+    of scope for this document. The method to capture and report the LLN link capacity and reliability statistics are also out of scope. They may be fetched from the nodes through network management functions or other forms of telemetry such as OAM.
+</t>   <t>
+    The <xref target='RFC9030'> "6TiSCH Architecture"</xref> leverages a centralized model that is similar to that of <xref target='RFC8655'>
+    "Deterministic Networking Architecture"</xref>,
+    whereby the device resources and capabilities are exposed to an external
+    controller which installs routing states into the network based on its own
+    objective functions that reside in that external entity. With DetNet and
+    6TiSCH, the component of the controller that is responsible of computing
+    routes is a PCE. The PCE
+    computes its routes based on its own objective functions such as described
+    in <xref target='RFC4655'/>, and typically controls the routes using the
+    PCE Protocol (PCEP) by <xref target='RFC5551'/>.  While this specification
+    expects a PCE and while PCEP might effectively be used between the Root and
+    the PCE, the control protocol between the PCE and the Root is out of scope.
+    </t>
+    <t>
+    This specification expects a single PCE with a full view of the network. Distributing the PCE function for a large network is out of scope.
+    This specification uses the RPL Root as a proxy to the PCE. The PCE may be
+    collocated with the Root, or may reside in an external Controller.
+    In that case, the protocol between the Root and the PCE is out of scope
+    and abstracted by / mapped to RPL inside the DODAG; one possibility is for
+    the Root to transmit the RPL DAOs with the SIOs that detail the parent/child
+    and sibling information.
+    </t>
+    <t>
+    The algorithm to compute the paths and the protocol used by the PCE
+    and the metrics and link statistics involved in the computation are also out
+    of scope. The effectiveness of the route computation by the PCE depends on
+    the quality of the metrics that are reported from the RPL network.
+    Which metrics are used and how they are reported is out of scope, but the
+    expectation is that they are mostly of long-term, statistical nature, and
+    provide visibility on link throughput, latency, stability and availability
+    over relatively long periods.
+    </t>
+    <t>
+    The <xref target='I-D.ietf-raw-architecture'>"Reliable and Available
+    Wireless (RAW) Architecture/Framework"</xref> extends the definition of
+    Track, as being composed of East-West directional segments and North-South
+    bidirectional segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum.. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
+     </t>
+    <t>
+    The RAW Architecture defines a dataplane extension of the PCE called the Path Selection Engine (PSE), that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.  The PSE controls the forwarding operation of the packets within a Track
+    This specification can use but does not impose a PSE and does not provide
+    the policies that wouldselect which packets are routed through which
+    path within a Track, IOW, how the PSE may use the path redundancy within
+    the Track. By default, the use of the available redundancy is limited to simple load balancing, and all the segments are East-West unidirectional only.
+    </t>
+    <t>
+    A Track may be set up to reduce the load around the Root, or to enable
+    urgent traffic to flow more directly. This specification does not provide
+    the policies that would decide which flows are routed through which Track.
+    In a Non-Storing Mode RPL Instance, the main DODAG provides a default route
+    via the Root, and the Tracks provide more specific routes to the Track
+    Targets.
+    </t>
+
+
+
+</section><!-- Scope and Expectations -->
+
+
 </section ><!-- Context and Goal -->
 
   <section anchor='ext'><name>Extending existing RFCs </name>
@@ -1837,9 +1831,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
   <dl  spacing='normal'>
 
   <dt>TrackID:</dt>
-    <dd> In the case of a P-DAO, the RPLInstanceID field is used as TrackID.
-    This is a naming convenience but does not change the semantics and format of
-    the RPLInstanceID that is used as TrackID.
+    <dd> The RPLInstanceID of the DODAG that serves as Track , more in
+
     </dd>
 
   <dt>P:</dt>
@@ -2022,7 +2015,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
               </dd>
               <dt> Elective 'E':</dt><dd> See <xref target='RFC8138'/>. The 'E' flag is set to 1 to indicate an Elective 6LoRH, meaning that it can be ignored when forwarding.
               </dd>
-              <dt> RPLInstanceID :</dt><dd> Signals the TrackID, see <xref target='inandout'/>.
+              <dt> RPLInstanceID :</dt><dd> In the context of this specification, the RPLInstanceID field signals the TrackID, see <xref target='tracks'/> and <xref target='trkid'/> .
               </dd>
 
             </dl>
@@ -2070,7 +2063,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
   0                   1                   2                   3
   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- |   TrackID     |K|R|   Flags   |  ReqLifetime  | PDRSequence   |
+ |    TrackID    |K|R|   Flags   |  ReqLifetime  | PDRSequence   |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  |   Option(s)...
  +-+-+-+-+-+-+-+-+
@@ -2078,8 +2071,10 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 </figure>
 
           <dl spacing='normal'>
-              <dt>TrackID:</dt><dd>8-bit field indicating the RPLInstanceID
-              associated with the Track.
+              <dt>TrackID:</dt><dd>8-bit field.
+              In the context of this specification, the TrackID field signals the RPLInstanceID of the DODAG formed by the Track, see <xref target='tracks'/> and <xref target='trkid'/>. To allocate a
+              new Track, the Ingress Node must provide a value that is not in
+              use at this time.
               </dd>
               <dt>K:</dt><dd>The 'K' flag is set to indicate that the recipient
               is expected to send a PDR-ACK back.
@@ -2095,7 +2090,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
               </t><t>
               A PDR with a fresher
               PDRSequence refreshes the lifetime, and a PDRLifetime of 0
-              indicates that the Track should be destroyed.
+              indicates that the Track should be destroyed, e.g., when the
+              application that requested the Track terminates.
               </t>
               </dd>
               <dt>PDRSequence:</dt><dd>
@@ -2137,7 +2133,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
           <dl spacing='normal'>
               <dt>TrackID:</dt><dd>
-             The RPLInstanceID of the Track that was created. The value of 0x00 is used to when no Track was created.
+             Set to the TrackID indicated in the TrackID field of the PDR
+             messages that this replies to.
               </dd>
 
               <dt>Flags:</dt><dd>Reserved. The Flags field MUST initialized to zero by the sender and MUST be ignored by the receiver
@@ -2200,7 +2197,10 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
     the hops of either a Leg (using Non-Storing Mode) a Segment (using storing
     mode) of a Track.
     A VIO MUST contain at least one Via Address, and a Via Address MUST NOT be
-    present more than once, otherwise the VIO MUST be ignored.
+    present more than once, which would create a loop. If one of these conditions happen, the VIO MUST be ignored and the P-DAO MUST be rejected
+    with a Rejection Status of "Error in VIO", see <xref target='iana-stats-rpl-rej'/>.
+    </t>
+    <t>
     The format of the Via Information Options is as follows:
     </t>
 <figure anchor='viao'><name>VIO format (uncompressed form)</name>
@@ -3605,10 +3605,9 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
 
    <section anchor='ICMPv6ErrPRoute'>
-        <name>Error in P-Route ICMPv6 Code</name>
+        <name>New ICMPv6 Error Code</name>
         <t>In some cases RPL will return an ICMPv6 error message when a
-        message cannot be forwarded along a P-Route.
-        This ICMPv6 error message is "Error in P-Route".</t>
+        message cannot be forwarded along a P-Route.</t>
 
         <t>IANA has defined an ICMPv6 "Code" Fields Registry for ICMPv6
         Message Types. ICMPv6 Message Type 1 describes "Destination Unreachable"
@@ -3631,7 +3630,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
       <tr><td>2 (suggested)</td><td>Out of Resources</td><td>THIS RFC</td></tr>
-      <tr><td>3..63</td><td>Unassigned</td><td></td></tr>
+      <tr><td>3 (suggested)</td><td>Error in VIO</td><td>THIS RFC</td></tr>
+      <tr><td>4..63</td><td>Unassigned</td><td></td></tr>
    </tbody>
 
    </table>
