@@ -282,27 +282,92 @@ docName="draft-ietf-roll-dao-projection-20" >
 
 </section>	<!-- end section "Terminology" -->
 
+
 <section anchor='context'><name>Context and Goal</name>
 
+<section anchor='onrpl'><name>RPL Applicability</name>
+<t>
+   RPL is optimized for situations where the power is scarce, the bandwidth
+   constrained and the transmissions unreliable. This matches the use case of
+   an IoT LLN where RPL is typically used today, but also situations of high relative mobility between the nodes in the network (aka swarming), e.g.,
+   within a variable set of vehicles with a similar global motion, or a toon of
+   drones.
+</t><t>
+   To reach this goal, RPL is primarily designed to minimize the control plane
+   activity, that is the relative amount of routing protocol exchanges vs. data
+   traffic, and the amount of state that is maintained in each node. RPL does
+   not need converge, and provides connectivity to most nodes most of the time.
+</t><t>
+    RPL may form multiple topologies called instances. Instances can be
+    created to enforce various optimizations through objective functions,
+    or to reach out through different Root Nodes.  The concept of objective
+    function allows to adapt the activity of the routing protocol to the use
+    case, e.g., type, speed, and quality of the LLN links.
+</t><t>
+    RPL instances operate as ships in the night, unbeknownst of one another.
+    The RPL Root is responsible to select the RPL Instance that is used
+    to forward a packet coming from the Backbone into the RPL domain and set
+    the related RPL information in the packets. 6TiSCH leverages RPL for its
+    distributed routing operations.
+</t><t>
+   To reduce the routing exchanges, RPL leverages an anisotropic Distance Vector
+   approach, which does not need a global knowledge of the topology, and only
+   optimizes the routes to and from the root, allowing P2P paths to be
+   stretched. Although RPL installs its routes proactively, it only maintains
+   them lazily, in reaction to actual traffic, or as a slow background activity.
+</t><t>
+   This is simple and efficient in situations where the traffic is mostly
+   directed from or to a central node, such as the control traffic between
+   routers and a controller of a Software Defined Networking (SDN) infrastructure or an Autonomic Control Plane (ACP).
+</t><t>
+   But stretch in P2P routing is counter-productive to both reliability and
+   latency as it introduces additional delay and chances of loss. As a result,
+   <xref target='RFC6550'/> is not a good fit for the use cases listed in the
+   RAW use cases document <xref target= 'I-D.ietf-raw-use-cases'/>, which demand
+   high availability and reliability, which in turn require both minimal and
+   diverse paths.
+</t>
 
-<section anchor='inandout'><name>Scope and Expectations</name>
-
-
-    <t>
+</section>	<!-- end section "RPL Applicability" -->
+<section anchor='onrplroute'><name>RPL Routing and Modes</name>
+<t>
+   RPL first forms a default route in each node towards the a Root, and those
+   routes together coalesce as a Directed Acyclic Graph upwards.
+   RPL then constructs routes to so-called Targets in the reverse direction,
+   down the same DODAG. So do so, a RPL Instance can be operated either in RPL
+   Storing or Non-Storing Mode of Operation (MOP)
+   The default route towards the Root is maintained aggressively and may change while a packet progresses without causing loops, so the packet will still reach the root.
+</t>
+<t>In Non-Storing Mode, each node advertises itself as a target directly to the
+   Root, indicating the parents that may be used to reach self. Recursively, the
+   Root builds and maintains an image of the whole DODAG in memory, and
+   leverages that abstraction to compute source route paths for the packets to
+   their destinations down the DODAG. When a node changes its point(s)
+   of attachment to the DODAG, it takes single unicast packet to the Root along
+   the default route to update it, and the connectivity is restored immediately;
+   this mode is preferable for use cases where internet connectivity is
+   dominant, or when, like here, the Root controls the network activity in the
+   nodes.
+</t>
+<t>In Storing Mode, the routing information percolates upwards, and each node
+   maintains the routes to the subDAG of its descendants down the DODAG.
+   The maintenance is lazy, either reactive upon traffic or as a slow background
+   process. Packets flow via the common parent and the routing stretch is
+   reduced vs. Non-Storing, for a better P2P connectivity, while the internet
+   connectivity is restored more slowly, time for the DV operation to operate
+   hop-by-hop.
+</t>
+   <t>
     This specification expects that the main RPL Instance is operated in RPL
-    Non-Storing Mode of Operation (MOP) to sustain the exchanges with the Root.
-    In that Mode, the
-    Root has enough information to build a basic DODAG topology based on
-    parents and children, but lacks the knowledge of siblings. This document
-    adds the capability for nodes to advertise sibling information in order to
-    improve the topological awareness of the Root.
+    Non-Storing Mode to sustain the exchanges with the Root. Based on its
+    comprehensive knowledge of the parent-child relationship, the Root can form
+    an abstracted view of the whole DODAG topology. This document adds the
+    capability for nodes to advertise additional sibling information to
+    complement the topological awareness of the Root.
     </t>
+
     <t>
-    As opposed to the classical RPL operations where routes are injected by the
-    Target nodes, the protocol extensions enable the Root of a DODAG to project
-    the routes that are needed onto the nodes where they should be installed.
-    This specification uses the term Projected Route (P-Route) to refer to those
-    routes.
+    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build project routes onto the nodes where they should be installed. This specification uses the term Projected Route (P-Route) to refer to those routes.
     </t>
     <t>
     A P-Route may be installed in either Storing and Non-Storing Mode,
@@ -312,6 +377,31 @@ docName="draft-ietf-roll-dao-projection-20" >
     source routing headers with loose source routing operations down the main RPL DODAG.
     P-Routes can also be combined with other P-Routes to form a more complex forwarding graph called a Track.
     </t>
+
+</section>	<!-- end section "RPL Routing and Modes" -->
+
+
+
+<section anchor='tracks'><name>On tracks</name>
+
+<t> A Track is
+   typically a collection of parallel loose source routed sequences of nodes
+   from Ingress to Egress, forming so-called Track Legs, that are joined with
+   strict Segments of other nodes. The Legs are expressed in RPL Non-Storing
+   Modes and require an encapsulation to add a Source Route Header, whereas
+   the Segments are expressed in Storing Mode.
+</t>
+<t>
+   A Serial Track comprises provides only one path between Ingress and Egress.
+   It comprises at most one Leg. A Stand-Alone Segment defines implicitly a
+   Serial Track from its Ingress to Egress.
+</t>
+
+<t> A complex Track forms a graph that provides a collection of potential paths
+    to provide redundancy for the packets, either as a collection of Legs that
+    may be parallel or cross at certain points, or as a more generic DODAG
+    that is rooted at the Ingress Node.
+</t>
 
 
    <t> A Track may be set up to reduce the load around the Root, or to
@@ -333,6 +423,23 @@ docName="draft-ietf-roll-dao-projection-20" >
     than one Segment in a Track may use one or more of these Segments to forward
     a packet inside the Track.
     </t>
+
+   <t>
+   When building a Track with RPL, the Track is assimilated with the DODAG
+   formed for a Local RPL Instance.
+   The local RPLInstanceID of the Track is used as the TrackID, more in
+   <xref target='trkid'/>. A P-DAO message for a Track signals the TrackID in
+   the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field
+   of the Projected DAO Base Object; that field is elided in the case of the
+   main RPL Instance. The Track Ingress is the Root of the Track, as shown in
+   <xref target='p-dao-fmt'/>.
+   </t>
+
+</section><!-- On tracks -->
+
+
+<section anchor='inandout'><name>Scope and Expectations</name>
+
     <t>
     The <xref target='I-D.ietf-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture/Framework"</xref> extends the
@@ -405,97 +512,10 @@ docName="draft-ietf-roll-dao-projection-20" >
 
 
 
+
 <section anchor='concepts'><name>Main Concepts</name>
 
 <t>
-   RPL is primarily designed to minimize the control plane activity, that is the
-   relative amount of routing protocol exchanges vs. data traffic. This approach
-   is beneficial for situations where the power and bandwidth are scarce (e.g.,
-   an IoT LLN where RPL is typically used today), but also in situations of high
-   relative mobility between the nodes in the network (aka swarming, e.g.,
-   within a variable set of vehicles with a similar global motion, or a toon of
-   drones).
-   It is also simple and efficient in situations where the traffic is mostly
-   directed from or to a central node, such as the control traffic between
-   routers and a controller of a Software Defined Networking (SDN) infrastructure or an Autonomic Control Plane (ACP)
-</t>
-
-    <t>RPL may form multiple topologies called instances. Instances can be
-    created to enforce various optimizations through objective functions,
-    or to reach out through different Root Nodes. RPL instances operate as
-    ships in the night, unbeknownst of one another.
-    The RPL Root is responsible to select the RPL Instance that is used
-    to forward a packet coming from the Backbone into the RPL domain and set
-    the related RPL information in the packets. 6TiSCH leverages RPL for its
-    distributed routing operations.
-    </t>
-<t>
-   To reduce the routing exchanges, RPL leverages an anisotropic Distance Vector
-   approach, which does not need a global knowledge of the topology, and only
-   optimizes the routes to and from the root, allowing P2P paths to be
-   stretched. Although RPL installs its routes proactively, it only maintains
-   them lazily, in reaction to actual traffic, or as a slow background activity.
-    </t>
-<t>
-   Additionally, RPL leverages the concept of objective function which allows to
-   adapt the activity of the routing protocol to the use case, e.g., type,
-   speed, and quality of the LLN links. RPL does not need converge, and provides
-   connectivity to most nodes most of the time. The default route towards the
-   Root is maintained aggressively and may change while a packet progresses
-   without causing loops, so the packet will still reach the root.
-</t>
-<t>RPL first forms a default route in each node towards the a Root, and those
-   routes together coalesce as a Directed Acyclic Graph upwards.
-   RPL then constructs routes to so-called Targets in the reverse direction,
-   down the same DODAG.
-</t>
-<t>In Non-Storing Mode, each node advertises itself as a target directly to the
-   Root, indicating the parents that may be used to reach self. Recursively, the
-   Root builds and maintains an image of the whole DODAG in memory, and
-   leverages that abstraction to compute source route paths for the packets to
-   their destinations down the DODAG. When a node changes its point(s)
-   of attachment to the DODAG, it takes single unicast packet to the Root along
-   the default route to update it, and the connectivity is restored immediately;
-   this mode is preferable for use cases where internet connectivity is
-   dominant, or when, like here, the Root controls the network activity in the
-   nodes.
-</t>
-<t>In Storing Mode, the routing information percolates upwards, and each node
-   maintains the routes to the subDAG of its descendants down the DODAG.
-   The maintenance is lazy, either reactive upon traffic or as a slow background
-   process. Packets flow via the common parent and the routing stretch is
-   reduced vs. Non-Storing, for a better P2P connectivity, while the internet
-   connectivity is restored more slowly, time for the DV operation to operate
-   hop-by-hop.
-</t>
-<t>Either way, the stretched routing is not adapted to use cases that require
-   high availability and reliability, such as those listed in the RAW use cases
-   document <xref target= 'I-D.ietf-raw-use-cases'/>. Extra stretch is
-   counter-productive to both reliability and latency, and high reliability and
-   availability require a better control of the use of the available diversity,
-   be it expressed in time, frequency, path, or technology, than is available
-   with <xref target='RFC6550'/>.
-</t>
-<t>To complement RPL and eliminate routing stretch, this specification
-   introduces an hybrid mode that combines Storing and Non-Storing operations
-   to build Tracks from Ingress to Egress inside the DODAG. A Track is
-   typically a collection of parallel loose source routed sequences of nodes
-   from Ingress to Egress, forming so-called Track Legs, that are joined with
-   strict Segments of other nodes. The Legs are expressed in RPL Non-Storing
-   Modes and require an encapsulation to add a Source Route Header, whereas
-   the Segments are expressed in Storing Mode.
-</t>
-<t>
-   A Serial Track comprises provides only one path between Ingress and Egress.
-   It comprises at most one Leg. A Stand-Alone Segment defines implicitly a
-   Serial Track from its Ingress to Egress.
-</t>
-
-<t> A complex Track forms a graph that provides a collection of potential paths
-    to provide redundancy for the packets, either as a collection of Legs that
-    may be parallel or cross at certain points, or as a more generic DODAG
-    that is rooted at the Ingress Node.
-</t><t>
    DetNet and RAW leverage a Controller Plane Function (CPF) called the Path Computation Element (PCE) <xref target="RFC4655"/> that interacts with
    RAW Nodes over a Southbound API to set up Tracks. With this specification,
    the PCE interacts with the Root and the Root translates that signaling into
@@ -1779,15 +1799,6 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    Architecture  <xref target='RFC9030'/> as a collection of multiple P-Routes.
    </t>
    <t>
-   The Track is assimilated with the DODAG formed for a Local RPL Instance.
-   The local RPLInstanceID of the Track is used as the TrackID, more in
-   <xref target='trkid'/>. A P-DAO message for a Track signals the TrackID in
-   the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field
-   of the Projected DAO Base Object; that field is elided in the case of the
-   main RPL Instance. The Track Ingress is the Root of the Track, as shown in
-   <xref target='p-dao-fmt'/>.
-   </t>
-   <t>
    The P-DAO is signaled with a new "Projected DAO" (P) flag, see <xref target=
    'p-dao-fmt'/>. The 'P' flag is encoded in bit position 2 (to be confirmed by
    IANA) of the Flags field in the DAO Base Object. The Root MUST set it to 1 in
@@ -1954,25 +1965,44 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
             </dl>
 
-    </section> <!-- Extending RFC 6553 -->
-    <section anchor='ext8138'><name>Extending RFC 8138</name>
+ </section> <!-- Extending RFC 6553 -->
+ <section anchor='ext8138'><name>Extending RFC 8138</name>
+    <t> The <xref target='RFC8138'>6LoWPAN Routing Header</xref> specification
+    introduces a new IPv6 over Low-Power Wireless Personal Area Network
+    (6LoWPAN) <xref target='RFC6282'/> dispatch type for use in 6LoWPAN
+    route-over topologies, which initially covers the needs of RPL data packet
+    compression.
+    </t>
+    <t>Section 4 of <xref target='RFC8138'/> presents the generic formats of
+    the 6LoWPAN Routing Header (6LoRH) with two forms, one Elective that can
+    be ignored and skipped when the router does not understand it, and one
+    Critical which causes the packet to be dropped when the router cannot
+    process it. The 'E' Flag in the 6LoRH indicates its form. In order to skip
+    the Elective 6LoRHs, their format imposes a fixed expression of the size,
+    whereas the size of a Critical 6LoRH may be signaled in variable forms to
+    enable additional optimizations.
+    </t>
     <t>When the <xref target='RFC8138'/> compression is used, the Root of the
     main DODAG can construct the compressed routing header (SRH-6LoRH) on
-    behalf of the Track Root. The SRH-6LoRH is signalled in the NSM-VIO, to be
+    behalf of the Track Root. The SRH-6LoRH is signaled in the NSM-VIO, to be
     placed in the packet encapsulation by the Track Ingress as is.
     </t>
+
     <t>Section 6.3 of <xref target='RFC8138'/> presents the formats of the
-     6LoWPAN Routing Header of type 5 (RPI-6LoRH) that compresses the RPI for normal RPL operation. The format of the RPI-6LoRH is not suited for P-Routes since the O,R,F flags are not used and the Rank is unknown and ignored.
+    6LoWPAN Routing Header of type 5 (RPI-6LoRH) that compresses the RPI for
+    normal RPL operation. The format of the RPI-6LoRH is not suited for
+    P-Routes since the O,R,F flags are not used and the Rank is unknown and
+    ignored.
     </t><t>
-    This specification introduces a new 6LoRH, the P-RPI-6LoRH, with a type of
-    7 (suggested), to be used as both Elective and Critical 6LoRH Types,
+    This specification introduces a new 6LoRH, the P-RPI-6LoRH that can be
+    used in either Elective or Critical 6LoRH form,
     see <xref target='elec6lorhtbl'/> and <xref target='crit6lorhtbl'/>
     respectively. The new 6LoRH MUST be used as a Critical 6LoRH, unless an SRH-6LoRH is present and controls the routing decision, in which case it
-    MAY be made Elective.
+    MAY be used in Elective form.
     </t>
     <t>
     The P-RPI-6LoRH is designed to compress the RPI along RPL P-Routes.
-    It sformat is as follows:
+    Its format is as follows:
     </t>
 
 
@@ -1981,13 +2011,18 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
      0                   1                   2
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |1|0|E| Length  | 6LoRH Type 7  | RPLInstanceID |
+    |1|0|E| Length  |  6LoRH Type   | RPLInstanceID |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
  </artwork>
 </figure>
           <dl spacing='normal'>
+              <dt> Type:</dt><dd> IANA is requested to define the same value of
+              the type for both Elective and Critical forms. A type of 8 is suggested.
+              </dd>
               <dt> Elective 'E':</dt><dd> See <xref target='RFC8138'/>. The 'E' flag is set to 1 to indicate an Elective 6LoRH, meaning that it can be ignored when forwarding.
+              </dd>
+              <dt> RPLInstanceID :</dt><dd> Signals the TrackID, see <xref target='inandout'/>.
               </dd>
 
             </dl>
@@ -3163,7 +3198,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
    </thead><tbody>
 
-          <tr><td align='center'>7</td>
+          <tr><td align='center'>8</td>
 
           <td align='left'>P-RPI-6LoRH</td>
 
@@ -3189,7 +3224,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
    </thead><tbody>
 
-          <tr><td align='center'>7</td>
+          <tr><td align='center'>8</td>
 
           <td align='left'>P-RPI-6LoRH</td>
 
