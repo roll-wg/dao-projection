@@ -449,13 +449,12 @@ docName="draft-ietf-roll-dao-projection-20" >
 
 <figure anchor='reft'><name>Reference Track</name>
               <artwork align="center">
-                               ===&gt; F
+                              /===&gt; F
 A ===&gt; B ===&gt; C ===&gt; D===&gt; E &lt;
-                               ===&gt; G
+                              \===&gt; G
 
  </artwork>
 </figure>
-
 <t>
 In this example,
 A is Track Ingress, E is Track Egress. C is a stitching point. F and G are
@@ -479,6 +478,7 @@ In a general manner the desired outcome is as follows:
    Root address is signaled in the DAO base object, it is not needed in the via
    list in NSM-VIO, so the via list starts at the first loose hop.
 </t>
+
 
 
 
@@ -1171,7 +1171,7 @@ Now the destination in the IPv6 Header is C, and a SRH signals the final destina
 A encapsulates the packet with destination of F in the Track signaled by P-DAO 2. The outer header has source A, destination B, an SRH that indicates C as the next loose hop, and a RPI indicating a TrackId of 129 from A's namespace.
 </li>
 <li>From the SRH:
-Packets forwarded by B have source A, destination C , a consumed SRH, and a RPI indicating a TrackId of 129 from A's namespace. C decapsulates.
+Packets forwarded by B have source A, destination C, a consumed SRH, and a RPI indicating a TrackId of 129 from A's namespace. C decapsulates.
 </li>
 <li>
 From P-DAO 1:
@@ -2196,9 +2196,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>A VIO signals the ordered list of IPv6 Via Addresses that constitutes
     the hops of either a Leg (using Non-Storing Mode) a Segment (using storing
     mode) of a Track.
-    A VIO MUST contain at least one Via Address, and a Via Address MUST NOT be
-    present more than once, which would create a loop. If one of these conditions happen, the VIO MUST be ignored and the P-DAO MUST be rejected
-    with a Rejection Status of "Error in VIO", see <xref target='iana-stats-rpl-rej'/>.
     </t>
     <t>
     The format of the Via Information Options is as follows:
@@ -2213,11 +2210,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     |Segm. Sequence | Seg. Lifetime |      SRH-6LoRH header         |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
-    +                                                               +
-    .                                                               .
-    .                     Via Address 1                             .
-    .                                                               .
-    +                                                               +
+    .           Via Address 1 (compressed by RFC 8138)              .
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
@@ -2225,11 +2218,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
-    +                                                               +
-    .                                                               .
-    .                     Via Address n                             .
-    .                                                               .
-    +                                                               +
+    .           Via Address n (compressed by RFC 8138)              .
     |                                                               |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -2237,10 +2226,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </figure>
 
           <dl spacing='normal'>
-              <dt>Option Type:</dt><dd>0x0B for SM-VIO, 0x0C for NSM-VIO
-                                     (to be confirmed by IANA)</dd>
+              <dt>Option Type:</dt><dd>0x0E for SM-VIO, 0x0F for NSM-VIO
+                                     (to be confirmed by IANA), see =<xref target="ianaRPLCtrlMsgopttbl"/></dd>
 
-              <dt>Option Length:</dt><dd>In bytes; variable, depending on the number of Via Addresses and the compression.</dd>
+              <dt>Option Length:</dt><dd>8-bit unsigned integer, representing the length in octets of the option, not including the Option
+              Type and Length fields, see section 6.7.1. of <xref target=
+              'RFC6550'/>;
+              the Option Length is variable, depending on the number of Via
+              Addresses and the compression applied.</dd>
 
 
               <dt>SegmentID:</dt><dd>8-bit field that identifies a component
@@ -2300,24 +2293,33 @@ Ingress                    Segment 5                 Egress - Tgt 2
               </dd>
 
               <dt>Via Address:</dt><dd>
-              <t>An IPv6 address along the Segment. The VIO contains one or more addresses
+              <t>An IPv6 address along the Segment. The VIO contains one or more ULA or GUA IPv6 addresses
               listed in the order of progression of the packet from Ingress to Egress.
+              In a No-Path Non-Storing Mode P-DAO, the SRH-6LoRH MUST NOT be
+              present in the NSM-VIO; the state in the Ingress is erased
+              regardless.
+              In all other cases, a VIO MUST contain at least one Via Address,
+              and a Via Address MUST NOT be present more than once, which
+              would create a loop.
               </t><t>
-              In a No-Path Non-Storing Mode P-DAO, the list can be elided from
-              the NSM-VIO since the state in the Ingress is erased whatever.
+              A node that processes a VIO MAY verify whether one of these
+              conditions happen, and when so, it MUST ignore the P-DAO and
+              reject it with a RPL Rejection Status of "Error in
+              VIO" in the DAO-ACK, see <xref target='iana-stats-rpl-rej'/>.
+              </t><t>
               In a Storing Mode P-DAO that updates or removes a section of an
               already existing Segment, the list in the SM-VIO may represent
               only the section of the Segment that is being updated; at the
               extreme, the SM-VIO updates only one node, in which case it
               contains only one IPv6 address.
               </t><t>
-              For all other cases, the list in the VIO must be complete, with
+              In all other cases, the list in the VIO MUST be complete, with
               the strict sequence of hops in an SM-VIO and possibly a loose one
-              in an NSM-VIO. In the case of an SM-VIO, the complete list indicates
-              a sequential path through direct neighbors, from Segment Ingress to
-              Egress, both included.
-              In the case of an an NSM-VIO, the  list includes the Egress but not
-              the Ingress node. It starts at the first hop and ends at a Track Egress
+              in an NSM-VIO. In the case of an SM-VIO, the complete list
+              indicates a sequential path through direct neighbors, from
+              Segment Ingress to  Egress, both included. In the case of an
+              NSM-VIO, the list excludes the Ingress node; it starts at the
+              first loose hop and ends at a Track Egress.
                 </t><t>
               A non-Egress router that processes an SM-VIO from a MUST create a
               Storing Mode route associated with the Track towards the targets
@@ -2328,10 +2330,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               commits to store, and thenode may have to remove the additional
               routes to make room. A node that cannot store the routes to all
               the targets MUST reject the P-DAO by sending a DAO-ACK to the Root
-              with a rejection status of "Out of Resources" as opposed to
-              forwarding the DAO to its predecessor in the list. Other errors
-              that prevent the installation of the route are reported with a
-              status of "Unqualified Rejection".</t>
+              with a Rejection Status of "Out of Resources" as opposed to
+              forwarding the DAO to its predecessor in the list.</t>
               <t>
               In the case of an NSM-VIO, the Ingress router that processes a new
               NSM-VIO MUST create a tunnel associated with the Track, and
@@ -2343,12 +2343,25 @@ Ingress                    Segment 5                 Egress - Tgt 2
               NSM-VIO may be loose, provided that each listed node has a path to
               the next listed node, e.g., via a segment or another Track.
               </t><t>
-              In the case of a SM-VIO, or if <xref target='RFC8138'/> is not used in the data packets, then the Root MUST use
-              only one SRH-6LoRH per Via Information Option, and the compression is the same for
+              In the case of a SM-VIO, or if <xref target='RFC8138'/> is not
+              used in the data packets, then the Root MUST use
+              only one SRH-6LoRH per Via Information Option, and the
+              compression is the same for
               all the addresses, as shown in <xref target='viao'/>.
               </t><t>
-              In case of an NSM-VIO, and if <xref target='RFC8138'/> is in use in the main DODAG, then the Root SHOULD optimize the size of the NSM-VIO; more than one SRH-6LoRH may be present, e.g., if the compression level changes inside the Segment and different SRH-6LoRH Types are required. The content of the NSM-VIO starting at the first SRH-6LoRH header is thus verbatim the one that the Track Ingress places in the packet encapsulation to reach the Track Egress.
-
+              In case of an NSM-VIO, and if <xref target='RFC8138'/> is in use
+              in the main DODAG, then the Root SHOULD optimize the size of the
+              NSM-VIO; this means that more than one SRH-6LoRH may be present,
+              if the compression level changes inside the Segment and using
+              different SRH-6LoRH Types make the VIO shorter.
+              The content of the NSM-VIO
+              starting at the first SRH-6LoRH header MUST be used verbatim by
+              the Track Ingress when it encapsulates a packet to forward it
+              over the Track .
+              </t><t>
+              Other errors than those listed above that prevent the installing
+              the route are reported with a RPL Rejection Status of
+              "Unqualified Rejection" in the DAO-ACK.
               </t>
               </dd>
             </dl>
@@ -2391,9 +2404,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </figure>
 
           <dl spacing='normal'>
-              <dt>Option Type:</dt><dd>0x0D (to be confirmed by IANA)</dd>
+              <dt>Option Type:</dt><dd>0x10 for SIO (to be confirmed by IANA),
+              see =<xref target="ianaRPLCtrlMsgopttbl"/></dd>
 
-              <dt>Option Length:</dt><dd>In bytes, the size of the option.</dd>
+              <dt>Option Length:</dt><dd>8-bit unsigned integer, representing the length in octets of the option, not including the Option
+              Type and Length fields, see section 6.7.1. of <xref target=
+              'RFC6550'/>.</dd>
 
               <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
               SRH-6LoRH Type as defined in figure 7 in section 5.1 of
@@ -2840,11 +2856,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
     Track Segments and Legs that compose it one by one.
     </t>
     <t>
-    The Root cleans up a Leg of a Track in the Ingress node by sending an NSM-VIO
-    to the Ingress with the TrackID and the SegmentID of the Leg being removed,
-    a Segment Lifetime of 0 and a newer Segment Sequence. Since the state is
-    located only the Ingress Node, it is simply removed; the SRH-6LoRH and the
-    Via Addresses of the NSM-VIO are not needed and can be omitted.
+    Since the state about a Leg of a Track is located only the Ingress Node,
+    the Root cleans up the Leg by sending an NSM-VIO to the Ingress indicating
+    the TrackID and the SegmentID of the Leg being removed, a Segment Lifetime
+    of 0 and a newer Segment Sequence. The SRH-6LoRH with the Via Addresses in
+    the NSM-VIO are not needed and MUSt be omitted. Upon that NSM-VIO, the
+    Ingress node removes all state for that Track if any, and replies
+    positively anyway.
     </t>
     <t>
     The Root cleans up a section of a Segment by sending an SM-VIO to the last
@@ -2996,6 +3014,85 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
     </section><!-- Forwarding along a Track -->
 
+
+
+<section anchor='encompression'><name>Encapsulation and Compression</name>
+
+<t>
+   When using <xref target='RFC8138'/> in the main DODAG operated in Non-Storing
+   Mode in a 6LoWPAN LLN, a typical packet that circulates in the main DODAG is
+   formatted as shown in <xref target='inner'/>, representing the case where
+   :
+</t>
+
+<figure anchor='inner'><name>A Packet as Forwarded along the Main DODAG</name>
+              <artwork align="center">
++-+ ... -+- ... -+- ... -+-+- ... +-+-+-+ ... +-+-+ ... -+ ... +-...
+|11110001|  SRH- | RPI-  | IP-in-IP | NH=1      |11110CPP| UDP | UDP
+| Page 1 | 6LoRH | 6LoRH |  6LoRH   |LOWPAN_IPHC| UDP    | hdr |Payld
++-+ ... -+- ... -+- ... -+-+- ... +-+-+-+ ... +-+-+ ... -+ ... +-...
+                                     &lt;=        RFC 6282      =&gt;
+          &lt;================ Inner packet ==================== = =
+</artwork>
+</figure>
+<t>
+   Since there is no page switch between the encapsulated packet and the
+   encapsulation, the first octet of the compressed packet that acts as page
+   selector is actually removed at encapsulation, so the inner packet used in
+   the descriptions below start with the SRH-6LoRH, and is verbatim the packet
+   represented in <xref target='inner'/> from the second octet on.
+</t>
+
+<t>When encapsulating that inner packet to place it in the Track, the first
+   header that the Ingress appends at the head of the inner packet is an
+   IP-in-IP 6LoRH Header; in that header, the encapsulator address, which maps to the IPv6 source address in the uncompressed form, contains a GUA or ULA IPv6 address of the Ingress node that serves as DODAG ID for the Track, expressed in the compressed form and using the DODAGID of the main DODAG as compression reference. If the address is compressed to 2 bytes, the resulting value for the Length field shown in <xref target='ipinip'/> is 3, meaning that the SRH-6LoRH as a whole is 5-octets long.
+</t>
+<figure anchor='ipinip'><name>The IP-in-IP 6LoRH Header</name>
+              <artwork align="center">
+ 0                   1                   2
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-     ...     -+
+|1|0|1| Length  | 6LoRH Type 6  |  Hop Limit    | Track DODAGID |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-     ...     -+
+</artwork>
+</figure>
+
+<t> At the head of the resulting sequence of bytes, the track Ingress then adds
+   the RPI that carries the TrackID as RPLinstanceID as a P-RPI-6LoRH Header, as illustrated in <xref target='PRpifmt'/>, using the TrackID as
+   RPLInstanceID.
+   Combined with the IP-in-IP 6LoRH Header, this allows to identify the Track without ambiguity.
+</t>
+<t> The SRH-6LoRH is then added at the head of the resulting sequence of bytes
+   as a verbatim copy of the content of the SR-VIO that signaled the selected
+   Track Leg.
+</t>
+<figure anchor='srh6lorh'><name>The SRH 6LoRH Header</name>
+              <artwork align="center">
+ 0                   1
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5  ..         ..        ..
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    -+-    -+ ... +-    -+
+|1|0|0|  Size   |6LoRH Type 0..4| Hop1 | Hop2 |     | HopN |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    -+-    -+ ... +-    -+
+                                          Where N = Size + 1
+</artwork>
+</figure>
+
+
+<t>
+   The resulting encapsulated packet looks as illustrated in
+   <xref target='respac'/>:
+</t>
+
+<figure anchor='respac'><name>A Packet as Forwarded along the Main DODAG</name>
+              <artwork align="center">
++-+ ... -+-+-+- ... -+-+-+- ... -+-+-+-+-+- ... +-+-+-+-+-+-+- ...
+| Page 1 |  SRH-6LoRH  | P-RPI-6LoRH | IP-in-IP 6LoRH | Inner Packet
++-+ ... -+-+-+- ... -+-+-+- ... -+-+-+-+-+- ... +-+-+-+-+-+-+- ...
+
+ Signals :  Loose Hops :    TrackID  :  Track DODAGID :
+</artwork>
+</figure>
+</section><!-- Encapsulation and Compression -->
     </section><!-- Projected Route Operations -->
 
     <section anchor='prof'><name>Profiles</name>
@@ -3060,7 +3157,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <section><name>Storing-Mode Main DODAG</name>
 
 <t>This specification expects that the main DODAG is operated in Non-Storing
-   Mode. The reasons for that limitation are mostlt related to LLN operations,
+   Mode. The reasons for that limitation are mostly related to LLN operations,
    power and spectrum conservation:</t>
    <ul>
    <li>In Non-Storing Mode The Root already possesses the DODAG topology, so the
@@ -3076,27 +3173,44 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <li>
    When the main DODAG is operated in Non-Storing Mode, P-Routes enable
    loose Source Routing, which is only an advantage in that mode. Storing Mode
-   does not use Routing Headers, and does not benefit from this capability.
+   does not use Source Routing Headers, and does not derive the same benefits
+   from this capability.
    </li>
    </ul>
 
-<t>On the other hand, since RPL is a Layer-3 protocol, its applicability
-   extends beyond LLNs, e.g., on wired networks, as used by the ANIMA ACP <xref target='RFC8994'/>. In a powered and wired network,
-   where the memory to store the needed routes is easily available, Storing
-   Mode usually makes more sense than Non-Storing as i reduces the route stretch
-   and lowers the load on the Root. In that case, the control path between the
-   Root and the LLN nodes is highly available compared to LLNs, and the nodes
-   can be reached to maintain the P-Routes at most times. This section specifies the additions that are needed in Storing Mode.
+
+<t>On the other hand, since RPL is a Layer-3 routing protocol, its applicability
+   extends beyond LLNs to a generic IP network. RPL requires fewer resources
+   than alternative IGPs like OSPF, ISIS, EIGRP, BABEL or RIP at the expense
+   of a route stretch vs. the shortest path routes to a Destination that those
+   protocols compute. Projected Routes add the capability to install shortest
+   and/or constrained routes to special destinations such as discussed in
+   section A.9.4. of the ANIMA ACP <xref target='RFC8994'/>.
+</t>
+<t>
+   In a powered and wired network, when enough memory to store the needed
+   routes is available, the RPL Storing Mode proposes a better trade-off than
+   the Non-Storing, as it reduces the route stretch and lowers the load on the
+   Root. In that case, the control path between the Root and the LLN nodes is
+   highly available compared to LLNs, and the nodes can be reached to maintain
+   the P-Routes at most times.
    </t>
 
-
-<t>In Storing Mode, the Root misses the Child to Parent relationship that forms
+<t>
+   This section specifies the additions that are needed to support Projected
+   Routes when the main DODAG is operated in Storing Mode.
+   As long as the RPI can be processed adequately by the dataplane, the
+   changes to this specification are limited to the DAO message.
+   The Track structure, routes and forwarding operations remain the same.
+   </t>
+<t>
+   In Storing Mode, the Root misses the Child to Parent relationship that forms
    the main DODAG, as well as the sibling information. To provide that knowledge
    the nodes in the network MUST send additional DAO messages that are unicast
    to the Root as Non-Storing DAO messages are.
    </t>
 
-<t>In the DAO message, the originating router advertises a set of neighbor
+<t>In the P-DAO message, the originating router advertises a set of neighbor
    nodes using Sibling Information Options, regardless of the relative position
    in the DODAG of the advertised node vs. this router.
    To advertise a neighbor node, the router MUST have an active Address
@@ -3137,6 +3251,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </li>
    </ul>
 
+<t>
+
+   But the RPL routing information headers may not be supported on all type of
+   routed network infrastructures, especially not in high-speed routers.
+   When the RPI is not be supported in the dataplane, RPL can only operate as a
+   single topology (the main DODAG).
+   In that case, the Tracks MUST be installed using the main RPL Instance as
+   TrackID, and the routes along the Tracks are alternate routes to those
+   available along the main DODAG. They MAY conflict with routes to children
+   and MUST take precedence in the routing table. The targets MUST be adjacent
+   to the Track Egress to avoid loops that may form if the packet is reinjected
+   in the main DODAG.
+  </t>
 </section><!-- Storing-Mode Main DODAG -->
 
 
@@ -3338,19 +3465,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    </thead><tbody>
 
-          <tr><td align='center'>0x0B</td>
+          <tr><td align='center'>0x0E (suggested)</td>
 
           <td align='left'>Stateful VIO (SM-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
-          <tr><td align='center'>0x0C</td>
+          <tr><td align='center'>0x0F (suggested)</td>
 
           <td align='left'>Source-Routed VIO (NSM-VIO)</td>
 
           <td align='left'>This document</td></tr>
 
-          <tr><td align='center'>0x0D</td>
+          <tr><td align='center'>0x10 (suggested)</td>
 
           <td align='left'>Sibling Information option</td>
 
