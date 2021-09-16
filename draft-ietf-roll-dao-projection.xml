@@ -1684,7 +1684,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     comprehensive knowledge of the parent-child relationship, the Root can form
     an abstracted view of the whole DODAG topology. This document adds the
     capability for nodes to advertise additional sibling information to
-    complement the topological awareness of the Root.
+    complement the topological awareness of the Root to be passed on to the PCE.
  </t><t>
     Projected Routes require resources such as routing table space in the
     routers and bandwidth on the links; the amount of state that
@@ -2020,6 +2020,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
             </dl>
 
+    <t> <xref target='encompression'/> details how a a Track Ingress leverages
+    the P-RPI-6LoRH Header as part of the encapsulation of a packet to place it
+    into a Track.
+    </t>
     </section> <!-- Extending RFC 8138 -->
 
   </section><!-- Extending existing RFCs  -->
@@ -2371,6 +2375,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     The Sibling Information Option (SIO) provides indication on siblings that
     could be used by the Root to form P-Routes. One or more SIO(s) may be placed in the DAO messages that are sent to the Root in Non-Storing Mode.
+
     </t>
     <t>
     The format of the SIO is as follows:
@@ -2380,7 +2385,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |Comp.|B|D|Flags|    Opaque     |
+    |   Type        | Option Length |D| Flags |Comp.|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |            Step of Rank       |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2411,23 +2416,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
               Type and Length fields, see section 6.7.1. of <xref target=
               'RFC6550'/>.</dd>
 
-              <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
-              SRH-6LoRH Type as defined in figure 7 in section 5.1 of
-              <xref target='RFC8138'/> that corresponds to the compression used
-              for the Sibling Address and its DODAGID if resent. The Compression
-              reference is the Root of the main DODAG.
-              </dd>
+
               <dt>Reserved for Flags:</dt><dd>MUST be set to zero by the sender
               and MUST be ignored by the receiver.
               </dd>
+              <!--
               <dt>B:</dt><dd>
               1-bit flag that is set to indicate that the connectivity to the sibling
               is bidirectional and roughly symmetrical. In that case, only one of the siblings may
               report the SIO for the hop. If 'B' is not set then the SIO only indicates connectivity
               from the sibling to this node, and does not provide information on the hop from this node
               to the sibling.
-
               </dd>
+              -->
               <dt>D:</dt><dd>
               1-bit flag that is set to indicate that sibling belongs to the
               same DODAG. When not set, the Sibling DODAGID is indicated.
@@ -2444,6 +2445,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
               use of this field to fit its needs.
               </dd>
 
+              <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
+              SRH-6LoRH Type as defined in figure 7 in section 5.1 of
+              <xref target='RFC8138'/> that corresponds to the compression used
+              for the Sibling Address and its DODAGID if resent. The Compression
+              reference is the Root of the main DODAG.
+              </dd>
               <dt>Step of Rank:</dt><dd>16-bit unsigned integer. This is the
               Step of Rank <xref target='RFC6550'/> as computed by the Objective
               Function between this node and the sibling.
@@ -3005,12 +3012,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
      </li>
      </ul>
     <t>
-     All properties of a Track operations are inherited form the main RPL Instance
-     that is used to install the Track. For instance, the use of compression per
-     <xref target='RFC8138'/> is determined by whether it is used in the main
-     instance, e.g., by setting the "T" flag
-     <xref target='RFC9035'/> in the RPL
-     configuration option.
+     All properties of a Track operations are inherited form the main RPL
+     Instance that is used to install the Track. For instance, the use of
+     compression per <xref target='RFC8138'/> is determined by whether it is
+     used in the main instance, e.g., by setting the "T" flag <xref target=
+     'RFC9035'/> in the RPL configuration option.
    </t>
     </section><!-- Forwarding along a Track -->
 
@@ -3083,7 +3089,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <xref target='respac'/>:
 </t>
 
-<figure anchor='respac'><name>A Packet as Forwarded along the Main DODAG</name>
+<figure anchor='respac'><name>A Packet as Forwarded along a Track</name>
               <artwork align="center">
 +-+ ... -+-+-+- ... -+-+-+- ... -+-+-+-+-+- ... +-+-+-+-+-+-+- ...
 | Page 1 |  SRH-6LoRH  | P-RPI-6LoRH | IP-in-IP 6LoRH | Inner Packet
@@ -3095,66 +3101,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </section><!-- Encapsulation and Compression -->
     </section><!-- Projected Route Operations -->
 
-    <section anchor='prof'><name>Profiles</name>
-    <t>
-    This document provides a set of tools that may or may not be needed by
-    an implementation depending on the type of application it serves.
-    This sections described profiles that can be implemented separately and
-    can be used to discriminate what an implementation can and cannot do.
-    </t>
-
-    <dl>
-    <dt> Profile 0 </dt><dd>
-      Profile 0 is the Legacy support of <xref target='RFC6550'/> Non-Storing
-      Mode. It provides the minimal common functionality that must be
-      implemented as a prerequisite to all the Track-supporting profiles.
-      The other Profiles extend Profile 0 with selected capabilities that this
-      specification introduces on top.
-    </dd>
-    <dt> Profile 1 (Storing-Mode P-Route Segments along the main DODAG) </dt><dd>
-      Profile 1 does not
-      create new paths; it combines Storing and Non-Storing Modes to balance the
-      size of the routing header in the packet and the amount of state in the
-      intermediate routers in a Non-Storing Mode RPL DODAG.
-    </dd>
-    <dt> Profile 2 (Non-Storing-Mode P-Route Segments along the main DODAG)</dt><dd>
-      Profile 2 extends Profile 0 with Strict Source-Routing Non-Storing-Mode P-Routes along the main DODAG. Profile 2 provides the same capability to compress the SRH in packets down the main DODAG as Profile 1, but it require an encapsulation, in order to insert an additional SRH between the loose source routing hops.
-    </dd>
-    <dt> Profile 3 </dt><dd>
-      Profile 3 and above
-      build Tracks that do not necessarily follow the main DODAG. In order to
-      form the best path possible, those Profiles require the support of
-      Sibling Information Option to inform the Root of additional possible hops.
-      Profile 3 extends Profile 1 with additional Storing-Mode P-Routes
-      that install segments that do not follow the main DODAG.
-      If the Segment Ingress (in the SM-VIO) is the same as the IPv6 Address of
-      the Track Ingress (in the projected DAO base Object), the P-DAO creates an
-      implicit Track between the Segment Ingress and the Segment Egress.
-      </dd>
-    <dt> Profile 4 </dt><dd>
-      Profile 4 extends Profile 2 with Strict Source-Routing Non-Storing-Mode P-Routes to form Tracks inside the main DODAG. A Track is formed
-      as one or more strict source source routed paths between the Root that
-      is the Track Ingress, and the Track Egress that is the last node
-
-    </dd>
-    <dt> Profile 5 </dt><dd>
-      Profile 5 Combines Profile 4 with Profile 1 and enables to loose source
-      routing between the Ingress and the Egress of the Track. As in Profile 1,
-      Storing-Mode P-Routes connect the dots in the loose source route.
-    </dd>
-    <dt> Profile 6 </dt><dd>
-      Profile 6 Combines Profile 4 with Profile 2 and also enables to loose
-      source routing between the Ingress and the Egress of the Track.
-
-    </dd>
-    </dl>
-
-
-    </section><!-- Profiles -->
 
 
 
-    <section><name>Storing-Mode Main DODAG</name>
+    <section anchor="ov"><name>Least Constrained Variations</name>
+    <section anchor="smmd"><name>Storing-Mode Main DODAG</name>
 
 <t>This specification expects that the main DODAG is operated in Non-Storing
    Mode. The reasons for that limitation are mostly related to LLN operations,
@@ -3211,11 +3162,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
 
 <t>In the P-DAO message, the originating router advertises a set of neighbor
-   nodes using Sibling Information Options, regardless of the relative position
-   in the DODAG of the advertised node vs. this router.
+   nodes using Sibling Information Options (SIO)s, regardless of the relative
+   position in the DODAG of the advertised node vs. this router.
    To advertise a neighbor node, the router MUST have an active Address
-   Registration from that node using <xref target='RFC8505'/>, for an address
-   (ULA or GUA) that serves as identifier for the node.
+   Registration from that sibling using <xref target='RFC8505'/>, for an address
+   (ULA or GUA) that serves as identifier for the node. If this router also
+   registers an address to that sibling, and the link has similar properties in
+   both directions, only the router with the lowest Interface ID in its
+   registered address needs report the SIO, and the Root will assume symmetry.
    </t>
 
 <t>The DAO message MUST be formed as follows:
@@ -3266,6 +3220,138 @@ Ingress                    Segment 5                 Egress - Tgt 2
   </t>
 </section><!-- Storing-Mode Main DODAG -->
 
+    <section anchor="bfd"><name>A Track as a Full DODAG</name>
+
+    <t>This specification builds parallel or crossing Track Legs as opposed
+   to a more complex DODAG with interconnections at any place desirable. The
+   reason for that limitation is related to constrained node operations, and
+   capability to store large amount of topological information and compute
+   complex paths:</t>
+   <ul>
+   <li>With this specification, the node in the LLN has no topological
+   awareness, and does not need to maintain dynamic information about the link
+   quality and availability.
+   </li>
+   <li>The Root has a complete topological information and statistical metrics
+   that allow it or its PCE to perform a global optimization of all Tracks in
+   its DODAG. Based on that information, the Root computes the Track Leg and  predigest the source route paths.
+   </li>
+   <li>
+   The node merely selects one of the proposed paths and applies the associated
+   pre-computed routing header in the encapsulation. This alleviates both the
+   complexity of computing a path and the compressed form of the routing header.
+   </li>
+   </ul>
+   <t>The <xref target='I-D.ietf-raw-architecture'>"Reliable and Available
+   Wireless (RAW) Architecture/Framework"</xref> actually expects the PSE at
+   the Track Ingress to react to changes in the forwarding conditions along the
+   Track, and reroute packets to maintain the required degree of reliability.
+   To achieve this, the PSE need the full richness of a DODAG to form any path
+   that could make meet the SLAs.
+   </t>
+<t>
+   This section specifies the additions that are needed to turn the Track
+   into a full DODAG and enable the main Root to provide the necessary
+   topological information to the Track Ingress. The expectation is that the
+   metrics that the PSE uses are of an order other than that of the PCE,
+   because of the difference of time scale between routing and forwarding, mor
+   e in <xref target='I-D.ietf-raw-architecture'/>. It follows that the PSE
+   will learn the metrics it needs from an alternate source, e.g., OAM frames.
+   </t>
+<t>
+   To pass the topological information to the Ingress, the Root uses a P-DAO
+   messages that contains sequences of Target and Transit Information options
+   that collectively represent the Track, expressed in the same fashion as in
+   classical Non-Storing Mode. The difference as that the Root is the source as opposed to the destination, and can report information on many targets, possibly the full Track, with one P-DAO.
+
+   </t>
+<t>Note that the Path Sequence and Lifetime in the TIO are selected by the Root,
+   and that the Target/Transit information tupples in the P-DAO are not those
+   received by the Root in the DAO messages about the said targets. The Track
+   may follow sibling routes and does not need to be congruent with the main DODAG.
+   </t>
+    </section><!-- A Track as a Full DODAG -->
+
+
+    </section><!-- Least Constrained Variations -->
+
+    <section anchor='prof'><name>Profiles</name>
+    <t>
+    This document provides a set of tools that may or may not be needed by
+    an implementation depending on the type of application it serves.
+    This sections described profiles that can be implemented separately and
+    can be used to discriminate what an implementation can and cannot do.
+    Of all profiles presented below, only Profile 1 is mandatory and all
+    implementations MUST suppotr it. All the other profiles are OPTIONAL.
+    </t>
+
+    <dl>
+    <dt> Profile 0 </dt><dd>
+      Profile 0 is the Legacy support of <xref target='RFC6550'/> Non-Storing
+      Mode. It provides the minimal common functionality that must be
+      implemented as a prerequisite to all the Track-supporting profiles.
+      The other Profiles extend Profile 0 with selected capabilities that this
+      specification introduces on top.
+    </dd>
+    <dt> Profile 1 (Storing-Mode P-Route Segments along the main DODAG) </dt><dd>
+      Profile 1 does not
+      create new paths; it combines Storing and Non-Storing Modes to balance the
+      size of the routing header in the packet and the amount of state in the
+      intermediate routers in a Non-Storing Mode RPL DODAG.
+    </dd>
+    <dt> Profile 2 (Non-Storing-Mode P-Route Segments along the main DODAG)</dt><dd>
+      Profile 2 extends Profile 0 with Strict Source-Routing Non-Storing-Mode P-Routes along the main DODAG. Profile 2 provides the same capability to compress the SRH in packets down the main DODAG as Profile 1, but it require an encapsulation, in order to insert an additional SRH between the loose source routing hops.
+    </dd>
+    <dt> Profile 3 </dt><dd>
+      Profile 3 and above
+      build Tracks that do not necessarily follow the main DODAG. In order to
+      form the best path possible, those Profiles require the support of
+      Sibling Information Option to inform the Root of additional possible hops.
+      Profile 3 extends Profile 1 with additional Storing-Mode P-Routes
+      that install segments that do not follow the main DODAG.
+      If the Segment Ingress (in the SM-VIO) is the same as the IPv6 Address of
+      the Track Ingress (in the projected DAO base Object), the P-DAO creates an
+      implicit Track between the Segment Ingress and the Segment Egress.
+      </dd>
+    <dt> Profile 4 </dt><dd>
+      Profile 4 extends Profile 2 with Strict Source-Routing Non-Storing-Mode P-Routes to form Tracks inside the main DODAG. A Track is formed
+      as one or more strict source source routed paths between the Root that
+      is the Track Ingress, and the Track Egress that is the last node
+
+    </dd>
+    <dt> Profile 5 </dt><dd>
+      Profile 5 Combines Profile 4 with Profile 1 and enables to loose source
+      routing between the Ingress and the Egress of the Track. As in Profile 1,
+      Storing-Mode P-Routes connect the dots in the loose source route.
+    </dd>
+    <dt> Profile 6 </dt><dd>
+      Profile 6 Combines Profile 4 with Profile 2 and also enables to loose
+      source routing between the Ingress and the Egress of the Track.
+
+    </dd>
+    <dt> Profile 7 </dt><dd>
+      Profile 7 implements profile 5 in a main DODAG that is operated in
+      Storing Mode as presented in <xref target='smmd'/>. As in Profile 1 and 2,
+      the TrackID is the RPLInstanceID of the main DODAG. Longest match rules
+      decide whether a packet is sent along the main DODAG or rerouted in a
+      track.
+    </dd>
+    <dt> Profile 8 </dt><dd>
+      Profile 8 is offered in preparation of the RAW work, and for use cases
+      where an arbitrary node in the network can afford the same code
+      complexity as the RPL Root in a traditional deployment. It offers a full
+      DODAG visibility to the Track Ingress as specified in <xref target='bfd'/>
+      in a Non-Storing Mode Main DODAG.
+    </dd>
+    <dt> Profile 9 </dt><dd>
+      Profile 9 combines profiles 7 and 8, operating the Track as a full DODAG
+      within a Storing Mode Main DODAG, using only the Main DODAG RPLInstanceID
+      as TrackID.
+    </dd>
+    </dl>
+
+
+    </section><!-- Profiles -->
 
 
     <section><name>Security Considerations</name>
@@ -3693,9 +3779,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    </thead><tbody>
 
-          <tr><td align='center'>0</td>
+          <tr><td align='center'>0 (suggested)</td>
 
-          <td align='left'>Connectivity is bidirectional (B)</td>
+          <td align='left'>"D" flag: Sibling in same DODAG as Self</td>
 
           <td align='left'>This document</td></tr>
 
