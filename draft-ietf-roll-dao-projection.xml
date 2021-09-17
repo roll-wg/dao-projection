@@ -1855,7 +1855,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    inform the DODAG Root of all the edges in the DODAG, which are formed by the
    directed parent-child relationships.
    Options may be factorized; multiple RTOs may be present to signal a collection of children that can be reached via the parent(s) indicated in the TIO(s) that follows the RTOs.
-   This specification generalizes the case of a parent that can be used to reach a child with that of a whole Track through which both children and siblings of the Track Egress are reachable.
+   This specification generalizes the case of a parent that can be used to reach a child with that of a whole Track through which children and siblings of the Track Egress are reachable.
    </t>
     </section> <!-- Projected DAO -->
     <section anchor='extVIO'><name>Via Information Option</name>
@@ -1881,8 +1881,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- VIA Information OptionO -->
     <section anchor='extSIO'><name>Sibling Information Option</name>
    <t>
-   This specification adds another CMO called the Sibling Information Option (SIO) that is used by a RPL Aware Node (RAN) to advertise a selection of its candidate neighbors as siblings to the Root, more in <xref target='rplsib'/>.
-   The sibling selection process is out of scope. The expectation is that a node reports a Sibling Address in a SIO based on an active address registration <xref target="RFC8505"/> from that sibling for that address with the 'R' flag not set in the EARO. The node may assess the liveliness of the sibling at any time by performing a registration for one of its own addresses, either a link local or a global one, depending on whether the node expects the sibling to perform a matching advertisement in its own SIO.
+   This specification adds another CMO called the Sibling Information Option
+   (SIO) that is used by a RPL Aware Node (RAN) to advertise a selection of its
+   candidate neighbors as siblings to the Root, more in <xref target='rplsib'/>.
+   The SIO is placed in DAO messages that are sent directly to the Root of the
+   main DODAG.
    </t>
 
     </section> <!-- Sibling Information Option -->
@@ -2349,8 +2352,16 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <t>
     The Sibling Information Option (SIO) provides indication on siblings that
-    could be used by the Root to form P-Routes. One or more SIO(s) may be placed in the DAO messages that are sent to the Root in Non-Storing Mode.
-
+    could be used by the Root to form P-Routes. One or more SIO(s) may be placed
+    in the DAO messages that are sent to the Root in Non-Storing Mode.
+    </t>
+    <t>
+   To advertise a neighbor node, the router MUST have an active Address
+   Registration from that sibling using <xref target='RFC8505'/>, for an address
+   (ULA or GUA) that serves as identifier for the node. If this router also
+   registers an address to that sibling, and the link has similar properties in
+   both directions, only the router with the lowest Interface ID in its
+   registered address needs report the SIO, and the Root will assume symmetry.
     </t>
     <t>
     The format of the SIO is as follows:
@@ -2448,8 +2459,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               </dd>
             </dl>               <t>
     An SIO MAY be immediately followed by a DAG Metric Container. In that case
-    the DAG Metric Container provides additional metrics for the hop from the Sibling
-    to this node.
+    the DAG Metric Container provides additional metrics for the hop from the
+    Sibling to this node.
     </t>
     </section> <!-- Sibling Information Option -->
 
@@ -2466,24 +2477,35 @@ Ingress                    Segment 5                 Egress - Tgt 2
       <section anchor='req'><name>Requesting a Track</name>
 
       <t>
-      A Node is free to ask the Root for a new Track for which it will be Ingress at any time.
-      This is done with a PDR message, that indicates the desired TrackID and the duration for which the Track should be established. Upon a PDR, the Root MAY install the necessary Segments, in which case it answers with a PDR-ACK indicating the granted Track Lifetime.
+      This specification introduces the PDR message, used by an LLN node to
+      request the formation of a new Track for which this node is Ingress.
+      Note that the namespace for the TrackID is owned by the Ingress node,
+      and in the absence of a PDR, there must be some procedure for the Root to
+      assign TrackIDs in that namespace while avoiding collisions, more in
+      <xref target='trkid'/>.
+      </t>
+      <t>
+      The PDR signals the desired TrackID and the duration for which the Track should be established. Upon a PDR, the Root MAY install the Track as requested, in which case it answers with a PDR-ACK indicating the granted
+      Track Lifetime.
       All the Segments MUST be of a same mode, either Storing or Non-Storing.
       All the Segments MUST be created with the same TrackID and the same DODAGID signaled in the P-DAO.
       </t>
       <t>
-      The Root is free to design the Track as it wishes, and to change the Segments overtime to serve the Track as needed, without notifying the
-      resquesting Node.
+      The Root designs the Track as it sees best, and updates / changes the Segments overtime to serve the Track as needed. There is no notification to the requesting node when those changes happen.
       The Segment Lifetime in the P-DAO messages does not need to be aligned to
       the Requested Lifetime in the PDR, or between P-DAO messages for different Segments. The Root may use shorter lifetimes for the Segments
       and renew them faster than the Track is, or longer lifetimes in which case it will need to tear down the Segments if the Track is not renewed.
       </t>
       <t>
-      When the Track Lifetime that was returned in the PDR-ACK is close to elapse, the resquesting Node needs to resend a PDR using the TrackID in the PDR-ACK to extend the lifetime of the Track, else the Track will time out and the Root will tear down the whole structure.
+      When the Track Lifetime that was returned in the PDR-ACK is close to
+      elapse - vs. the trip time from the node to the Root, the requesting node
+      SHOULD resend a PDR using the TrackID in the PDR-ACK to extend the
+      lifetime of the Track, else the Track will time out and the Root will tear
+      down the whole structure.
       </t>
       <t>
       If the Track fails and cannot be restored, the
-      Root notifies the resquesting Node asynchronously with a PDR-ACK
+      Root notifies the requesting node asynchronously with a PDR-ACK
       with a Track Lifetime of 0, indicating that the Track has failed, and
       a PDR-ACK Status indicating the reason of the fault.
       </t>
@@ -2494,19 +2516,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
      <t>
      RPL defines the concept of an Instance to signal an individual
-     routing topology but does not have a concept of an administrative
-     distance, which exists in certain proprietary implementations to sort out
-     conflicts between multiple sources of routing information within one
-     routing topology.
+     routing topology, and multiple topologies can coexist in the same network.
+     The RPLInstanceID is tagged in the RPI of every packet to signal which
+     topology the packet actually follows.
      </t>
      <t>
      This draft leverages the RPL Instance model as follows:
-     </t><ul spacing='normal'>
+     </t>
+   <ul spacing='normal'>
      <li>
      <t>
      The Root MAY use P-DAO messages to add better routes in the main (Global)
      Instance in conformance with the routing objectives in that Instance.
-     To achieve this, the Root MAY install an Storing-Mode P-Route along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
+     To achieve this, the Root MAY install a Storing-Mode P-Route along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
      </t>
      <t>
      When adding an Storing-Mode P-Route to the main RPL Instance, the Root MUST set the RPLInstanceID field of the P-DAO message (see section 6.4.1. of <xref target='RFC6550'/>) to the RPLInstanceID of the Main DODAG, and MUST NOT use the DODAGID field. A P-Route provides a longer match to the Target Address than the default route via the Root, so it is preferred.
@@ -2518,14 +2540,32 @@ Ingress                    Segment 5                 Egress - Tgt 2
      </li>
      <li>
      <t>
-     The Root MAY also use P-DAO messages to install a specific (say, Traffic Engineered) path as a single Segment, a single Track Leg with multiple segments, or a more complex structure, to a particular endpoint that is the Track Egress. In that case, the Root MUST install a Local RPL Instance (see section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID is used as TrackID.
+     The main Root MAY also use P-DAO messages to install a specific (say, Traffic Engineered) path as a single Segment, a single Track Leg with multiple segments, or a more complex structure, to a particular endpoint that is the Track Egress. In that case, the Root MUST install a Local RPL Instance (see section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID is used as TrackID.
     </t>
      <t>
-     In that case, the TrackID MUST be unique for the Global Unique IPv6 Address (GUA) or Unique-Local Address (ULA) of the Track Ingress that serves as DODAGID for the Track. The Track Ingress owns the namespace of its TrackIDs, so it can pick any unused value to request a new Track with a PDR. The Root is aware of all the active Tracks, so it can also pick any unused value to form Tracks without a PDR. To avoid a collision of the Root and the Track Ingress picking the same value at the same time, it is RECOMMENDED that the Track Ingress starts allocating the ID value of the Local RPLInstanceID (see section 5.1. of <xref target='RFC6550'/>) used as TrackIDs with the value 0 incrementing, while the Root starts with 63 decrementing.
-
+     In that case, the TrackID MUST be unique for the IPv6 ULA or GUA of the
+     Track Ingress that serves as DODAGID for the Track. The Track Ingress owns
+     the namespace of its TrackIDs, so it can pick any unused value to request a
+     new Track with a PDR. In a particular deployment where PDR are not used,
+     the namespace can be delegated to the main Root, which can  assign the
+     TrackIDs for the Tracks it creates without collision.
+    </t>
+     <t>
+     With this specification, the Root is aware of all the active Tracks, so it
+     can also pick any unused value to form Tracks without a PDR. To avoid a
+     collision of the Root and the Track Ingress picking the same value at the
+     same time, it is RECOMMENDED that the Track Ingress starts allocating the
+     ID value of the Local RPLInstanceID (see section 5.1. of <xref target=
+     'RFC6550'/>) used as TrackIDs with the value 0 incrementing, while the Root
+     starts with 63 decrementing.
      </t>
      <t>
-     This way, a Track is uniquely identified by the tuple (DODAGID, TrackID) where the TrackID is always represented with the D flag set to 0.
+     This way, a Track is uniquely identified by the tuple (DODAGID, TrackID)
+     where the TrackID is always represented with the D flag set to 0 (see
+     also section 5.1. of <xref target='RFC6550'/>), indicating when used in an
+     RPI that the source address of the IPv6 packet signals the DODAGID.
+     </t>
+     <t>
      The P-DAO Base Object indicates the tuple (DODAGID, TrackID) that
      identifies the Track as shown in <xref target='p-dao-fmt'/>, and the
      P-RouteID that identifies the P-Route is signaled in the VIO as shown in
@@ -2535,7 +2575,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      </li>
 
 
-     </ul>
+  </ul>
      </section><!-- Identifying a Track -->
 
 
@@ -2735,19 +2775,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
    a Non-Storing-Mode P-DAO installs a source-routed path within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet. It is sent to the Track Ingress which creates a tunnel associated with the Track, and
    connected routes over the tunnel to the Targets in the RTO. The tunnel encapsulation MUST incorporate a routing header via the list addresses listed in the VIO in the same order. The content of the NSM-VIO starting at the first SRH-6LoRH header MUST be used verbatim by the Track Ingress when it encapsulates a packet to forward it over the Track.
    </t>
-   <t>
-   The next entry in the source-routed path must be either a neighbor of the
-   previous entry, or reachable as a Target via another P-Route, either Storing or Non-Storing, which implies that the nested P-Route has to be installed
-   before the loose sequence is. For instance, a Segment of a Track must be
-   installed before the Leg(s) of the same Track that use it.
-   </t>
-   <t>
-   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next segment, both already setup; the segments are associated with the same Track, which avoids the need of an additional encapsulation.
-   Conversely, if it is reachable over a Non-Storing Mode P-Route, the next
-   loose source-routed hop of the inner Track is a Target of a previously
-   installed Track and the Ingress of a next Track, which requires a de- and a
-   re-encapsulation when switching the outer Tracks that jin the loose hops.
-  </t>
 
           <figure anchor='nsdf'><name>Projecting a Non-Storing Route</name>
             <artwork>
@@ -2773,64 +2800,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
                        LLN
                        </artwork>
           </figure>
-    <!--t>
-    A route indicated by an NSM-VIO may be loose, meaning that the node that owns
-    the next listed Via Address is not necessarily a neighbor. Without proper
-    loop avoidance mechanisms, the interaction of loose source routing and other
-    mechanisms may effectively cause loops.
-
-    </t-->
-    <t>
-
-      When forwarding a packet to a destination for which the router determines
-      that routing happens via a Track Target, the router inserts the Source
-      Routing Header in the packet with the final destination at the Track Egress.
-    </t>
-    <t>
-      In order to signal the Segment, the router encapsulates the
-      packet with an IP-in-IP header and a Routing Header as follows:
-    </t>
-    <ul>
-    <li>
-      In the uncompressed form the source of the packet is this router, the
-      destination is the first Via Address in the NSM-VIO, and the RH is a
-      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
-      list of the remaining Via Addresses terminating by the Track Egress.
-    </li>
-    <li>
-    <t>
-    The preferred alternate in a network where 6LoWPAN Header Compression
-    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
-    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
-    Dispatch"</xref> to compress the RPL artifacts as indicated in
-    <xref target='RFC8138'/>.
-    </t>
-    <t>
-    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the Track Egress.
-    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
-
-    </t>
-    </li>
-    </ul>
-    <t>
-      In the case of a loose source-routed path, there MUST be a segment
-      for the same Track to the loose next hop, on which case the packet is
-      forwarded to the next hop along that segment, or a common neighbor with the
-      loose next hop, on which case the packet is forwarded to that neighbor, or
-      another Track to the loose next hop for which this node or a neighbor is
-      Ingress; in the last case, another encapsulation takes place and the
-      process possibly recurses; otherwise the packet is dropped.
-     </t>
-      <t>In case of a forwarding error along a Source Route path, the node that
-      fails to forward SHOULD send an ICMP error with a code "Error in Source
-      Routing Header" back to the source of the packet, as described in section
-      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
-      encapsulating node SHOULD stop using the source route path for a period
-      of time and it SHOULD send an ICMP message with a Code "Error in
-      P-Route" to the Root. Failure to follow these steps may result
-      in packet loss and wasted resources along the source route path that
-      is broken.
-      </t>
+   <t>
+   The next entry in the source-routed path must be either a neighbor of the
+   previous entry, or reachable as a Target via another P-Route, either Storing or Non-Storing, which implies that the nested P-Route has to be installed
+   before the loose sequence is. For instance, a Segment of a Track must be
+   installed before the Leg(s) of the same Track that use it.
+   </t>
+   <t>
+   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next segment, both already setup; the segments are associated with the same Track, which avoids the need of an additional encapsulation.
+   Conversely, if it is reachable over a Non-Storing Mode P-Route, the next
+   loose source-routed hop of the inner Track is a Target of a previously
+   installed Track and the Ingress of a next Track, which requires a de- and a
+   re-encapsulation when switching the outer Tracks that jin the loose hops.
+  </t>
   </section> <!-- Installing a Track Segment with a Storing-Mode P-Route -->
 
       </section><!-- Installing a Track  -->
@@ -2936,62 +2918,26 @@ Ingress                    Segment 5                 Egress - Tgt 2
     After a reasonable time to enable the deprecated Segments to empty, the root
     tears down those Segments as described in <xref target='teardown'/>.
     </t>
+
     </section>  <!-- Maintaining a Track Leg -->
 
     </section> <!-- Maintaining a Track -->
 
+   <section anchor='routing'><name>Encapsulating and Forwarding Along a Track</name>
 
 
-     <section anchor='routing'><name>Forwarding Along a Track</name>
 
-     <t>
-     This draft leverages the RPL Forwarding model follows:
-     </t><ul spacing='normal'>
-     <li>
-      <t>
-     In the data packets, the Track DODAGID and the TrackID MUST be respectively signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI that MUST be placed in the outer chain of IPv6 Headers.
-      </t>
-     <t>
-     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
-      </t>
-     <t>
-     The D flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
-     in <xref target='routing'/>.
+    <t>
+   When forwarding a packet to a destination for which the router determines
+   that routing happens via a Track Target, the router must reroute the packet
+   which implies an encapsulation to add the Source Routing Header with the final destination at the Track Egress.
+   Though fragmentation is possible in a 6LoWPAN LLN, e.g., using <xref
+   target='RFC4944'/>, <xref target='RFC8930'/>, and/or <xref target='RFC8931'/>,
+   it is RECOMMENDED to allow an MTU that is larger than 1280 in the main
+   DODAG and allows for the additional headers while exposing only 1280 to the
+   6LoWPAN Nodes as indicated by section 4 of <xref target='RFC4944'/>.
+   </t>
 
-     </t>
-
-
-     </li>
-     <li>
-      <t>
-      This draft conforms the principles of
-      <xref target='RFC9008'/> with regards to packet
-      forwarding and encapsulation along a Track.
-      </t>
-      <ul>
-      <li>
-      In that case,
-      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
-      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in  <xref target='RFC9008'/> apply.
-      </li><li>
-      If the Track Ingress is the originator of the packet and the Track Egress
-      is the destination of the packet, there is no need for an encapsulation.
-      </li><li>
-      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
-      </li>
-      </ul>
-     <t>
-     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
-     On the other hand, a Storing Mode Track must be strict and a packet that
-     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
-     </t>
-     <t>
-      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet MUST be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is Ingress, otherwise the packet MUST be dropped.
-
-     </t>
-     <!-- TODO: add config parm to the local Instance -->
-     </li>
-     </ul>
     <t>
      All properties of a Track operations are inherited form the main RPL
      Instance that is used to install the Track. For instance, the use of
@@ -2999,17 +2945,149 @@ Ingress                    Segment 5                 Egress - Tgt 2
      used in the main instance, e.g., by setting the "T" flag <xref target=
      'RFC9035'/> in the RPL configuration option.
    </t>
+    <t>
+    The Track Ingress that places a packet in a Track encapsulates it with an
+    IP-in-IP header, a Routing Header, and an IPv6 Hop-by-Hop Option Header that
+    contains the RPL Packet Information (RPI) as follows:
+    </t>
+    <ul>
+    <li>
+      In the uncompressed form the source of the packet is this router, the
+      destination is the first Via Address in the NSM-VIO, and the RH is a
+      Source Routing Header (SRH) <xref target='RFC6554'/> that contains the
+      list of the remaining Via Addresses terminating by the Track Egress.
+    </li>
+    <li>
+    <t>
+    The preferred alternate in a network where 6LoWPAN Header Compression
+    <xref target='RFC6282'/> is used is to leverage <xref target='RFC8025'>
+    "IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Paging
+    Dispatch"</xref> to compress the RPL artifacts as indicated in
+    <xref target='RFC8138'/>.
+    </t>
+    <t>
+    In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the Track Egress.
+    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
+
+    </t>
+    </li>
+    </ul>
+
+     <t>
+     To signal the Track in the packet, this specification leverages the RPL
+     Forwarding model follows:
+     </t>
+
+
+
+
+     <ul spacing='normal'>
+     <li>
+      <t>
+     In the data packets, the Track DODAGID and the TrackID MUST be respectively
+     signaled as the IPv6 Source Address and the RPLInstanceID field of the RPI
+     that MUST be placed in the outer chain of IPv6 Headers.
+      </t>
+      <t>
+     The RPI carries a local RPLInstanceID called the TrackID, which, in association with the DODAGID, indicates the Track along which the packet is forwarded.
+      </t>
+     <t>
+     The D flag in the RPLInstanceID MUST be set to 0 to indicate that the source address in the IPv6 header is set ot the DODAGID, more
+     in <xref target='routing'/>.
+     </t>
+     </li>
+     <li>
+      <t>
+      This draft conforms the principles of <xref target='RFC9008'/> with regards to packet forwarding and encapsulation along a Track.
+      </t>
+
+
+      <ul>
+
+      <li>
+      In that case,
+      the Track is the DODAG, the Track Ingress is the Root, and the Track Egress
+      is a RAL, and neighbors of the Track Egress that can be reached via the Track are RULs. The encapsulation rules in <xref target='RFC9008'/> apply.
+      </li><li>
+      If the Track Ingress is the originator of the packet and the Track Egress
+      is the destination of the packet, there is no need for an encapsulation.
+      </li><li>
+      So the Track Ingress must encapsulate the traffic that it did not originate, and add an RPI in any fashion.
+      </li>
+
+
+      </ul>
+
+     <t>
+     A packet that is being routed over the RPL Instance associated to a first  Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to cover one loose hop of the first Track.
+     On the other hand, a Storing Mode Track must be strict and a packet that
+     it placed in a Storing Mode Track MUST follow that Track till the Track Egress.
+     </t>
+
+
+     </li>
+
+
+    </ul>
+    <t>
+    The forwarding of a packet along a track will fail if the Track continuity
+    is broken,e.g.:
+    </t>
+
+   <ul>
+    <li>
+     In the case of a strict path along a Segment, if the next strict hop is not
+     reachable, the packet is dropped.
+    </li>
+    <li>
+      In the case of a loose source-routed path, when the loose next hop is not
+      a neighbor, there must be a Segment of the same Track to that loose next hop. When that is the case the packet is
+      forwarded to the next hop along that segment, or a common neighbor with the
+      loose next hop, on which case the packet is forwarded to that neighbor, or
+      another Track to the loose next hop for which this node or a neighbor is
+      Ingress; in the last case, another encapsulation takes place and the
+      process possibly recurses; otherwise the packet is dropped.
+     </li>
+
+     <li>
+      When a Track Egress extracts a packet from a Track (decapsulates the packet), the Destination of the inner packet must be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is Ingress, otherwise the packet MUST be dropped.
+
+      </li>
+
+    </ul>
+
+
+
    <t>
-    In case of a failure forwarding a packet along a P-Route, e.g., the next hop
+    In case of a failure forwarding a packet along a Segment, e.g., the next hop
     is unreachable, the node that discovers the fault MUST send an ICMPv6 Error
     message <xref target='RFC4443'/> to the Root, with a new Code
-    "Error in P-Route" (See <xref target='ICMPv6ErrPRoute'/>). The message MUST
-    be throttled in case of consecutive occurrences.
+    "Error in P-Route" (See <xref target='ICMPv6ErrPRoute'/>).
     The Root can then repair by updating the broken Segment and/or Tracks, and
     in the case of a broken Segment, remove the leftover sections of the segment
     using SM-VIOs with a lifetime of 0 indicating the section ot one or more
     nodes being removed (See <xref target='maintain'/>).
-       </t> <t>
+    </t>
+
+    <t>In case of a forwarding error along a Source Route path, the node that
+    fails to forward SHOULD send an ICMP error with a code "Error in Source
+      Routing Header" back to the source of the packet, as described in section
+      11.2.2.3. of <xref target='RFC6550'/>. Upon this message, the
+      encapsulating node SHOULD stop using the source route path for a period
+      of time and it SHOULD send an ICMP message with a Code "Error in
+      P-Route" to the Root. Failure to follow these steps may result
+      in packet loss and wasted resources along the source route path that
+      is broken.
+      </t>
+      <t>
+    Either way, the ICMP message MUST be throttled in case of consecutive
+    occurrences. It MUST be sourced at the ULA or a GUA that is used in this
+    Track for the source node, so the Root can establish where the error
+    happened.
+
+      </t>
+      <t>
+
     The portion of the invoking packet that is sent back in the ICMP message
     SHOULD record at least up to the RH if one is present, and this hop of the
     RH SHOULD be consumed by this node so that the destination in
@@ -3019,18 +3097,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
     6LoRH information SHOULD be present in the ICMP message.
        </t>
 
-   <t>
-   In order to avoid fragmentation, e.g., using <xref target='RFC4944'/>,
-   <xref target='RFC8930'/>, and/or <xref target='RFC8931'/> in a 6LoWPAN LLN,
-   it is RECOMMENDED to allow an MTU that is larger than 1280 in the main
-   DODAG and allows for the additional headers while exposing only 1280 to the
-   6LoWPAN Nodes as indicated by section 4 of <xref target='RFC4944'/>.
-   </t>
-    </section><!-- Forwarding along a Track -->
+    </section><!-- Encapsulating and Forwarding along a Track -->
 
 
 
-<section anchor='encompression'><name>Encapsulation and Compression</name>
+<section anchor='encompression'><name>Compression of the RPL Artifacts</name>
 
 <t>
    When using <xref target='RFC8138'/> in the Main DODAG operated in Non-Storing
@@ -3093,8 +3164,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 <t>
-   The resulting encapsulated packet looks as illustrated in
-   <xref target='respac'/>:
+   The format of the resulting encapsulated packet in <xref target='RFC8138'/>
+   compressed form is illustrated in <xref target='respac'/>:
 </t>
 
 <figure anchor='respac'><name>A Packet as Forwarded along a Track</name>
@@ -3106,13 +3177,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
  Signals :  Loose Hops :    TrackID  :  Track DODAGID :
 </artwork>
 </figure>
-</section><!-- Encapsulation and Compression -->
+</section><!-- Compression of the RPL Artifacts -->
     </section><!-- Root Initiated Routing State -->
 
 
 
 
-    <section anchor="ov"><name>Least Constrained Variations</name>
+    <section anchor="ov"><name>Lesser Constrained Variations</name>
     <section anchor="smmd"><name>Storing-Mode Main DODAG</name>
 
 <t>This specification expects that the Main DODAG is operated in Non-Storing
@@ -3169,15 +3240,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
    to the Root as Non-Storing DAO messages are.
    </t>
 
-<t>In the P-DAO message, the originating router advertises a set of neighbor
+<t>In the DAO message, the originating router advertises a set of neighbor
    nodes using Sibling Information Options (SIO)s, regardless of the relative
    position in the DODAG of the advertised node vs. this router.
-   To advertise a neighbor node, the router MUST have an active Address
-   Registration from that sibling using <xref target='RFC8505'/>, for an address
-   (ULA or GUA) that serves as identifier for the node. If this router also
-   registers an address to that sibling, and the link has similar properties in
-   both directions, only the router with the lowest Interface ID in its
-   registered address needs report the SIO, and the Root will assume symmetry.
    </t>
 
 <t>The DAO message MUST be formed as follows:
@@ -3190,7 +3255,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    this router as their neighbor. The DAO contains one or more sequences of one
    Transit Information Option and one or more Sibling Information Options.
    There is no RPL Target Option so the Root is not confused into adding a
-   Storing Mode Router to the Target.
+   Storing Mode route to the Target.
    </li>
    <li>
    The TIO is formed as in Storing Mode, and the Parent Address is not present.
@@ -3206,7 +3271,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
    sends the information.  The Target Prefix in the RTO contains the address in
    full and the "Advertiser address in Full" (F) <xref target='RFC9010'/> flag
    is set to 1.
-   TODO Flag to indicate not to install a DAO route to Target?
    </li>
    -->
    <li>The TIO is followed by one or more SIOs that provide an address (ULA or GUA) of the advertised neighbor node.
@@ -3214,7 +3278,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </ul>
 
 <t>
-
    But the RPL routing information headers may not be supported on all type of
    routed network infrastructures, especially not in high-speed routers.
    When the RPI is not be supported in the dataplane, RPL can only operate as a
