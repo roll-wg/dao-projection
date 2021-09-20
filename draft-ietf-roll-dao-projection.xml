@@ -104,7 +104,7 @@ docName="draft-ietf-roll-dao-projection-20" >
     </t>
 <t>
    RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
-   the Root often acts as the Border Router to connect the RPL domain to the
+   the Root often acts as the Border router to connect the RPL domain to the
    IP backbone and routes along that graph up, towards the Root, and down
    towards the nodes.
     </t>
@@ -174,7 +174,7 @@ docName="draft-ietf-roll-dao-projection-20" >
        <dt>P-DAO:</dt><dd> Projected DAO </dd>
        <dt>P-Route:</dt><dd> Projected Route </dd>
        <dt>PDR:</dt><dd> P-DAO Request </dd>
-       <dt>RAN:</dt><dd> RPL-Aware Node (either a RPL Router or a RPL-Aware Leaf)</dd>
+       <dt>RAN:</dt><dd> RPL-Aware Node (either a RPL router or a RPL-Aware Leaf)</dd>
        <dt>RAL:</dt><dd> RPL-Aware Leaf </dd>
        <dt>RH:</dt><dd> Routing Header </dd>
        <dt>RPI:</dt><dd> RPL Packet Information </dd>
@@ -412,16 +412,20 @@ docName="draft-ietf-roll-dao-projection-20" >
     </t>
 
    <t>
+   Section 5.1. of <xref target='RFC6550'/> describes the RPL Instance and
+   its encoding. There can be up to 128 global RPL Instances, for which there
+   can be one or more DODAGs, and there can be 64 local RPL Instances, with a
+   namespace that is indexed by a DODAGID, where the DODAGID is a Unique Local
+   Address (ULA) or a Global Unicast Address (GUA) of the Root of the DODAG.
    When building a Track with RPL, the Track is assimilated with the DODAG
    formed for a Local RPL Instance.
    The local RPLInstanceID of the Track is used as the TrackID, more in
    <xref target='trkid'/>. This does not change the semantics and format of the
    RPLInstanceID that is used as TrackID.
-   A P-DAO message for a Track signals the TrackID in
-   the RPLInstanceID field. The Track Ingress is signaled in the DODAGID field
-   of the Projected DAO Base Object; that field is elided in the case of the
-   main RPL Instance. The Track Ingress is the Root of the Track, as shown in
-   <xref target='p-dao-fmt'/>.
+   A P-DAO message for a Track signals the TrackID in the RPLInstanceID field.
+   The Track Ingress is signaled in the DODAGID field of the Projected DAO Base
+   Object; that field is elided in the case of the main RPL Instance. The Track
+   Ingress is the Root of the Track, as shown in <xref target='p-dao-fmt'/>.
    </t>
 
 </section><!-- On tracks -->
@@ -442,7 +446,7 @@ docName="draft-ietf-roll-dao-projection-20" >
    IPv6 addresses that can reached along the Track.
 </t>
 <t>
-   Before diving deeper into Track Legs and Segments signalling and operation,
+   Before diving deeper into Track Legs and Segments signaling and operation,
    this section provides examples of what how route projection works through
    variations of a simple example. Say we want to build a Serial Track from
    node A to E in <xref target='reft'/>, so A can route packets to either E or
@@ -484,7 +488,7 @@ In a general manner the desired outcome is as follows:
 
 
 
-    <section><name>Using Storing-Mode Segments</name>
+    <section anchor="usms"><name>Using Storing-Mode Segments</name>
 <t>
     A==&gt;B==&gt;C and C==&gt;D==&gt;E are segments of a same Track.
     Note that the Storing Mode signaling imposes strict continuity in a segment.
@@ -869,7 +873,7 @@ Now the packet destination is E.</li>
 </ul>
     </section><!-- External routes -->
 
-    <section><name>Segment Routing</name>
+    <section anchor="srpdao"><name>Segment Routing</name>
 
 <t>Storing-Mode P-DAO 1 and 2, and Non-Storing-Mode P-DAO 3, are sent to E, B
  and A, respectively, as follows:</t>
@@ -1361,7 +1365,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
     </section><!-- External routes -->
 
-    <section><name>Segment Routing</name>
+    <section anchor="nssr"><name>Segment Routing</name>
 
 
 
@@ -2322,8 +2326,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               </dd>
 
               <dt>Via Address:</dt><dd>
-              <t>An IPv6 Unique Local Address (ULA) or Global Unicast Address
-              (GUA) of a node along the Segment. The VIO contains one or
+              <t>An IPv6 ULA or GUA of a node along the Segment.
+              The VIO contains one or
               more IPv6 Via Addresses listed in the datapath order from Ingress
               to Egress. The list is expressed in a compressed form as signaled
               by the preceeding SRH-6LoRH header.
@@ -2694,7 +2698,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
               |          Internet
               |
            +-----+
-           |     | Border Router
+           |     | Border router
            |     |  (RPL Root)
            +-----+                      |     ^                   |
               |                         | DAO | ACK               |
@@ -2737,18 +2741,15 @@ Ingress                    Segment 5                 Egress - Tgt 2
      that contain the address of the propagating node, which is used as source
      of the message.
     </t><t>
-     Upon receiving a propagated DAO, all except the Egress Router MUST install a route towards the DAO Target(s) via their successor in the SM-VIO. The router MAY install additional routes towards the
-     VIA Addresses that are the SM-VIO after the next one, if any, but
-     in case of a conflict or a lack of resource, the route(s) to the Target(s) have precedence.
-     </t>
-    <t>
-    Those routers may also create additional routes
-    towards the nodes after self in the list, but in case of memory shortage the
-    routes to the Targets have precedence, and the node may have to remove the
-    routes to Via Address to make room for more Targets. A node that cannot
-    store the routes to all the Targets MUST reject the P-DAO by sending a
-    DAO-ACK to the Root with a Rejection Status of "Out of Resources" as opposed
-    to forwarding the DAO to its predecessor in the list.
+    Upon receiving a propagated DAO, all except the Egress router MUST install a
+    route towards the DAO Target(s) via their successor in the SM-VIO. A router
+    that cannot store the routes to all the Targets in a P-DAO MUST reject the
+    P-DAO by sending a DAO-ACK to the Root with a Rejection Status of "Out of
+    Resources" as opposed to forwarding the DAO to its predecessor in the list.
+    The router MAY install additional routes towards the VIA Addresses that are
+    the SM-VIO after self, if any, but in case of a conflict or a lack of
+    resource, the route(s) to the Target(s) are the ones that must be installed
+    in priority.
     </t>
      <t>
      If a router cannot reach its predecessor in the SM-VIO, the router MUST send the DAO-ACK to the Root with a Rejection Status of "Predecessor Unreachable".
@@ -2772,7 +2773,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
    <t>As illustrated in <xref target='nsdf'/>,
-   a Non-Storing-Mode P-DAO installs a source-routed path within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an encapsulation to add the SRH to an existing packet. It is sent to the Track Ingress which creates a tunnel associated with the Track, and
+   a Non-Storing-Mode P-DAO installs a source-routed path within the Track indicated by the P-DAO Base Object, towards the Targets indicated in the Target Options. The source-routed path requires a Source-Routing header which implies an IP-in-IP encapsulation to add the SRH to an existing packet. It is sent to the Track Ingress which creates a tunnel associated with the Track, and
    connected routes over the tunnel to the Targets in the RTO. The tunnel encapsulation MUST incorporate a routing header via the list addresses listed in the VIO in the same order. The content of the NSM-VIO starting at the first SRH-6LoRH header MUST be used verbatim by the Track Ingress when it encapsulates a packet to forward it over the Track.
    </t>
 
@@ -2782,7 +2783,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
                  |          Internet
                  |
               +-----+
-              |     | Border Router
+              |     | Border router
               |     |  (RPL Root)
               +-----+                    |  P  ^ ACK
                  |        Track          | DAO |
@@ -2807,11 +2808,18 @@ Ingress                    Segment 5                 Egress - Tgt 2
    installed before the Leg(s) of the same Track that use it.
    </t>
    <t>
-   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next segment, both already setup; the segments are associated with the same Track, which avoids the need of an additional encapsulation.
+   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next segment, both already setup; the segments are associated with the same Track, which avoids the need of an additional encapsulation. For instance, in
+   <xref target="srpdao"/>, Segments A==>B-to-C and C==>D==>E-to-F must be
+   installed with Storing-Mode P-DAO messages 1 and 2 before the Track A-->C-->E-to-F that joins them can be installed with Non-Storing-Mode P-DAO 3.
+   </t>
+   <t>
    Conversely, if it is reachable over a Non-Storing Mode P-Route, the next
    loose source-routed hop of the inner Track is a Target of a previously
    installed Track and the Ingress of a next Track, which requires a de- and a
-   re-encapsulation when switching the outer Tracks that jin the loose hops.
+   re-encapsulation when switching the outer Tracks that join the loose hops.
+   This is examplified in <xref target="nssr"/> where Non-Storing Mode P-DAO 1
+   and 2 install strict Tracks that Non-Storing Mode P-DAO 3 joins as a super
+   Track. In such a case, packets are subject to double IP-in-IP encapsulation.
   </t>
   </section> <!-- Installing a Track Segment with a Storing-Mode P-Route -->
 
@@ -2967,7 +2975,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
     <t>
     In that case, the source routed header is the exact copy of the (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the Track Egress.
-    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress Router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
+    The RPI-6LoRH is appended next, followed by an IP-in-IP 6LoRH Header  that indicates the Ingress router in the Encapsulator Address field, see as a similar case Figure 20 of <xref target='RFC9035'/>.
 
     </t>
     </li>
@@ -4019,7 +4027,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
                  |          Internet
                  |
               +-----+
-              |     | Border Router
+              |     | Border router
               |     |  (RPL Root)
               +-----+                      ^     |        |
                  |                         | DAO | ACK    |
@@ -4114,7 +4122,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
                     |          Internet
                     |
                  +-----+
-                 |     | Border Router
+                 |     | Border router
                  |     |  (RPL Root)
                  +-----+
                     X
@@ -4149,7 +4157,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
                     |          Internet
                     |
                  +-----+
-                 |     | Border Router
+                 |     | Border router
                  |     |  (RPL Root)
                  +-----+
                     |
