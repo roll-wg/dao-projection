@@ -17,7 +17,7 @@
 <rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902'
 tocInclude="true" indexInclude="true" obsoletes=""  consensus="true"
 submissionType="IETF" xml:lang="en" version="3"
-docName="draft-ietf-roll-dao-projection-20" >
+docName="draft-ietf-roll-dao-projection-21" >
 
 <front>
 
@@ -1887,8 +1887,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     Track Leg.
     A new P-DAO Request (PDR) message (see <xref target='P-DAOreq'/>)
     enables a Track Ingress to request the Track from the Root for which it
-    is the Root and it owns the address that serves as TrackIF, as well as the
-    assocociated namespace from which it selects the TrackID. In the
+    is the Root and it owns the address that serves as TrackID, as well as the
+    associated namespace from which it selects the TrackID. In the
     context of this specification, the installed route appears as a more
     specific route to the Track Targets, and the Track Ingress routes
     the packets towards the Targets via the Track using the longest match as
@@ -2447,7 +2447,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
               The VIO contains one or
               more IPv6 Via Addresses listed in the datapath order from Ingress
               to Egress. The list is expressed in a compressed form as signaled
-              by the preceeding SRH-6LoRH header.
+              by the preceding SRH-6LoRH header.
               </t><t>
               In a Storing Mode P-DAO that updates or removes a section of an
               already existing Segment, the list in the SM-VIO may represent
@@ -2790,7 +2790,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
     <t>
    In a No-Path Non-Storing Mode P-DAO, the SRH-6LoRH MUST NOT be present in the
-   NSM-VIO; the state in the Ingress is erased regardless.In all other cases, a
+   NSM-VIO; the state in the Ingress is erased regardless. In all other cases, a
    VIO MUST contain at least one Via Address, and a Via Address MUST NOT be
    present more than once, which would create a loop.
    </t>
