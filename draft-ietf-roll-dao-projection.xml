@@ -1850,7 +1850,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     The <xref target='I-D.ietf-raw-architecture'>"Reliable and Available
     Wireless (RAW) Architecture/Framework"</xref> extends the definition of
     Track, as being composed of East-West directional segments and North-South
-    bidirectional segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum.. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
+    bidirectional segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
      </t>
     <t>
     The RAW Architecture defines a dataplane extension of the PCE called the Path Selection Engine (PSE), that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.  The PSE controls the forwarding operation of the packets within a Track
@@ -2991,7 +2991,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      Repathing a Track Segment or Leg may cause jitter and packet misordering.
      For critical flows that require timely and/or
      in-order delivery, it might be necessary to deploy the PAREO functions
-     <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track..
+     <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track.
      This specification allows to use more than one Leg for a Track, and 1+N
      packet redundancy.
      </t>
