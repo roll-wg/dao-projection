@@ -1823,7 +1823,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     routes is a PCE. The PCE
     computes its routes based on its own objective functions such as described
     in <xref target='RFC4655'/>, and typically controls the routes using the
-    PCE Protocol (PCEP) by <xref target='RFC5551'/>.  While this specification
+    PCE Protocol (PCEP) by <xref target='RFC5440'/>.  While this specification
     expects a PCE and while PCEP might effectively be used between the Root and
     the PCE, the control protocol between the PCE and the Root is out of scope.
     </t>
@@ -4128,7 +4128,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4655.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5551.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5440.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6553.xml'/>
