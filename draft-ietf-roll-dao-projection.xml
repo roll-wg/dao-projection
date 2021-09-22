@@ -2492,7 +2492,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |D| Flags |Comp.|    Opaque     |
+    |   Type        | Option Length |S| Flags |Comp.|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |            Step of Rank       |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2536,7 +2536,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
               to the sibling.
               </dd>
               -->
-              <dt>D:</dt><dd>
+              <dt>S:</dt><dd>
               1-bit flag that is set to indicate that sibling belongs to the
               same DODAG. When not set, the Sibling DODAGID is indicated.
 
@@ -4020,7 +4020,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <tr><td align='center'>0 (Suggested)</td>
 
-          <td align='left'>"D" flag: Sibling in same DODAG as Self</td>
+          <td align='left'>"S" flag: Sibling in same DODAG as Self</td>
 
           <td align='left'>This document</td></tr>
 

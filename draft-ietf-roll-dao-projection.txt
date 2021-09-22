@@ -2156,7 +2156,7 @@ Internet-Draft               DAO Projection               September 2021
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-       |   Type        | Option Length |D| Flags |Comp.|    Opaque     |
+       |   Type        | Option Length |S| Flags |Comp.|    Opaque     |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
        |            Step of Rank       |          Reserved             |
        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2195,7 +2195,7 @@ Internet-Draft               DAO Projection               September 2021
    Reserved for Flags:  MUST be set to zero by the sender and MUST be
       ignored by the receiver.
 
-   D:  1-bit flag that is set to indicate that sibling belongs to the
+   S:  1-bit flag that is set to indicate that sibling belongs to the
       same DODAG.  When not set, the Sibling DODAGID is indicated.
 
    Flags:  Reserved.  The Flags field MUST initialized to zero by the
@@ -3604,7 +3604,7 @@ Internet-Draft               DAO Projection               September 2021
           +===============+========================+===========+
           |   Bit number  | Capability description | Reference |
           +===============+========================+===========+
-          | 0 (Suggested) | "D" flag: Sibling in   | This      |
+          | 0 (Suggested) | "S" flag: Sibling in   | This      |
           |               | same DODAG as Self     | document  |
           +---------------+------------------------+-----------+
 
