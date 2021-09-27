@@ -186,6 +186,7 @@ docName="draft-ietf-roll-dao-projection-21" >
        <!--
        <dt>SubDAG:</dt><dd> A DODAG rooted at a node which is a child of that
        node and a subset of a larger DAG</dd> -->
+       <dt>SLO:</dt><dd> Service Level Objective </dd>
        <dt>TIO:</dt><dd> RPL Transit Information Option</dd>
        <dt>SM-VIO:</dt><dd> A strict Via Information Option, used in Storing Mode P-DAO messages.    </dd>
        <dt>VIO:</dt><dd> A Via Information Option; it can be a SM-VIO or an NSM-VIO.    </dd>
@@ -382,6 +383,167 @@ docName="draft-ietf-roll-dao-projection-21" >
 </section>	<!-- end section "RPL Routing Modes" -->
 
 
+	<section><name>Requirements</name>
+
+       <section anchor='loose'><name>Loose Source Routing</name>
+
+
+	  <t>A RPL implementation operating in a very constrained LLN typically uses
+      the Non-Storing Mode of Operation as represented in <xref target='nost'/>.
+      In that mode, a RPL node indicates a
+      parent-child relationship to the Root, using a destination Advertisement
+      Object (DAO) that is unicast from the node directly to the Root,
+      and the Root typically builds a source routed path to a destination down
+      the DODAG by recursively concatenating this information.
+      </t>
+
+          <figure anchor='nost'><name>RPL Non-Storing Mode of operation </name>
+            <artwork>
+              +-----+
+              |     | Border router
+              |     |  (RPL Root)
+              +-----+                      ^     |        |
+                 |                         | DAO | ACK    |
+           o    o   o    o                 |     |        | Strict
+       o o   o  o   o  o  o o   o          |     |        | Source
+      o  o o  o o    o   o   o  o  o       |     |        | Route
+      o   o    o  o     o  o    o  o  o    |     |        |
+     o  o   o  o   o         o   o o       |     v        v
+     o          o             o     o
+                       LLN
+                       </artwork>
+          </figure>
+    <t>
+      Based on the parent-children relationships expressed in the Non-Storing
+      DAO messages,the Root possesses topological information about the whole
+      network, though this information is limited to the structure of the DODAG
+      for which it is the destination.
+      A packet that is generated within the domain will always reach the Root,
+      which can then apply a source routing information to reach the destination
+      if the destination is also in the DODAG.
+      Similarly, a packet coming from the outside of the domain for a destination
+      that is expected to be in a RPL domain reaches the Root.
+    </t>
+    <t>
+     It results that the Root, or then some associated centralized computation
+     engine such as a PCE, can determine the amount of packets that reach a
+     destination in the
+     RPL domain, and thus the amount of energy and bandwidth that is wasted for
+     transmission, between itself and the destination, as well as the risk of
+     fragmentation, any potential delays because of a paths longer than
+     necessary (shorter paths exist that would not traverse the Root).
+    </t>
+     <t>
+     As a network gets deep, the size of the source routing header that the
+      Root must add to all the downward packets becomes an issue for nodes that
+      are many hops away. In some use cases, a RPL network forms long lines and
+      a limited amount of well-targeted routing state would allow to make the
+      source routing operation loose as opposed to strict, and save packet size.
+      Limiting the packet size is directly beneficial to the energy budget, but,
+      mostly, it reduces the chances of frame loss and/or packet fragmentation,
+      which is highly detrimental to the LLN operation. Because the capability
+      to store a routing state in every node is limited, the decision of which
+      route is installed where can only be optimized with a global knowledge of
+      the system, a knowledge that the Root or an associated PCE may possess by
+      means that are outside of the scope of this specification.
+      </t>
+
+      <t>
+      This requirement is to store a routing state associated with the Main
+      DODAG in selected RPL routers, to limit the excursion of the source route
+      headers in deep networks. The Root may elide the sequence of routers
+      that is installed in the network from its source route header, which
+      becomes loose while it is strict in <xref target="RFC6550"/>.
+      </t>
+
+      </section> <!-- Loose Source Routing -->
+    <section><name>East-West Routes</name>
+
+      <t>
+      RPL is optimized for INternet access, with Point-to-Multipoint (P2MP) and
+      Multipoint-to-Point (MP2P), whereby routes are always installed
+      North-South (aka up/down) along the RPL DODAG respectively from and
+      towards the Border Router that also serves as DODAG Root.
+      Peer to Peer (P2P) East-West routes in a RPL network will generally
+      suffer from some elongated (stretched) path versus a direct (optimized)
+      path, since routing between two nodes always happens via a common
+      parent, as illustrated in <xref target='stretch'/>:
+        </t>
+
+       <figure anchor='stretch'><name>Routing Stretch between S and D via common parent X along North-South Paths</name>
+            <artwork>
+              ------+---------
+                    |          Internet
+                 +-----+
+                 |     | Border router
+                 |     |  (RPL Root)
+                 +-----+
+                    X
+              ^    v   o    o
+          ^ o   o  v   o  o  o o   o
+         ^  o o  o v    o   o   o  o  o
+         ^   o    o  v     o  o    o  o  o
+        S  o   o  o   D         o   o o
+        o          o             o     o
+                          LLN
+       </artwork>
+          </figure>
+     <t>The amount of stretch depends on the Mode of Operation: </t>
+    <ul spacing='normal'>
+        <li> in Non-Storing Mode, all packets
+     routed within the DODAG flow all the way up to the Root of the DODAG. If
+     the destination is in the same DODAG, the Root must encapsulate the packet
+     to place an RH that has the strict source route information down
+     the DODAG to the destination. This will be the case even if the destination
+     is relatively close to the source and the Root is relatively far off.
+        </li>
+        <li>In Storing Mode, unless the destination is a child of the source,
+     the packets will follow the default route up the DODAG as well.
+     If the destination is in the same DODAG, they will eventually reach a
+     common parent that has a route to the destination; at worse, the common
+     parent may also be the Root. From that common parent, the packet will
+     follow a path down the DODAG that is optimized for the Objective Function
+     that was used to build the DODAG.</li>
+        </ul>
+
+
+     <t>
+     It results that it is often beneficial to enable East-West P2P routes,
+     either if the RPL route presents a stretch from shortest path, or if the
+     new route is engineered with a different objective, and that it is
+     even more critical in Non-Storing Mode than it is in Storing Mode, because
+     the routing stretch is wider.
+     For that reason, earlier work at the IETF introduced the
+     <xref target='RFC6997'>"Reactive Discovery of Point-to-Point Routes in
+     Low Power and Lossy Networks"</xref>, which specifies a distributed method for
+     establishing optimized P2P routes. This draft proposes an alternate based
+     on a centralized route computation.
+     </t>
+
+        <figure anchor='opti2'><name>More direct East-West Route between S and D</name>
+            <artwork>
+                 +-----+
+                 |     | Border router
+                 |     |  (RPL Root)
+                 +-----+
+                    |
+              o    o   o    o
+          o o   o  o   o  o  o o   o
+         o  o o  o o    o   o   o  o  o
+         o   o    o  o     o  o    o  o  o
+        S>>A>>>B>>C>>>D         o   o o
+        o          o             o     o
+                          LLN
+       </artwork>
+          </figure>
+            <t>
+      The requirement is to install additional routes in the RPL routers,
+      to reduce the stretch of some P2P routes and maintain the characteristics
+      within a given SLO, e.g., in terms of latency and/or reliability.
+
+      </t>
+      </section>
+      </section> <!-- Requirements -->
 
 <section anchor='tracks'><name>On Tracks</name>
 
@@ -432,13 +594,7 @@ docName="draft-ietf-roll-dao-projection-21" >
    subtrack is not Root, and that the source address of the encapsulated packet
    is not used to determine the Track.
    </t>
-  <t>
-   A P-DAO message for a Track signals the TrackID in the RPLInstanceID field.
-   In the case of a local RPL Instance, the address of the Track Ingress to be
-   used as source to encapsulated packets along the Track is signaled in the
-   DODAGID field of the Projected DAO Base Object; that field is elided in the
-   case of the RPL Main DODAG, see <xref target='p-dao-fmt'/>.
-   </t>
+
 </section><!-- On tracks -->
 
 
@@ -446,21 +602,32 @@ docName="draft-ietf-roll-dao-projection-21" >
 
     <section><name>Serial Track Signaling</name>
 <t>
-   This specification introduces the concept of a P-Route
-   along either a Track Leg or a Segment. A P-Route is installed and maintained
-   using an extended RPL DAO message called a Projected DAO (P-DAO), and a Track
-   is composed of the combination of one or more P-Routes. This specification
-   introduces the Via Information Option (VIO) to signal a sequence of hops in a
+   This specification enables to set up a P-Route along either a Track Leg or a
+   Segment. A P-Route is installed and maintained using an extended RPL DAO
+   message called a Projected DAO (P-DAO), and a Track is composed of the
+   combination of one or more P-Routes.
+</t>
+<t>
+   A P-DAO message for a Track signals the TrackID in the RPLInstanceID field.
+   In the case of a local RPL Instance, the address of the Track Ingress is
+   used as source to encapsulated packets along the Track is signaled in the
+   DODAGID field of the Projected DAO Base Object,
+   see <xref target='p-dao-fmt'/>.
+</t><t>
+   This specification introduces the Via Information Option (VIO) to signal a sequence of hops in a
    Leg or a Segment in the P-DAO messages, either in Storing Mode (SM-VIO) or
    NON-Storing Mode (NSM-VIO). One P-DAO messages contains a single VIO,
    associated to one or more RPL Target Options that signal the destination
-   IPv6 addresses that can reached along the Track.
+   IPv6 addresses that can reached along the Track, more in <xref target='vio'/>.
 </t>
 <t>
    Before diving deeper into Track Legs and Segments signaling and operation,
    this section provides examples of what how route projection works through
-   variations of a simple example. In this simple example we show host routes
-   though RPL Targets can be prefixes. Say we want to build a Serial Track from
+   variations of a simple example. This simple example illustrates the case of
+   host routes, though RPL Targets can be prefixes.
+</t>
+<t>
+   Say we want to build a Serial Track from
    node A to E in <xref target='reft'/>, so A can route packets to E's
    neighbors F and G along A, B, C, D and E as opposed to via the Root:
 </t>
@@ -1981,7 +2148,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
   <t>
    New CMOs called the Via Information Options (VIO) are introduced for use in
    P-DAO messages as a multihop alternative to the TIO, more in <xref target=
-   'rplrpo'/>. One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
+   'vio'/>. One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
    installs a strict hop-by-hop P-Route called a Track Segment. The other is the
    Non-Storing Mode VIO (NSM-VIO); the NSM-VIO installs a loose source-routed
    P-Route called a Track Leg at the Track Ingress, which uses that state to
@@ -2325,7 +2492,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- New PDR-ACK Control Message -->
 
 
-     <section anchor='rplrpo'><name>Via Information Options</name>
+     <section anchor='vio'><name>Via Information Options</name>
 
     <t>A VIO signals the ordered list of IPv6 Via Addresses that constitutes
     the hops of either a Leg (using Non-Storing Mode) a Segment (using storing
@@ -3457,7 +3624,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    the Track Ingress to react to changes in the forwarding conditions along the
    Track, and reroute packets to maintain the required degree of reliability.
    To achieve this, the PSE need the full richness of a DODAG to form any path
-   that could make meet the SLAs.
+   that could make meet the Service Level Objective (SLO).
    </t>
 <t>
    This section specifies the additions that are needed to turn the Track
@@ -4170,179 +4337,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
       </reference>
 
     </references>
-
-	<section><name>Applications</name>
-
-       <section anchor='loose'><name>Loose Source Routing</name>
-
-
-	  <t>A RPL implementation operating in a very constrained LLN typically uses
-      the Non-Storing Mode of Operation as represented in <xref target='nost'/>.
-      In that mode, a RPL node indicates a
-      parent-child relationship to the Root, using a destination Advertisement
-      Object (DAO) that is unicast from the node directly to the Root,
-      and the Root typically builds a source routed path to a destination down
-      the DODAG by recursively concatenating this information.
-      </t>
-
-          <figure anchor='nost'><name>RPL Non-Storing Mode of operation </name>
-            <artwork>
-           ------+---------
-                 |          Internet
-                 |
-              +-----+
-              |     | Border router
-              |     |  (RPL Root)
-              +-----+                      ^     |        |
-                 |                         | DAO | ACK    |
-           o    o   o    o                 |     |        | Strict
-       o o   o  o   o  o  o o   o          |     |        | Source
-      o  o o  o o    o   o   o  o  o       |     |        | Route
-      o   o    o  o     o  o    o  o  o    |     |        |
-     o  o   o  o   o         o   o o       |     v        v
-     o          o             o     o
-                       LLN
-                       </artwork>
-          </figure>
-    <t>
-      Based on the parent-children relationships expressed in the Non-Storing
-      DAO messages,the Root possesses topological information about the whole
-      network, though this information is limited to the structure of the DODAG
-      for which it is the destination.
-      A packet that is generated within the domain will always reach the Root,
-      which can then apply a source routing information to reach the destination
-      if the destination is also in the DODAG.
-      Similarly, a packet coming from the outside of the domain for a destination
-      that is expected to be in a RPL domain reaches the Root.
-    </t>
-    <t>
-     It results that the Root, or then some associated centralized computation
-     engine such as a PCE, can determine the amount of packets that reach a
-     destination in the
-     RPL domain, and thus the amount of energy and bandwidth that is wasted for
-     transmission, between itself and the destination, as well as the risk of
-     fragmentation, any potential delays because of a paths longer than
-     necessary (shorter paths exist that would not traverse the Root).
-    </t>
-     <t>
-     As a network gets deep, the size of the source routing header that the
-      Root must add to all the downward packets becomes an issue for nodes that
-      are many hops away. In some use cases, a RPL network forms long lines and
-      a limited amount of well-targeted routing state would allow to make the
-      source routing operation loose as opposed to strict, and save packet size.
-      Limiting the packet size is directly beneficial to the energy budget, but,
-      mostly, it reduces the chances of frame loss and/or packet fragmentation,
-      which is highly detrimental to the LLN operation. Because the capability
-      to store a routing state in every node is limited, the decision of which
-      route is installed where can only be optimized with a global knowledge of
-      the system, a knowledge that the Root or an associated PCE may possess by
-      means that are outside of the scope of this specification.
-      </t>
-
-      <t>
-      This specification enables to store a Storing Mode state in
-      intermediate routers, which enables to limit the excursion of the source
-      route headers in deep networks.
-      Once a P-DAO exchange has taken place for a given Target, if the Root
-      operates in non Storing Mode, then it may elide the sequence of routers
-      that is installed in the network from its source route headers to
-      destination that are reachable via that Target, and the source route
-      headers effectively become loose.
-      </t>
-
-      </section> <!-- Loose Source Routing -->
-    <section><name>East-West Routes</name>
-
-      <t>
-      RPL is optimized for Point-to-Multipoint (P2MP) and Multipoint-to-Point
-      (MP2P), whereby routes are always installed North-South (aka up/down)
-      along the RPL DODAG respectively from and towards the DODAG Root.
-      Peer to Peer (P2P) East-West routes in a RPL network will generally
-      suffer from some elongated (stretched) path versus a direct (optimized)
-      path, since routing between two nodes always happens via a common
-      parent, as illustrated in <xref target='stretch'/>:
-        </t>
-
-       <figure anchor='stretch'><name>Routing Stretch between S and D via common parent X along North-South Paths</name>
-            <artwork>
-                   ------+---------
-                    |          Internet
-                    |
-                 +-----+
-                 |     | Border router
-                 |     |  (RPL Root)
-                 +-----+
-                    X
-              ^    v   o    o
-          ^ o   o  v   o  o  o o   o
-         ^  o o  o v    o   o   o  o  o
-         ^   o    o  v     o  o    o  o  o
-        S  o   o  o   D         o   o o
-        o          o             o     o
-                          LLN
-       </artwork>
-          </figure>
-    <ul spacing='normal'>
-        <li>In Storing Mode, unless the destination is a child of the source,
-     the packets will follow the default route up the DODAG as well.
-     If the destination is in the same DODAG, they will eventually reach a
-     common parent that has a route to the destination; at worse, the common
-     parent may also be the Root. From that common parent, the packet will
-     follow a path down the DODAG that is optimized for the Objective Function
-     that was used to build the DODAG.</li>
-        <li> in Non-Storing Mode, all packets
-     routed within the DODAG flow all the way up to the Root of the DODAG. If
-     the destination is in the same DODAG, the Root must encapsulate the packet
-     to place an RH that has the strict source route information down
-     the DODAG to the destination. This will be the case even if the destination
-     is relatively close to the source and the Root is relatively far off.
-        </li>
-        </ul>
-
-
-     <t>
-     It results that it is often beneficial to enable East-West P2P routes,
-     either if the RPL route presents a stretch from shortest path, or if the
-     new route is engineered with a different objective, and that it is
-     even more critical in Non-Storing Mode than it is in Storing Mode, because
-     the routing stretch is wider.
-     For that reason, earlier work at the IETF introduced the
-     <xref target='RFC6997'>"Reactive Discovery of Point-to-Point Routes in
-     Low Power and Lossy Networks"</xref>, which specifies a distributed method for
-     establishing optimized P2P routes. This draft proposes an alternate based
-     on a centralized route computation.
-     </t>
-
-        <figure anchor='opti2'><name>More direct East-West Route between S and D</name>
-            <artwork>
-              ------+---------
-                    |          Internet
-                    |
-                 +-----+
-                 |     | Border router
-                 |     |  (RPL Root)
-                 +-----+
-                    |
-              o    o   o    o
-          o o   o  o   o  o  o o   o
-         o  o o  o o    o   o   o  o  o
-         o   o    o  o     o  o    o  o  o
-        S>>A>>>B>>C>>>D         o   o o
-        o          o             o     o
-                          LLN
-       </artwork>
-          </figure>
-            <t>
-      This specification enables to store source-routed or Storing Mode state in
-      intermediate routers, which enables to limit the stretch of a P2P route
-      and maintain the characteristics within a given SLA. An example of service
-      using this mechanism oculd be a control loop that would be installed in a
-      network that uses classical RPL for asynchronous data collection. In that
-      case, the P2P path may be installed in a different RPL Instance, with a
-      different objective function.
-      </t>
-      </section>
-      </section>
 
     </back>
 
