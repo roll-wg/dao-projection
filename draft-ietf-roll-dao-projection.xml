@@ -3207,7 +3207,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <section anchor='maintainT'><name>Maintaining a Track Leg</name>
 
-     <t>This specification allows to add Legs to a Track by sending
+     <t>This specification allows the Root to add Legs to a Track by sending
      a Non-Storing Mode P-DAO to the Ingress associated to the same TrackID,
      and a new Segment ID. If the Leg is loose, then the Segments that join
      the hops must be created first.  It makes
