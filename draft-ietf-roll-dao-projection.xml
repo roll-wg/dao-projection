@@ -557,7 +557,7 @@ docName="draft-ietf-roll-dao-projection-22" >
 </t>
 <t>
    A Serial Track comprises provides only one path between Ingress and Egress.
-   It comprises at most one Leg. A Stand-Alone Segment defines implicitly a
+   It comprises at most one Leg. A Stand-Alone Segment  implicitly defines a
    Serial Track from its Ingress to Egress.
 </t>
 
@@ -571,7 +571,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     The concept of a Track was introduced in the <xref target='RFC9030'>
     "6TiSCH Architecture"</xref>, as a collection of potential paths that
     leverage redundant forwarding solutions along the way.
-    With this specification, a Track forms DODAG that is directed towards a Track Ingress. If there is a single Track Egress,
+    With this specification, a Track forms a DODAG that is directed towards a Track Ingress. If there is a single Track Egress,
     then the Track is reversible to form another DODAG by reversing the
     direction of each edge. A node at the Ingress of more
     than one Segment in a Track may use one or more of these Segments to forward
