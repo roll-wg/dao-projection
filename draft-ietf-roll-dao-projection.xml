@@ -645,7 +645,7 @@ A ===&gt; B ===&gt; C ===&gt; D===&gt; E &lt;
 <t>
    Conventionally we use  ==&gt; to represent a strict hop and --&gt; for a
    loose hop.
-   We use -to- like in C==&gt;D==&gt;E-to-F to represent coma-separated
+   We use "-to-", such as in C==&gt;D==&gt;E-to-F to represent coma-separated
    Targets, e.g., F is a Target for Segment C==&gt;D==&gt;E.
    In this example, A is Track Ingress, E is Track Egress. C is a stitching
    point. F and G are "external” Targets for the Track, and become reachable
