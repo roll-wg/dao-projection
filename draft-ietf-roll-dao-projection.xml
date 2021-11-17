@@ -237,7 +237,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     <dt>Track:</dt><dd>
     <t>A networking graph that can be followed to transport packets with
     equivalent treatment; as opposed to the definition of a path above,
-    a Track Track is not necessarily linear. It may contain multiple paths that
+    a Track is not necessarily linear. It may contain multiple paths that
     may fork and rejoin, and may enable the RAW Packet ARQ, Replication,
     Elimination, and Overhearing (PAREO) operations.
     </t>
@@ -252,7 +252,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     </t>
     </dd>
     <dt>TrackID:</dt><dd>
-    A RPL Local InstanceID that identifies a Track using the namespace owned ny
+    A RPL Local InstanceID that identifies a Track using the namespace owned by
     the Track Ingress. The TrackID is associated with the IPv6 Address of the
     Track Ingress that is used as DODAGID, and together they form a unique
     identification of the Track
@@ -314,7 +314,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     function allows to adapt the activity of the routing protocol to the use
     case, e.g., type, speed, and quality of the LLN links.
 </t><t>
-    RPL instances operate as ships in the night, unbeknownst of one another.
+    RPL instances operate as ships passing in the night, unbeknownst of one another.
     The RPL Root is responsible to select the RPL Instance that is used
     to forward a packet coming from the Backbone into the RPL domain and set
     the related RPL information in the packets. 6TiSCH leverages RPL for its
@@ -345,7 +345,7 @@ docName="draft-ietf-roll-dao-projection-22" >
    routes together coalesce as a Directed Acyclic Graph upwards.
    RPL then constructs routes to so-called Targets in the reverse direction,
    down the same DODAG. So do so, a RPL Instance can be operated either in RPL
-   Storing or Non-Storing Mode of Operation (MOP)
+   Storing or Non-Storing Mode of Operation (MOP).
    The default route towards the Root is maintained aggressively and may change while a packet progresses without causing loops, so the packet will still reach the Root.
 </t>
 <t>In Non-Storing Mode, each node advertises itself as a Target directly to the
@@ -369,7 +369,7 @@ docName="draft-ietf-roll-dao-projection-22" >
 </t>
 
     <t>
-    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build and project routes onto the nodes where they should be installed. This specification uses the term P-Route to refer to those routes.
+    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build and project routes onto the nodes where they should be installed. This specification uses the term Projected Route (P-Route) to refer to those routes.
     </t>
     <t>
     A P-Route may be installed in either Storing and Non-Storing Mode,
@@ -426,19 +426,20 @@ docName="draft-ietf-roll-dao-projection-22" >
     </t>
     <t>
      It results that the Root, or then some associated centralized computation
-     engine such as a PCE, can determine the amount of packets that reach a
-     destination in the
-     RPL domain, and thus the amount of energy and bandwidth that is wasted for
+     engine such as a PCE, can determine the number of packets that reach a
+     destination in the RPL domain.
+     Based upon this metric the amount of energy and bandwidth that is wasted on
      transmission, between itself and the destination, as well as the risk of
      fragmentation, any potential delays because of a paths longer than
      necessary (shorter paths exist that would not traverse the Root).
     </t>
      <t>
-     As a network gets deep, the size of the source routing header that the
-      Root must add to all the downward packets becomes an issue for nodes that
-      are many hops away. In some use cases, a RPL network forms long lines and
-      a limited amount of well-targeted routing state would allow to make the
-      source routing operation loose as opposed to strict, and save packet size.
+     The RPL root must add a source routing header to all downward packets.
+     As a network gets deep, the size of this header becomes an issue for nodes that
+     are many hops away.
+     In some use cases, a RPL network forms long lines and
+      a limited amount of well-targeted routing state would allow the
+      source routing operation to be loose as opposed to strict, and save packet size.
       Limiting the packet size is directly beneficial to the energy budget, but,
       mostly, it reduces the chances of frame loss and/or packet fragmentation,
       which is highly detrimental to the LLN operation. Because the capability
@@ -460,10 +461,10 @@ docName="draft-ietf-roll-dao-projection-22" >
     <section><name>East-West Routes</name>
 
       <t>
-      RPL is optimized for INternet access, with Point-to-Multipoint (P2MP) and
-      Multipoint-to-Point (MP2P), whereby routes are always installed
-      North-South (aka up/down) along the RPL DODAG respectively from and
-      towards the Border Router that also serves as DODAG Root.
+      When RPL is optimized for Internet access, with Point-to-Multipoint (P2MP) and
+      Multipoint-to-Point (MP2P), routes are installed
+      North-South (aka up/down) along the RPL DODAG.
+      Traffic flows from and towards the Border Router that also serves as DODAG Root.
       Peer to Peer (P2P) East-West routes in a RPL network will generally
       suffer from some elongated (stretched) path versus a direct (optimized)
       path, since routing between two nodes always happens via a common
@@ -488,7 +489,7 @@ docName="draft-ietf-roll-dao-projection-22" >
                           LLN
        </artwork>
           </figure>
-     <t>The amount of stretch depends on the Mode of Operation: </t>
+     <t>As described in <xref target="RFC9008" />, the amount of stretch depends on the Mode of Operation: </t>
     <ul spacing='normal'>
         <li> in Non-Storing Mode, all packets
      routed within the DODAG flow all the way up to the Root of the DODAG. If
