@@ -3217,7 +3217,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      <t>
      It is also possible to update a Track Leg by sending a Non-Storing Mode
      P-DAO to the Ingress with the same Segment ID, an incremented Segment
-     Sequence, and the new complete listy of hops in the NSM-VIO.
+     Sequence, and the new complete list of hops in the NSM-VIO.
      Updating a live Leg means changing one or more of the intermediate loose
      hops, and involves laying out new Segments from and to the new loose hops
      before the NSM-VIO for the new Leg is issued.
