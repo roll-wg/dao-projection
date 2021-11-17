@@ -3594,7 +3594,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <t>
    But the RPL routing information headers may not be supported on all type of
    routed network infrastructures, especially not in high-speed routers.
-   When the RPI is not be supported in the dataplane, there cannot be local RPL
+   When the RPI is not supported in the dataplane, there cannot be local RPL
    Instances and RPL can only operate as a single topology (the Main DODAG).
    The RPL Instance is that of the Main DODAG and the Ingress node that encapsulates is not the Root.
    The routes along the Tracks are alternate routes to those available along
