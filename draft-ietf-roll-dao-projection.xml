@@ -3136,7 +3136,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     Track Segments and Legs that compose it one by one.
     </t>
     <t>
-    Since the state about a Leg of a Track is located only the Ingress Node,
+    Since the state about a Leg of a Track is located only on the Ingress Node,
     the Root cleans up the Leg by sending an NSM-VIO to the Ingress indicating
     the TrackID and the P-RouteID of the Leg being removed, a Segment Lifetime
     of 0 and a newer Segment Sequence. The SRH-6LoRH with the Via Addresses in
