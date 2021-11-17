@@ -611,7 +611,8 @@ docName="draft-ietf-roll-dao-projection-22" >
 <t>
    A P-DAO message for a Track signals the TrackID in the RPLInstanceID field.
    In the case of a local RPL Instance, the address of the Track Ingress is
-   used as source to encapsulated packets along the Track is signaled in the
+   used as source to encapsulate packets along the Track.
+   The Track is signaled in the
    DODAGID field of the Projected DAO Base Object,
    see <xref target='p-dao-fmt'/>.
 </t><t>
