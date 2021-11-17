@@ -1892,8 +1892,11 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
    target="FigLegs"/>.
 Legs may cross at the edges of loose hops or remain parallel.
 </t><t>
-   The Segments that join the loose hops of a Leg are installed with the same TrackID as the Leg. But each individual Leg and Segment has its own
-   P-RouteID which allows to manage it separately. When Legs cross within
+   The Segments that join the loose hops of a Leg are installed with the same
+   TrackID as the Leg.
+But each individual Leg and Segment has its own P-RouteID which allows it to
+be managed separately.
+When Legs cross within
    respsective Segment, the next loose hop (the current destination of the
    packet) indicates which Leg is being followed and a Segment that can reach
    that next loose hop is selected.
