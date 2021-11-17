@@ -1887,7 +1887,10 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 <section anchor='concepts'><name>Complex Tracks</name>
 
 <t>To increase the reliability of the P2P transmission, this specification
-   enables to build a collection of Legs between the same Ingress and Egress Nodes and combine them with the same TrackID, as shown in <xref target="FigLegs"/>. Legs may cross at loose hops edges or remain parallel.
+   enables to build a collection of Legs between the same Ingress and Egress
+   Nodes and combine them with the same TrackID, as shown in <xref
+   target="FigLegs"/>.
+Legs may cross at the edges of loose hops or remain parallel.
 </t><t>
    The Segments that join the loose hops of a Leg are installed with the same TrackID as the Leg. But each individual Leg and Segment has its own
    P-RouteID which allows to manage it separately. When Legs cross within
