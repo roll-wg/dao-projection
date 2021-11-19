@@ -75,7 +75,7 @@ docName="draft-ietf-roll-dao-projection-22" >
 
         <abstract>
 	  <t>
-     This document extends RFC 6550, RFC 6553,and RFC 8138 to enable a RPL Root
+     This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a RPL Root
      to install and maintain Projected Routes within its DODAG, along a selected
      set of nodes that may or may not include self, for a chosen duration.
      This potentially enables routes
@@ -109,9 +109,10 @@ docName="draft-ietf-roll-dao-projection-22" >
    towards the nodes.
     </t>
 <t>
-   With this specification, a Path Computation Element <xref target='PCE'/> in
-   an external controller interacts with the RPL Root to compute centrally
-   shorter Peer to Peer (P2P) paths within a pre-existing RPL Main DODAG.
+   With this specification, an abstract routing function called a Path
+   Computation Element <xref target='PCE'/> (e.g., located in an central
+   controller or collocated with the Root) interacts with the RPL Root to
+   compute Peer to Peer (P2P) paths within a pre-existing RPL Main DODAG.
    The topological information that is passed to the PCE is derived from the
    DODAG that is already available at the Root in RPL Non-Storing Mode. This
    specification introduces protocol extensions that enrich the topological
@@ -200,41 +201,66 @@ docName="draft-ietf-roll-dao-projection-22" >
     <t>
     <!-- Removed reference from routing and 6tisch here to keep it simple
 	 This specification introduces the following terminology:-->
-    </t><dl spacing='compact'>
-
-    <dt>Projected Route:</dt><dd>
+    </t>
+  <section><name>Projected Route:</name><t>
 	A RPL P-Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE. It
     is installed as a state that signals that destinations (aka Targets)
-    are reachable along a sequence of nodes.</dd>
+    are reachable along a sequence of nodes.</t>
 
-    <dt>Projected DAO:</dt><dd> A DAO message used to install a P-Route. </dd>
-    <dt>Path:</dt><dd>
-    <t>
-    Quoting section 1.1.3 of <xref target="RFC1122"/>:
-    "At a given moment, all the IP datagrams from a particular source host to a
+  </section>
+  <section><name>Projected DAO:</name>
+    <t> A DAO message used to install a P-Route. </t>
+  </section>
+  <section><name>Path:</name>
+    <t>Quoting section 1.1.3 of <xref target="RFC1122"/>:</t>
+    <blockquote>
+    At a given moment, all the IP datagrams from a particular source host to a
     particular destination host will typically traverse the same sequence of
     gateways.  We use the term "path" for this sequence.  Note that a path is
     uni-directional; it is not unusual to have different paths in the two
-    directions between a given host pair.".
-    </t>
+    directions between a given host pair.
+    </blockquote>
     <t>
-    Section 2 of <xref target="I-D.irtf-panrg-path-properties"/> points to a longer, more modern definition of path, which begins as follows:
-    "
+    Section 2 of <xref target="I-D.irtf-panrg-path-properties"/> points to a longer, more modern definition of path, which begins as follows:</t>
+    <blockquote>
       A sequence of adjacent path elements over which a packet can
       be transmitted, starting and ending with a node.  A path is
       unidirectional.  Paths are time-dependent, i.e., the sequence of
       path elements over which packets are sent from one node to another
       may change.  A path is defined between two nodes.
-    "
-    </t>
+    </blockquote>
     <t>
     It follows that the general acceptance of a path is a linear sequence of
     nodes, as opposed to a multi-dimensional graph. In the context of this
     document, a path is observed by following one copy of a packet that is
     injected in a Track and possibly replicated within.
     </t>
-    </dd>
-    <dt>Track:</dt><dd>
+  </section>
+  <section><name>Routing Stretch:</name>
+
+  <t>
+    RPL is anisotropic, meaning that it is directional, or more exactly polar.
+    RPL does not behave the same way "down" with multicast DIO messages that
+    form the DODAG and "up" with unicast DAO messages that follow the DODAG.
+    This is in contrast with traditional IGPs that operate the same in all
+    directions and are thus called isotropic.
+  </t>
+  <t>The term Routing Stretch denotes the length of a path, as compared with a
+    shortest path, which can be a abstract concepts in RPL when the metrics are
+    statistical and dynamic, and the concept of short varies with the Objective
+    Function.
+  </t>
+  <t>
+    The RPL DODAG optimizes the P2MP (from Root) and MP2P (to Root) paths, but
+    the P2P (node to node) traffic has to follow the same DODAG. Following the
+    DODAG, the RPL datapath passes via a common parent in Storing Mode and
+    via the Root in Non-Storing Mode. This typically involves more hops and
+    more latency than the minimum possible for a direct P2P path that an
+    isotropic protocol would compute.
+    We refer to this elongated path as stretched.
+  </t>
+  </section>
+  <section><name>Track:</name>
     <t>A networking graph that can be followed to transport packets with
     equivalent treatment; as opposed to the definition of a path above,
     a Track Track is not necessarily linear. It may contain multiple paths that
@@ -243,40 +269,58 @@ docName="draft-ietf-roll-dao-projection-22" >
     </t>
     <t>
     This specification builds Tracks that are DODAGs oriented towards a Track
-    Ingress, and the forward direction for packets is East-West from the Track
-    Ingress to one of the possibly multiple Track Egress Nodes, which is also
-    down the DODAG.
+    Ingress, and the forward direction for packets (aka East-West) is from the
+    Track Ingress to one of the possibly multiple Track Egress Nodes, which is
+    also down the DODAG.
     </t>
     <t>
     The Track may be strictly connected, meaning that the vertices are adjacent, or loosely connected, meaning that the vertices are connected using Segments that are associated to the same Track.
     </t>
-    </dd>
-    <dt>TrackID:</dt><dd>
+  </section>
+  <section><name>TrackID:</name>
+    <t>
     A RPL Local InstanceID that identifies a Track using the namespace owned ny
     the Track Ingress. The TrackID is associated with the IPv6 Address of the
     Track Ingress that is used as DODAGID, and together they form a unique
     identification of the Track
     (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
-    </dd>
-    <dt>Serial Track:</dt><dd>A Track that has only one path.
-    </dd>
-    <dt>Stand-Alone:</dt><dd>
+    </t>
+  </section>
+  <section><name>Serial Track:</name>
+    <t>A Track that has only one path.
+    </t>
+  </section>
+  <section><name>Stand-Alone:</name>
+    <t>
     A single P-DAO that fully defines a Track, e.g., a Serial Track installed
     with a single Storing Mode Via Information option (SM-VIO).
-    </dd>
-    <dt>subTrack:</dt><dd>A Track within a Track. As the Non-Storing Mode Via
+    </t>
+  </section>
+  <section><name>Stitching:</name>
+    <t>
+    This specification using the term stitching to indicate that a track is
+    piped to another one, meaning that traffic out of the first is injected in
+    the other.
+    </t>
+  </section>
+  <section><name>subTrack:</name>
+    <t>A Track within a Track. As the Non-Storing Mode Via
     Information option (NSM-VIO) can only signal a loose sequence of nodes, it
     takes a number of them to signal a complex Track. Each NSM-VIO for the same
     TrackId but a different Segment ID signals a different subTracks that the
     Track Ingress adds to the topology.
-    </dd>
-    <dt>Track Leg:</dt><dd>An end-to-end East-West serial path that can be a
+    </t>
+  </section>
+  <section><name>Track Leg:</name>
+    <t>An end-to-end East-West serial path that can be a
     Track by itself or a subTrack of a complex Track.
     With this specification, a Leg is is installed by the Root of the main
     DODAG using Non-Storing Mode P-DAO messages, and it is expressed as a
     loose sequence of nodes that are joined by Track Segments.
-    </dd>
-    <dt>Track Segment:</dt><dd>
+    </t>
+  </section>
+  <section><name>Track Segment:</name>
+    <t>
     A serial path formed by a strict sequence of nodes, along which a P-Route is
     installed.
     With this specification, a Segment is typically installed by the Root of the main DODAG using Storing Mode P-DAO messages. A Segment used as
@@ -285,9 +329,9 @@ docName="draft-ietf-roll-dao-projection-22" >
     all Segments are oriented from Ingress (East) to Egress (West), as opposed
     to the general RAW model, which allows North/South Segments that can be
     bidirectional.
-    </dd>
+    </t>
 
-    </dl>
+  </section>
 </section>	<!-- end section "Domain Terms" -->
 
 </section>	<!-- end section "Terminology" -->
@@ -343,7 +387,7 @@ docName="draft-ietf-roll-dao-projection-22" >
 <t>
    RPL first forms a default route in each node towards the a Root, and those
    routes together coalesce as a Directed Acyclic Graph upwards.
-   RPL then constructs routes to so-called Targets in the reverse direction,
+   RPL then constructs routes to destinations signaled as Targets in the reverse direction,
    down the same DODAG. So do so, a RPL Instance can be operated either in RPL
    Storing or Non-Storing Mode of Operation (MOP)
    The default route towards the Root is maintained aggressively and may change while a packet progresses without causing loops, so the packet will still reach the Root.
@@ -359,17 +403,20 @@ docName="draft-ietf-roll-dao-projection-22" >
    dominant, or when, like here, the Root controls the network activity in the
    nodes.
 </t>
-<t>In Storing Mode, the routing information percolates upwards, and each node
-   maintains the routes to the subDAG of its descendants down the DODAG.
-   The maintenance is lazy, either reactive upon traffic or as a slow background
-   process. Packets flow via the common parent and the routing stretch is
-   reduced vs. Non-Storing, for a better P2P connectivity, while the internet
-   connectivity is restored more slowly, time for the DV operation to operate
-   hop-by-hop.
+<t>
+   In Storing Mode, the routing information percolates upwards, and each
+   node maintains the routes to the subDAG of its descendants down the
+   DODAG.  The maintenance is lazy, either reactive upon traffic or as a
+   slow background process.  Packets flow via the common parent and the
+   routing stretch is reduced vs. Non-Storing, for a better P2P
+   connectivity.  On the other hand, a new route takes a longer time to
+   propagate to the Root, time for the Distance-Vector protocol to
+   operate hop-by-hop, and the Internet connectivity is restored more
+   slowly upon movement.
 </t>
 
     <t>
-    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and eliminate routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build and project routes onto the nodes where they should be installed. This specification uses the term P-Route to refer to those routes.
+    Either way, the RPL routes are injected by the Target nodes, in a distributed fashion. To complement RPL and minimize routing stretch, this specification introduces an hybrid mode that combines Storing and Non-Storing operations to build and project routes onto the nodes where they should be installed. This specification uses the term P-Route to refer to those routes.
     </t>
     <t>
     A P-Route may be installed in either Storing and Non-Storing Mode,
@@ -413,40 +460,49 @@ docName="draft-ietf-roll-dao-projection-22" >
                        LLN
                        </artwork>
           </figure>
-    <t>
-      Based on the parent-children relationships expressed in the Non-Storing
-      DAO messages,the Root possesses topological information about the whole
-      network, though this information is limited to the structure of the DODAG
-      for which it is the destination.
-      A packet that is generated within the domain will always reach the Root,
-      which can then apply a source routing information to reach the destination
-      if the destination is also in the DODAG.
-      Similarly, a packet coming from the outside of the domain for a destination
-      that is expected to be in a RPL domain reaches the Root.
-    </t>
-    <t>
-     It results that the Root, or then some associated centralized computation
-     engine such as a PCE, can determine the amount of packets that reach a
-     destination in the
-     RPL domain, and thus the amount of energy and bandwidth that is wasted for
-     transmission, between itself and the destination, as well as the risk of
-     fragmentation, any potential delays because of a paths longer than
-     necessary (shorter paths exist that would not traverse the Root).
-    </t>
-     <t>
-     As a network gets deep, the size of the source routing header that the
-      Root must add to all the downward packets becomes an issue for nodes that
-      are many hops away. In some use cases, a RPL network forms long lines and
-      a limited amount of well-targeted routing state would allow to make the
-      source routing operation loose as opposed to strict, and save packet size.
-      Limiting the packet size is directly beneficial to the energy budget, but,
-      mostly, it reduces the chances of frame loss and/or packet fragmentation,
-      which is highly detrimental to the LLN operation. Because the capability
-      to store a routing state in every node is limited, the decision of which
-      route is installed where can only be optimized with a global knowledge of
-      the system, a knowledge that the Root or an associated PCE may possess by
-      means that are outside of the scope of this specification.
-      </t>
+ <t>
+   Based on the parent-children relationships expressed in the Non-
+   Storing DAO messages, the Root possesses topological information
+   about the whole network, though this information is limited to the
+   structure of the DODAG for which it is the destination.  A packet
+   that is generated within the domain will always reach the Root, which
+   can then apply a source routing information to reach the destination
+   if the destination is also in the DODAG.  Similarly, a packet coming
+   from the outside of the domain for a destination that is expected to
+   be in a RPL domain reaches the Root.  It results that the wireless
+   bandwidth near the Root is the gating factor for all transmissions
+   towards or within the domain, and that the Root is a single point of
+   failure for all connectivity to nodes within its domain.
+
+ </t>
+ <t>
+   As a network grows, the size of the source routing header augments
+   with the depth of the nodes.  In some use cases, a RPL network forms
+   long lines along physical structures such as streets for lighting.
+   Limiting the packet size is directly beneficial to the energy budget,
+   but, mostly, it reduces the chances of frame loss and packet
+   fragmentation, which are highly detrimental to the LLN operation.  A
+   limited amount of well-targeted routing state would allow to make the
+   source routing operation loose as opposed to strict, and save packet
+   size.  Because the capability to store a routing state in every node
+   is limited, the decision of which route is installed where can only
+   be optimized with a global knowledge of the system, a knowledge that
+   the Root or an associated PCE may possess by means that are outside
+   of the scope of this specification.
+ </t>
+ <t>
+   Being on path for all packets in Non-Storing mode, the Root may
+   determine the amount of P2P packets in its RPL domain per source and
+   destination, the latency incurred, and the amount of energy and
+   bandwidth that is consumed to reach the self and then down, including
+   a possible fragmentation when encapsulating larger packets.  Enabling
+   a shorter path that would not traverse the Root for select P2P
+   source/destinations may improve the latency, lower the consumption of
+   constrained resources, free bandwidth at the bottleneck near the
+   Root, improve the delivery ratio and reduce the latency for those P2p
+   flows with a global benefit for all flows of reducing the load at the
+   Root.
+ </t>
 
       <t>
       This requirement is to store a routing state associated with the Main
@@ -460,7 +516,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     <section><name>East-West Routes</name>
 
       <t>
-      RPL is optimized for INternet access, with Point-to-Multipoint (P2MP) and
+      RPL is optimized for Internet access, with Point-to-Multipoint (P2MP) and
       Multipoint-to-Point (MP2P), whereby routes are always installed
       North-South (aka up/down) along the RPL DODAG respectively from and
       towards the Border Router that also serves as DODAG Root.
@@ -488,7 +544,8 @@ docName="draft-ietf-roll-dao-projection-22" >
                           LLN
        </artwork>
           </figure>
-     <t>The amount of stretch depends on the Mode of Operation: </t>
+     <t>The amount of stretch depends on the Mode of Operation
+     (more in <xref target='RFC9008'/>): </t>
     <ul spacing='normal'>
         <li> in Non-Storing Mode, all packets
      routed within the DODAG flow all the way up to the Root of the DODAG. If
@@ -546,13 +603,31 @@ docName="draft-ietf-roll-dao-projection-22" >
       </section> <!-- Requirements -->
 
 <section anchor='tracks'><name>On Tracks</name>
+<section anchor='ctracks'><name>Building Tracks With RPL</name>
 
-<t> A Track is
-   typically a collection of parallel loose source routed sequences of nodes
-   from Ingress to Egress, forming so-called Track Legs, that are joined with
-   strict Segments of other nodes. The Legs are expressed in RPL Non-Storing
-   Modes and require an encapsulation to add a Source Route Header, whereas
-   the Segments are expressed in Storing Mode.
+    <t>
+    The concept of a Track was introduced in the <xref target='RFC9030'>
+    "6TiSCH Architecture"</xref>, as a collection of potential paths that
+    leverage redundant forwarding solutions along the way. This can be a
+    DODAG or a more complex structure that is only partially acyclic
+    (e.g., per packet).
+    </t>
+<t>
+    With this specification, a Track is shaped as a DODAG, and following the
+    directed edges leads to a Track Ingress. If there is a single Track Egress,
+    then the Track is reversible to form another DODAG by reversing the
+    direction of each edge. A node at the Ingress of more than one Segment in a
+    Track may use one or more of these Segments to forward a packet inside the
+    Track.
+    </t>
+<t>
+   A Track is typically a collection of parallel loose source routed sequences
+   of nodes ordered from Ingress to Egress, each forming a Track Leg. The nodes
+   that are directly connected, reachable via existing Tracks as illustrated in
+   <xref target='nssr'/>  or joined with strict Segments of other nodes as shown
+   in <xref target='srpdao'/>. The Legs are expressed in RPL Non-Storing
+   Mode and require an encapsulation to add a Source Route Header, whereas the
+   Segments are expressed in RPL Storing Mode.
 </t>
 <t>
    A Serial Track comprises provides only one path between Ingress and Egress.
@@ -566,16 +641,8 @@ docName="draft-ietf-roll-dao-projection-22" >
 </t>
 
 
-    <t>
-    The concept of a Track was introduced in the <xref target='RFC9030'>
-    "6TiSCH Architecture"</xref>, as a collection of potential paths that
-    leverage redundant forwarding solutions along the way.
-    With this specification, a Track forms DODAG that is directed towards a Track Ingress. If there is a single Track Egress,
-    then the Track is reversible to form another DODAG by reversing the
-    direction of each edge. A node at the Ingress of more
-    than one Segment in a Track may use one or more of these Segments to forward
-    a packet inside the Track.
-    </t>
+</section><!-- Building Tracks -->
+<section anchor='stracks'><name>Tracks and RPL Instances</name>
 
    <t>
    Section 5.1. of <xref target='RFC6550'/> describes the RPL Instance and
@@ -586,7 +653,8 @@ docName="draft-ietf-roll-dao-projection-22" >
     </t>
 
    <t>
-   A Track is normally associated with a Local RPL Instance which RPLInstanceID is used as the TrackID, more in  <xref target='trkid'/>.
+   A Track is normally associated with a Local RPL Instance which RPLInstanceID
+   is used as the TrackID, more in  <xref target='trkid'/>.
    A Track Leg may also be used as a subTrack that extends the RPL main DODAG.
    In that case, the TrackID is set to the global RPLInstanceID of the main
    DODAG, which suffices to identify the routing topology. As opposed to local
@@ -595,6 +663,7 @@ docName="draft-ietf-roll-dao-projection-22" >
    is not used to determine the Track.
    </t>
 
+</section><!-- Tracks and RPL Instances -->
 </section><!-- On tracks -->
 
 
