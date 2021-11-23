@@ -199,9 +199,18 @@ docName="draft-ietf-roll-dao-projection-22" >
 
 <section anchor='new'><name>Domain Terms</name>
     <t>
-    <!-- Removed reference from routing and 6tisch here to keep it simple
-	 This specification introduces the following terminology:-->
+    <!-- Removed reference from routing and 6tisch here to keep it simple -->
+	 This specification uses the following terminology:
     </t>
+  <section><name>namespace</name>
+  <t>
+    The term namespace is used to refer to the scope of the TrackID. The TrackID
+    is locally significant within its namespace. The namespace is identified by
+    an IPv6 Global Unicast Address (GUA) that is used as DODAGID for the Track.
+    The tuple (DODAGID, TrackID) is globally unique.
+    </t>
+
+  </section>
   <section><name>Projected Route</name><t>
 	A RPL P-Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE. It
     is installed as a state that signals that destinations (aka Targets)
@@ -329,6 +338,16 @@ docName="draft-ietf-roll-dao-projection-22" >
     all Segments are oriented from Ingress (East) to Egress (West), as opposed
     to the general RAW model, which allows North/South Segments that can be
     bidirectional.
+    </t>
+
+  </section>
+  <section><name>Section of a Segment</name>
+    <t>
+    A continuous subset of a segment that may be replaced while the segment
+    remains. for instance, in segment A=>B=>C=>D=>E=>F, say that the  link C to
+    D might be misbehaving. The section B=>C=>D=>E in the segment may be
+    replaced by B=>C’=>D’=>E to route around the problem. The segment becomes
+    A=>B=>C’=>D’=>E=>F.
     </t>
 
   </section>
@@ -929,7 +948,7 @@ As an example, say that A has a packet for F. Using the RIB above:
 <ul>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E.</li>
-<li>From Neighbor Cache Entry: C delivers the packet to F.</li>
+<li>From Neighbor Cache Entry: E delivers the packet to F.</li>
 </ul>
 
     </section><!-- Stitched Segments -->
@@ -1178,7 +1197,7 @@ As an example, say that A has a packet for F. Using the RIB above:
 Now the packet destination is E.</li>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
-<li>From Neighbor Cache Entry: C delivers packets to F or G.</li>
+<li>From Neighbor Cache Entry: E delivers packets to F or G.</li>
 </ul>
     </section><!-- External routes -->
 
@@ -2257,9 +2276,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
   <t>
    In RPL Non-Storing Mode, the TIO and RTO are combined in a DAO message to
    inform the DODAG Root of all the edges in the DODAG, which are formed by the
-   directed parent-child relationships.
-   Options may be factorized; multiple RTOs may be present to signal a collection of children that can be reached via the parent(s) indicated in the TIO(s) that follows the RTOs.
-   This specification generalizes the case of a parent that can be used to reach a child with that of a whole Track through which children and siblings of the Track Egress are reachable.
+   directed parent-child relationships. The DAO message signals to the Root
+   that a given parent can be used to reach a given child. The P-DAO message
+   generalizes the DAO to signal to the Track Ingress that a Track for which it
+   is Root can be used to reach children and siblings of the Track Egress.
+   In both cases, options may be factorized and multiple RTOs may be present to
+   signal a collection of children that can be reached through the parent or
+   the Track, respectively.
    </t>
     </section> <!-- Projected DAO -->
     <section anchor='extVIO'><name>Via Information Option</name>
@@ -2779,7 +2802,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |   Type        | Option Length |S| Flags |Comp.|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |            Step of Rank       |          Reserved             |
+    |            Step in Rank       |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |                                                               |
     +                                                               +
@@ -2843,9 +2866,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
               for the Sibling Address and its DODAGID if resent. The Compression
               reference is the Root of the Main DODAG.
               </dd>
-              <dt>Step of Rank:</dt><dd>16-bit unsigned integer. This is the
-              Step of Rank <xref target='RFC6550'/> as computed by the Objective
-              Function between this node and the sibling.
+              <dt>Step in Rank:</dt><dd>16-bit unsigned integer. This is the
+              Step in Rank <xref target='RFC6550'/> as computed by the Objective
+              Function between this node and the sibling, that reflects the
+              abstract Rank increment that would be computed by the OF if the
+              sibling was the preferred parent.
               </dd>
 
               <dt>Reserved:</dt><dd>The Reserved field MUST initialized to zero
