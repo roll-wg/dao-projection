@@ -202,15 +202,6 @@ docName="draft-ietf-roll-dao-projection-22" >
     <!-- Removed reference from routing and 6tisch here to keep it simple -->
 	 This specification uses the following terminology:
     </t>
-  <section><name>namespace</name>
-  <t>
-    The term namespace is used to refer to the scope of the TrackID. The TrackID
-    is locally significant within its namespace. The namespace is identified by
-    an IPv6 Global Unicast Address (GUA) that is used as DODAGID for the Track.
-    The tuple (DODAGID, TrackID) is globally unique.
-    </t>
-
-  </section>
   <section><name>Projected Route</name><t>
 	A RPL P-Route is a RPL route that is computed remotely by a PCE, and installed and maintained by a RPL Root on behalf of the PCE. It
     is installed as a state that signals that destinations (aka Targets)
@@ -285,7 +276,6 @@ docName="draft-ietf-roll-dao-projection-22" >
     <t>
     The Track may be strictly connected, meaning that the vertices are adjacent, or loosely connected, meaning that the vertices are connected using Segments that are associated to the same Track.
     </t>
-  </section>
   <section><name>TrackID</name>
     <t>
     A RPL Local InstanceID that identifies a Track using the namespace owned by
@@ -294,6 +284,14 @@ docName="draft-ietf-roll-dao-projection-22" >
     identification of the Track
     (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
     </t>
+  </section>
+  <section><name>namespace</name>
+  <t>
+    The term namespace is used to refer to the scope of the TrackID. The TrackID
+    is locally significant within its namespace. The namespace is identified by
+    the DODAGID for the Track. The tuple (DODAGID, TrackID) is globally unique.
+    </t>
+
   </section>
   <section><name>Serial Track</name>
     <t>A Track that has only one path.
@@ -320,7 +318,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     Track Ingress adds to the topology.
     </t>
   </section>
-  <section><name>Track Leg</name>
+  <section><name>Leg</name>
     <t>An end-to-end East-West serial path that can be a
     Track by itself or a subTrack of a complex Track.
     With this specification, a Leg is is installed by the Root of the main
@@ -328,7 +326,7 @@ docName="draft-ietf-roll-dao-projection-22" >
     loose sequence of nodes that are joined by Track Segments.
     </t>
   </section>
-  <section><name>Track Segment</name>
+  <section><name>Segment</name>
     <t>
     A serial path formed by a strict sequence of nodes, along which a P-Route is
     installed.
@@ -340,7 +338,6 @@ docName="draft-ietf-roll-dao-projection-22" >
     bidirectional.
     </t>
 
-  </section>
   <section><name>Section of a Segment</name>
     <t>
     A continuous subset of a segment that may be replaced while the segment
@@ -351,6 +348,26 @@ docName="draft-ietf-roll-dao-projection-22" >
     </t>
 
   </section>
+  <section><name>Segment Routing and SRH</name>
+<t>
+   The terms Segment Routing and SRH  refer to using source-routing to hop over segments. In a Non-Storing mode RPL domain, the SRH is typically a RPL Source
+   Route Header (the IPv6 RH of type 3) as defined in <xref target='RFC6554'/>.
+   </t>
+   <t>
+   If the network is a 6LoWPAN Network, the expectation is that the
+   SRH is compressed and encoded as a 6LoWPAN Routing Header (6LoRH), as
+   specified in section 5 of <xref target='RFC8138'/>.
+   </t>
+   <t>
+   On the other hand, if the RPL Network is less constrained and operated in
+   Storing Mode, as discussed in <xref target='smmd'/>, the Segment Routing
+   operation and the SRH could be as specified in <xref target='RFC8754'/>.
+   This specification applies equally to both forms of source routing and SRH.
+   </t>
+
+</section>	<!-- end section "Segment Routing and SRH" -->
+</section> <!-- Segment -->
+</section>
 </section>	<!-- end section "Domain Terms" -->
 
 </section>	<!-- end section "Terminology" -->
@@ -784,7 +801,6 @@ In a general manner the desired outcome is as follows:
    header, and the Egress of a Non-Storing Mode P-DAO is an implicit Target
    that is not listed in the RTO.
 </t>
-
 
 
 
@@ -1371,7 +1387,7 @@ Now the destination in the IPv6 Header is C, and a SRH signals the final destina
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
 <li>From P-DAO 3: C processes the SRH and sets the destination in the IPv6 Header to E.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
-<li>From the Neighbor Cache Entry: C delivers packets to F or G.</li>
+<li>From the Neighbor Cache Entry: E delivers packets to F or G.</li>
 </ul>
 
     </section><!-- Segment Routing -->
@@ -2085,7 +2101,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
     and the amount of rerouted traffic must fit within the capabilities of
     the transmission links. The methods used to learn the node capabilities and
     the resources that are available in the devices and in the network are out
-    of scope for this document. The method to capture and report the LLN link capacity and reliability statistics are also out of scope. They may be fetched from the nodes through network management functions or other forms of telemetry such as OAM.
+    of scope for this document. The method to capture and report the LLN link
+    capacity and reliability statistics are also out of scope. They may be
+    fetched from the nodes through network management functions or other forms
+    of telemetry such as OAM.
 </t>
 </section><!-- External Dependencies -->
 <section anchor='ietfr'><name>Positioning vs. Related IETF Standards</name>
@@ -2346,6 +2365,70 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>The encoding of the 'P' flag in native format is shown in <xref target='ext6553'/> while the compressed format is indicated in <xref target='ext8138'/>.
     </t>
     </section> <!-- Extending the RPI -->
+
+
+
+   <section anchor='dflag'><name>Additional Flag in the RPL DODAG Configuration Option</name>
+
+
+   <t>
+   The DODAG Configuration Option is defined in Section 6.7.6 of <xref target=
+   'RFC6550'/>. Its purpose is extended to distribute configuration
+   information affecting the construction and maintenance of the DODAG, as
+   well as operational parameters for RPL on the DODAG, through the DODAG.
+
+   This Option was originally designed with 4 bit positions reserved for future use as Flags.
+   </t>
+
+<figure anchor="RPLDCO">
+          <name>DODAG Configuration Option (Partial View) </name>
+       <artwork align="center" name="" type="" alt=""><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type = 0x04 |Opt Length = 14|D| | | |A|       ...           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                     +
+                                |4 bits |
+]]></artwork>
+</figure>
+
+   <t>
+   This specification defines a new flag "Projected Routes Support" (D).
+   The 'D' flag is encoded in bit position 0 of the reserved Flags in the DODAG
+   Configuration Option (this is the most significant bit)(to be confirmed by
+   IANA but there's little choice). It is set to 0 in legacy implementations as
+   specified respectively in Sections 20.14 and 6.7.6 of <xref target='RFC6550'
+   />.
+   </t>
+   <t>
+   The 'D' flag is set to 1 to indicate that this specification is enabled in
+   the network and that the Root will install the requested Tracks when feasible
+   upon a PDR message.
+   </t>
+   <t>
+   Section 4.1.2. of <xref target='RFC9008'/> updates
+   <xref target='RFC6550'/> to indicate that the definition of the Flags applies
+   to Mode of Operation values from zero (0) to six (6) only.
+   For a MOP value of 7, the implementation MUST consider that the Root
+   accepts PDR messages and will install Projected Routes.
+   </t>
+      <t>
+   The RPL DODAG Configuration option is typically placed in a DODAG
+   Information Object (DIO) message.  The DIO message propagates down
+   the DODAG to form and then maintain its structure.  The DODAG
+   Configuration option is copied unmodified from parents to children.
+   xref target='RFC6550'/> states that:
+</t>
+<blockquote>
+   Nodes other than the DODAG root MUST NOT modify this information when propagating the DODAG Configuration option.
+</blockquote>
+   <t>
+   Therefore, a legacy parent propagates the 'D' flag as set
+   by the root, and when the 'D' flag is set to 1, it is transparently
+   flooded to all the nodes in the DODAG.
+  </t>
+
+   </section><!-- New Flag in the RPL DODAG Configuration Option -->
   </section> <!-- Extending RFC 6550 -->
 
 
@@ -3913,7 +3996,25 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </section><!-- Profiles -->
 
+    <section anchor='back'><name>Backwards Compatibility</name>
 
+    <t>
+    This specification can operate in a mixed network where some nodes support
+    it and some do not. There are restructions, though. All nodes that need to
+    process a P-DAO must support this specification.
+    As discussed in <xref target='mtsch'/>, how the root knows whether the
+    nodes capabilities and whether it support this specification is out of scope.
+    </t>
+    <t>
+    This specification defines the 'D' flag (see <xref target='dflag'/>, in the
+    RPL DODAG Configuration Option to signal that upgraded nodes can request
+    the creation of Tracks. The requester may not know whether the Track can
+    effectively be constructed, and whether enough nodes along the preferred
+    paths support this specification. Therefore it makes sense to only set the
+    'D' flags in DIO when the conditions of success are in place, in particular
+    when all the nodes that could be on path of tracks are upgraded.
+    </t>
+    </section><!-- Backwards Compatibility -->
     <section><name>Security Considerations</name>
 
 
@@ -3961,7 +4062,26 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor='IANAcon'><name>IANA Considerations</name>
 
 
-   <section anchor='elec6lorh'><name>New Elective 6LoWPAN Routing Header Type</name>
+
+
+   <section anchor="iana-d"><name>RPL DODAG Configuration Option Flag</name>
+    <t>
+    IANA is requested to assign a flag from the "DODAG Configuration Option
+    Flags for MOP 0..6" <xref target='RFC9010'/> registry as follows:
+    </t>
+
+   <table  anchor="nexndopt"><name>New DODAG Configuration Option Flag</name>
+   <thead>
+      <tr><td>Bit Number</td><td>Capability Description</td><td>Reference</td></tr>
+   </thead><tbody>
+      <tr><td>0 (suggested)</td><td>Projected Routes Support (D)</td><td>THIS RFC</td></tr>
+   </tbody>
+   </table>
+
+<t>IANA is requested to add [THIS RFC] as a reference for MOP 7 in the RPL Mode of Operation registry.
+</t>
+</section><!-- RPL DODAG Configuration Option Flag -->
+   <section anchor='elec6lorh'><name>Elective 6LoWPAN Routing Header Type</name>
 
    <t>  This document updates the IANA registry titled "Elective 6LoWPAN
    Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
@@ -3985,10 +4105,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </tbody>
         </table>
-   </section><!-- New Elective 6LoWPAN Routing Header Type -->
+   </section><!-- Elective 6LoWPAN Routing Header Type -->
 
 
-   <section anchor='crit6lorh'><name>New Critical 6LoWPAN Routing Header Type</name>
+   <section anchor='crit6lorh'><name>Critical 6LoWPAN Routing Header Type</name>
    <t>  This document updates the IANA registry titled "Critical 6LoWPAN
    Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
 </t>
@@ -4011,12 +4131,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </tbody>
         </table>
-   </section><!-- New Critical 6LoWPAN Routing Header Type -->
+   </section><!-- Critical 6LoWPAN Routing Header Type -->
 
 
 
 
-   <section anchor='RPIIANA'><name>New Subregistry For The RPL Option Flags</name>
+   <section anchor='RPIIANA'><name>Subregistry For The RPL Option Flags</name>
     <t>
    IANA is required to create a subregistry for the 8-bit RPL Option Flags field, as detailed in <xref target='Rpifmt'/>, under the "Routing Protocol for Low Power and Lossy Networks (RPL)" registry. The bits are indexed from 0 (leftmost) to 7. Each bit is Tracked with the following qualities:
    </t>
@@ -4065,9 +4185,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
           <td align='left'>This document</td></tr>
     </tbody>
         </table>
-   </section><!-- New Subregistry For The RPL Option Flags -->
+   </section><!-- Subregistry For The RPL Option Flags -->
 
-   <section anchor='RPLCtrlMsgReg'><name>New RPL Control Codes</name>
+   <section anchor='RPLCtrlMsgReg'><name>RPL Control Codes</name>
 
     <t>This document extends the IANA Subregistry created by RFC 6550 for RPL
     Control Codes as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
@@ -4098,9 +4218,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
         </table>
 
 
-   </section> <!-- "New RPL Control Codes" -->
+   </section> <!-- "RPL Control Codes" -->
 
-   <section anchor='RPLCtrlMsgOptionsReg'><name>New RPL Control Message Options</name>
+   <section anchor='RPLCtrlMsgOptionsReg'><name>RPL Control Message Options</name>
 
     <t>This document extends the IANA Subregistry created by RFC 6550 for
     RPL Control Message Options as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
@@ -4139,42 +4259,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    </section> <!-- "RPL Control Message Options" -->
 
-<!--
-
-
-   <section anchor='IANAMop'>
-   <name>Updating Registry for the RPL Mode of Operation</name>
-    <t>This document is updating the registry created by RFC 6550 for the RPL
-        3-bit Mode of Operation (MOP) as follows:
-        </t>
-
-        <table anchor="ianaMOPtbl"><name>DIO Mode of operation</name>
-   <thead>
-
-          <tr><th align='center'>MOP value</th>
-
-          <th align='left'>Description</th>
-
-          <th align='left'>Reference</th></tr>
-
-   </thead><tbody>
-
-          <tr><td align='center'>5</td>
-
-          <td align='left'>Non-Storing Mode of operation with P-Routes</td>
-
-          <td align='left'>This document</td></tr>
-
-          <tr><td align='center'>6</td>
-
-          <td align='left'>Storing Mode of operation with P-Routes</td>
-
-          <td align='left'>This document</td></tr>
-    </tbody>
-        </table>
-
-   </section> < Updating Registry for the RPL Mode of Operation >
-        -->
 
 
 
@@ -4359,7 +4443,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 
-<section anchor="iana-P-DAO"><name>New destination Advertisement Object Flag</name>
+<section anchor="iana-P-DAO"><name>destination Advertisement Object Flag</name>
 
 
 <t>
@@ -4398,7 +4482,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 
-<section anchor='iana-stats-rpl-rej'><name>New RPL Rejection Status values </name>
+<section anchor='iana-stats-rpl-rej'><name>RPL Rejection Status values </name>
  <t>
 	This specification updates the Subregistry for the "RPL Rejection Status"
     values under the RPL registry, as follows:
@@ -4462,6 +4546,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6554.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8754.xml'/>
 
     </references><references><name>Informative References</name>
 
@@ -4474,7 +4560,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-use-cases.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8402.xml'/>
