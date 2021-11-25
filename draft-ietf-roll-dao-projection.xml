@@ -267,6 +267,25 @@ docName="draft-ietf-roll-dao-projection-22" >
     may fork and rejoin, and may enable the RAW Packet ARQ, Replication,
     Elimination, and Overhearing (PAREO) operations.
     </t>
+
+
+<figure anchor='TRK'><name>A Track and its Components</name>
+              <artwork align="center"><![CDATA[
+
+       A ==> B ==> C -=- F ==> G ==> H     T1       I: Ingress
+     /              \   /              \ /          E: Egress
+   I                  O                 E -=- T2    T1, T2, T3:
+     \              /   \              / \            External
+       P ==> Q ==> R -=- T ==> U ==> V     T3         Targets
+
+      I ==> A ==> B ==> C : a segment to targets F and O
+
+         I --> F --> E : a leg to targets T1, T2, T3
+
+        I, A, B, C, F, G, H, E : a path to T1, T2, T3
+
+]]></artwork>
+</figure>
     <t>
     This specification builds Tracks that are DODAGs oriented towards a Track
     Ingress, and the forward direction for packets (aka East-West) is from the
@@ -727,9 +746,9 @@ docName="draft-ietf-roll-dao-projection-22" >
     <section><name>Serial Track Signaling</name>
 <t>
    This specification enables to set up a P-Route along either a Track Leg or a
-   Segment. A P-Route is installed and maintained using an extended RPL DAO
-   message called a Projected DAO (P-DAO), and a Track is composed of the
-   combination of one or more P-Routes.
+   Segment. A P-Route is installed and maintained by the Root of the main DODAG
+   using an extended RPL DAO message called a Projected DAO (P-DAO), and a Track
+   is composed of the combination of one or more P-Routes.
 </t>
 <t>
    A P-DAO message for a Track signals the TrackID in the RPLInstanceID field.
@@ -4006,8 +4025,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     nodes capabilities and whether it support this specification is out of scope.
     </t>
     <t>
-    This specification defines the 'D' flag (see <xref target='dflag'/>, in the
-    RPL DODAG Configuration Option to signal that upgraded nodes can request
+    This specification defines the 'D' flag in the  RPL DODAG Configuration
+    Option (see <xref target='dflag'/>) to signal that the RPL nodes can request
     the creation of Tracks. The requester may not know whether the Track can
     effectively be constructed, and whether enough nodes along the preferred
     paths support this specification. Therefore it makes sense to only set the
@@ -4043,7 +4062,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
     RPL network by constantly injected forged P-DAO messages and using up all
     the available storage in the attacked routers.
 
- </t> <t>
+ </t><t>
+   With this specification, only the Root may generate P-DAO messages. PDR
+   messages may only be sent to the Root. This specification expects that the
+   communication with the Root is authenticated but does enforce which method
+   is used.
+</t><t>
     Additionally, the trust model could include a role validation (e.g., using a
     role-based authorization) to ensure that the node that
     claims to be a RPL Root is entitled to do so. That trust should propagate
