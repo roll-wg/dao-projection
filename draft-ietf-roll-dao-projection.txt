@@ -12,7 +12,7 @@ Expires: 29 May 2022                                         Huawei Tech
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-22
+                   draft-ietf-roll-dao-projection-23
 
 Abstract
 
