@@ -304,7 +304,7 @@ docName="draft-ietf-roll-dao-projection-23" >
     (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
     </t>
   </section>
-  <section><name>namespace</name>
+  <section><name>Namespace</name>
   <t>
     The term namespace is used to refer to the scope of the TrackID. The TrackID
     is locally significant within its namespace. The namespace is identified by
@@ -2225,18 +2225,25 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     This specification extends RPL <xref target='RFC6550'/> to enable the Root
     to install East-West routes inside a Main DODAG that is operated as
-    Non-Storing Mode. A Projected DAO (P-DAO) message (see <xref target='extP-DAO'/>) contains a new Via Information Option that installs a strict
+    Non-Storing Mode. The Root issues a Projected DAO (P-DAO) message
+    (see <xref target='extP-DAO'/>) to the Track Ingress; the P-DAO message
+    contains a new Via Information Option (VIO) that installs a strict
     or a loose sequence of hops to form respectively a Track Segment or a
     Track Leg.
+    </t>
+    <t>
     A new P-DAO Request (PDR) message (see <xref target='P-DAOreq'/>)
     enables a Track Ingress to request the Track from the Root. The
-    resulting Track is also a DODAG for which the Track Ingress is the Root, the owner the address that serves as DODAGID and authoritative for the associated namespace from which the TrackID is selected. In the
+    resulting Track is also a DODAG for which the Track Ingress is the Root,
+    the owner the address that serves as DODAGID and authoritative for the
+    associated namespace from which the TrackID is selected. In the
     context of this specification, the installed route appears as a more
     specific route to the Track Targets, and the Track Ingress routes
     the packets towards the Targets via the Track using the longest match as
     usual.
     </t>
-    <t>To ensure that the PDR and P-DAO messages can flow at most times,
+    <t>
+    To ensure that the PDR and P-DAO messages can flow at most times,
     it is RECOMMENDED that the nodes involved in a Track mantain
     multiple parents in the  Main DODAG, advertise them all to the Root,
     and use them in turn to retry similar packets. It is also
@@ -2258,13 +2265,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Architecture  <xref target='RFC9030'/> as a collection of multiple P-Routes.
    </t>
    <t>
+   The Root MUST source the P-DAO message with its address that serves as
+   DODAGID for the main DODAG. The receiver MUST NOT accept a P-DAO message that
+   is not sent by the Root of its DODAG and MUST ignore such message silently.
+   </t>
+   <t>
    The P-DAO is signaled with a new "Projected DAO" (P) flag, see <xref target=
    'p-dao-fmt'/>. The 'P' flag is encoded in bit position 2 (to be confirmed by
    IANA) of the Flags field in the DAO Base Object. The Root MUST set it to 1 in
    a Projected DAO message. Otherwise it MUST be set to 0. It is set to 0 in
    Legacy implementations as specified respectively in Sections 20.11 and 6.4 of
-   <xref target='RFC6550'/>
+   <xref target='RFC6550'/>.
    </t>
+
    <t>
    The P-DAO is control plane signaling and should not be stuck behind high
    traffic levels. The expectation is that the P-DAO message is sent as high
@@ -4020,7 +4033,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     This specification can operate in a mixed network where some nodes support
     it and some do not. There are restructions, though. All nodes that need to
-    process a P-DAO must support this specification.
+    process a P-DAO MUST support this specification.
     As discussed in <xref target='mtsch'/>, how the root knows whether the
     nodes capabilities and whether it support this specification is out of scope.
     </t>
@@ -4049,7 +4062,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
  <t>
 	The LLN nodes depend on the 6LBR and the RPL participants for their
     operation.
-	A trust model must be put in place to ensure that the right devices are
+	A trust model is necessary to ensure that the right devices are
 	acting in these roles, so as to avoid threats such as black-holing,
     (see <xref target='RFC7416'/> section 7). This trust model could be
     at a minimum based on a Layer-2 Secure joining and the Link-Layer security.
@@ -4539,10 +4552,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
    to 6TiSCH, RAW and this document, as well as text suggestions that were
    incorporated, and to Michael Richardson for his useful recommendations based
-   on his global view of the system.
+   on his global view of the system all along the developement of this
+   specification.
    Also special thanks Toerless Eckert for his deep review, with many excellent
    suggestions that improved the readability and well as the content of the
    specification.
+   Many thanks to Remous-Aris Koutsiamanis for his review during WGLC.
   </t>
 </section>
 
