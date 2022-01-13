@@ -52,6 +52,7 @@ docName="draft-ietf-roll-dao-projection-23" >
         </address>
     </author>
 
+<!--
 <author initials='M' surname='Gillmore' fullname='Matthew Gillmore'>
       <organization abbrev='Itron'>Itron, Inc</organization>
       <address>
@@ -66,7 +67,7 @@ docName="draft-ietf-roll-dao-projection-23" >
          <email>matthew.gillmore@itron.com</email>
       </address>
    </author>
-
+-->
         <date/>
 
 	<area>Routing</area>
@@ -1424,7 +1425,7 @@ Now the destination in the IPv6 Header is C, and a SRH signals the final destina
 
 <ul>
 <li>P-DAO 1 signals C==&gt;D==&gt;E-to-F,G</li>
-<li>P-DAO 2 signals A==&gt;B==&gt;C-to-C,F,G</li>
+<li>P-DAO 2 signals A==&gt;B==&gt;C-to-E,F,G</li>
 </ul>
 
 <t>
@@ -2244,11 +2245,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
     <t>
     To ensure that the PDR and P-DAO messages can flow at most times,
-    it is RECOMMENDED that the nodes involved in a Track mantain
+    it is RECOMMENDED that the nodes involved in a Track maintain
     multiple parents in the  Main DODAG, advertise them all to the Root,
     and use them in turn to retry similar packets. It is also
     RECOMMENDED that the Root uses diverse source route paths to retry
-    similar messages ot the nodes in the Track.
+    similar messages to the nodes in the Track.
     </t>
     <section anchor='extP-DAO'><name>Projected DAO</name>
 
@@ -2277,7 +2278,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Legacy implementations as specified respectively in Sections 20.11 and 6.4 of
    <xref target='RFC6550'/>.
    </t>
-
    <t>
    The P-DAO is control plane signaling and should not be stuck behind high
    traffic levels. The expectation is that the P-DAO message is sent as high
@@ -2324,6 +2324,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
   </dl>
 
+    <t>
+   The D flag is set to one to signal that the DODAGID field is present.
+   It may be set to zero if and only if the destination address of the P-DAO-ACK
+   message is set to the IPv6 address that serves as DODAGID and it MUST be set
+   to one otherwise, meaning that the DODAGID field MUST then be present.
+   </t>
   <t>
    In RPL Non-Storing Mode, the TIO and RTO are combined in a DAO message to
    inform the DODAG Root of all the edges in the DODAG, which are formed by the
@@ -2335,7 +2341,63 @@ Ingress                    Segment 5                 Egress - Tgt 2
    signal a collection of children that can be reached through the parent or
    the Track, respectively.
    </t>
+
     </section> <!-- Projected DAO -->
+    <section anchor='extP-DAO-ACK'><name>Projected DAO-ACK</name>
+   <t> The changes in the P-DAO messages are reflected on the P-DAO-ACK message
+   that is used to acknowledge a P-DAO, with the new P flag that signal the
+   projected form.
+   </t>
+    <t>
+   The format of the P-DAO-ACK message is thus as illustrated in
+   <xref target='p-dao-ack-fmt'/>:
+   </t>
+
+<figure anchor='p-dao-ack-fmt'><name>Projected DAO-ACK Base Object</name>
+              <artwork align="center">
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|    TrackID    |D|P| Reserved  |  DAOSequence  |    Status     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
++                                                               +
+|                   DODAGID field set to the                    |
++               IPv6 Address of the Track Ingress               +
+|              used to source encapsulated packets              |
++                                                               +
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Option(s)...
++-+-+-+-+-+-+-+-+
+ </artwork>
+</figure>
+  <t> New fields:</t>
+  <dl  spacing='normal'>
+
+  <dt>TrackID:</dt>
+    <dd> The local or global RPLInstanceID of the DODAG that serves as Track,
+    more in <xref target="trkid"/>
+
+    </dd>
+
+  <dt>P:</dt>
+    <dd> <t>1-bit flag (position to be confirmed by IANA).</t>
+          <t>
+          The 'P' flag is set to 1 by the Root to signal a Projected DAO,
+          and it is set to 0 otherwise.
+          </t>
+          </dd>
+
+  </dl>
+
+    <t>
+   The D flag is set to one to signal that the DODAGID field is present.
+   It may be set to zero if and only if the source address of the P-DAO-ACK
+   message is set to the IPv6 address that serves as DODAGID and it MUST be set
+   to one otherwise, meaning that the DODAGID field MUST then be present.
+   </t>
+    </section> <!-- Projected DAO-ACK -->
     <section anchor='extVIO'><name>Via Information Option</name>
   <t>
    New CMOs called the Via Information Options (VIO) are introduced for use in
@@ -2356,7 +2418,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <xref target='nsP-DAO'/> respectively for more.
    </t>
 
-    </section> <!-- VIA Information OptionO -->
+    </section> <!-- VIA Information Option -->
     <section anchor='extSIO'><name>Sibling Information Option</name>
    <t>
    This specification adds another CMO called the Sibling Information Option
@@ -2429,8 +2491,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    The 'D' flag is encoded in bit position 0 of the reserved Flags in the DODAG
    Configuration Option (this is the most significant bit)(to be confirmed by
    IANA but there's little choice). It is set to 0 in legacy implementations as
-   specified respectively in Sections 20.14 and 6.7.6 of <xref target='RFC6550'
-   />.
+   specified respectively in Sections 20.14 and 6.7.6 of <xref target='RFC6550'/>.
    </t>
    <t>
    The 'D' flag is set to 1 to indicate that this specification is enabled in
@@ -2449,7 +2510,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Information Object (DIO) message.  The DIO message propagates down
    the DODAG to form and then maintain its structure.  The DODAG
    Configuration option is copied unmodified from parents to children.
-   xref target='RFC6550'/> states that:
+   </t>
+      <t>
+   <xref target='RFC6550'/> states that:
 </t>
 <blockquote>
    Nodes other than the DODAG root MUST NOT modify this information when propagating the DODAG Configuration option.
@@ -2591,9 +2654,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
    requested or not.  A positive PDR-ACK indicates that the Track was built
    and that the Roots commits to maintain the Track for the negotiated lifetime.
    </t>
-   <t> The Root may use an asynchronous
-   PDR-ACK with an negative status to indicate that the Track was terminated
-   before its time. A status of "Transient Failure" (see <xref target=
+   <t>
+   The main Root MAY indicate to the Track Ingress that the Track was terminated
+   before its time and to do so, it MUST uses an asynchronous PDR-ACK with an
+   negative status.
+   A status of "Transient Failure" (see <xref target=
    "iana-stats-rej"/>) is an indication that the PDR may be retried after a
    reasonable time that depends on the deployment. Other negative status
    values indicate a permanent error; the tentative must be abandoned until
@@ -2905,7 +2970,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    (ULA or GUA) that serves as identifier for the node. If this router also
    registers an address to that sibling, and the link has similar properties in
    both directions, only the router with the lowest Interface ID in its
-   registered address needs report the SIO, and the Root will assume symmetry.
+   registered address needs report the SIO, with the B flag set, and the Root
+   will assume symmetry.
     </t>
     <t>
     The format of the SIO is as follows:
@@ -2915,7 +2981,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |S| Flags |Comp.|    Opaque     |
+    |   Type        | Option Length |S|B|Flags|Comp.|    Opaque     |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |            Step in Rank       |          Reserved             |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2950,7 +3016,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>Reserved for Flags:</dt><dd>MUST be set to zero by the sender
               and MUST be ignored by the receiver.
               </dd>
-              <!--
               <dt>B:</dt><dd>
               1-bit flag that is set to indicate that the connectivity to the sibling
               is bidirectional and roughly symmetrical. In that case, only one of the siblings may
@@ -2958,7 +3023,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
               from the sibling to this node, and does not provide information on the hop from this node
               to the sibling.
               </dd>
-              -->
               <dt>S:</dt><dd>
               1-bit flag that is set to indicate that sibling belongs to the
               same DODAG. When not set, the Sibling DODAGID is indicated.
@@ -3054,7 +3118,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
       All the Segments MUST be created with the same TrackID and the same DODAGID signaled in the P-DAO.
       </t>
       <t>
-      The Root designs the Track as it sees best, and updates / changes the Segments overtime to serve the Track as needed. There is no notification to the requesting node when those changes happen.
+      The Root designs the Track as it sees best, and updates / changes the Segments overtime to serve the
+      Track as needed.
+      Note that there is no protocol element to notify to the requesting Track
+      Ingress when changes happen deeper down the Track, so they are transparent
+      to the Track Ingress. If the main Root cannot maintain an expected service
+      level, then it needs to tear down the Track completely.
       The Segment Lifetime in the P-DAO messages does not need to be aligned to
       the Requested Lifetime in the PDR, or between P-DAO messages for different Segments. The Root may use shorter lifetimes for the Segments
       and renew them faster than the Track is, or longer lifetimes in which case it will need to tear down the Segments if the Track is not renewed.
@@ -3130,8 +3199,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
      The Track Ingress is the Root of the DODAG ID formed by the local RPL
      Instance. It owns the namespace of its TrackIDs, so it can pick any
      unused value to request a new Track with a PDR. In a particular deployment
-     where PDR are not used, the namespace can be delegated to the main Root,
-     which can assign the TrackIDs for the Tracks it creates without collision.
+     where PDR are not used, a portion of the namespace can be administratively
+     delegated to the main Root, meaning that the main Root is authoritative for
+     assigning the TrackIDs for the Tracks it creates.
     </t>
      <t>
      With this specification, the Root is aware of all the active Tracks, so it
@@ -3943,7 +4013,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     TrackID.
     </t><t>
     Profiles 0 and 1 are REQUIRED by all implementations that may be used in
-    LLNs; this enables to use Storing Mode to reduce the size of the Source
+    LLNs; Profiles 1 leverages Storing Mode to reduce the size of the Source
     Route Header in the most common LLN deployments. Profile 2 is RECOMMENDED
     in high speed / wired environment to enable traffic Engineering and
     network automation. All the other profile / environment combinations are
@@ -4480,11 +4550,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 
-<section anchor="iana-P-DAO"><name>destination Advertisement Object Flag</name>
+<section anchor="iana-P-DAO"><name>Destination Advertisement Object Flag</name>
 
 
 <t>
-   This document modifies the "destination Advertisement Object (DAO) Flags"
+   This document modifies the "Destination Advertisement Object (DAO) Flags"
    registry initially
    created in Section 20.11 of <xref target='RFC6550'/> .
 </t><t>
@@ -4492,11 +4562,33 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
 
    <table  anchor="iana-P-DAOtbl">
-      <name>New destination Advertisement Object (DAO) Flag</name>
+      <name>New Destination Advertisement Object (DAO) Flag</name>
    <thead>
       <tr><td>Bit Number</td><td>Capability Description</td><td>Reference</td></tr>
    </thead><tbody>
       <tr><td>2 (Suggested)</td><td>Projected DAO (P)</td><td>THIS RFC</td></tr>
+   </tbody>
+   </table>
+
+   </section>
+
+<section anchor="iana-P-DAO-aCK"><name>Destination Advertisement Object Acknowledgment Flag</name>
+
+
+<t>
+   This document modifies the "Destination Advertisement Object (DAO) Acknowledgment Flags"
+   registry initially
+   created in Section 20.12 of <xref target='RFC6550'/> .
+</t><t>
+  <xref target='extP-DAO-ACK'/> also defines one new entry in the Registry as follows:
+    </t>
+
+   <table  anchor="iana-P-DAO-ACKtbl">
+      <name>New Destination Advertisement Object Acknowledgment Flag</name>
+   <thead>
+      <tr><td>Bit Number</td><td>Capability Description</td><td>Reference</td></tr>
+   </thead><tbody>
+      <tr><td>1 (Suggested)</td><td>Projected DAO-ACK (P)</td><td>THIS RFC</td></tr>
    </tbody>
    </table>
 
