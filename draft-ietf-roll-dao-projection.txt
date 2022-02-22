@@ -5,8 +5,8 @@
 ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Intended status: Standards Track                             R.A. Jadhav
-Expires: 17 July 2022                                        Huawei Tech
-                                                         13 January 2022
+Expires: 26 August 2022                                      Huawei Tech
+                                                        22 February 2022
 
 
                   Root initiated routing state in RPL
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 July 2022.
+   This Internet-Draft will expire on 26 August 2022.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 1]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 1]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    extracted from this document must include Simplified BSD License text
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 2]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 2]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
      5.3.  Via Information Options . . . . . . . . . . . . . . . . .  45
@@ -165,9 +165,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 3]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 3]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 1.  Introduction
@@ -221,19 +221,19 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 4]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 4]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 2.2.  References
 
    In this document, readers will encounter terms and concepts that are
    discussed in the "Routing Protocol for Low Power and Lossy Networks"
-   [RPL], the "6TiSCH Architecture" [6TiSCH-ARCHI], the "Deterministic
+   [RPL], the "6TiSCH Architecture" [RFC9030], the "Deterministic
    Networking Architecture" [RFC8655], the "Reliable and Available
-   Wireless (RAW) Architecture/Framework" [RAW-ARCHI], and "Terminology
-   in Low power And Lossy Networks" [RFC7102].
+   Wireless (RAW) Architecture" [RAW-ARCHI], and "Terminology in Low
+   power And Lossy Networks" [RFC7102].
 
 2.3.  Glossary
 
@@ -277,9 +277,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 5]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 5]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 2.4.1.  Projected Route
@@ -333,9 +333,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 6]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 6]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    The RPL DODAG optimizes the P2MP (from Root) and MP2P (to Root)
@@ -389,9 +389,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 7]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 7]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 2.4.5.2.  Namespace
@@ -445,9 +445,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 8]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 8]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 2.4.5.8.1.  Section of a Segment
@@ -501,9 +501,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                  [Page 9]
+Thubert & Jadhav         Expires 26 August 2022                 [Page 9]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    RPL instances operate as ships passing in the night, unbeknownst of
@@ -557,9 +557,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 10]
+Thubert & Jadhav         Expires 26 August 2022                [Page 10]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    In Storing Mode, the routing information percolates upwards, and each
@@ -613,9 +613,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 11]
+Thubert & Jadhav         Expires 26 August 2022                [Page 11]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
                  +-----+
@@ -669,9 +669,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 12]
+Thubert & Jadhav         Expires 26 August 2022                [Page 12]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    a shorter path that would not traverse the Root for select P2P
@@ -725,9 +725,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 13]
+Thubert & Jadhav         Expires 26 August 2022                [Page 13]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       that has the strict source route information down the DODAG to the
@@ -781,18 +781,17 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 14]
+Thubert & Jadhav         Expires 26 August 2022                [Page 14]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 3.4.1.  Building Tracks With RPL
 
    The concept of a Track was introduced in the "6TiSCH Architecture"
-   [6TiSCH-ARCHI], as a collection of potential paths that leverage
-   redundant forwarding solutions along the way.  This can be a DODAG or
-   a more complex structure that is only partially acyclic (e.g., per
-   packet).
+   [RFC9030], as a collection of potential paths that leverage redundant
+   forwarding solutions along the way.  This can be a DODAG or a more
+   complex structure that is only partially acyclic (e.g., per packet).
 
    With this specification, a Track is shaped as a DODAG, and following
    the directed edges leads to a Track Ingress.  Storing Mode P-DAO
@@ -837,9 +836,10 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 15]
+
+Thubert & Jadhav         Expires 26 August 2022                [Page 15]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
                   0 1 2 3 4 5 6 7
@@ -893,9 +893,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 16]
+Thubert & Jadhav         Expires 26 August 2022                [Page 16]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
                                                  /===> F
@@ -949,9 +949,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 17]
+Thubert & Jadhav         Expires 26 August 2022                [Page 17]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 3.5.1.1.  Stitched Segments
@@ -1005,9 +1005,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 18]
+Thubert & Jadhav         Expires 26 August 2022                [Page 18]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1061,9 +1061,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 19]
+Thubert & Jadhav         Expires 26 August 2022                [Page 19]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 3.5.1.2.  External routes
@@ -1117,9 +1117,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 20]
+Thubert & Jadhav         Expires 26 August 2022                [Page 20]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1173,9 +1173,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 21]
+Thubert & Jadhav         Expires 26 August 2022                [Page 21]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  From Neighbor Cache Entry: E delivers packets to F or G.
@@ -1229,9 +1229,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 22]
+Thubert & Jadhav         Expires 26 August 2022                [Page 22]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1285,9 +1285,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 23]
+Thubert & Jadhav         Expires 26 August 2022                [Page 23]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  From P-DAO 1: C forwards to D and D forwards to E; E decapsulates
@@ -1341,9 +1341,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 24]
+Thubert & Jadhav         Expires 26 August 2022                [Page 24]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1397,9 +1397,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 25]
+Thubert & Jadhav         Expires 26 August 2022                [Page 25]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  From P-DAO 1: C encapsulates the packet with destination of F in
@@ -1453,9 +1453,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 26]
+Thubert & Jadhav         Expires 26 August 2022                [Page 26]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1509,9 +1509,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 27]
+Thubert & Jadhav         Expires 26 August 2022                [Page 27]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  From the SRH: Packets forwarded by B have source A, destination C
@@ -1565,9 +1565,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 28]
+Thubert & Jadhav         Expires 26 August 2022                [Page 28]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
          +======+=============+=========+=============+==========+
@@ -1621,9 +1621,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 29]
+Thubert & Jadhav         Expires 26 August 2022                [Page 29]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
     +========+===================+===================+================+
@@ -1677,9 +1677,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 30]
+Thubert & Jadhav         Expires 26 August 2022                [Page 30]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 3.6.  Complex Tracks
@@ -1733,9 +1733,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 31]
+Thubert & Jadhav         Expires 26 August 2022                [Page 31]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
            CPF               CPF          CPF                 CPF
@@ -1789,9 +1789,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 32]
+Thubert & Jadhav         Expires 26 August 2022                [Page 32]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    as illustrated in Figure 7, with Leg 3 that is congruent with Leg 1
@@ -1826,12 +1826,12 @@ Internet-Draft               DAO Projection                 January 2022
 
 3.7.2.1.  Extending 6TiSCH
 
-   The "6TiSCH Architecture" [6TiSCH-ARCHI] leverages a centralized
-   model that is similar to that of "Deterministic Networking
-   Architecture" [RFC8655], whereby the device resources and
-   capabilities are exposed to an external controller which installs
-   routing states into the network based on its own objective functions
-   that reside in that external entity.
+   The "6TiSCH Architecture" [RFC9030] leverages a centralized model
+   that is similar to that of "Deterministic Networking Architecture"
+   [RFC8655], whereby the device resources and capabilities are exposed
+   to an external controller which installs routing states into the
+   network based on its own objective functions that reside in that
+   external entity.
 
 3.7.2.2.  Mapping to DetNet
 
@@ -1845,9 +1845,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 33]
+Thubert & Jadhav         Expires 26 August 2022                [Page 33]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    One possible mapping between DetNet and this specification is to
@@ -1885,25 +1885,25 @@ Internet-Draft               DAO Projection                 January 2022
 
 3.7.2.4.  Providing for RAW
 
-   The "Reliable and Available Wireless (RAW) Architecture/Framework"
-   [RAW-ARCHI] extends the definition of Track, as being composed of
-   East-West directional segments and North-South bidirectional
-   segments, to enable additional path diversity, using Packet ARQ,
-   Replication, Elimination, and Overhearing (PAREO) functions over the
-   available paths, to provide a dynamic balance between the reliability
-   and availability requirements of the flows and the need to conserve
-   energy and spectrum.  This specification prepares for RAW by setting
-   up the Tracks, but only forms DODAGs, which are composed of
-   aggregated end-to-end loose source routed Legs, joined by strict
-   routed Segments, all oriented East-West.
+   The RAW Architecture [RAW-ARCHI] extends the definition of Track, as
+   being composed of East-West directional segments and North-South
+   bidirectional segments, to enable additional path diversity, using
+   Packet ARQ, Replication, Elimination, and Overhearing (PAREO)
+   functions over the available paths, to provide a dynamic balance
+   between the reliability and availability requirements of the flows
+   and the need to conserve energy and spectrum.  This specification
+   prepares for RAW by setting up the Tracks, but only forms DODAGs,
+   which are composed of aggregated end-to-end loose source routed Legs,
+   joined by strict routed Segments, all oriented East-West.
 
 
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 34]
+
+Thubert & Jadhav         Expires 26 August 2022                [Page 34]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    The RAW Architecture defines a dataplane extension of the PCE called
@@ -1957,9 +1957,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 35]
+Thubert & Jadhav         Expires 26 August 2022                [Page 35]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 4.1.1.  Projected DAO
@@ -1972,8 +1972,8 @@ Internet-Draft               DAO Projection                 January 2022
    hop information at a time in the TIO.  A Projected DAO (P-DAO) is a
    special DAO message generated by the Root to install a P-Route formed
    of multiple hops in its DODAG.  This provides a RPL-based method to
-   install the Tracks as expected by the 6TiSCH Architecture
-   [6TiSCH-ARCHI] as a collection of multiple P-Routes.
+   install the Tracks as expected by the 6TiSCH Architecture [RFC9030]
+   as a collection of multiple P-Routes.
 
    The Root MUST source the P-DAO message with its address that serves
    as DODAGID for the main DODAG.  The receiver MUST NOT accept a P-DAO
@@ -2013,9 +2013,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 36]
+Thubert & Jadhav         Expires 26 August 2022                [Page 36]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    New fields:
@@ -2069,9 +2069,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 37]
+Thubert & Jadhav         Expires 26 August 2022                [Page 37]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       0                   1                   2                   3
@@ -2125,9 +2125,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 38]
+Thubert & Jadhav         Expires 26 August 2022                [Page 38]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    A P-DAO contains one or more RTOs to indicate the Target
@@ -2181,9 +2181,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 39]
+Thubert & Jadhav         Expires 26 August 2022                [Page 39]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 4.1.7.  Additional Flag in the RPL DODAG Configuration Option
@@ -2237,9 +2237,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 40]
+Thubert & Jadhav         Expires 26 August 2022                [Page 40]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 4.2.  Extending RFC 6553
@@ -2293,9 +2293,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 41]
+Thubert & Jadhav         Expires 26 August 2022                [Page 41]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    Section 4 of [RFC8138] presents the generic formats of the 6LoWPAN
@@ -2349,9 +2349,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 42]
+Thubert & Jadhav         Expires 26 August 2022                [Page 42]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       RPLInstanceID field signals the TrackID, see Section 3.4 and
@@ -2405,9 +2405,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 43]
+Thubert & Jadhav         Expires 26 August 2022                [Page 43]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       TrackID field signals the RPLInstanceID of the DODAG formed by the
@@ -2461,9 +2461,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 44]
+Thubert & Jadhav         Expires 26 August 2022                [Page 44]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    Flags:  Reserved.  The Flags field MUST initialized to zero by the
@@ -2517,9 +2517,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 45]
+Thubert & Jadhav         Expires 26 August 2022                [Page 45]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    In the case of a SM-VIO, or if [RFC8138] is not used in the data
@@ -2573,9 +2573,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 46]
+Thubert & Jadhav         Expires 26 August 2022                [Page 46]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    P-RouteID:  8-bit field that identifies a component of a Track or the
@@ -2629,9 +2629,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 47]
+Thubert & Jadhav         Expires 26 August 2022                [Page 47]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       In a Storing Mode P-DAO that updates or removes a section of an
@@ -2685,9 +2685,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 48]
+Thubert & Jadhav         Expires 26 August 2022                [Page 48]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
         0                   1                   2                   3
@@ -2741,9 +2741,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 49]
+Thubert & Jadhav         Expires 26 August 2022                [Page 49]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    Opaque:  MAY be used to carry information that the node and the Root
@@ -2797,9 +2797,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 50]
+Thubert & Jadhav         Expires 26 August 2022                [Page 50]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    Though fragmentation is possible in a 6LoWPAN LLN, e.g., using
@@ -2853,9 +2853,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 51]
+Thubert & Jadhav         Expires 26 August 2022                [Page 51]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 6.3.  Identifying a Track
@@ -2909,9 +2909,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 52]
+Thubert & Jadhav         Expires 26 August 2022                [Page 52]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       particular deployment where PDR are not used, a portion of the
@@ -2965,9 +2965,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 53]
+Thubert & Jadhav         Expires 26 August 2022                [Page 53]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  A packet that was routed along a Track MUST NOT be routed along
@@ -3021,9 +3021,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 54]
+Thubert & Jadhav         Expires 26 August 2022                [Page 54]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    In Non-Storing Mode, as discussed in Section 6.4.3, the Root sends
@@ -3077,9 +3077,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 55]
+Thubert & Jadhav         Expires 26 August 2022                [Page 55]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
            ------+---------
@@ -3133,9 +3133,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 56]
+Thubert & Jadhav         Expires 26 August 2022                [Page 56]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    The address of the predecessor to be used as destination of the
@@ -3189,9 +3189,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 57]
+Thubert & Jadhav         Expires 26 August 2022                [Page 57]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
               ------+---------
@@ -3245,9 +3245,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 58]
+Thubert & Jadhav         Expires 26 August 2022                [Page 58]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 6.5.  Tearing Down a P-Route
@@ -3301,9 +3301,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 59]
+Thubert & Jadhav         Expires 26 August 2022                [Page 59]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 6.6.1.  Maintaining a Track Segment
@@ -3357,9 +3357,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 60]
+Thubert & Jadhav         Expires 26 August 2022                [Page 60]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 6.7.  Encapsulating and Forwarding Along a Track
@@ -3371,8 +3371,8 @@ Internet-Draft               DAO Projection                 January 2022
    All properties of a Track operations are inherited form the main RPL
    Instance that is used to install the Track.  For instance, the use of
    compression per [RFC8138] is determined by whether it is used in the
-   RPL Main DODAG, e.g., by setting the "T" flag [TURN-ON_RFC8138] in
-   the RPL configuration option.
+   RPL Main DODAG, e.g., by setting the "T" flag [RFC9035] in the RPL
+   configuration option.
 
    The Track Ingress that places a packet in a Track encapsulates it
    with an IP-in-IP header, a Routing Header, and an IPv6 Hop-by-Hop
@@ -3395,7 +3395,7 @@ Internet-Draft               DAO Projection                 January 2022
       Track Egress.  The RPI-6LoRH is appended next, followed by an IP-
       in-IP 6LoRH Header that indicates the Ingress router in the
       Encapsulator Address field, see as a similar case Figure 20 of
-      [TURN-ON_RFC8138].
+      [RFC9035].
 
    To signal the Track in the packet, this specification leverages the
    RPL Forwarding model follows:
@@ -3413,9 +3413,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 61]
+Thubert & Jadhav         Expires 26 August 2022                [Page 61]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       The D flag in the RPLInstanceID MUST be set to 0 to indicate that
@@ -3469,9 +3469,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 62]
+Thubert & Jadhav         Expires 26 August 2022                [Page 62]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  When a Track Egress extracts a packet from a Track (decapsulates
@@ -3525,9 +3525,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 63]
+Thubert & Jadhav         Expires 26 August 2022                [Page 63]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    +-+ ... -+- ... -+- ... -+-+- ... +-+-+-+ ... +-+-+ ... -+ ... +-...
@@ -3581,9 +3581,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 64]
+Thubert & Jadhav         Expires 26 August 2022                [Page 64]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
         0                   1
@@ -3637,9 +3637,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 65]
+Thubert & Jadhav         Expires 26 August 2022                [Page 65]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    EIGRP, BABEL or RIP at the expense of a route stretch vs. the
@@ -3693,9 +3693,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 66]
+Thubert & Jadhav         Expires 26 August 2022                [Page 66]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  The TIO is formed as in Storing Mode, and the Parent Address is
@@ -3749,17 +3749,17 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 67]
+Thubert & Jadhav         Expires 26 August 2022                [Page 67]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
-   The "Reliable and Available Wireless (RAW) Architecture/Framework"
-   [RAW-ARCHI] actually expects the PSE at the Track Ingress to react to
-   changes in the forwarding conditions along the Track, and reroute
-   packets to maintain the required degree of reliability.  To achieve
-   this, the PSE need the full richness of a DODAG to form any path that
-   could make meet the Service Level Objective (SLO).
+   The RAW Architecture [RAW-ARCHI] actually expects the PSE at the
+   Track Ingress to react to changes in the forwarding conditions along
+   the Track, and reroute packets to maintain the required degree of
+   reliability.  To achieve this, the PSE need the full richness of a
+   DODAG to form any path that could make meet the Service Level
+   Objective (SLO).
 
    This section specifies the additions that are needed to turn the
    Track into a full DODAG and enable the main Root to provide the
@@ -3805,9 +3805,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 68]
+Thubert & Jadhav         Expires 26 August 2022                [Page 68]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    RECOMMENDED in high speed / wired environment to enable traffic
@@ -3861,9 +3861,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 69]
+Thubert & Jadhav         Expires 26 August 2022                [Page 69]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
       loose source routing between the Ingress and the Egress of the
@@ -3917,9 +3917,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 70]
+Thubert & Jadhav         Expires 26 August 2022                [Page 70]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
 10.  Security Considerations
@@ -3958,7 +3958,7 @@ Internet-Draft               DAO Projection                 January 2022
 
    This specification suggests some validation of the VIO to prevent
    basic loops by avoiding that a node appears twice.  But that is only
-   a minimal protection.  Arguably, an attacker tha can inject P-DAOs
+   a minimal protection.  Arguably, an attacker that can inject P-DAOs
    can reroute any traffic and deplete critical resources such as
    spectrum and battery in the LLN rapidly.
 
@@ -3973,9 +3973,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 71]
+Thubert & Jadhav         Expires 26 August 2022                [Page 71]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
        +---------------+------------------------------+-----------+
@@ -4029,9 +4029,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 72]
+Thubert & Jadhav         Expires 26 August 2022                [Page 72]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  Bit number (counting from bit 0 as the most significant bit)
@@ -4085,9 +4085,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 73]
+Thubert & Jadhav         Expires 26 August 2022                [Page 73]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
     +==================+=============================+===============+
@@ -4141,9 +4141,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 74]
+Thubert & Jadhav         Expires 26 August 2022                [Page 74]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    Registration procedure is "Standards Action" [RFC8126].  No bit is
@@ -4197,9 +4197,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 75]
+Thubert & Jadhav         Expires 26 August 2022                [Page 75]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    *  Bit number (counting from bit 0 as the most significant bit)
@@ -4253,9 +4253,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 76]
+Thubert & Jadhav         Expires 26 August 2022                [Page 76]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
           +---------------+------------------------+-----------+
@@ -4309,9 +4309,9 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 77]
+Thubert & Jadhav         Expires 26 August 2022                [Page 77]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
           +---------------+-------------------------+-----------+
@@ -4365,20 +4365,15 @@ Internet-Draft               DAO Projection                 January 2022
 
 
 
-Thubert & Jadhav          Expires 17 July 2022                 [Page 78]
+Thubert & Jadhav         Expires 26 August 2022                [Page 78]
 
-Internet-Draft               DAO Projection                 January 2022
+Internet-Draft               DAO Projection                February 2022
 
 
    [RFC4655]  Farrel, A., Vasseur, J.-P., and J. Ash, "A Path
               Computation Element (PCE)-Based Architecture", RFC 4655,
               DOI 10.17487/RFC4655, August 2006,
               <https://www.rfc-editor.org/info/rfc4655>.
-
-   [RFC5440]  Vasseur, JP., Ed. and JL. Le Roux, Ed., "Path Computation
-              Element (PCE) Communication Protocol (PCEP)", RFC 5440,
-              DOI 10.17487/RFC5440, March 2009,
-              <https://www.rfc-editor.org/info/rfc5440>.
 
    [RFC6282]  Hui, J., Ed. and P. Thubert, "Compression Format for IPv6
               Datagrams over IEEE 802.15.4-Based Networks", RFC 6282,
@@ -4404,10 +4399,6 @@ Internet-Draft               DAO Projection                 January 2022
               DOI 10.17487/RFC6554, March 2012,
               <https://www.rfc-editor.org/info/rfc6554>.
 
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
               Writing an IANA Considerations Section in RFCs", BCP 26,
               RFC 8126, DOI 10.17487/RFC8126, June 2017,
@@ -4418,18 +4409,28 @@ Internet-Draft               DAO Projection                 January 2022
               (6LoWPAN) Routing Header", RFC 8138, DOI 10.17487/RFC8138,
               April 2017, <https://www.rfc-editor.org/info/rfc8138>.
 
-
-
-
-Thubert & Jadhav          Expires 17 July 2022                 [Page 79]
-
-Internet-Draft               DAO Projection                 January 2022
-
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
    [RFC8754]  Filsfils, C., Ed., Dukes, D., Ed., Previdi, S., Leddy, J.,
               Matsushima, S., and D. Voyer, "IPv6 Segment Routing Header
               (SRH)", RFC 8754, DOI 10.17487/RFC8754, March 2020,
               <https://www.rfc-editor.org/info/rfc8754>.
+
+
+
+
+Thubert & Jadhav         Expires 26 August 2022                [Page 79]
+
+Internet-Draft               DAO Projection                February 2022
+
+
+   [RFC9008]  Robles, M.I., Richardson, M., and P. Thubert, "Using RPI
+              Option Type, Routing Header for Source Routes, and IPv6-
+              in-IPv6 Encapsulation in the RPL Data Plane", RFC 9008,
+              DOI 10.17487/RFC9008, April 2021,
+              <https://www.rfc-editor.org/info/rfc9008>.
 
 14.  Informative References
 
@@ -4438,9 +4439,10 @@ Internet-Draft               DAO Projection                 January 2022
               Networks", RFC 4944, DOI 10.17487/RFC4944, September 2007,
               <https://www.rfc-editor.org/info/rfc4944>.
 
-   [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
-              Lossy Networks", RFC 7102, DOI 10.17487/RFC7102, January
-              2014, <https://www.rfc-editor.org/info/rfc7102>.
+   [RFC5440]  Vasseur, JP., Ed. and JL. Le Roux, Ed., "Path Computation
+              Element (PCE) Communication Protocol (PCEP)", RFC 5440,
+              DOI 10.17487/RFC5440, March 2009,
+              <https://www.rfc-editor.org/info/rfc5440>.
 
    [RFC6997]  Goyal, M., Ed., Baccelli, E., Philipp, M., Brandt, A., and
               J. Martocci, "Reactive Discovery of Point-to-Point Routes
@@ -4448,63 +4450,43 @@ Internet-Draft               DAO Projection                 January 2022
               DOI 10.17487/RFC6997, August 2013,
               <https://www.rfc-editor.org/info/rfc6997>.
 
+   [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
+              Lossy Networks", RFC 7102, DOI 10.17487/RFC7102, January
+              2014, <https://www.rfc-editor.org/info/rfc7102>.
+
    [RFC7416]  Tsao, T., Alexander, R., Dohler, M., Daza, V., Lozano, A.,
               and M. Richardson, Ed., "A Security Threat Analysis for
               the Routing Protocol for Low-Power and Lossy Networks
               (RPLs)", RFC 7416, DOI 10.17487/RFC7416, January 2015,
               <https://www.rfc-editor.org/info/rfc7416>.
 
-   [6TiSCH-ARCHI]
-              Thubert, P., Ed., "An Architecture for IPv6 over the Time-
-              Slotted Channel Hopping Mode of IEEE 802.15.4 (6TiSCH)",
-              RFC 9030, DOI 10.17487/RFC9030, May 2021,
-              <https://www.rfc-editor.org/info/rfc9030>.
-
-   [RAW-ARCHI]
-              Thubert, P. and G. Z. Papadopoulos, "Reliable and
-              Available Wireless Architecture", Work in Progress,
-              Internet-Draft, draft-ietf-raw-architecture-02, 29
-              November 2021, <https://tools.ietf.org/html/draft-ietf-
-              raw-architecture-02>.
-
-   [USE-CASES]
-              Papadopoulos, G. Z., Thubert, P., Theoleyre, F., and C. J.
-              Bernardos, "RAW use cases", Work in Progress, Internet-
-              Draft, draft-ietf-raw-use-cases-03, 20 October 2021,
-              <https://tools.ietf.org/html/draft-ietf-raw-use-cases-03>.
-
-
-
-
-
-Thubert & Jadhav          Expires 17 July 2022                 [Page 80]
-
-Internet-Draft               DAO Projection                 January 2022
-
-
-   [TURN-ON_RFC8138]
-              Thubert, P., Ed. and L. Zhao, "A Routing Protocol for Low-
-              Power and Lossy Networks (RPL) Destination-Oriented
-              Directed Acyclic Graph (DODAG) Configuration Option for
-              the 6LoWPAN Routing Header", RFC 9035,
-              DOI 10.17487/RFC9035, April 2021,
-              <https://www.rfc-editor.org/info/rfc9035>.
-
    [RFC8025]  Thubert, P., Ed. and R. Cragie, "IPv6 over Low-Power
               Wireless Personal Area Network (6LoWPAN) Paging Dispatch",
               RFC 8025, DOI 10.17487/RFC8025, November 2016,
               <https://www.rfc-editor.org/info/rfc8025>.
+
+   [RFC8402]  Filsfils, C., Ed., Previdi, S., Ed., Ginsberg, L.,
+              Decraene, B., Litkowski, S., and R. Shakir, "Segment
+              Routing Architecture", RFC 8402, DOI 10.17487/RFC8402,
+              July 2018, <https://www.rfc-editor.org/info/rfc8402>.
+
+
+
+
+
+
+
+
+Thubert & Jadhav         Expires 26 August 2022                [Page 80]
+
+Internet-Draft               DAO Projection                February 2022
+
 
    [RFC8505]  Thubert, P., Ed., Nordmark, E., Chakrabarti, S., and C.
               Perkins, "Registration Extensions for IPv6 over Low-Power
               Wireless Personal Area Network (6LoWPAN) Neighbor
               Discovery", RFC 8505, DOI 10.17487/RFC8505, November 2018,
               <https://www.rfc-editor.org/info/rfc8505>.
-
-   [RFC8402]  Filsfils, C., Ed., Previdi, S., Ed., Ginsberg, L.,
-              Decraene, B., Litkowski, S., and R. Shakir, "Segment
-              Routing Architecture", RFC 8402, DOI 10.17487/RFC8402,
-              July 2018, <https://www.rfc-editor.org/info/rfc8402>.
 
    [RFC8655]  Finn, N., Thubert, P., Varga, B., and J. Farkas,
               "Deterministic Networking Architecture", RFC 8655,
@@ -4526,28 +4508,48 @@ Internet-Draft               DAO Projection                 January 2022
               DOI 10.17487/RFC8994, May 2021,
               <https://www.rfc-editor.org/info/rfc8994>.
 
-
-
-
-
-
-
-
-Thubert & Jadhav          Expires 17 July 2022                 [Page 81]
-
-Internet-Draft               DAO Projection                 January 2022
-
-
-   [RFC9008]  Robles, M.I., Richardson, M., and P. Thubert, "Using RPI
-              Option Type, Routing Header for Source Routes, and IPv6-
-              in-IPv6 Encapsulation in the RPL Data Plane", RFC 9008,
-              DOI 10.17487/RFC9008, April 2021,
-              <https://www.rfc-editor.org/info/rfc9008>.
-
    [RFC9010]  Thubert, P., Ed. and M. Richardson, "Routing for RPL
               (Routing Protocol for Low-Power and Lossy Networks)
               Leaves", RFC 9010, DOI 10.17487/RFC9010, April 2021,
               <https://www.rfc-editor.org/info/rfc9010>.
+
+   [RFC9030]  Thubert, P., Ed., "An Architecture for IPv6 over the Time-
+              Slotted Channel Hopping Mode of IEEE 802.15.4 (6TiSCH)",
+              RFC 9030, DOI 10.17487/RFC9030, May 2021,
+              <https://www.rfc-editor.org/info/rfc9030>.
+
+   [RFC9035]  Thubert, P., Ed. and L. Zhao, "A Routing Protocol for Low-
+              Power and Lossy Networks (RPL) Destination-Oriented
+              Directed Acyclic Graph (DODAG) Configuration Option for
+              the 6LoWPAN Routing Header", RFC 9035,
+              DOI 10.17487/RFC9035, April 2021,
+              <https://www.rfc-editor.org/info/rfc9035>.
+
+
+
+
+
+
+
+
+
+Thubert & Jadhav         Expires 26 August 2022                [Page 81]
+
+Internet-Draft               DAO Projection                February 2022
+
+
+   [RAW-ARCHI]
+              Thubert, P. and G. Z. Papadopoulos, "Reliable and
+              Available Wireless Architecture", Work in Progress,
+              Internet-Draft, draft-ietf-raw-architecture-03, 14 January
+              2022, <https://tools.ietf.org/html/draft-ietf-raw-
+              architecture-03>.
+
+   [USE-CASES]
+              Bernardos, C. J., Papadopoulos, G. Z., Thubert, P., and F.
+              Theoleyre, "RAW use-cases", Work in Progress, Internet-
+              Draft, draft-ietf-raw-use-cases-04, 4 February 2022,
+              <https://tools.ietf.org/html/draft-ietf-raw-use-cases-04>.
 
    [I-D.irtf-panrg-path-properties]
               Enghardt, T. and C. Kraehenbuehl, "A Vocabulary of Path
@@ -4587,6 +4589,4 @@ Authors' Addresses
 
 
 
-
-
-Thubert & Jadhav          Expires 17 July 2022                 [Page 82]
+Thubert & Jadhav         Expires 26 August 2022                [Page 82]

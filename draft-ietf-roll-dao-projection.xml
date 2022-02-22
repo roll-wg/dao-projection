@@ -153,7 +153,7 @@ docName="draft-ietf-roll-dao-projection-24" >
 	In this document, readers will encounter terms and concepts
 	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref>, the <xref target='RFC9030'> "6TiSCH Architecture"</xref>, the <xref target='RFC8655'>
     "Deterministic Networking Architecture"</xref>, the <xref target='I-D.ietf-raw-architecture'>"Reliable and
-    Available Wireless (RAW) Architecture/Framework"</xref>,
+    Available Wireless (RAW) Architecture"</xref>,
     and
     <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
     </t>
@@ -2189,8 +2189,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </section> <!-- Leveraging PCE -->
 <section anchor='mraw'><name>Providing for RAW</name>
     <t>
-    The <xref target='I-D.ietf-raw-architecture'>"Reliable and Available
-    Wireless (RAW) Architecture/Framework"</xref> extends the definition of
+    The <xref target='I-D.ietf-raw-architecture'>RAW Architecture</xref> extends the definition of
     Track, as being composed of East-West directional segments and North-South
     bidirectional segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
      </t>
@@ -3964,8 +3963,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    complexity of computing a path and the compressed form of the routing header.
    </li>
    </ul>
-   <t>The <xref target='I-D.ietf-raw-architecture'>"Reliable and Available
-   Wireless (RAW) Architecture/Framework"</xref> actually expects the PSE at
+   <t>The <xref target='I-D.ietf-raw-architecture'>RAW Architecture</xref>
+   actually expects the PSE at
    the Track Ingress to react to changes in the forwarding conditions along the
    Track, and reroute packets to maintain the required degree of reliability.
    To achieve this, the PSE need the full richness of a DODAG to form any path
@@ -4159,7 +4158,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	</t><t>
     This specification suggests some validation of the VIO to prevent basic
     loops by avoiding that a node appears twice. But that is only a minimal
-    protection. Arguably, an attacker tha can inject P-DAOs can reroute any
+    protection. Arguably, an attacker that can inject P-DAOs can reroute any
     traffic and deplete critical resources such as spectrum and battery in
     the LLN rapidly.
 	</t>
@@ -4661,8 +4660,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <displayreference   target="RFC6550"        to="RPL"/>
    <displayreference   target="I-D.ietf-raw-architecture"   to="RAW-ARCHI"/>
    <displayreference   target="I-D.ietf-raw-use-cases"   to="USE-CASES"/>
-   <displayreference   target="RFC9030"    to="6TiSCH-ARCHI"/>
-   <displayreference   target="RFC9035" to="TURN-ON_RFC8138"/>
 
     <references><name>Normative References</name>
 
@@ -4670,36 +4667,36 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4655.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5440.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6553.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6554.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8754.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
 
     </references><references><name>Informative References</name>
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4944.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7102.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5440.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7102.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7416.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-use-cases.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
-
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8402.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8930.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8931.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8994.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9010.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-use-cases.xml'/>
+
 
      <xi:include href="http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.irtf-panrg-path-properties.xml"/>
       <reference anchor='PCE' target='https://dataTracker.ietf.org/doc/charter-ietf-pce/'>
