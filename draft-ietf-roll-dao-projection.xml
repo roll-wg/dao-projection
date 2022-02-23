@@ -2573,9 +2573,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </t>    <t>
 
-    This specification modifies the RPL Option to encode the 'P' flag as follows:
+    This specification Amends the RPL Option to encode the 'P' flag as follows:
     </t>
-<figure anchor='Rpifmt'><name>Extended RPL Option Format</name>
+<figure anchor='Rpifmt'><name>Amended RPL Option Format</name>
               <artwork align="center">
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
