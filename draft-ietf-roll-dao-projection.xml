@@ -2455,8 +2455,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- VIA Information Option -->
     <section anchor='extSIO'><name>Sibling Information Option</name>
    <t>
-   This specification adds another CMO called the Sibling Information Option
-   (SIO) that is used by a RPL Aware Node (RAN) to advertise a selection of its
+   This specification Extends the CMO to create the Sibling Information Option
+   (SIO).
+   The SIO is used by a RPL Aware Node (RAN) to advertise a selection of its
    candidate neighbors as siblings to the Root, more in <xref target='rplsib'/>.
    The SIO is placed in DAO messages that are sent directly to the Root of the
    main DODAG.
