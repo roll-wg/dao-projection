@@ -2466,9 +2466,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- Sibling Information Option -->
     <section anchor='extPDR'><name>P-DAO Request</name>
    <t>
-   Two new RPL Control Messages are also introduced, to enable a RPL-Aware Node
-   to request the establishment of a Track between self as the Track Ingress
-   Node and a Track Egress.
+     The set of RPL Control Messages is Extended to include the P-DAO Request (PDR) and P-DAO Request Acknowledgement (PDR-ACK).
+     These two new RPL Control Messages enable an RPL-Aware Node
+     to request the establishment of a Track between itself as the Track Ingress
+     Node and a Track Egress.
    The node makes its request by sending a new P-DAO Request (PDR) Message to
    the Root. The Root confirms with a new PDR-ACK message back to the requester
    RAN, see <xref target='P-DAOreq'/> for more.
