@@ -143,6 +143,12 @@
     appear in all capitals, as shown here.
 
 </t>
+
+<t>
+  In addition, the terms "Extends" and "Amends" are used as per
+  <xref target="I-D.kuehlewind-update-tag" /> section 3.
+</t>
+
 </section>	<!-- end section "Requirements Language" -->
 
   <section anchor='lo'><name>References</name>
@@ -2217,6 +2223,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
   <section anchor='ext'><name>Extending existing RFCs </name>
 
+  <t>
+    This section explains which changes are extensions to existing
+    specifications, and which changes are amendments to existing
+    specification.
+    It is expected that extensions to existing specifications do not cause
+    existing code on legacy 6LRs to malfunction, as the extensions will
+    simply be ignored.  New code is required for an extension.
+    Those 6LRs will be unable to participate in the new mechanisms, but may
+    also cause projected DAOs to be impossible to install.
+    Amendments to existing specifications are situations where there are
+    semantic changes required to existing code, and which may require new unit
+    tests to confirm that legacy operations will continue unaffected.
+  </t>
 
     <section anchor='ext6550'><name>Extending RFC 6550</name>
     <t>
@@ -4693,6 +4712,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-use-cases.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.kuehlewind-update-tag.xml'/>
 
 
      <xi:include href="http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.irtf-panrg-path-properties.xml"/>
