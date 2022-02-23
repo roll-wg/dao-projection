@@ -49,6 +49,17 @@
         </address>
     </author>
 
+    <author fullname="Michael C. Richardson" initials="M."
+            surname="Richardson">
+      <organization abbrev="Sandelman">Sandelman Software Works</organization>
+
+      <address>
+        <email>mcr+ietf@sandelman.ca</email>
+
+        <uri>http://www.sandelman.ca/</uri>
+      </address>
+    </author>
+
 <!--
 <author initials='M' surname='Gillmore' fullname='Matthew Gillmore'>
       <organization abbrev='Itron'>Itron, Inc</organization>
