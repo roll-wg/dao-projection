@@ -2431,10 +2431,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
     </section> <!-- Projected DAO-ACK -->
     <section anchor='extVIO'><name>Via Information Option</name>
-  <t>
-   New CMOs called the Via Information Options (VIO) are introduced for use in
-   P-DAO messages as a multihop alternative to the TIO, more in <xref target=
-   'vio'/>. One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
+    <t>
+      This document Extends the CMO to create new objects called the Via
+      Information Options (VIO).
+      The VIOs are the multihop alternative to the TIO, more in <xref target=
+   'vio'/>.
+   One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
    installs a strict hop-by-hop P-Route called a Track Segment. The other is the
    Non-Storing Mode VIO (NSM-VIO); the NSM-VIO installs a loose source-routed
    P-Route called a Track Leg at the Track Ingress, which uses that state to
