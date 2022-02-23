@@ -2639,7 +2639,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     P-Routes since the O,R,F flags are not used and the Rank is unknown and
     ignored.
     </t><t>
-    This specification introduces a new 6LoRH, the P-RPI-6LoRH that can be
+    This specification extends <xref target="RFC8138" /> to introduce a new 6LoRH, the P-RPI-6LoRH that can be
     used in either Elective or Critical 6LoRH form,
     see <xref target='elec6lorhtbl'/> and <xref target='crit6lorhtbl'/>
     respectively. The new 6LoRH MUST be used as a Critical 6LoRH, unless an SRH-6LoRH is present and controls the routing decision, in which case it
