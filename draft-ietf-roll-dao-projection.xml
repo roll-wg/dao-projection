@@ -2476,13 +2476,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
     </section><!-- P-DAO Request -->
 
-    <section anchor='extRPI'><name>Extending the RPI</name>
+    <section anchor='extRPI'><name>Amending the RPI</name>
          <t>
      Sending a Packet within a RPL Local Instance requires the presence of the abstract RPL Packet Information (RPI) described in section 11.2. of <xref target='RFC6550'/> in the outer IPv6 Header chain (see <xref target='RFC9008'/>). The RPI carries a local RPLInstanceID which, in association with either the source or the destination address in the IPv6 Header, indicates the RPL Instance that the packet follows.
 
     </t>
     <t>
-    This specification extends <xref target='RFC6550'/> to create a new flag that signals that a packet is forwarded along a P-Route.
+    This specification Amends <xref target='RFC6550'/> to create a new flag that signals that a packet is forwarded along a P-Route.
 
     </t>
     <dl>
