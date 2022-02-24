@@ -3013,6 +3013,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
    will assume symmetry.
     </t>
     <t>
+    The SIO carries a flag (B) that is set when similar performances can be
+    expected both directions, so the routing can consider that the information
+    provided for one direction is valid for both? The policy that describes the
+    performance criteria, and how they are asserted is out of scope.
+    In the absence of an external protocol to assert the link quality, the flag
+    SHOULD NOT be set.
+    </t>
+    <t>
     The format of the SIO is as follows:
     </t>
 <figure anchor='siof'><name>Sibling Information Option Format</name>
@@ -3058,9 +3066,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>B:</dt><dd>
               1-bit flag that is set to indicate that the connectivity to the sibling
               is bidirectional and roughly symmetrical. In that case, only one of the siblings may
-              report the SIO for the hop. If 'B' is not set then the SIO only indicates connectivity
-              from the sibling to this node, and does not provide information on the hop from this node
-              to the sibling.
+              report the SIO for the hop. If 'B' is not set then the SIO only indicates connectivity from the sibling to this node, and does not provide information on the
+              hop from this node to the sibling.
               </dd>
               <dt>S:</dt><dd>
               1-bit flag that is set to indicate that sibling belongs to the
