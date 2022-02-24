@@ -2667,7 +2667,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <t>
    The source IPv6 address of the PDR signals the Track Ingress to-be of the
    requested Track, and the TrackID is indicated in the message itself.
-   One and only one RPL Target Option MUST be present in the message.
+   At least one RPL Target Option MUST be present in the message. If more than
+   one RPL Target Option is present, the Root will provide a Track that reaches
+   the first listed Target and a subset of the other Targets; the details of the
+   subset selection are out of scope.
    The RTO signals the Track Egress, more in <xref target='req'/>.
     <!--
     TODO: A P-DAO parameter option MAY be present as well to provide additional
