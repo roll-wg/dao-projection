@@ -3026,7 +3026,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     The SIO carries a flag (B) that is set when similar performances can be
     expected both directions, so the routing can consider that the information
-    provided for one direction is valid for both? The policy that describes the
+    provided for one direction is valid for both. If the SIO is effectively
+    received from both sides then the B flag MUST be ignored.
+    The policy that describes the
     performance criteria, and how they are asserted is out of scope.
     In the absence of an external protocol to assert the link quality, the flag
     SHOULD NOT be set.
@@ -4700,9 +4702,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    and Patrick Wetterwald for their contributions to the ideas developed here.
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
    to 6TiSCH, RAW and this document, as well as text suggestions that were
-   incorporated, and to Michael Richardson for his useful recommendations based
-   on his global view of the system all along the developement of this
-   specification.
+   incorporated.
    Also special thanks Toerless Eckert for his deep review, with many excellent
    suggestions that improved the readability and well as the content of the
    specification.
