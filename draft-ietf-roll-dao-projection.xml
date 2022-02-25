@@ -4107,7 +4107,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
       encapsulates is not the Root as it does not own the DODAGID.
     </dd>
     <dt> Profile 3 </dt><dd>
-       In order to
+      In order to
       form the best path possible, those Profiles require the support of
       Sibling Information Option to inform the Root of additional possible hops.
       Profile 3 extends Profile 1 with additional Storing Mode P-Routes
