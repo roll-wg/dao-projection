@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-latest" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-25" >
 
 <front>
 
@@ -84,7 +84,7 @@
 
         <abstract>
 	  <t>
-     This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a RPL Root
+     THIS RFC extends RFC 6550, RFC 6553, and RFC 8138 to enable a RPL Root
      to install and maintain Projected Routes within its DODAG, along a selected
      set of nodes that may or may not include self, for a chosen duration.
      This potentially enables routes
@@ -149,7 +149,7 @@
 
     The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
     "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-    "OPTIONAL" in this document are to be interpreted as described in BCP 14
+    "OPTIONAL" in THIS RFC are to be interpreted as described in BCP 14
     <xref target='RFC2119'/><xref target='RFC8174'/> when, and only when, they
     appear in all capitals, as shown here.
 
@@ -164,7 +164,7 @@
 
   <section anchor='lo'><name>References</name>
     <t>
-	In this document, readers will encounter terms and concepts
+	In THIS RFC, readers will encounter terms and concepts
 	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref>, the <xref target='RFC9030'> "6TiSCH Architecture"</xref>, the <xref target='RFC8655'>
     "Deterministic Networking Architecture"</xref>, the <xref target='I-D.ietf-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture"</xref>,
@@ -176,7 +176,7 @@
 
 
 <section anchor='gloss'><name>Glossary</name>
-    <t> This document often uses the following acronyms:
+    <t> THIS RFC often uses the following acronyms:
        </t><dl spacing='compact'>
        <dt>CMO:</dt><dd> Control Message Option</dd>
        <dt>DAO:</dt><dd> destination Advertisement Object</dd>
@@ -2124,7 +2124,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     This specification expects that the RPL Main DODAG is operated in RPL
     Non-Storing Mode to sustain the exchanges with the Root. Based on its
     comprehensive knowledge of the parent-child relationship, the Root can form
-    an abstracted view of the whole DODAG topology. This document adds the
+    an abstracted view of the whole DODAG topology. THIS RFC adds the
     capability for nodes to advertise additional sibling information to
     complement the topological awareness of the Root to be passed on to the PCE,
     and enable the PCE to build more / better paths that traverse those siblings.
@@ -2135,7 +2135,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     and the amount of rerouted traffic must fit within the capabilities of
     the transmission links. The methods used to learn the node capabilities and
     the resources that are available in the devices and in the network are out
-    of scope for this document. The method to capture and report the LLN link
+    of scope for THIS RFC. The method to capture and report the LLN link
     capacity and reliability statistics are also out of scope. They may be
     fetched from the nodes through network management functions or other forms
     of telemetry such as OAM.
@@ -2299,7 +2299,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    the TIO.
    </t>
    <t>
-     This document Amends the specification of the DAO to create the P-DAO
+     THIS RFC Amends the specification of the DAO to create the P-DAO
      message.
      This Amended DAO is signaled with a new "Projected DAO" (P) flag, see <xref target=
      'p-dao-fmt'/>.
@@ -2388,7 +2388,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     </section> <!-- Projected DAO -->
     <section anchor='extP-DAO-ACK'><name>Projected DAO-ACK</name>
-    <t> This document also Amends the DAO-ACK message.
+    <t> THIS RFC also Amends the DAO-ACK message.
     The new P flag signals the projected form.
    </t>
     <t>
@@ -2443,7 +2443,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- Projected DAO-ACK -->
     <section anchor='extVIO'><name>Via Information Option</name>
     <t>
-      This document Extends the CMO to create new objects called the Via
+      THIS RFC Extends the CMO to create new objects called the Via
       Information Options (VIO).
       The VIOs are the multihop alternative to the TIO, more in <xref target=
    'vio'/>.
@@ -4058,7 +4058,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <section anchor='prof'><name>Profiles</name>
     <t>
-    This document provides a set of tools that may or may not be needed by
+    THIS RFC provides a set of tools that may or may not be needed by
     an implementation depending on the type of application it serves.
     This sections described profiles that can be implemented separately and
     can be used to discriminate what an implementation can and cannot do.
@@ -4249,7 +4249,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </section><!-- RPL DODAG Configuration Option Flag -->
    <section anchor='elec6lorh'><name>Elective 6LoWPAN Routing Header Type</name>
 
-   <t>  This document updates the IANA registry titled "Elective 6LoWPAN
+   <t>  THIS RFC updates the IANA registry titled "Elective 6LoWPAN
    Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
 </t>
         <table anchor="elec6lorhtbl"><name>New Elective 6LoWPAN Routing Header Type</name>
@@ -4267,7 +4267,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>P-RPI-6LoRH</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
     </tbody>
         </table>
@@ -4275,7 +4275,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
    <section anchor='crit6lorh'><name>Critical 6LoWPAN Routing Header Type</name>
-   <t>  This document updates the IANA registry titled "Critical 6LoWPAN
+   <t>  THIS RFC updates the IANA registry titled "Critical 6LoWPAN
    Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
 </t>
         <table anchor="crit6lorhtbl"><name>New Critical 6LoWPAN Routing Header Type</name>
@@ -4293,7 +4293,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>P-RPI-6LoRH</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
     </tbody>
         </table>
@@ -4348,14 +4348,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>Projected-Route (P)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
     </tbody>
         </table>
    </section><!-- Subregistry For The RPL Option Flags -->
 
    <section anchor='RPLCtrlMsgReg'><name>RPL Control Codes</name>
 
-    <t>This document extends the IANA Subregistry created by RFC 6550 for RPL
+    <t>THIS RFC extends the IANA Subregistry created by RFC 6550 for RPL
     Control Codes as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
 
 
@@ -4373,13 +4373,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>Projected DAO Request (PDR)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
           <tr><td align='center'>0x0A (Suggested)</td>
 
           <td align='left'>PDR-ACK</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
    </tbody>
         </table>
 
@@ -4388,7 +4388,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    <section anchor='RPLCtrlMsgOptionsReg'><name>RPL Control Message Options</name>
 
-    <t>This document extends the IANA Subregistry created by RFC 6550 for
+    <t>THIS RFC extends the IANA Subregistry created by RFC 6550 for
     RPL Control Message Options as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
 
 
@@ -4407,19 +4407,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>Stateful VIO (SM-VIO)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
           <tr><td align='center'>0x0F (Suggested)</td>
 
           <td align='left'>Source-Routed VIO (NSM-VIO)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
           <tr><td align='center'>0x10 (Suggested)</td>
 
           <td align='left'>Sibling Information option</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
    </tbody>
         </table>
 
@@ -4459,13 +4459,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>PDR-ACK request (K)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
           <tr><td align='center'>1</td>
 
           <td align='left'>Requested path should be redundant (R)</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
     </tbody>
         </table>
 
@@ -4512,7 +4512,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <thead>
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
-      <tr><td>0</td><td>Unqualified Acceptance</td><td>This document</td></tr>
+      <tr><td>0</td><td>Unqualified Acceptance</td><td>THIS RFC</td></tr>
    </tbody>
 
    </table>
@@ -4538,8 +4538,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <thead>
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
-      <tr><td>0</td><td>Unqualified Rejection</td><td>This document</td></tr>
-      <tr><td>1</td><td>Transient Failure</td><td>This document</td></tr>
+      <tr><td>0</td><td>Unqualified Rejection</td><td>THIS RFC</td></tr>
+      <tr><td>1</td><td>Transient Failure</td><td>THIS RFC</td></tr>
    </tbody>
 
    </table>
@@ -4599,7 +4599,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
           <td align='left'>"S" flag: Sibling in same DODAG as Self</td>
 
-          <td align='left'>This document</td></tr>
+          <td align='left'>THIS RFC</td></tr>
 
     </tbody>
         </table>
@@ -4613,7 +4613,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 <t>
-   This document modifies the "Destination Advertisement Object (DAO) Flags"
+   THIS RFC modifies the "Destination Advertisement Object (DAO) Flags"
    registry initially
    created in Section 20.11 of <xref target='RFC6550'/> .
 </t><t>
@@ -4635,7 +4635,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 <t>
-   This document modifies the "Destination Advertisement Object (DAO) Acknowledgment Flags"
+   THIS RFC modifies the "Destination Advertisement Object (DAO) Acknowledgment Flags"
    registry initially
    created in Section 20.12 of <xref target='RFC6550'/> .
 </t><t>
@@ -4701,7 +4701,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <t>The authors wish to acknowledge JP Vasseur, Remy Liubing, James Pylakutty,
    and Patrick Wetterwald for their contributions to the ideas developed here.
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
-   to 6TiSCH, RAW and this document, as well as text suggestions that were
+   to 6TiSCH, RAW and THIS RFC, as well as text suggestions that were
    incorporated.
    Also special thanks Toerless Eckert for his deep review, with many excellent
    suggestions that improved the readability and well as the content of the
