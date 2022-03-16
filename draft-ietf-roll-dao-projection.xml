@@ -344,32 +344,43 @@
     the other.
     </t>
   </section>
-  <section><name>subTrack</name>
-    <t>A Track within a Track. As the Non-Storing Mode Via
-    Information option (NSM-VIO) can only signal a loose sequence of nodes, it
-    takes a number of them to signal a complex Track. Each NSM-VIO for the same
-    TrackId but a different Segment ID signals a different subTracks that the
+  <section><name>Leg</name>
+    <t>
+    An end-to-end East-West serial path. A leg can be a serial Track by itself
+    or a subTrack of a complex Track with the same Ingress and Egress Nodes.
+    With this specification, a Leg is is installed by the Root of the main
+    DODAG using a Non-Storing Mode P-DAO message, and it is expressed as a
+    loose sequence of nodes that are joined by Track Segments.
+    </t> <t>
+    As the Non-Storing Mode Via Information option (NSM-VIO) can only signal
+    sequences of nodes, it takes one Non-Storing Mode P-DAO message per Leg to
+    signal the structure of a complex Track.
+    </t> <t>
+    Each NSM-VIO for the same
+    TrackId but a different Segment ID signals a different leg that the
     Track Ingress adds to the topology.
     </t>
   </section>
-  <section><name>Leg</name>
-    <t>An end-to-end East-West serial path that can be a
-    Track by itself or a subTrack of a complex Track.
-    With this specification, a Leg is is installed by the Root of the main
-    DODAG using Non-Storing Mode P-DAO messages, and it is expressed as a
-    loose sequence of nodes that are joined by Track Segments.
+  <section><name>subTrack</name>
+    <t>A Track within a Track, formed by a non-empty collection of Legs of the
+    Track.
     </t>
   </section>
   <section><name>Segment</name>
     <t>
     A serial path formed by a strict sequence of nodes, along which a P-Route is
     installed.
-    With this specification, a Segment is typically installed by the Root of the main DODAG using Storing Mode P-DAO messages. A Segment used as
-    the topological edge of a Track.
+    With this specification, a Segment is typically installed by the Root of the
+    main DODAG using Storing Mode P-DAO messages. A Segment is used as
+    the topological edge of a Track joining the loose steps along the Legs that
+    form the structure of a complex Track. The same segment may be leveraged by
+    more than one Leg where the Legs overlap.
+    </t> <t>
     Since this specification builds only DODAGs,
     all Segments are oriented from Ingress (East) to Egress (West), as opposed
-    to the general RAW model, which allows North/South Segments that can be
-    bidirectional.
+    to the general Track model in the <xref target='I-D.ietf-raw-architecture'>
+    RAW Architecture</xref>, which allows North/South Segments that can be
+    bidirectional as well.
     </t>
 
   <section><name>Section of a Segment</name>
@@ -4701,11 +4712,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <t>The authors wish to acknowledge JP Vasseur, Remy Liubing, James Pylakutty,
    and Patrick Wetterwald for their contributions to the ideas developed here.
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
-   to 6TiSCH, RAW and THIS RFC, as well as text suggestions that were
+   to 6TiSCH, RAW and this RFC, as well as text suggestions that were
    incorporated.
-   Also special thanks Toerless Eckert for his deep review, with many excellent
-   suggestions that improved the readability and well as the content of the
-   specification.
+   Also special thanks Li Zhao and Toerless Eckert for their in-depth reviews,
+   with many excellent suggestions that improved the readability and well as the
+   content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC.
   </t>
 </section>
