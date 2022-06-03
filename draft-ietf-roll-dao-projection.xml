@@ -188,10 +188,15 @@
        <dt>MOP:</dt><dd>RPL Mode of Operation</dd>
        <dt>P-DAO:</dt><dd>Projected DAO </dd>
        <dt>P-Route:</dt><dd>Projected Route</dd>
-        <dt>PDR:</dt><dd>P-DAO Request <em>COMMENT: The PDR acronym is not great, since there is the often-used packet delivery rate as well, but a) it is used consistently in this document, and b) it's still much better than my initially proposed no-so-well thought-out PNS extension</em></dd>
+        <dt>PDR:</dt><dd>P-DAO Request</dd>
+        <!--
+        COMMENT: The PDR acronym is not great, since there is the often-used packet delivery rate as well, but a) it is used consistently in this document, and b) it's still much better than my initially proposed no-so-well thought-out PNS extension
+        AUTH: OK, non actionable
+        -->
        <dt>RAN:</dt><dd>RPL-Aware Node (either a RPL router or a RPL-Aware Leaf)</dd>
        <dt>RAL:</dt><dd>RPL-Aware Leaf</dd>
        <dt>RH:</dt><dd>Routing Header</dd>
+       <dt>RIB:</dt><dd>Routing Information Base, aka the routing table</dd>
        <dt>RPI:</dt><dd>RPL Packet Information</dd>
        <dt>RTO:</dt><dd>RPL Target Option</dd>
        <dt>RUL:</dt><dd>RPL-Unaware Leaf</dd>
@@ -330,6 +335,10 @@
     <t>A Track that has only one path.
     </t>
   </section>
+  <section><name>Complex Track</name>
+    <t>A Track that can be traverse via more than one path (e.g., a DODAG).
+    </t>
+  </section>
   <section><name>Stand-Alone Track</name>
     <t>
     A single P-DAO that fully defines a Track, e.g., a Serial Track installed
@@ -351,7 +360,11 @@
     DODAG using a Non-Storing Mode P-DAO message, and it is expressed as a
     loose sequence of nodes that are joined by Track Segments.
     </t> <t>
-    <em>COMMENT: complex Track is used but not introduced before, rather this is done much later in the document.</em>
+    <!-- COMMENT: complex Track is used but not introduced before, rather this
+         is done much later in the document.
+         AUTH: introduced it above, note that we need it to define all the
+         components below that for the complex track
+    -->
     </t> <t>
     As the Non-Storing Mode Via Information option (NSM-VIO) can only signal
     sequences of nodes, it takes one Non-Storing Mode P-DAO message per Leg to
@@ -364,7 +377,10 @@
   </section>
   <section><name>subTrack</name>
     <t>A Track within a Track, formed by a non-empty set of Legs of the
-    Track. <em>COMMENT: "set" is more exact than "collection". "Collection" could mean repetitions are allowed.</em>
+    Track.
+    <!-- COMMENT: "set" is more exact than "collection". "Collection" could mean repetitions are allowed.
+         AUTH: OK
+     -->
     </t>
   </section>
   <section><name>Segment</name>
@@ -503,13 +519,23 @@
     </t>
     <t>
     A P-Route may be installed in either Storing and Non-Storing Mode,
-    potentially resulting in hybrid situations where the Mode of the P-Route
+    potentially resulting in hybrid situations where the Mode of the P-Route operates in
     is different from that of the RPL Main DODAG.
-    <em>COMMENT: Maybe just a small issue here. The MOP in standard RPL is a feature of the Instance, not of a DODAG, so here it might be better to say that the P-Route is operating in a Mode different than the default RPL Instance (not Main DODAG). Unless I misunderstood something, of course.</em>
-    <em>COMMENT: I'm taking comments as I read through the draft linearly, so maybe it's still not clear for me, but given what I have seen, I would expect that you will create additional RPL Instances to support the P-Routes, not additional DODAGS inside an existing RPL Instance.</em>
+    <!-- COMMENT: Maybe just a small issue here. The MOP in standard RPL is a feature of the Instance, not of a DODAG, so here it might be better to say that the P-Route is operating in a Mode different than the default RPL Instance (not Main DODAG). Unless I misunderstood something, of course.
+    AUTH: done
+    -->
+    <!-- COMMENT: I'm taking comments as I read through the draft linearly, so maybe
+    it's still not clear for me, but given what I have seen, I would expect that
+    you will create additional RPL Instances to support the P-Routes,
+    not additional DODAGS inside an existing RPL Instance.
+    AUTH: Well that's what the next sentence is about :) timely isn't it?
+    I modified the text to reflect your comment, note that it is not "inside"
+    it's an overlay...
+    -->
     P-Routes can be used as stand-alone segments to reduce the size of the
     source routing headers with loose source routing operations down the main RPL DODAG.
-    P-Routes can also be combined with other P-Routes to form a more complex forwarding graph called a Track.
+    P-Routes can also be combined with other P-Routes to form a more complex
+    Track that are local instances overlaid on an existing main RPL Instance.
     </t>
 
 </section>	<!-- end section "RPL Routing Modes" -->
@@ -743,8 +769,13 @@
    Address (ULA) or a Global Unicast Address (GUA) of the Root of the DODAG.
    Bit 0 (most significant) is set to 1 to signal a Local RPLInstanceID, as
    shown in <xref target='rpid'/>. By extension, this specification expresses
-   the value of the RPLInstanceID as a single integer between 128 and 191, representing both the Local RPLInstanceID in 0..63 and Bit 0 set.
-       <em>COMMENT: I understand this, but I'm not sure why exactly this is useful, yet.</em>
+   the value of the RPLInstanceID as a single integer between 128 and 191,
+   representing both the Local RPLInstanceID in 0..63 and Bit 0 set.
+       <!--
+       COMMENT: I understand this, but I'm not sure why exactly this is useful, yet.
+       AUTH: timely again that's exactly what the next sentence is about;
+       I added a snippet to clarify.       -->
+
     </t>
 
 <figure anchor='rpid'><name>Local RPLInstanceID Encoding</name>
@@ -756,14 +787,21 @@
  </artwork>
 </figure>
    <t>
-   A Track is normally associated with a Local RPL Instance wherein the RPLInstanceID
-   is used as the TrackID (more in  <xref target='trkid'/>).
-   A Track Leg may also be used as a subTrack that extends the RPL main DODAG.
-   In that case, the TrackID is set to the global RPLInstanceID of the main
-   DODAG, which suffices to identify the routing topology. As opposed to local
-   RPL instances, the Track Ingress that encapsulates the packets over a
-   subtrack is not Root, and that the source address of the encapsulated packet
-   is not used to determine the Track.
+   A Track is typically an overlay to the main instance, and is associated with
+   a Local RPL Instance wherein the RPLInstanceID is used as the TrackID; the
+   source IP address and the RPI in the encasulation respectively contain the
+   Track Ingress and the Local RPLInstanceID (more in  <xref target='trkid'/>).
+   </t>
+   <t>
+   A Track Leg may also be used as an alternative to a Segment in the RPL main
+   DODAG, causing an extra encapsulation to signal a source route path between
+   loose hops in the encapsulated source routing header.
+   In that case, the TrackID in the outer header remains that of global
+   RPLInstanceID of the main DODAG, which suffices to identify the routing
+   topology. As opposed to local RPL instances, the Track Ingress that
+   encapsulates the packets over the Track Leg is not a Root of the instance,
+   and that the source address of the encapsulated packet is not used to
+   determine the Track.
    </t>
 
 </section><!-- Tracks and RPL Instances -->
@@ -824,11 +862,6 @@ A ===&gt; B ===&gt; C ===&gt; D===&gt; E &lt;
 
 </t>
 <t>
-   <xref target="rpid"/> depicts the format of the RPLInstanceID encoding for a
-   local RPLInstanceID.
-     <em>COMMENT: This sentence seems out of place here. Was it forgotten here by mistake?</em>
-</t>
-<t>
 In a general manner the desired outcome is as follows:
 </t>
 
@@ -851,7 +884,13 @@ In a general manner the desired outcome is as follows:
    that is not listed in the RPL Target Options.
 </t>
 
-
+<t>
+   Note well: by design, the list of nodes in a VIO in Non-Storing Mode is
+   exactly the list that shows in the encapsulation SRH. So in the cases
+   detailed below, if the Mode of the P-DAO is Non-Storing, then the VIO
+   row can be read as indicating the SRH as well.
+ the
+</t>
 
     <section anchor="usms"><name>Using Storing Mode Segments</name>
 <t>
@@ -906,7 +945,9 @@ In a general manner the desired outcome is as follows:
         </table>
 
 <t>As a result the RIBs are set as follows:</t>
-<t><em>COMMENT: The acronym for RIB is not defined</em></t>
+<!-- COMMENT: The acronym for RIB is not defined
+     AUTH: added
+     -->
 
         <table anchor="RIBcase11"><name>RIB setting</name>
    <thead>
@@ -979,7 +1020,11 @@ In a general manner the desired outcome is as follows:
 
     </tbody>
         </table>
-    <t><em>COMMENT: What does the double quote (") stand for? "Same as above"? If yes, maybe it better to just be explicit and repeat the Node value.</em></t>
+    <!--
+    COMMENT: What does the double quote (") stand for? "Same as above"? If yes, maybe it better to just be explicit and repeat the Node value.
+    AUTH: yes that is what it means, and for the second point, I tried and that was really awful to read
+
+    -->
 
 <t>
     Packets originating at A going to F or G do not require encapsulation
@@ -1004,12 +1049,14 @@ In a general manner the desired outcome is as follows:
               <td align='center'>F or G</td>
               <td align='center'>(A, 129)</td></tr>
           <tr><td align='center'>Inner</td>
-              <td align='center'>X != A</td>
+              <td align='center'>Any but A</td>
               <td align='center'>F or G</td>
               <td align='center'>N/A</td></tr>
     </tbody>
         </table>
-<t><em>COMMENT: The X != A is not very clear. I would guess it means "anything else but A" but maybe a note will clarify this.</em></t>
+<!-- COMMENT: The X != A is not very clear. I would guess it means "anything else but A" but maybe a note will clarify this.
+    AUTH: replaced with "Any but A"
+-->
 <t>
 As an example, say that A has a packet for F. Using the RIB above:
 </t>
@@ -1253,11 +1300,13 @@ As an example, say that A has a packet for F. Using the RIB above:
               <td align='center'>(A, 129)</td></tr>
           <tr><td align='center'>Inner</td>
               <td align='center'>X</td>
-              <td align='center'>E (X != A), F or G</td>
+              <td align='center'>E if(X != A), F, or G</td>
               <td align='center'>N/A</td></tr>
     </tbody>
         </table>
-<t><em>COMMENT: The E (X != A) is not very clear. What is X?</em></t>
+<!-- COMMENT: The E (X != A) is not very clear. What is X?
+     AUTH: X was the node in the column left to this. Changed to "E if(X != A), F, or G"
+ -->
 <t>
 As an example, say that A has a packet for F. Using the RIB above:
 </t>
@@ -1427,11 +1476,19 @@ Now the packet destination is E.</li>
               <td align='center'>(A, 129)</td></tr>
           <tr><td align='center'>Inner</td>
               <td align='center'>X</td>
-              <td align='center'>E (X != A), F or G</td>
+              <td align='center'>E if(X != A), F, or G</td>
               <td align='center'>N/A</td></tr>
     </tbody>
         </table>
-<t><em>COMMENT: I know this may take some effort, sorry, but I think it would be really useful in the Packet Header Settings tables, here and further below, to also include a column indicating the contents of the SRH. The lack of this made it more complicated, especially in the more complicated cases further along, to understand what's going on.</em></t>
+<!-- COMMENT: I know this may take some effort, sorry, but I think it would be really useful in the Packet Header Settings tables, here and further below, to also include a column indicating the contents of the SRH. The lack of this made it more complicated, especially in the more complicated cases further along, to understand what's going on.
+
+   AUTH: actually that was easy. Because it's already there. I added at the
+   beginning of the section
+      Note well: by design, the list of nodes in a VIO in Non-Storing Mode is
+   exactly the list that shows in the encapsulation SRH. So in the cases
+   detailed below, if the Mode of the P-DAO is Non-Storing, then the VIO
+   row can be read as indicating the SRH as well.
+-->
 <t>
 As an example, say that A has a packet for F. Using the RIB above:
 </t>
@@ -1868,7 +1925,19 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
     </tbody>
         </table>
 
-<t><em>COMMENT: Is it correct that in the P-DAO 1 to C the target is empty? Maybe I misunderstood, but I would expect the target to be E.</em></t>
+<!-- COMMENT: Is it correct that in the P-DAO 1 to C the target is empty? Maybe I misunderstood, but I would expect the target to be E.
+   AUTH: this is NSM and in NSM the egress MUST be considered a target implicitly
+
+   Quote from section 5.3
+
+
+      In the case of an NSM-VIO, the complete list can be loose and
+      excludes the Ingress node, starting at the first loose hop and
+      ending at a Track Egress; the Track Egress MUST be considered as
+      an implicit Target, so it MUST NOT be signaled in a RPL Target
+      Option.
+
+-->
 
 <t>As a result the RIBs are set as follows:</t>
 
@@ -2122,8 +2191,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
 ]]></artwork>
 </figure>
 
-<t><em>COMMENT: This figure was hard for me to decode, but I don't have a particularly good improvement suggestion. The explanation below helped, but the figure is still very "noisy".
-    Maybe two tables (T1. Segments, T2. Legs) that are outside the Figure would help in cleaning it up by transferring that information to the tables. Also, what are the interspersed opening and closing parentheses representing?</em></t>
+<!-- COMMENT: This figure was hard for me to decode, but I don't have a particularly good improvement suggestion. The explanation below helped, but the figure is still very "noisy".
+    Maybe two tables (T1. Segments, T2. Legs) that are outside the Figure would help in cleaning it up by transferring that information to the tables. Also, what are the interspersed opening and closing parentheses representing?
+    AUTH: not sure; that would be repeating and thus even heavier and prone to errors
+    -->
 <t>
    Note that while this specification enables building both Segments inside a
    Leg (aka East-West), such as Segment 2 above which is within Leg 1, and Inter-Leg Segments (aka North-South), such as Segment 2 above which joins
@@ -2779,7 +2850,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               </dd>
               <dt>ReqLifetime:</dt><dd> <t>8-bit unsigned integer.
               The requested lifetime for the Track expressed in Lifetime Units
-              (obtained from the DODAG Configuration option).
+              (obtained from the DODAG Configuration option). The value
+              of 255 (0xFF) represents infinity.
               </t><t>
               A PDR with a fresher
               PDRSequence refreshes the lifetime, and a PDRLifetime of 0
@@ -2835,7 +2907,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
               <dt>Track Lifetime:</dt><dd>
              Indicates the remaining Lifetime for the Track, expressed in
-             Lifetime Units; the value of zero (0x00)
+             Lifetime Units;  The value
+              of 255 (0xFF) represents infinity. The value of zero (0x00)
               indicates that the Track was destroyed or not created.
               </dd>
 
@@ -2910,7 +2983,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     The format of the Via Information Options is as follows:
     </t>
-<figure anchor='viao'><name>VIO format (uncompressed form)</name>
+<figure anchor='viao'><name>VIO format</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -2993,10 +3066,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
               of 255 (0xFF) represents infinity. The value of zero (0x00)
               indicates a loss of reachability.
               </t>
-                 <t><em>COMMENT: In the P-DAO Request (PDR) message the ReqLifetime is also an 8-bit unsigned int expressing lifetime.
+                 <!--
+                 COMMENT: In the P-DAO Request (PDR) message the ReqLifetime is also an 8-bit unsigned int expressing lifetime.
                      However, in the P-DAO Request (PDR) message the 0xFF value does NOT indicate infinity, whereas here it does.
                      Is there a reason for this difference? I.e. why are there infinite lifetime Segments but not infinite lifetime Tracks?
-                </em></t>
+                 AUTH: good catch we need to align
+                -->
               </dd>
 
               <dt>SRH-6LoRH head:</dt><dd>The first 2 bytes of the (first)
@@ -4728,7 +4803,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
    to 6TiSCH, RAW and this RFC, as well as text suggestions that were
    incorporated.
-   Also special thanks Li Zhao and Toerless Eckert for their in-depth reviews,
+   Also special thanks Remous-Aris Koutsiamanis, Li Zhao, and Toerless Eckert
+   for their in-depth reviews,
    with many excellent suggestions that improved the readability and well as the
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC.
