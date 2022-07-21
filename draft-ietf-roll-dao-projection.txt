@@ -5,10 +5,10 @@
 ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                             Cisco Systems
 Intended status: Standards Track                             R.A. Jadhav
-Expires: 5 December 2022                                     Huawei Tech
+Expires: 22 January 2023                                     Huawei Tech
                                                            M. Richardson
                                                                Sandelman
-                                                             3 June 2022
+                                                            21 July 2022
 
 
                   Root initiated routing state in RPL
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 December 2022.
+   This Internet-Draft will expire on 22 January 2023.
 
 Copyright Notice
 
@@ -53,16 +53,16 @@ Copyright Notice
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 1]
+Thubert, et al.          Expires 22 January 2023                [Page 1]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Please review these documents carefully, as they describe your rights
    and restrictions with respect to this document.  Code Components
-   extracted from this document must include Simplified BSD License text
-   as described in Section 4.e of the Trust Legal Provisions and are
-   provided without warranty as described in the Simplified BSD License.
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 2]
+Thubert, et al.          Expires 22 January 2023                [Page 2]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
      5.1.  New P-DAO Request Control Message . . . . . . . . . . . .  43
@@ -165,9 +165,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 3]
+Thubert, et al.          Expires 22 January 2023                [Page 3]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 1.  Introduction
@@ -221,9 +221,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 4]
+Thubert, et al.          Expires 22 January 2023                [Page 4]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 2.2.  References
@@ -277,9 +277,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 5]
+Thubert, et al.          Expires 22 January 2023                [Page 5]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 2.4.1.  Projected Route
@@ -333,9 +333,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 6]
+Thubert, et al.          Expires 22 January 2023                [Page 6]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The term Routing Stretch denotes the length of a path, in comparison
@@ -389,9 +389,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 7]
+Thubert, et al.          Expires 22 January 2023                [Page 7]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 2.4.5.1.  TrackID
@@ -415,7 +415,7 @@ Internet-Draft               DAO Projection                    June 2022
 
 2.4.5.4.  Complex Track
 
-   A Track that can be traverse via more than one path (e.g., a DODAG).
+   A Track that can be traversed via more than one path (e.g., a DODAG).
 
 2.4.5.5.  Stand-Alone Track
 
@@ -445,13 +445,13 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 8]
+Thubert, et al.          Expires 22 January 2023                [Page 8]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   Each NSM-VIO for the same TrackId but a different Segment ID signals
-   a different leg that the Track Ingress adds to the topology.
+   Each NSM-VIO for the same TrackId but with a different Segment ID
+   signals a different leg that the Track Ingress adds to the topology.
 
 2.4.5.8.  subTrack
 
@@ -501,9 +501,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022                [Page 9]
+Thubert, et al.          Expires 22 January 2023                [Page 9]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 3.  Context and Goal
@@ -557,9 +557,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 10]
+Thubert, et al.          Expires 22 January 2023               [Page 10]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    But stretch in P2P routing is counter-productive to both reliability
@@ -572,13 +572,13 @@ Internet-Draft               DAO Projection                    June 2022
 3.2.  RPL Routing Modes
 
    RPL first forms a default route in each node towards the Root, and
-   those routes together coalesce as a Directed Acyclic Graph upwards.
-   RPL then constructs routes to destinations signaled as Targets in the
-   reverse direction, down the same DODAG.  So do so, a RPL Instance can
-   be operated either in RPL Storing or Non-Storing Mode of Operation
-   (MOP).  The default route towards the Root is maintained aggressively
-   and may change while a packet progresses without causing loops, so
-   the packet will still reach the Root.
+   those routes together coalesce as a Directed Acyclic Graph oriented
+   upwards.  RPL then constructs routes to destinations signaled as
+   Targets in the reverse direction, down the same DODAG.  To do so, a
+   RPL Instance can be operated either in RPL Storing or Non-Storing
+   Mode of Operation (MOP).  The default route towards the Root is
+   maintained aggressively and may change while a packet progresses
+   without causing loops, so the packet will still reach the Root.
 
    In Non-Storing Mode, each node advertises itself as a Target directly
    to the Root, indicating the parents that may be used to reach itself.
@@ -595,11 +595,11 @@ Internet-Draft               DAO Projection                    June 2022
    node maintains the routes to the subDAG of its descendants down the
    DODAG.  The maintenance is lazy, either reactive upon traffic or as a
    slow background process.  Packets flow via the common parent and the
-   routing stretch is reduced vs. Non-Storing, for better P2P
-   connectivity.  On the other hand, a new route takes a longer time to
+   routing stretch is reduced compared to Non-Storing MOP, for better
+   P2P connectivity.  However, a new route takes a longer time to
    propagate to the Root, since it takes time for the Distance-Vector
    protocol to operate hop-by-hop, and the Internet connectivity is
-   restored more slowly upon movement.
+   restored more slowly upon node movement.
 
    Either way, the RPL routes are injected by the Target nodes, in a
    distributed fashion.  To complement RPL and eliminate routing
@@ -613,19 +613,19 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 11]
+Thubert, et al.          Expires 22 January 2023               [Page 11]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    A P-Route may be installed in either Storing and Non-Storing Mode,
-   potentially resulting in hybrid situations where the Mode of the
-   P-Route operates in is different from that of the RPL Main DODAG.
-   P-Routes can be used as stand-alone segments to reduce the size of
-   the source routing headers with loose source routing operations down
-   the main RPL DODAG.  P-Routes can also be combined with other
-   P-Routes to form a more complex Track that are local instances
-   overlaid on an existing main RPL Instance.
+   potentially resulting in hybrid situations where the Mode in which
+   the P-Route operates is different from that of the RPL Main Instance.
+   P-Routes can be used as stand-alone segments meant to reduce the size
+   of the source routing headers, thanks to loose source routing
+   operations down the main RPL DODAG.  P-Routes can also be combined
+   with other P-Routes to form a more complex Track, consisting of local
+   instances overlaid on an existing main RPL Instance.
 
 3.3.  Requirements
 
@@ -669,9 +669,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 12]
+Thubert, et al.          Expires 22 January 2023               [Page 12]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Based on the parent-children relationships expressed in the Non-
@@ -725,9 +725,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 13]
+Thubert, et al.          Expires 22 January 2023               [Page 13]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 3.3.2.  East-West Routes
@@ -737,9 +737,9 @@ Internet-Draft               DAO Projection                    June 2022
    access when the Root also serves as Border Router.  All routes are
    installed North-South (aka up/down) along the RPL DODAG.  Peer to
    Peer (P2P) East-West routes in a RPL network will generally suffer
-   from elongated (stretched) paths versus direct (optimized) paths,
-   since routing between two nodes always happens via a common parent,
-   as illustrated in Figure 3:
+   elongated (stretched) paths versus direct (optimized) paths, since
+   routing between two nodes always happens via a common parent, as
+   illustrated in Figure 3:
 
                  ------+---------
                        |          Internet
@@ -781,9 +781,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 14]
+Thubert, et al.          Expires 22 January 2023               [Page 14]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    It turns out that it is often beneficial to enable East-West P2P
@@ -837,9 +837,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 15]
+Thubert, et al.          Expires 22 January 2023               [Page 15]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    A RPL Track is a collection of (one or more) parallel loose source
@@ -887,22 +887,22 @@ Internet-Draft               DAO Projection                    June 2022
    RPLInstanceID (more in Section 6.3).
 
    A Track Leg may also be used as an alternative to a Segment in the
-   RPL main DODAG, causing an extra encapsulation to signal a source
-   route path between loose hops in the encapsulated source routing
+   RPL main DODAG, causing an extra encapsulation to signal a source-
+   routed path between loose hops in the encapsulated source routing
    header.  In that case, the TrackID in the outer header remains that
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 16]
+Thubert, et al.          Expires 22 January 2023               [Page 16]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   of global RPLInstanceID of the main DODAG, which suffices to identify
-   the routing topology.  As opposed to local RPL instances, the Track
-   Ingress that encapsulates the packets over the Track Leg is not a
-   Root of the instance, and that the source address of the encapsulated
-   packet is not used to determine the Track.
+   of the global RPLInstanceID of the main DODAG, which suffices to
+   identify the routing topology.  As opposed to local RPL instances,
+   the Track Ingress that encapsulates the packets over the Track Leg is
+   not a Root of the instance, and the source address of the
+   encapsulated packet is not used to determine the Track.
 
 3.5.  Serial Track Signaling
 
@@ -949,9 +949,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 17]
+Thubert, et al.          Expires 22 January 2023               [Page 17]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    is a stitching point.  F and G are "external" Targets for the Track,
@@ -982,7 +982,7 @@ Internet-Draft               DAO Projection                    June 2022
    Note well: by design, the list of nodes in a VIO in Non-Storing Mode
    is exactly the list that shows in the encapsulation SRH.  So in the
    cases detailed below, if the Mode of the P-DAO is Non-Storing, then
-   the VIO row can be read as indicating the SRH as well.  the
+   the VIO row can be read as indicating the SRH as well.
 
 3.5.1.  Using Storing Mode Segments
 
@@ -1005,9 +1005,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 18]
+Thubert, et al.          Expires 22 January 2023               [Page 18]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
            +====================+==============+==============+
@@ -1061,9 +1061,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 19]
+Thubert, et al.          Expires 22 January 2023               [Page 19]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Packets originating at A going to F or G do not require encapsulation
@@ -1117,9 +1117,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 20]
+Thubert, et al.          Expires 22 January 2023               [Page 20]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +====================+==============+==============+==============+
@@ -1173,9 +1173,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 21]
+Thubert, et al.          Expires 22 January 2023               [Page 21]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Packets from A to E do not require an encapsulation.  The outer
@@ -1229,9 +1229,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 22]
+Thubert, et al.          Expires 22 January 2023               [Page 22]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +====================+==============+==============+==============+
@@ -1285,9 +1285,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 23]
+Thubert, et al.          Expires 22 January 2023               [Page 23]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Packets originated at A to E do not require an encapsulation, but
@@ -1341,9 +1341,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 24]
+Thubert, et al.          Expires 22 January 2023               [Page 24]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
            +====================+==============+==============+
@@ -1397,9 +1397,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 25]
+Thubert, et al.          Expires 22 January 2023               [Page 25]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +========+===================+===================+================+
@@ -1453,9 +1453,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 26]
+Thubert, et al.          Expires 22 January 2023               [Page 26]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +====================+==============+==============+==============+
@@ -1509,9 +1509,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 27]
+Thubert, et al.          Expires 22 January 2023               [Page 27]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +========+===================+===================+================+
@@ -1565,9 +1565,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 28]
+Thubert, et al.          Expires 22 January 2023               [Page 28]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +====================+==============+==============+==============+
@@ -1621,9 +1621,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 29]
+Thubert, et al.          Expires 22 January 2023               [Page 29]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
     +========+===================+===================+================+
@@ -1677,9 +1677,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 30]
+Thubert, et al.          Expires 22 January 2023               [Page 30]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    *  From P-DAO 2: A encapsulates the packet with destination of C in
@@ -1733,9 +1733,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 31]
+Thubert, et al.          Expires 22 January 2023               [Page 31]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
            CPF               CPF          CPF                 CPF
@@ -1789,9 +1789,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 32]
+Thubert, et al.          Expires 22 January 2023               [Page 32]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    as illustrated in Figure 7, with Leg 3 that is congruent with Leg 1
@@ -1845,9 +1845,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 33]
+Thubert, et al.          Expires 22 January 2023               [Page 33]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    One possible mapping between DetNet and this specification is to
@@ -1874,12 +1874,12 @@ Internet-Draft               DAO Projection                    June 2022
    one possibility is for the Root to transmit the RPL DAOs with the
    SIOs that detail the parent/child and sibling information.
 
-   The algorithm to compute the paths and the protocol used by the PCE
-   and the metrics and link statistics involved in the computation are
-   also out of scope.  The effectiveness of the route computation by the
-   PCE depends on the quality of the metrics that are reported from the
-   RPL network.  Which metrics are used and how they are reported is out
-   of scope, but the expectation is that they are mostly of a long-term,
+   The algorithm to compute the paths, the protocol used by the PCE and
+   the metrics and link statistics involved in the computation are also
+   out of scope.  The effectiveness of the route computation by the PCE
+   depends on the quality of the metrics that are reported from the RPL
+   network.  Which metrics are used and how they are reported is out of
+   scope, but the expectation is that they are mostly of a long-term,
    statistical nature, and provide visibility on link throughput,
    latency, stability and availability over relatively long periods.
 
@@ -1901,9 +1901,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 34]
+Thubert, et al.          Expires 22 January 2023               [Page 34]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The RAW Architecture defines a dataplane extension of the PCE called
@@ -1945,21 +1945,21 @@ Internet-Draft               DAO Projection                    June 2022
    Mode.  The Root issues a Projected DAO (P-DAO) message (see
    Section 4.1.1) to the Track Ingress; the P-DAO message contains a new
    Via Information Option (VIO) that installs a strict or a loose
-   sequence of hops to form respectively a Track Segment or a Track Leg.
+   sequence of hops to form a Track Segment or a Track Leg,
+   respectively.
 
-   The new P-DAO Request (PDR) is a new message detailed in Section 5.1.
-   As per [RPL] section 6, if a node receives this message and it does
-   not understand this new Code, it then discards the message.  When the
-   root initiates to a node that it has not communicated with before,
-   and to which it does not know if this specification has been
-   implemented (by means such as capabilities), then the root SHOULD
-   request a PDR-ACK.
+   The P-DAO Request (PDR) is a new message detailed in Section 5.1.  As
+   per [RPL] section 6, if a node receives this message and it does not
+   understand this new Code, it then discards the message.  When the
+   Root initiates to a node that it has not communicated with before and
+   which it has not ascertained to implement this specification (by
+   means such as capabilities), then the Root SHOULD request a PDR-ACK.
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 35]
+Thubert, et al.          Expires 22 January 2023               [Page 35]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    A P-DAO Request (PDR) message enables a Track Ingress to request the
@@ -2013,9 +2013,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 36]
+Thubert, et al.          Expires 22 January 2023               [Page 36]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The P-DAO is a part of control plane signaling and should not be
@@ -2069,9 +2069,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 37]
+Thubert, et al.          Expires 22 January 2023               [Page 37]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    In RPL Non-Storing Mode, the TIO and RTO are combined in a DAO
@@ -2125,9 +2125,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 38]
+Thubert, et al.          Expires 22 January 2023               [Page 38]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The D flag is set to one to signal that the DODAGID field is present.
@@ -2181,9 +2181,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 39]
+Thubert, et al.          Expires 22 January 2023               [Page 39]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 4.1.6.  Amending the RPI
@@ -2237,9 +2237,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 40]
+Thubert, et al.          Expires 22 January 2023               [Page 40]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The 'D' flag is set to 1 to indicate that this specification is
@@ -2293,9 +2293,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 41]
+Thubert, et al.          Expires 22 January 2023               [Page 41]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
                     Figure 11: Amended RPL Option Format
@@ -2349,9 +2349,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 42]
+Thubert, et al.          Expires 22 January 2023               [Page 42]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    This specification extends [RFC8138] to introduce a new 6LoRH, the P-
@@ -2405,9 +2405,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 43]
+Thubert, et al.          Expires 22 January 2023               [Page 43]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    status values indicate a permanent error; the attempt must be
@@ -2461,9 +2461,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 44]
+Thubert, et al.          Expires 22 January 2023               [Page 44]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    PDRSequence:  8-bit wrapping sequence number, obeying the operation
@@ -2517,9 +2517,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 45]
+Thubert, et al.          Expires 22 January 2023               [Page 45]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       E:  1-bit flag.  Set to indicate a rejection.  When not set, the
@@ -2573,9 +2573,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 46]
+Thubert, et al.          Expires 22 January 2023               [Page 46]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
         0                   1                   2                   3
@@ -2629,9 +2629,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 47]
+Thubert, et al.          Expires 22 January 2023               [Page 47]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       When the Root of the DODAG needs to refresh or update a Segment in
@@ -2685,9 +2685,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 48]
+Thubert, et al.          Expires 22 January 2023               [Page 48]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       In the case of an NSM-VIO, the complete list can be loose and
@@ -2741,9 +2741,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 49]
+Thubert, et al.          Expires 22 January 2023               [Page 49]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
         0                   1                   2                   3
@@ -2797,9 +2797,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 50]
+Thubert, et al.          Expires 22 January 2023               [Page 50]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Opaque:  MAY be used to carry information that the node and the Root
@@ -2853,9 +2853,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 51]
+Thubert, et al.          Expires 22 January 2023               [Page 51]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Though fragmentation is possible in a 6LoWPAN LLN, e.g., using
@@ -2909,9 +2909,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 52]
+Thubert, et al.          Expires 22 January 2023               [Page 52]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 6.3.  Identifying a Track
@@ -2965,9 +2965,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 53]
+Thubert, et al.          Expires 22 January 2023               [Page 53]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       The Track Ingress is the Root of the DODAG ID formed by the local
@@ -3021,9 +3021,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 54]
+Thubert, et al.          Expires 22 January 2023               [Page 54]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    *  There SHOULD NOT be 2 different Tracks leading to the same Target
@@ -3077,9 +3077,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 55]
+Thubert, et al.          Expires 22 January 2023               [Page 55]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    on the installed path and forwarded in the reverse direction,
@@ -3133,9 +3133,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 56]
+Thubert, et al.          Expires 22 January 2023               [Page 56]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
            ------+---------
@@ -3168,8 +3168,8 @@ Internet-Draft               DAO Projection                    June 2022
    The Root sends the P-DAO directly to the Egress node of the Segment.
    In that P-DAO, the destination IP address matches the last Via
    Address in the SM-VIO.  This is how the Egress recognizes its role.
-   In a similar fashion, the Segment Ingress node recognizes its role as
-   it matches first Via Address in the SM-VIO.
+   In a similar fashion, the Segment Ingress node recognizes its role
+   because it matches the first Via Address in the SM-VIO.
 
    The Egress node of the Segment is the only node in the path that does
    not install a route in response to the P-DAO; it is expected to be
@@ -3189,15 +3189,15 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 57]
+Thubert, et al.          Expires 22 January 2023               [Page 57]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The address of the predecessor to be used as destination of the
-   propagated DAO message is found in the Via Address the precedes the
-   one that contain the address of the propagating node, which is used
-   as source of the message.
+   propagated DAO message is found in the Via Address list, at the
+   position preceeding the one that contains the address of the
+   propagating node, which is used as source of the message.
 
    Upon receiving a propagated DAO, all except the Egress router MUST
    install a route towards the DAO Target(s) via their successor in the
@@ -3205,18 +3205,18 @@ Internet-Draft               DAO Projection                    June 2022
    a P-DAO MUST reject the P-DAO by sending a DAO-ACK to the Root with a
    Rejection Status of "Out of Resources" as opposed to forwarding the
    DAO to its predecessor in the list.  The router MAY install
-   additional routes towards the VIA Addresses that are the SM-VIO after
-   self, if any, but in case of a conflict or a lack of resource, the
-   route(s) to the Target(s) are the ones that must be installed in
-   priority.
+   additional routes towards the Via Addresses that appear in the SM-VIO
+   after its own address, if any, but in case of a conflict or a lack of
+   resource, the route(s) to the Target(s) are the ones that must be
+   installed in priority.
 
    If a router cannot reach its predecessor in the SM-VIO, the router
    MUST send the DAO-ACK to the Root with a Rejection Status of
    "Predecessor Unreachable".
 
-   The process continues until the P-DAO is propagated to Ingress router
-   of the Segment, which answers with a DAO-ACK to the Root.  The Root
-   always expects a DAO-ACK, either from the Track Ingress with a
+   The process continues until the P-DAO is propagated to the Ingress
+   router of the Segment, which answers with a DAO-ACK to the Root.  The
+   Root always expects a DAO-ACK, either from the Track Ingress with a
    positive status or from any node along the segment with a negative
    status.  If the DAO-ACK is not received, the Root may retry the DAO
    with the same TID, or tear down the route.
@@ -3245,9 +3245,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 58]
+Thubert, et al.          Expires 22 January 2023               [Page 58]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
               ------+---------
@@ -3301,9 +3301,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 59]
+Thubert, et al.          Expires 22 January 2023               [Page 59]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 6.5.  Tearing Down a P-Route
@@ -3318,7 +3318,7 @@ Internet-Draft               DAO Projection                    June 2022
    Node, the Root cleans up the Leg by sending an NSM-VIO to the Ingress
    indicating the TrackID and the P-RouteID of the Leg being removed, a
    Segment Lifetime of 0 and a newer Segment Sequence.  The SRH-6LoRH
-   with the Via Addresses in the NSM-VIO are not needed; it SHOULD not
+   with the Via Addresses in the NSM-VIO are not needed; it SHOULD NOT
    be placed in the message and MUST be ignored by the receiver.  Upon
    that NSM-VIO, the Ingress node removes all state for that Track if
    any, and replies positively anyway.
@@ -3357,22 +3357,22 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 60]
+Thubert, et al.          Expires 22 January 2023               [Page 60]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 6.6.1.  Maintaining a Track Segment
 
    To modify a section of a Segment between a first node and a second,
-   downstream node (which can be the Ingress and Egress), while
-   conserving those nodes in the Segment, the Root sends an SM-VIO to
-   the second node indicating the sequence of nodes in the new section
-   of the Segment.  The SM-VIO indicates the TrackID and the P-RouteID
-   of the Segment being updated, and a newer Segment Sequence.  The
-   P-DAO is propagated from the second to the first node and on the way,
-   it updates the state on the nodes that are common to the old and the
-   new section of the Segment and creates a state in the new nodes.
+   downstream node (which can be the Ingress and Egress, respectively),
+   while conserving those nodes in the Segment, the Root sends an SM-VIO
+   to the second node indicating the sequence of nodes in the new
+   section of the Segment.  The SM-VIO indicates the TrackID and the
+   P-RouteID of the Segment being updated, and a newer Segment Sequence.
+   The P-DAO is propagated from the second to the first node and on the
+   way, it updates the state on the nodes that are common to the old and
+   the new section of the Segment and creates a state in the new nodes.
 
    When the state is updated in an intermediate node, that node might
    still receive packets that were in flight from the Ingress to self
@@ -3380,9 +3380,9 @@ Internet-Draft               DAO Projection                    June 2022
    Segment is already updated, the packets are forwarded along the new
    version of the Segment from that node on.
 
-   After a reasonable time to enable the deprecated sections to empty,
-   the Root tears down the remaining section(s) of the old segments are
-   teared down as described in Section 6.5.
+   After a reasonable time to enable the deprecated sections to drain
+   their traffic, the Root tears down the remaining section(s) of the
+   old segments as described in Section 6.5.
 
 6.6.2.  Maintaining a Track Leg
 
@@ -3393,11 +3393,11 @@ Internet-Draft               DAO Projection                    June 2022
    add a new Leg before removing one that is becoming excessively lossy,
    and switch to the new Leg before removing the old.  Dropping a Track
    before the new one is installed would reroute the traffic via the
-   root; this may augment the latency beyond acceptable thresholds, and
-   load the network near the root.  This may also cause loops in the
-   case of stitched Tracks; the packets that cannot be injected in the
-   second Track may be routed back at reinjected at the Ingress of the
-   first.
+   root; this may increase the latency beyond acceptable thresholds, and
+   overload the network near the root.  This may also cause loops in the
+   case of stitched Tracks: the packets that cannot be injected in the
+   second Track might be routed back and reinjected at the Ingress of
+   the first.
 
    It is also possible to update a Track Leg by sending a Non-Storing
    Mode P-DAO to the Ingress with the same Segment ID, an incremented
@@ -3406,17 +3406,23 @@ Internet-Draft               DAO Projection                    June 2022
    loose hops, and involves laying out new Segments from and to the new
    loose hops before the NSM-VIO for the new Leg is issued.
 
+
+
+
+
+
+
+
+Thubert, et al.          Expires 22 January 2023               [Page 61]
+
+Internet-Draft               DAO Projection                    July 2022
+
+
    Packets that are in flight over the old version of the Track Leg
    still follow the old source route path over the old Segments.  After
-   a reasonable time to enable the deprecated Segments to empty, the
-   Root tears down those Segments as described in Section 6.5.
-
-
-
-Thubert, et al.          Expires 5 December 2022               [Page 61]
-
-Internet-Draft               DAO Projection                    June 2022
-
+   a reasonable time to enable the deprecated Segments to drain their
+   traffic, the Root tears down those Segments as described in
+   Section 6.5.
 
 6.7.  Encapsulating and Forwarding Along a Track
 
@@ -3435,19 +3441,19 @@ Internet-Draft               DAO Projection                    June 2022
    Option Header that contains the RPL Packet Information (RPI) as
    follows:
 
-   *  In the uncompressed form the source of the packet is the address
+   *  In the uncompressed form, the source of the packet is the address
       that this router uses as DODAGID for the Track, the destination is
       the first Via Address in the NSM-VIO, and the RH is a Source
       Routing Header (SRH) [RFC6554] that contains the list of the
-      remaining Via Addresses terminating by the Track Egress.
+      remaining Via Addresses, ending with the Track Egress.
 
-   *  The preferred alternate in a network where 6LoWPAN Header
+   *  The preferred alternative in a network where 6LoWPAN Header
       Compression [RFC6282] is used is to leverage "IPv6 over Low-Power
       Wireless Personal Area Network (6LoWPAN) Paging Dispatch"
       [RFC8025] to compress the RPL artifacts as indicated in [RFC8138].
 
       In that case, the source routed header is the exact copy of the
-      (chain of) SRH-6LoRH found in the NSM-VIO, also terminating by the
+      (chain of) SRH-6LoRH found in the NSM-VIO, also ending with the
       Track Egress.  The RPI-6LoRH is appended next, followed by an IP-
       in-IP 6LoRH Header that indicates the Ingress router in the
       Encapsulator Address field, see as a similar case Figure 20 of
@@ -3461,18 +3467,16 @@ Internet-Draft               DAO Projection                    June 2022
       RPLInstanceID field of the RPI that MUST be placed in the outer
       chain of IPv6 Headers.
 
+
+
+Thubert, et al.          Expires 22 January 2023               [Page 62]
+
+Internet-Draft               DAO Projection                    July 2022
+
+
       The RPI carries a local RPLInstanceID called the TrackID, which,
       in association with the DODAGID, indicates the Track along which
       the packet is forwarded.
-
-
-
-
-
-Thubert, et al.          Expires 5 December 2022               [Page 62]
-
-Internet-Draft               DAO Projection                    June 2022
-
 
       The D flag in the RPLInstanceID MUST be set to 0 to indicate that
       the source address in the IPv6 header is set to the DODAGID (more
@@ -3510,7 +3514,7 @@ Internet-Draft               DAO Projection                    June 2022
 
    *  In the case of a loose source-routed path, when the loose next hop
       is not a neighbor, there must be a Segment of the same Track to
-      that loose next hop.  When that is the case the packet is
+      that loose next hop.  When that is the case, the packet is
       forwarded to the next hop along that segment, or a common neighbor
       with the loose next hop, in which case the packet is forwarded to
       that neighbor, or another Track to the loose next hop for which
@@ -3521,13 +3525,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-
-
-
-
-Thubert, et al.          Expires 5 December 2022               [Page 63]
+Thubert, et al.          Expires 22 January 2023               [Page 63]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    *  When a Track Egress extracts a packet from a Track (decapsulates
@@ -3581,9 +3581,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 64]
+Thubert, et al.          Expires 22 January 2023               [Page 64]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    +-+ ... -+- ... -+- ... -+-+- ... +-+-+-+ ... +-+-+ ... -+ ... +-...
@@ -3598,9 +3598,9 @@ Internet-Draft               DAO Projection                    June 2022
    Since there is no page switch between the encapsulated packet and the
    encapsulation, the first octet of the compressed packet that acts as
    page selector is actually removed at encapsulation, so the inner
-   packet used in the descriptions below start with the SRH-6LoRH, and
-   is verbatim the packet represented in Figure 20 from the second octet
-   on.
+   packet used in the descriptions below starts with the SRH-6LoRH, and
+   is exactly the packet represented in Figure 20, from the second octet
+   onward.
 
    When encapsulating that inner packet to place it in the Track, the
    first header that the Ingress appends at the head of the inner packet
@@ -3637,9 +3637,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 65]
+Thubert, et al.          Expires 22 January 2023               [Page 65]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
         0                   1
@@ -3670,17 +3670,16 @@ Internet-Draft               DAO Projection                    June 2022
    Storing Mode.  The reasons for that limitation are mostly related to
    LLN operations, power and spectrum conservation:
 
-   *  In Non-Storing Mode The Root already possesses the DODAG topology,
+   *  In Non-Storing Mode, the Root already knowns the DODAG topology,
       so the additional topological information is reduced to the
       siblings.
 
-   *  The downwards routes are updated with unicast messages to the
-      Root, which ensures that the Root can reach back to the LLN nodes
-      after a repair faster than in the case of Storing Mode.  Also the
-      Root can control the use of the path diversity in the DODAG to
-      reach to the LLN nodes.  For both reasons, Non-Storing Mode
-      provides better capabilities for the Root to maintain the
-      P-Routes.
+   *  The downward routes are updated with unicast messages to the Root,
+      which ensures that the Root can reach back to the LLN nodes after
+      a repair faster than in the case of Storing Mode.  Also the Root
+      can control the use of the path diversity in the DODAG to reach
+      the LLN nodes.  For both reasons, Non-Storing Mode provides better
+      capabilities for the Root to maintain the P-Routes.
 
    *  When the Main DODAG is operated in Non-Storing Mode, P-Routes
       enable loose Source Routing, which is only an advantage in that
@@ -3689,20 +3688,20 @@ Internet-Draft               DAO Projection                    June 2022
 
    On the other hand, since RPL is a Layer-3 routing protocol, its
    applicability extends beyond LLNs to a generic IP network.  RPL
-   requires fewer resources than alternative IGPs like OSPF, ISIS,
+   requires less resources than alternative IGPs like OSPF, ISIS, EIGRP,
+   BABEL or RIP at the expense of a route stretch vs. the shortest path
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 66]
+Thubert, et al.          Expires 22 January 2023               [Page 66]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   EIGRP, BABEL or RIP at the expense of a route stretch vs. the
-   shortest path routes to a destination that those protocols compute.
-   P-Routes add the capability to install shortest and/or constrained
-   routes to special destinations such as discussed in section A.9.4. of
-   the ANIMA ACP [RFC8994].
+   routes to a destination that those protocols compute.  P-Routes add
+   the capability to install shortest and/or constrained routes to
+   special destinations such as discussed in section A.9.4. of the ANIMA
+   ACP [RFC8994].
 
    In a powered and wired network, when enough memory to store the
    needed routes is available, the RPL Storing Mode proposes a better
@@ -3723,8 +3722,8 @@ Internet-Draft               DAO Projection                    June 2022
    In Storing Mode, the Root misses the Child to Parent relationship
    that forms the Main DODAG, as well as the sibling information.  To
    provide that knowledge the nodes in the network MUST send additional
-   DAO messages that are unicast to the Root just like as Non-Storing
-   DAO messages are.
+   DAO messages that are unicast to the Root just like Non-Storing DAO
+   messages are.
 
    In the DAO message, the originating router advertises a set of
    neighbor nodes using Sibling Information Options (SIO)s, regardless
@@ -3749,9 +3748,10 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 67]
+
+Thubert, et al.          Expires 22 January 2023               [Page 67]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    *  The TIO is formed as in Storing Mode, and the Parent Address is
@@ -3805,9 +3805,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 68]
+Thubert, et al.          Expires 22 January 2023               [Page 68]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    The RAW Architecture [RAW-ARCHI] actually expects the PSE at the
@@ -3835,10 +3835,10 @@ Internet-Draft               DAO Projection                    June 2022
    P-DAO.
 
    Note that the Path Sequence and Lifetime in the TIO are selected by
-   the Root, and that the Target/Transit information tupples in the
-   P-DAO are not those received by the Root in the DAO messages about
-   the said Targets.  The Track may follow sibling routes and does not
-   need to be congruent with the Main DODAG.
+   the Root, and that the Target/Transit information tuples in the P-DAO
+   are not those received by the Root in the DAO messages about the said
+   Targets.  The Track may follow sibling routes and does not need to be
+   congruent with the Main DODAG.
 
 8.  Profiles
 
@@ -3861,9 +3861,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 69]
+Thubert, et al.          Expires 22 January 2023               [Page 69]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    RECOMMENDED in high speed / wired environment to enable traffic
@@ -3872,7 +3872,7 @@ Internet-Draft               DAO Projection                    June 2022
 
    Profile 0  Profile 0 is the Legacy support of [RPL] Non-Storing Mode,
       with default routing Northwards (up) and strict source routing
-      Southwards (down the main DOAG).  It provides the minimal common
+      Southwards (down the main DODAG).  It provides the minimal common
       functionality that must be implemented as a prerequisite to all
       the Track-supporting profiles.  The other Profiles extend Profile
       0 with selected capabilities that this specification introduces on
@@ -3892,9 +3892,9 @@ Internet-Draft               DAO Projection                    June 2022
       as Profile 1, but it requires an encapsulation, in order to insert
       an additional SRH between the loose source routing hops.  In that
       case, the Tracks MUST be installed as subTracks of the Main DODAG,
-      the main RPL Instance MUST be used as TrackID, and the Ingress
-      node that encapsulates is not the Root as it does not own the
-      DODAGID.
+      the main RPL Instance MUST be used as TrackID.  Note that the
+      Ingress node encapsulates but is not the Root, as it does not own
+      the DODAGID.
 
    Profile 3  In order to form the best path possible, this Profile
       requires the support of Sibling Information Option to inform the
@@ -3917,9 +3917,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 70]
+Thubert, et al.          Expires 22 January 2023               [Page 70]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       loose source routing between the Ingress and the Egress of the
@@ -3973,9 +3973,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 71]
+Thubert, et al.          Expires 22 January 2023               [Page 71]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 10.  Security Considerations
@@ -4029,9 +4029,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 72]
+Thubert, et al.          Expires 22 January 2023               [Page 72]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
        +---------------+------------------------------+-----------+
@@ -4085,9 +4085,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 73]
+Thubert, et al.          Expires 22 January 2023               [Page 73]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    *  Bit number (counting from bit 0 as the most significant bit)
@@ -4097,7 +4097,7 @@ Internet-Draft               DAO Projection                    June 2022
    *  Reference
 
    Registration procedure is "Standards Action" [RFC8126].  The initial
-   allocation is as indicated in Table 27:
+   allocation is as indicated in Table 24:
 
            +===============+======================+===========+
            |   Bit number  | Indication When Set  | Reference |
@@ -4141,9 +4141,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 74]
+Thubert, et al.          Expires 22 January 2023               [Page 74]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
       +==================+=============================+===========+
@@ -4197,9 +4197,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 75]
+Thubert, et al.          Expires 22 January 2023               [Page 75]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
    Registration procedure is "Standards Action" [RFC8126].  No bit is
@@ -4253,9 +4253,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 76]
+Thubert, et al.          Expires 22 January 2023               [Page 76]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
 11.11.  SubRegistry for the Via Information Options Flags
@@ -4309,9 +4309,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 77]
+Thubert, et al.          Expires 22 January 2023               [Page 77]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
           +---------------+------------------------+-----------+
@@ -4365,9 +4365,9 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 78]
+Thubert, et al.          Expires 22 January 2023               [Page 78]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
           +---------------+-------------------------+-----------+
@@ -4392,56 +4392,55 @@ Internet-Draft               DAO Projection                    June 2022
    Pylakutty, and Patrick Wetterwald for their contributions to the
    ideas developed here.  Many thanks to Dominique Barthel and SVR Anand
    for their global contribution to 6TiSCH, RAW and this RFC, as well as
-   text suggestions that were incorporated.  Also special thanks Remous-
-   Aris Koutsiamanis, Li Zhao, and Toerless Eckert for their in-depth
-   reviews, with many excellent suggestions that improved the
+   text suggestions that were incorporated.  Also special thanks to
+   Remous-Aris Koutsiamanis, Li Zhao, and Toerless Eckert for their in-
+   depth reviews, with many excellent suggestions that improved the
    readability and well as the content of the specification.  Many
    thanks to Remous-Aris Koutsiamanis for his review during WGLC.
 
 13.  Normative References
 
    [INT-ARCHI]
-              Braden, R., Ed., "Requirements for Internet Hosts -
-              Communication Layers", STD 3, RFC 1122,
-              DOI 10.17487/RFC1122, October 1989,
+              Braden, R., "Requirements for Internet Hosts -
+              Communication Layers", DOI 10.17487/RFC1122, STD 3,
+              RFC 1122, October 1989,
               <https://www.rfc-editor.org/info/rfc1122>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
+              Requirement Levels", DOI 10.17487/RFC2119, BCP 14,
+              RFC 2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC4443]  Conta, A., Deering, S., and M. Gupta, Ed., "Internet
-              Control Message Protocol (ICMPv6) for the Internet
-              Protocol Version 6 (IPv6) Specification", STD 89,
-              RFC 4443, DOI 10.17487/RFC4443, March 2006,
+   [RFC4443]  Conta, A., Deering, S., and M. Gupta, "Internet Control
+              Message Protocol (ICMPv6) for the Internet Protocol
+              Version 6 (IPv6) Specification", STD 89, RFC 4443,
+              DOI 10.17487/RFC4443, March 2006,
               <https://www.rfc-editor.org/info/rfc4443>.
 
 
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 79]
+Thubert, et al.          Expires 22 January 2023               [Page 79]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   [RFC4655]  Farrel, A., Vasseur, J.-P., and J. Ash, "A Path
-              Computation Element (PCE)-Based Architecture", RFC 4655,
+   [RFC4655]  Farrel, A., Vasseur, J P., and J. Ash, "A Path Computation
+              Element (PCE)-Based Architecture", RFC 4655,
               DOI 10.17487/RFC4655, August 2006,
               <https://www.rfc-editor.org/info/rfc4655>.
 
-   [RFC6282]  Hui, J., Ed. and P. Thubert, "Compression Format for IPv6
+   [RFC6282]  Hui, J. and P. Thubert, "Compression Format for IPv6
               Datagrams over IEEE 802.15.4-Based Networks", RFC 6282,
               DOI 10.17487/RFC6282, September 2011,
               <https://www.rfc-editor.org/info/rfc6282>.
 
-   [RPL]      Winter, T., Ed., Thubert, P., Ed., Brandt, A., Hui, J.,
-              Kelsey, R., Levis, P., Pister, K., Struik, R., Vasseur,
-              JP., and R. Alexander, "RPL: IPv6 Routing Protocol for
-              Low-Power and Lossy Networks", RFC 6550,
-              DOI 10.17487/RFC6550, March 2012,
-              <https://www.rfc-editor.org/info/rfc6550>.
+   [RPL]      Winter, T., Thubert, P., Brandt, A., Hui, J., Kelsey, R.,
+              Levis, P., Pister, K., Struik, R., Vasseur, JP., and R.
+              Alexander, "RPL: IPv6 Routing Protocol for Low-Power and
+              Lossy Networks", DOI 10.17487/RFC6550, RFC 6550, March
+              2012, <https://www.rfc-editor.org/info/rfc6550>.
 
    [RFC6553]  Hui, J. and JP. Vasseur, "The Routing Protocol for Low-
               Power and Lossy Networks (RPL) Option for Carrying RPL
@@ -4451,59 +4450,60 @@ Internet-Draft               DAO Projection                    June 2022
 
    [RFC6554]  Hui, J., Vasseur, JP., Culler, D., and V. Manral, "An IPv6
               Routing Header for Source Routes with the Routing Protocol
-              for Low-Power and Lossy Networks (RPL)", RFC 6554,
-              DOI 10.17487/RFC6554, March 2012,
+              for Low-Power and Lossy Networks (RPL)",
+              DOI 10.17487/RFC6554, RFC 6554, March 2012,
               <https://www.rfc-editor.org/info/rfc6554>.
 
    [RFC8126]  Cotton, M., Leiba, B., and T. Narten, "Guidelines for
-              Writing an IANA Considerations Section in RFCs", BCP 26,
-              RFC 8126, DOI 10.17487/RFC8126, June 2017,
+              Writing an IANA Considerations Section in RFCs", RFC 8126,
+              DOI 10.17487/RFC8126, BCP 26, June 2017,
               <https://www.rfc-editor.org/info/rfc8126>.
 
-   [RFC8138]  Thubert, P., Ed., Bormann, C., Toutain, L., and R. Cragie,
+   [RFC8138]  Thubert, P., Bormann, C., Toutain, L., and R. Cragie,
               "IPv6 over Low-Power Wireless Personal Area Network
               (6LoWPAN) Routing Header", RFC 8138, DOI 10.17487/RFC8138,
               April 2017, <https://www.rfc-editor.org/info/rfc8138>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              2119 Key Words", DOI 10.17487/RFC8174, RFC 8174, BCP 14,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-   [RFC8754]  Filsfils, C., Ed., Dukes, D., Ed., Previdi, S., Leddy, J.,
+   [RFC8754]  Filsfils, C., Dukes, D., Previdi, S., Leddy, J.,
               Matsushima, S., and D. Voyer, "IPv6 Segment Routing Header
-              (SRH)", RFC 8754, DOI 10.17487/RFC8754, March 2020,
+              (SRH)", DOI 10.17487/RFC8754, RFC 8754, March 2020,
               <https://www.rfc-editor.org/info/rfc8754>.
 
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 80]
+
+Thubert, et al.          Expires 22 January 2023               [Page 80]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   [RFC9008]  Robles, M.I., Richardson, M., and P. Thubert, "Using RPI
+   [RFC9008]  Robles, M I., Richardson, M., and P. Thubert, "Using RPI
               Option Type, Routing Header for Source Routes, and IPv6-
-              in-IPv6 Encapsulation in the RPL Data Plane", RFC 9008,
-              DOI 10.17487/RFC9008, April 2021,
+              in-IPv6 Encapsulation in the RPL Data Plane",
+              DOI 10.17487/RFC9008, RFC 9008, April 2021,
               <https://www.rfc-editor.org/info/rfc9008>.
 
 14.  Informative References
 
    [6LoWPAN]  Montenegro, G., Kushalnagar, N., Hui, J., and D. Culler,
               "Transmission of IPv6 Packets over IEEE 802.15.4
-              Networks", RFC 4944, DOI 10.17487/RFC4944, September 2007,
+              Networks", DOI 10.17487/RFC4944, RFC 4944, September 2007,
               <https://www.rfc-editor.org/info/rfc4944>.
 
-   [RFC5440]  Vasseur, JP., Ed. and JL. Le Roux, Ed., "Path Computation
-              Element (PCE) Communication Protocol (PCEP)", RFC 5440,
-              DOI 10.17487/RFC5440, March 2009,
+   [RFC5440]  Vasseur, JP. and JL. Le Roux, "Path Computation Element
+              (PCE) Communication Protocol (PCEP)",
+              DOI 10.17487/RFC5440, RFC 5440, March 2009,
               <https://www.rfc-editor.org/info/rfc5440>.
 
-   [RFC6997]  Goyal, M., Ed., Baccelli, E., Philipp, M., Brandt, A., and
-              J. Martocci, "Reactive Discovery of Point-to-Point Routes
-              in Low-Power and Lossy Networks", RFC 6997,
-              DOI 10.17487/RFC6997, August 2013,
+   [RFC6997]  Goyal, M., Baccelli, E., Philipp, M., Brandt, A., and J.
+              Martocci, "Reactive Discovery of Point-to-Point Routes in
+              Low-Power and Lossy Networks", DOI 10.17487/RFC6997,
+              RFC 6997, August 2013,
               <https://www.rfc-editor.org/info/rfc6997>.
 
    [RFC7102]  Vasseur, JP., "Terms Used in Routing for Low-Power and
@@ -4511,20 +4511,20 @@ Internet-Draft               DAO Projection                    June 2022
               2014, <https://www.rfc-editor.org/info/rfc7102>.
 
    [RFC7416]  Tsao, T., Alexander, R., Dohler, M., Daza, V., Lozano, A.,
-              and M. Richardson, Ed., "A Security Threat Analysis for
-              the Routing Protocol for Low-Power and Lossy Networks
-              (RPLs)", RFC 7416, DOI 10.17487/RFC7416, January 2015,
+              and M. Richardson, "A Security Threat Analysis for the
+              Routing Protocol for Low-Power and Lossy Networks (RPLs)",
+              DOI 10.17487/RFC7416, RFC 7416, January 2015,
               <https://www.rfc-editor.org/info/rfc7416>.
 
-   [RFC8025]  Thubert, P., Ed. and R. Cragie, "IPv6 over Low-Power
-              Wireless Personal Area Network (6LoWPAN) Paging Dispatch",
-              RFC 8025, DOI 10.17487/RFC8025, November 2016,
+   [RFC8025]  Thubert, P. and R. Cragie, "IPv6 over Low-Power Wireless
+              Personal Area Network (6LoWPAN) Paging Dispatch",
+              DOI 10.17487/RFC8025, RFC 8025, November 2016,
               <https://www.rfc-editor.org/info/rfc8025>.
 
-   [RFC8402]  Filsfils, C., Ed., Previdi, S., Ed., Ginsberg, L.,
-              Decraene, B., Litkowski, S., and R. Shakir, "Segment
-              Routing Architecture", RFC 8402, DOI 10.17487/RFC8402,
-              July 2018, <https://www.rfc-editor.org/info/rfc8402>.
+   [RFC8402]  Filsfils, C., Previdi, S., Ginsberg, L., Decraene, B.,
+              Litkowski, S., and R. Shakir, "Segment Routing
+              Architecture", DOI 10.17487/RFC8402, RFC 8402, July 2018,
+              <https://www.rfc-editor.org/info/rfc8402>.
 
 
 
@@ -4533,93 +4533,87 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 81]
+Thubert, et al.          Expires 22 January 2023               [Page 81]
 
-Internet-Draft               DAO Projection                    June 2022
+Internet-Draft               DAO Projection                    July 2022
 
 
-   [RFC8505]  Thubert, P., Ed., Nordmark, E., Chakrabarti, S., and C.
+   [RFC8505]  Thubert, P., Nordmark, E., Chakrabarti, S., and C.
               Perkins, "Registration Extensions for IPv6 over Low-Power
               Wireless Personal Area Network (6LoWPAN) Neighbor
               Discovery", RFC 8505, DOI 10.17487/RFC8505, November 2018,
               <https://www.rfc-editor.org/info/rfc8505>.
 
    [RFC8655]  Finn, N., Thubert, P., Varga, B., and J. Farkas,
-              "Deterministic Networking Architecture", RFC 8655,
-              DOI 10.17487/RFC8655, October 2019,
+              "Deterministic Networking Architecture",
+              DOI 10.17487/RFC8655, RFC 8655, October 2019,
               <https://www.rfc-editor.org/info/rfc8655>.
 
-   [RFC8930]  Watteyne, T., Ed., Thubert, P., Ed., and C. Bormann, "On
-              Forwarding 6LoWPAN Fragments over a Multi-Hop IPv6
-              Network", RFC 8930, DOI 10.17487/RFC8930, November 2020,
+   [RFC8930]  Watteyne, T., Thubert, P., and C. Bormann, "On Forwarding
+              6LoWPAN Fragments over a Multi-Hop IPv6 Network",
+              DOI 10.17487/RFC8930, RFC 8930, November 2020,
               <https://www.rfc-editor.org/info/rfc8930>.
 
-   [RFC8931]  Thubert, P., Ed., "IPv6 over Low-Power Wireless Personal
-              Area Network (6LoWPAN) Selective Fragment Recovery",
-              RFC 8931, DOI 10.17487/RFC8931, November 2020,
+   [RFC8931]  Thubert, P., "IPv6 over Low-Power Wireless Personal Area
+              Network (6LoWPAN) Selective Fragment Recovery",
+              DOI 10.17487/RFC8931, RFC 8931, November 2020,
               <https://www.rfc-editor.org/info/rfc8931>.
 
-   [RFC8994]  Eckert, T., Ed., Behringer, M., Ed., and S. Bjarnason, "An
-              Autonomic Control Plane (ACP)", RFC 8994,
-              DOI 10.17487/RFC8994, May 2021,
-              <https://www.rfc-editor.org/info/rfc8994>.
+   [RFC8994]  Eckert, T., Behringer, M., and S. Bjarnason, "An Autonomic
+              Control Plane (ACP)", DOI 10.17487/RFC8994, RFC 8994, May
+              2021, <https://www.rfc-editor.org/info/rfc8994>.
 
-   [RFC9010]  Thubert, P., Ed. and M. Richardson, "Routing for RPL
-              (Routing Protocol for Low-Power and Lossy Networks)
-              Leaves", RFC 9010, DOI 10.17487/RFC9010, April 2021,
+   [RFC9010]  Thubert, P. and M. Richardson, "Routing for RPL (Routing
+              Protocol for Low-Power and Lossy Networks) Leaves",
+              RFC 9010, DOI 10.17487/RFC9010, April 2021,
               <https://www.rfc-editor.org/info/rfc9010>.
 
-   [RFC9030]  Thubert, P., Ed., "An Architecture for IPv6 over the Time-
+   [RFC9030]  Thubert, P., "An Architecture for IPv6 over the Time-
               Slotted Channel Hopping Mode of IEEE 802.15.4 (6TiSCH)",
-              RFC 9030, DOI 10.17487/RFC9030, May 2021,
+              DOI 10.17487/RFC9030, RFC 9030, May 2021,
               <https://www.rfc-editor.org/info/rfc9030>.
 
-   [RFC9035]  Thubert, P., Ed. and L. Zhao, "A Routing Protocol for Low-
-              Power and Lossy Networks (RPL) Destination-Oriented
-              Directed Acyclic Graph (DODAG) Configuration Option for
-              the 6LoWPAN Routing Header", RFC 9035,
-              DOI 10.17487/RFC9035, April 2021,
-              <https://www.rfc-editor.org/info/rfc9035>.
-
-
-
-
-
-
-
-
-
-Thubert, et al.          Expires 5 December 2022               [Page 82]
-
-Internet-Draft               DAO Projection                    June 2022
-
+   [RFC9035]  Thubert, P. and L. Zhao, "A Routing Protocol for Low-Power
+              and Lossy Networks (RPL) Destination-Oriented Directed
+              Acyclic Graph (DODAG) Configuration Option for the 6LoWPAN
+              Routing Header", RFC 9035, DOI 10.17487/RFC9035, April
+              2021, <https://www.rfc-editor.org/info/rfc9035>.
 
    [RAW-ARCHI]
               Thubert, P. and G. Z. Papadopoulos, "Reliable and
               Available Wireless Architecture", Work in Progress,
-              Internet-Draft, draft-ietf-raw-architecture-04, 4 March
-              2022, <https://tools.ietf.org/html/draft-ietf-raw-
-              architecture-04>.
+              Internet-Draft, draft-ietf-raw-architecture-05, July 2022,
+              <https://www.ietf.org/archive/id/draft-ietf-raw-
+              architecture-05.txt>.
+
+
+
+
+Thubert, et al.          Expires 22 January 2023               [Page 82]
+
+Internet-Draft               DAO Projection                    July 2022
+
 
    [USE-CASES]
               Bernardos, C. J., Papadopoulos, G. Z., Thubert, P., and F.
               Theoleyre, "RAW use-cases", Work in Progress, Internet-
               Draft, draft-ietf-raw-use-cases-05, 23 February 2022,
-              <https://tools.ietf.org/html/draft-ietf-raw-use-cases-05>.
+              <https://www.ietf.org/archive/id/draft-ietf-raw-use-cases-
+              05.txt>.
 
    [I-D.kuehlewind-update-tag]
               Kuehlewind, M. and S. Krishnan, "Definition of new tags
               for relations between RFCs", Work in Progress, Internet-
               Draft, draft-kuehlewind-update-tag-04, 12 July 2021,
-              <https://tools.ietf.org/html/draft-kuehlewind-update-tag-
-              04>.
+              <https://www.ietf.org/archive/id/draft-kuehlewind-update-
+              tag-04.txt>.
 
    [I-D.irtf-panrg-path-properties]
               Enghardt, T. and C. Krähenbühl, "A Vocabulary of Path
               Properties", Work in Progress, Internet-Draft, draft-irtf-
-              panrg-path-properties-05, 7 March 2022,
-              <https://tools.ietf.org/html/draft-irtf-panrg-path-
-              properties-05>.
+              panrg-path-properties-05, March 2022,
+              <https://www.ietf.org/archive/id/draft-irtf-panrg-path-
+              properties-05.txt>.
 
    [PCE]      IETF, "Path Computation Element",
               <https://dataTracker.ietf.org/doc/charter-ietf-pce/>.
@@ -4632,22 +4626,8 @@ Authors' Addresses
    45 Allee des Ormes - BP1200
    06254 Mougins - Sophia Antipolis
    France
-
    Phone: +33 497 23 26 34
    Email: pthubert@cisco.com
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.          Expires 5 December 2022               [Page 83]
-
-Internet-Draft               DAO Projection                    June 2022
 
 
    Rahul Arvind Jadhav
@@ -4656,13 +4636,19 @@ Internet-Draft               DAO Projection                    June 2022
    Bangalore 560037
    Karnataka
    India
-
    Phone: +91-080-49160700
    Email: rahul.ietf@gmail.com
 
 
    Michael C. Richardson
    Sandelman Software Works
+
+
+
+Thubert, et al.          Expires 22 January 2023               [Page 83]
+
+Internet-Draft               DAO Projection                    July 2022
+
 
    Email: mcr+ietf@sandelman.ca
    URI:   http://www.sandelman.ca/
@@ -4701,4 +4687,18 @@ Internet-Draft               DAO Projection                    June 2022
 
 
 
-Thubert, et al.          Expires 5 December 2022               [Page 84]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thubert, et al.          Expires 22 January 2023               [Page 84]
