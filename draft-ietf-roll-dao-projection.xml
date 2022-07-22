@@ -114,9 +114,9 @@
 <t>
    RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
    the Root often acts as the Border router to connect the RPL domain to the
-   IP backbone and routes along that graph up, towards the Root, and down
-   <!-- DB: is "routes" the verb, with the Root the subject?  -->
-   towards the nodes.
+   IP backbone. Routers inside the DODAG route along that graph up towards
+   the Root for the default route and down towards destinations in the RPL
+   domain for more specific routes.
     </t>
 <t>
    With this specification, an abstract routing function called a Path
@@ -171,6 +171,12 @@
     Available Wireless (RAW) Architecture"</xref>,
     and
     <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
+    </t>
+    <t>
+    Both architecture documents define the concept of Track in a compatible
+    fashion. The RAW Architecture also defines the concepts of subTrack, Segment,
+    leg, East-West, and more. This documents only builds Tracks that are DODAGs,
+    meaning that there is no North/South Segment.
     </t>
   </section>	<!-- end section "References" -->
 
@@ -281,14 +287,20 @@
   </t>
   </section>
   <section><name>Track</name>
-    <t>A networking graph that can be followed to transport packets with
+    <t> The concept of Track is defined in the
+    <xref target='I-D.ietf-raw-architecture'> RAW Architecture"</xref>
+    as a networking graph that can be followed to transport packets with
     equivalent treatment; as opposed to the definition of a path above,
     a Track is not necessarily linear. It may contain multiple paths that
     may fork and rejoin, and may enable the RAW Packet ARQ, Replication,
     Elimination, and Overhearing (PAREO) operations.
     </t>
-
-
+    <t><xref target='TRK'/> illustrates the mapping the DODAG with the
+    generic concept of a Track, with the DODAG Root acting a Ingress
+    for the Track, and the mapping of legs and Segments, and only East-West
+    Segments, meaning that they are directional and progressing towards the
+    destination.
+</t>
 <figure anchor='TRK'><name>A Track and its Components</name>
               <artwork align="center"><![CDATA[
 
@@ -298,7 +310,7 @@
      \              /   \              / \            External
        P ==> Q ==> R -=- T ==> U ==> V     T3         Targets
 
-      I ==> A ==> B ==> C : a segment to targets F and O
+      I ==> A ==> B ==> C : a Segment to targets F and O
 
          I --> F --> E : a leg to targets T1, T2, T3
 
@@ -306,11 +318,9 @@
 
 ]]></artwork>
 </figure>
-    <!--- DB: first occurence of "segment" in this document, same for "leg". They are not explained anywhere near this figure. -->
     <t>
     This specification builds Tracks that are DODAGs oriented towards a Track
     Ingress, and the forward direction for packets (aka East-West) is from the
-    <!--- DB: first occurence of "East" and West" in this document. They are not explained anywhere near this paragraph. -->
     Track Ingress to one of the possibly multiple Track Egress Nodes, which is
     also down the DODAG.
     </t>
@@ -358,7 +368,6 @@
   <section><name>Leg</name>
     <t>
     An end-to-end East-West serial path. A leg can be a Serial Track by itself
-<!--- DB: "East" and West" not defined at this point. -->
     or a subTrack of a complex Track with the same Ingress and Egress Nodes.
     With this specification, a Leg is installed by the Root of the main
     DODAG using a Non-Storing Mode P-DAO message, and it is expressed as a
@@ -394,7 +403,7 @@
     With this specification, a Segment is typically installed by the Root of the
     main DODAG using Storing Mode P-DAO messages. A Segment is used as
     the topological edge of a Track joining the loose steps along the Legs that
-    form the structure of a complex Track. The same segment may be leveraged by
+    form the structure of a complex Track. The same Segment may be leveraged by
     more than one Leg where the Legs overlap.
     </t> <t>
     Since this specification builds only DODAGs,
@@ -402,22 +411,21 @@
     to the general Track model in the <xref target='I-D.ietf-raw-architecture'>
     RAW Architecture</xref>, which allows North/South Segments that can be
     bidirectional as well.
-<!--- DB: Does this serve as the "East", "West", "South" and "North" definition? Or are they to be found in the Raw architecture document, and assumed already known? -->
     </t>
 
   <section><name>Section of a Segment</name>
     <t>
-    A continuous subset of a segment that may be replaced while the segment
-    remains. For instance, in segment A=>B=>C=>D=>E=>F, say that the  link C to
-    D might be misbehaving. The section B=>C=>D=>E in the segment may be
-    replaced by B=>C’=>D’=>E to route around the problem. The segment becomes
+    A continuous subset of a Segment that may be replaced while the Segment
+    remains. For instance, in Segment A=>B=>C=>D=>E=>F, say that the  link C to
+    D might be misbehaving. The section B=>C=>D=>E in the Segment may be
+    replaced by B=>C’=>D’=>E to route around the problem. The Segment becomes
     A=>B=>C’=>D’=>E=>F.
     </t>
 
   </section>
   <section><name>Segment Routing and SRH</name>
 <t>
-   The terms Segment Routing and SRH  refer to using source-routing to hop over segments. In a Non-Storing mode RPL domain, the SRH is typically a RPL Source
+   The terms Segment Routing and SRH  refer to using source-routing to hop over Segments. In a Non-Storing mode RPL domain, the SRH is typically a RPL Source
    Route Header (the IPv6 RH of type 3) as defined in <xref target='RFC6554'/>.
    </t>
    <t>
@@ -447,8 +455,7 @@
    RPL is optimized for situations where the power is scarce, the bandwidth is
    constrained and the transmissions are unreliable. This matches the use case of
    an IoT LLN where RPL is typically used today, but also situations of high relative mobility between the nodes in the network (aka swarming), e.g.,
-   within a variable set of vehicles with a similar global motion, or a toon of
-   <!-- DB: "toon" is short for cartoon, not platoon, AFAIK. I suggest to write platoon -->
+   within a variable set of vehicles with a similar global motion, or a platoon of
    drones.
 </t><t>
    To reach this goal, RPL is primarily designed to minimize the control plane
@@ -502,12 +509,12 @@
    leverages that abstraction to compute source route paths for the packets to
    their destinations down the DODAG. When a node changes its point(s)
    of attachment to the DODAG, it takes a single unicast packet to the Root along
-   the default route to update it, and the connectivity is restored immediately;
-   <!-- DB: connectivity "to the node"'. The connectity "from the node to the internet" was actually never broken. -->
+   the default route to update it, and the connectivity to the node is restored
+   immediately;
    this mode is preferable for use cases where internet connectivity is
-   dominant, or when, like here, the Root controls the network activity in the
-   <!-- DB: what does "here" refer to? -->
-   nodes.
+   dominant, or when the Root controls the network activity in the
+   nodes, which is the case of this draft.
+
 </t>
 <t>
    In Storing Mode, the routing information percolates upwards, and each
@@ -517,9 +524,8 @@
    routing stretch is reduced compared to Non-Storing MOP, for better P2P
    connectivity.  However, a new route takes a longer time to
    propagate to the Root, since it takes time for the Distance-Vector protocol to
-   operate hop-by-hop, and the Internet connectivity is restored more
-   <!-- DB: "connectivity from the internet to the node". -->
-   slowly upon node movement.
+   operate hop-by-hop, and the connectivity from the internet to the node is
+   restored more slowly upon node movement.
 </t>
 
     <t>
@@ -541,7 +547,7 @@
     I modified the text to reflect your comment, note that it is not "inside"
     it's an overlay...
     -->
-    P-Routes can be used as stand-alone segments meant to reduce the size of the
+    P-Routes can be used as stand-alone Segments meant to reduce the size of the
     source routing headers, thanks to loose source routing operations down the main RPL DODAG.
     P-Routes can also be combined with other P-Routes to form a more complex
     Track, consisting of local instances overlaid on an existing main RPL Instance.
@@ -627,10 +633,9 @@
  </t>
 
       <t>
-      This requirement is to store a routing state associated with the Main
-      <!-- DB: what does "This requirement" refer do? -->
-      DODAG in select RPL routers, in order to limit the need for source route
-      headers in deep networks. The Root may elide the sequence of routers
+      To limit the need for source route headers in deep networks, one possibility
+      is to store a routing state associated with the Main DODAG in select RPL
+      routers down the path. The Root may elide the sequence of routers
       that is installed in the network from its source route header, which therefore
       becomes loose, in contrast to being strict in <xref target="RFC6550"/>.
       </t>
@@ -644,8 +649,7 @@
       Internet access when the Root also serves as Border Router.
       All routes are installed North-South (aka up/down) along the RPL DODAG.
       Peer to Peer (P2P) East-West routes in a RPL network will generally
-      suffer elongated (stretched) paths versus direct (optimized)
-      <!-- DB: suffer vs. suffer from -->
+      experience elongated (stretched) paths versus direct (optimized)
       paths, since routing between two nodes always happens via a common
       parent, as illustrated in <xref target='stretch'/>:
         </t>
@@ -800,10 +804,8 @@
    <t>
    A Track is typically an overlay to the main instance, and is associated with
    a Local RPL Instance wherein the RPLInstanceID is used as the TrackID; the
-   source IP address and the RPI in the encasulation respectively contain the
-   <!-- DB: "in the encapsulation" is ambiguous. I guess you mean the outer, not the inner header?
-   I suggest "the encapsulating source IP address and RPI Instance are set to the Track Ingress IP address and local RPLInstanceID, respectively." -->
-   Track Ingress and the Local RPLInstanceID (more in  <xref target='trkid'/>).
+   encapsulating source IP address and RPI Instance are set to the Track Ingress
+   IP address and local RPLInstanceID, respectively (more in <xref target='trkid'/>).
    </t>
    <t>
    A Track Leg may also be used as an alternative to a Segment in the RPL main
@@ -906,8 +908,8 @@ In a general manner the desired outcome is as follows:
 
     <section anchor="usms"><name>Using Storing Mode Segments</name>
 <t>
-    A==&gt;B==&gt;C and C==&gt;D==&gt;E are segments of the same Track.
-    Note that the Storing Mode signaling imposes strict continuity in a segment, since the P-DAO is passed hop by hop, as a classical DAO is,
+    A==&gt;B==&gt;C and C==&gt;D==&gt;E are Segments of the same Track.
+    Note that the Storing Mode signaling imposes strict continuity in a Segment, since the P-DAO is passed hop by hop, as a classical DAO is,
     along the reverse datapath that it signals.
     One benefit of strict routing is that loops are avoided along the Track.
 </t>
@@ -1323,8 +1325,7 @@ As an example, say that A has a packet for F. Using the RIB above:
 As an example, say that A has a packet for F. Using the RIB above:
 </t>
 <ul>
-<li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
-<!-- DB: "encapsulates the packet and sends it down the Track signaled ..."? -->
+<li>From P-DAO 3: A encapsulates the packet and sends it down the Track signaled by P-DAO 3, with the outer header above.
 Now the packet destination is E.</li>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
 <li>From P-DAO 1: C forwards to D and D forwards to E; E decapsulates the packet.</li>
@@ -2155,8 +2156,9 @@ Legs may cross at the edges of loose hops or remain parallel.
    The Segments that join the loose hops of a Leg are installed with the same
    TrackID as the Leg. But each individual Leg and Segment has its own
    P-RouteID which allows it to be managed separately. When Legs cross within
-   <!-- DB: I can't figure what "When Legs cross within respective Segment" means. Rephrase or illustrate with a drawing? -->
-   respective Segment, the next loose hop (the current destination of the
+   - meaning that there is a node that belongs to a Segment from each Tracks,
+   so it may reach the destination over either leg -
+   the next loose hop (the current destination of the
    packet) indicates which Leg is being followed and a Segment that can reach
    that next loose hop is selected.
 </t>
@@ -2263,7 +2265,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 <t>
    DetNet Forwarding Nodes only understand the simple 1-to-1 forwarding
-   sublayer transport operation along a segment whereas the more sophisticated
+   sublayer transport operation along a Segment whereas the more sophisticated
    Relay nodes can also provide service sublayer functions such as Replication
    and Elimination.
 </t>
@@ -2310,15 +2312,15 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor='mraw'><name>Providing for RAW</name>
     <t>
     The <xref target='I-D.ietf-raw-architecture'>RAW Architecture</xref> extends the definition of
-    Track, as being composed of East-West directional segments and North-South
-    bidirectional segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
+    Track, as being composed of East-West directional Segments and North-South
+    bidirectional Segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
      </t>
     <t>
     The RAW Architecture defines a dataplane extension of the PCE called the Path Selection Engine (PSE), that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.  The PSE controls the forwarding operation of the packets within a Track.
     This specification can use but does not impose a PSE and does not provide
     the policies that would select which packets are routed through which
     path within a Track, in other words, how the PSE may use the path redundancy within
-    the Track. By default, the use of the available redundancy is limited to simple load balancing, and all the segments are East-West unidirectional only.
+    the Track. By default, the use of the available redundancy is limited to simple load balancing, and all the Segments are East-West unidirectional only.
     </t>
     <t>
     A Track may be set up to reduce the load around the Root, or to enable
@@ -2368,9 +2370,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     The P-DAO Request (PDR) is a new message detailed in <xref target='P-DAOreq'/>.
     As per <xref target="RFC6550" /> section 6, if a node receives this message and
     it does not understand this new Code, it then discards the message.
-    When the Root initiates to a node that it has not communicated with
-    <!-- DB: "initiates communication to a node"? -->
-    before and which it has not ascertained to implement this specification
+    When the Root initiates communication to a node that it has not communicated
+    with before and which it has not ascertained to implement this specification
     (by means such as capabilities), then the Root SHOULD request
     a PDR-ACK.
     </t>
@@ -2578,8 +2579,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
    The SIO is used by a RPL Aware Node (RAN) to advertise a selection of its
    candidate neighbors as siblings to the Root (more in <xref target='rplsib'/>).
    The SIO is placed in DAO messages that are sent directly to the Root of the
-   main DODAG.
+   main DODAG, including multicast DAO (see section 9.10 of <xref target='RFC6550'/>).
    </t>
+   <t>
+   This draft AMENDS the multicast DAO operation as follows:
+   </t>
+   <ol>
+   <li>A multicast DAO message MUST be used only to advertise information about
+   the node (using the Target Option), and direct Link Neighbors such as learned
+   by Neighbor Discovery (using the Sibling Information Option).</li>
+   <li>The multicast DAO may be used to enable direct and one-hop P2P
+   communication without needing the DODAG to relay the packets.
+   </li>
+   </ol>
 
     </section> <!-- Sibling Information Option -->
     <section anchor='extPDR'><name>P-DAO Request</name>
@@ -2653,8 +2665,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    upon a PDR message.
    </t>
    <t>
-   Section 4.1.2. of <xref target='RFC9008'/> updates
-   <!-- DB: "updates" or "Updates"? See "Amends" above -->
+   Section 4.1.2. of <xref target='RFC9008'/> Amends
    <xref target='RFC6550'/> to indicate that the definition of the Flags applies
    to Mode of Operation values from zero (0) to six (6) only.
    For a MOP value of 7, the implementation MUST consider that the Root
@@ -3042,7 +3053,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>P-RouteID:</dt><dd>8-bit field that identifies a component
                of a Track or the Main DODAG as indicated by the TrackID field.
                The value of 0 is used to signal a Serial Track, i.e., made of a
-               single segment/Leg. In an SM-VIO, the P-RouteID indicates an
+               single Segment/Leg. In an SM-VIO, the P-RouteID indicates an
                actual Segment. In an NSM-VIO, it indicates a Leg, that is a
                serial subTrack that is added to the overall topology of the
                Track.
@@ -3571,7 +3582,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      The process continues until the P-DAO is propagated to the Ingress router of
      the Segment, which answers with a DAO-ACK to the Root. The Root always
      expects a DAO-ACK, either from the Track Ingress with a positive status
-     or from any node along the segment with a negative status. If the DAO-ACK
+     or from any node along the Segment with a negative status. If the DAO-ACK
      is not received, the Root may retry the DAO with the same TID, or tear
      down the route.
     </t>
@@ -3622,7 +3633,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    order from the last that reaches to the Targets to the first.
    </t>
    <t>
-   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next segment, both already setup; the segments are associated with the same Track, which avoids the need of an additional encapsulation. For instance, in
+   If the next entry in the loose sequence is reachable over a Storing Mode P-Route, it MUST be the Target of a Segment and the Ingress of a next Segment, both already setup; the Segments are associated with the same Track, which avoids the need of an additional encapsulation. For instance, in
    <xref target="srpdao"/>, Segments A==>B-to-C and C==>D==>E-to-F must be
    installed with Storing Mode P-DAO messages 1 and 2 before the Track A-->C-->E-to-F that joins them can be installed with Non-Storing Mode P-DAO 3.
    </t>
@@ -3695,8 +3706,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <t>
     To modify a section of a Segment between a first node and a second, downstream
-    node (which can be the Ingress and Egress, respectively), while conserving those nodes
-    <!-- DB: "conserving" seems inappropriate (a French faux-ami). Do you mean "keeping"? -->
+    node (which can be the Ingress and Egress, respectively), while retaining those nodes
     in the Segment, the Root sends an SM-VIO to the second node indicating the
     sequence of nodes in the new section of the Segment. The SM-VIO indicates
     the TrackID and the P-RouteID of the Segment being updated, and a newer
@@ -3713,7 +3723,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
     <t>
     After a reasonable time to enable the deprecated sections to drain their traffic, the Root
-    tears down the remaining section(s) of the old segments as
+    tears down the remaining section(s) of the old Segments as
     described in <xref target='teardown'/>.
     </t>
     </section>  <!-- Maintaining a Track Segment -->
@@ -3731,7 +3741,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      This may also cause loops in the case of stitched Tracks: the packets that
      cannot be injected in the second Track might be routed back and reinjected
      at the Ingress of the first.
-     <!-- DB: please double-check that my rewriting matches your intention ;-) -->
+
      </t>
      <t>
      It is also possible to update a Track Leg by sending a Non-Storing Mode
@@ -3857,29 +3867,44 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </ul>
     <t>
     The forwarding of a packet along a track will fail if the Track continuity
-    is broken,e.g.:
+    is broken, e.g.:
     </t>
 
    <ul>
     <li>
-     In the case of a strict path along a Segment, if the next strict hop is not
-     reachable, the packet is dropped.
+     When forwarding along a Segment, if the next strict hop in the RIB for the
+     destination of the packet is a direct Neighbor, the packet MUST be
+     forwarded to that neighbor. Otherwise the packet MUST be dropped.
     </li>
     <li>
-      In the case of a loose source-routed path, when the loose next hop is not
-      a neighbor, there must be a Segment of the same Track to that loose next hop. When that is the case, the packet is
-      forwarded to the next hop along that segment, or a common neighbor with the
-      <!-- DB: incorrect sentence grammar. It looks like the previous edit (". When that is the case") was hasardous. -->
-      loose next hop, in which case the packet is forwarded to that neighbor, or
-      another Track to the loose next hop for which this node or a neighbor is the
-      Ingress; in the last case, another encapsulation takes place and the
-      process possibly recurses; otherwise the packet is dropped.
+    <t>
+      When forwarding along a Track, if the next hop in the source route header
+      is a direct Neighbor, the packet MUST be forwarded to that neighbor; else,
+      the packet can be forwarded in the following case:
+    </t><ol>
+        <li>
+        the previous next hop has a common Neighbor that can relay to the next
+        loose hop (e.g., learned through a SIO in a multicast DAO message,
+        see <xref target='extSIO'/>), in which case the packet MUST
+        be forwarded to that neighbor,
+        </li>
+        <li> else
+        the previous next hop is Ingress of a Segment of the same Track for
+        which the loose next hop is a target in which case the Segment MUST
+        be used,
+        </li>
+        <li> else
+        the previous next hop is Ingress of a (nested) Track to the loose
+        next hop, in which case the (nested) Track MUST be used; another
+        encapsulation takes place and the process may recurse.
+        </li>
+       </ol>
+    <t>
+      Otherwise the packet MUST be dropped to avoid loops; as an example,
+      forwarding the packet along the main DODAG is disallowed since it may
+      cause such a loop.
+     </t>
      </li>
-
-     <li>
-      When a Track Egress extracts a packet from a Track (decapsulates the packet), the destination of the inner packet must be either this node or a direct neighbor, or a Target of another Segment of the same Track for which this node is Ingress, otherwise the packet MUST be dropped.
-
-      </li>
 
     </ul>
 
@@ -3891,7 +3916,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     message <xref target='RFC4443'/> to the Root, with a new Code
     "Error in P-Route" (See <xref target='ICMPv6ErrPRoute'/>).
     The Root can then repair by updating the broken Segment and/or Tracks, and
-    in the case of a broken Segment, remove the leftover sections of the segment
+    in the case of a broken Segment, remove the leftover sections of the Segment
     using SM-VIOs with a lifetime of 0 indicating the section to one or more
     nodes being removed (See <xref target='maintain'/>).
     </t>
@@ -3935,8 +3960,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    When using <xref target='RFC8138'/> in the Main DODAG operated in Non-Storing
    Mode in a 6LoWPAN LLN, a typical packet that circulates in the Main DODAG is
    formatted as shown in <xref target='inner'/>, representing the case where
-   <!-- DB: either there is a missing part at the end of this sentence, or ", representing the case where" should be removed -->
-   :
+   an IPv6-in-IPv6 encapsulation is needed
+   (see Table 19 of  <xref target='RFC9008'/>):
 </t>
 
 <figure anchor='inner'><name>A Packet as Forwarded along the Main DODAG</name>
@@ -4239,7 +4264,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
       form the best path possible, this Profile requires the support of
       Sibling Information Option to inform the Root of additional possible hops.
       Profile 3 extends Profile 1 with additional Storing Mode P-Routes
-      that install segments that do not follow the Main DODAG.
+      that install Segments that do not follow the Main DODAG.
       If the Segment Ingress (in the SM-VIO) is the same as the IPv6 Address of
       the Track Ingress (in the projected DAO base Object), the P-DAO creates an
       implicit Track between the Segment Ingress and the Segment Egress.
@@ -4831,8 +4856,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Many thanks to Dominique Barthel and SVR Anand for their global contribution
    to 6TiSCH, RAW and this RFC, as well as text suggestions that were
    incorporated.
-   Also special thanks to Remous-Aris Koutsiamanis, Li Zhao, and Toerless Eckert
-   for their in-depth reviews,
+   Also special thanks to Remous-Aris Koutsiamanis, Li Zhao, Dominique Barthel,
+   and Toerless Eckert for their in-depth reviews,
    with many excellent suggestions that improved the readability and well as the
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC.
@@ -4863,6 +4888,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8754.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
+      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
 
     </references><references><name>Informative References</name>
 
@@ -4879,9 +4906,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8931.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8994.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9010.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9035.xml'/>
-      <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-use-cases.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.kuehlewind-update-tag.xml'/>
 
