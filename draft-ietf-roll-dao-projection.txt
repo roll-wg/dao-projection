@@ -4274,7 +4274,7 @@ Internet-Draft               DAO Projection                    July 2022
    the possible values are expressed as a 6-bit unsigned integer
    (0..63).  the registration procedure is "Standards Action" [RFC8126].
 
-   The (suggected) initial allocation is as indicated in Table 28:
+   The (suggected) initial allocation is as indicated in Table 29:
 
                +-------+-----------------------+-----------+
                | Value | Meaning               | Reference |

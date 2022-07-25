@@ -4710,7 +4710,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <t> the possible values are expressed as a 6-bit unsigned integer (0..63).
   the registration procedure is "Standards Action" <xref target='RFC8126'/>.
   </t>
-  <t> The (suggected) initial allocation is as indicated in <xref target='iana-ack-status'/>:
+  <t> The (suggected) initial allocation is as indicated in <xref target='iana-nack-status'/>:
   </t>
 
 
