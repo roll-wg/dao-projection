@@ -4386,7 +4386,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <section anchor="iana-d"><name>RPL DODAG Configuration Option Flag</name>
     <t>
     IANA is requested to assign a flag from the "DODAG Configuration Option
-    Flags for MOP 0..6" <xref target='RFC9010'/> registry as follows:
+    Flags for MOP 0..6" <xref target='RFC9010'/> registry under the heading
+    "Routing Protocol for Low Power and Lossy Networks (RPL)" as follows:
     </t>
 
    <table  anchor="nexndopt"><name>New DODAG Configuration Option Flag</name>
@@ -4402,8 +4403,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </section><!-- RPL DODAG Configuration Option Flag -->
    <section anchor='elec6lorh'><name>Elective 6LoWPAN Routing Header Type</name>
 
-   <t>  This document updates the IANA registry titled "Elective 6LoWPAN
-   Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
+   <t>
+   IANA is requested to update the "Elective 6LoWPAN Routing Header Type" registry that
+   was created for <xref target='RFC8138'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" and assign the following value:
 </t>
         <table anchor="elec6lorhtbl"><name>New Elective 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4428,8 +4430,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
    <section anchor='crit6lorh'><name>Critical 6LoWPAN Routing Header Type</name>
-   <t>  This document updates the IANA registry titled "Critical 6LoWPAN
-   Routing Header Type" that was created for <xref target='RFC8138'/>  and assigns the following value:
+   <t>
+   IANA is requested to update the "Critical 6LoWPAN Routing Header Type" registry that was created for <xref target='RFC8138'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" and assign the following value:
 </t>
         <table anchor="crit6lorhtbl"><name>New Critical 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4457,7 +4459,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    <section anchor='RPIIANA'><name>Subregistry For The RPL Option Flags</name>
     <t>
-   IANA is required to create a subregistry for the 8-bit RPL Option Flags field, as detailed in <xref target='Rpifmt'/>, under the "Routing Protocol for Low Power and Lossy Networks (RPL)" registry. The bits are indexed from 0 (leftmost) to 7. Each bit is Tracked with the following qualities:
+   IANA is requested to create a registry for the 8-bit "RPL Option Flags" field, as detailed in <xref target='Rpifmt'/>, under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4502,14 +4504,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
           <td align='left'>Projected-Route (P)</td>
 
           <td align='left'>THIS RFC</td></tr>
+
+          <tr><td align='center'>4..255</td>
+
+          <td align='left'>Unassigned</td>
+
+          <td align='left'> </td></tr>
     </tbody>
         </table>
    </section><!-- Subregistry For The RPL Option Flags -->
 
    <section anchor='RPLCtrlMsgReg'><name>RPL Control Codes</name>
 
-    <t>This document extends the IANA Subregistry created by RFC 6550 for RPL
-    Control Codes as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
+    <t> IANA is requested to update the "RPL Control Codes" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
 
 
         <table anchor="ianaRPLCtrlMsgtbl"><name>New RPL Control Codes</name>
@@ -4541,8 +4548,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    <section anchor='RPLCtrlMsgOptionsReg'><name>RPL Control Message Options</name>
 
-    <t>This document extends the IANA Subregistry created by RFC 6550 for
-    RPL Control Message Options as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
+
+    <t> IANA is requested to update the "RPL Control Message Options" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
 
 
 
@@ -4585,8 +4592,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <name>SubRegistry for the Projected DAO Request Flags</name>
 
    <t>
-   IANA is required to create a registry for the 8-bit Projected DAO Request
-   (PDR) Flags field. Each bit is Tracked with the following qualities:
+      IANA is requested to create a registry for the 8-bit "Projected DAO Request (PDR)" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
+
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4594,7 +4601,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
      <li>Reference</li>
    </ul>
 
- <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. The initial allocation is as indicated in <xref target='RPLPDRflagRegtbl'/>:
+ <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>.
+ The initial allocation is as indicated in <xref target='RPLPDRflagRegtbl'/>:
  </t>
 
         <table anchor="RPLPDRflagRegtbl"><name>Initial PDR Flags</name>
@@ -4619,6 +4627,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
           <td align='left'>Requested path should be redundant (R)</td>
 
           <td align='left'>THIS RFC</td></tr>
+          <tr><td align='center'>2..255</td>
+
+          <td align='left'>Unassigned</td>
+
+          <td align='left'></td></tr>
     </tbody>
         </table>
 
@@ -4629,8 +4642,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <name>SubRegistry for the PDR-ACK Flags</name>
 
    <t>
-   IANA is required to create an subregistry for the 8-bit PDR-ACK Flags field.
-   Each bit is Tracked with the following qualities:
+   IANA is requested to create a registry for the 8-bit "PDR-ACK Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4639,7 +4651,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </ul>
 
  <t>Registration procedure is "Standards Action" <xref target='RFC8126'/>.
-    No bit is currently defined for the PDR-ACK Flags.
+    No bit is currently assigned for the PDR-ACK Flags.
    </t>
 
    </section> <!-- SubRegistry for the PDR-ACK Flags -->
@@ -4649,23 +4661,30 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor='iana-stats-nonrej'>
 <name>Subregistry for the PDR-ACK Acceptance Status Values </name>
  <t>
-	IANA is requested to create a Subregistry for the PDR-ACK Acceptance
-    Status values.
-</t>
-<ul spacing='normal'>
-  <li> Possible values are 6-bit unsigned integers (0..63).</li>
-  <li> Registration procedure is "Standards Action" <xref target='RFC8126'/>.</li>
-  <li> Initial allocation is as indicated in <xref target='iana-ack-status'/>:</li>
-</ul>
 
+     IANA is requested to create a registry for the 8-bit "PDR-ACK Acceptance
+    Status Values" under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)".
 
+     Each value is tracked with the following qualities:
+   </t>
+   <ul>
+     <li>Value</li>
+     <li>Meaning</li>
+     <li>Reference</li>
+   </ul>
 
+<t> the possible values are expressed as a 6-bit unsigned integer (0..63).
+  the registration procedure is "Standards Action" <xref target='RFC8126'/>.
+  </t>
+  <t> The (suggected) initial allocation is as indicated in <xref target='iana-ack-status'/>:
+  </t>
 
    <table anchor='iana-ack-status'><name>Acceptance values of the PDR-ACK Status</name>
    <thead>
       <tr><td>Value</td><td>Meaning</td><td>Reference</td></tr>
    </thead><tbody>
       <tr><td>0</td><td>Unqualified Acceptance</td><td>THIS RFC</td></tr>
+      <tr><td>1..63</td><td>Unassigned</td><td></td></tr>
    </tbody>
 
    </table>
@@ -4676,15 +4695,24 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 <section anchor='iana-stats-rej'>
 <name>Subregistry for the PDR-ACK Rejection Status Values</name>
- <t>
-	IANA is requested to create a Subregistry for the PDR-ACK Rejection
-    Status values.
-</t>
-<ul spacing='normal'>
-  <li> Possible values are 6-bit unsigned integers (0..63).</li>
-  <li> Registration procedure is "Standards Action" <xref target='RFC8126'/>.</li>
-  <li> Initial allocation is as indicated in <xref target='iana-nack-status'/>:</li>
-</ul>
+
+   <t>
+    IANA is requested to create a registry for the 6-bit "PDR-ACK Rejection Status Values"
+    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)".
+     Each value is tracked with the following qualities:
+   </t>
+   <ul>
+     <li>Value</li>
+     <li>Meaning</li>
+     <li>Reference</li>
+   </ul>
+
+<t> the possible values are expressed as a 6-bit unsigned integer (0..63).
+  the registration procedure is "Standards Action" <xref target='RFC8126'/>.
+  </t>
+  <t> The (suggected) initial allocation is as indicated in <xref target='iana-ack-status'/>:
+  </t>
+
 
 
    <table anchor='iana-nack-status'><name>Rejection values of the PDR-ACK Status</name>
@@ -4693,6 +4721,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </thead><tbody>
       <tr><td>0</td><td>Unqualified Rejection</td><td>THIS RFC</td></tr>
       <tr><td>1</td><td>Transient Failure</td><td>THIS RFC</td></tr>
+      <tr><td>2..63</td><td>Unassigned</td><td></td></tr>
    </tbody>
 
    </table>
@@ -4704,9 +4733,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <section anchor='RPLVIOflagReg'>
    <name>SubRegistry for the Via Information Options Flags</name>
 
+
    <t>
-   IANA is requested to create a Subregistry for the 5-bit Via Information Options
-   (Via Information Option) Flags field. Each bit is Tracked with the following qualities:
+   IANA is requested to create a registry for the 8-bit "Via Information Options
+   (VIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4714,8 +4744,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
      <li>Reference</li>
    </ul>
 
- <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>.
-   No bit is currently defined for the Via Information Options (Via Information Option) Flags.
+ <t>Registration procedure is "Standards Action" <xref target='RFC8126'/>.
+    No bit is currently assigned for the PDR-ACK Flags.
    </t>
 
    </section> <!-- SubRegistry for the Via Information Options Flags -->
@@ -4724,15 +4754,17 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <section anchor='RPLSIOflagReg'>
    <name>SubRegistry for the Sibling Information Option Flags</name>
 
+
    <t>
-   IANA is required to create a registry for the 5-bit Sibling Information
-   Option (SIO) Flags field. Each bit is Tracked with the following qualities:
+   IANA is requested to create a registry for the 5-bit "Sibling Information
+   Option (SIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 4. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
      <li>Capability description</li>
      <li>Reference</li>
    </ul>
+
 
  <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. The initial allocation is as indicated in <xref target='RPLSIORegtbl'/>:
  </t>
@@ -4753,6 +4785,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
           <td align='left'>"S" flag: Sibling in same DODAG as Self</td>
 
           <td align='left'>THIS RFC</td></tr>
+          <tr><td align='center'>1..4</td>
+
+          <td align='left'>Unassigned</td>
+
+          <td align='left'></td></tr>
 
     </tbody>
         </table>
@@ -4765,12 +4802,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor="iana-P-DAO"><name>Destination Advertisement Object Flag</name>
 
 
-<t>
-   This document modifies the "Destination Advertisement Object (DAO) Flags"
-   registry initially
-   created in Section 20.11 of <xref target='RFC6550'/> .
-</t><t>
-  <xref target='extP-DAO'/> also defines one new entry in the Registry as follows:
+
+    <t>
+    IANA is requested to update the "Destination Advertisement Object (DAO) Flags"
+    registry created in Section 20.11 of <xref target='RFC6550'/> under the
+    heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as
+    indicated in <xref target="iana-P-DAOtbl"/>:
     </t>
 
    <table  anchor="iana-P-DAOtbl">
@@ -4786,13 +4823,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 <section anchor="iana-P-DAO-aCK"><name>Destination Advertisement Object Acknowledgment Flag</name>
 
-
-<t>
-   This document modifies the "Destination Advertisement Object (DAO) Acknowledgment Flags"
-   registry initially
-   created in Section 20.12 of <xref target='RFC6550'/> .
-</t><t>
-  <xref target='extP-DAO-ACK'/> also defines one new entry in the Registry as follows:
+    <t> IANA is requested to update the "Destination Advertisement Object (DAO) Acknowledgment Flags" registry created in Section 20.12 of <xref target='RFC6550'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="iana-P-DAO-ACKtbl"/>:
     </t>
 
    <table  anchor="iana-P-DAO-ACKtbl">
@@ -4824,9 +4855,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 <section anchor='iana-stats-rpl-rej'><name>RPL Rejection Status values </name>
- <t>
-	This specification updates the Subregistry for the "RPL Rejection Status"
-    values under the RPL registry, as follows:
+
+
+    <t> IANA is requested to update the "RPL Rejection Statuss" registry
+    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)"
+    as indicated in <xref target="iana-nack-Status"/>:
 </t>
 
    <table anchor='iana-nack-Status'><name>Rejection values of the RPL Status </name>
