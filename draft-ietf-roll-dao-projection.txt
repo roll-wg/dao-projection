@@ -144,13 +144,13 @@ Internet-Draft               DAO Projection                    July 2022
      11.1.  RPL DODAG Configuration Option Flag  . . . . . . . . . .  72
      11.2.  Elective 6LoWPAN Routing Header Type . . . . . . . . . .  73
      11.3.  Critical 6LoWPAN Routing Header Type . . . . . . . . . .  73
-     11.4.  Subregistry For The RPL Option Flags . . . . . . . . . .  74
+     11.4.  Registry For The RPL Option Flags  . . . . . . . . . . .  74
      11.5.  RPL Control Codes  . . . . . . . . . . . . . . . . . . .  74
      11.6.  RPL Control Message Options  . . . . . . . . . . . . . .  75
      11.7.  SubRegistry for the Projected DAO Request Flags  . . . .  75
      11.8.  SubRegistry for the PDR-ACK Flags  . . . . . . . . . . .  76
-     11.9.  Subregistry for the PDR-ACK Acceptance Status Values . .  76
-     11.10. Subregistry for the PDR-ACK Rejection Status Values  . .  77
+     11.9.  Registry for the PDR-ACK Acceptance Status Values  . . .  76
+     11.10. Registry for the PDR-ACK Rejection Status Values . . . .  77
      11.11. SubRegistry for the Via Information Options Flags  . . .  77
      11.12. SubRegistry for the Sibling Information Option Flags . .  78
      11.13. Destination Advertisement Object Flag  . . . . . . . . .  78
@@ -4090,7 +4090,7 @@ Thubert, et al.          Expires 26 January 2023               [Page 73]
 Internet-Draft               DAO Projection                    July 2022
 
 
-11.4.  Subregistry For The RPL Option Flags
+11.4.  Registry For The RPL Option Flags
 
    IANA is requested to create a registry for the 8-bit "RPL Option
    Flags" field, as detailed in Figure 11, under the heading "Routing
@@ -4218,7 +4218,7 @@ Internet-Draft               DAO Projection                    July 2022
    Registration procedure is "Standards Action" [RFC8126].  No bit is
    currently assigned for the PDR-ACK Flags.
 
-11.9.  Subregistry for the PDR-ACK Acceptance Status Values
+11.9.  Registry for the PDR-ACK Acceptance Status Values
 
    IANA is requested to create a registry for the 8-bit "PDR-ACK
    Acceptance Status Values" under the heading "Routing Protocol for Low
@@ -4258,7 +4258,7 @@ Thubert, et al.          Expires 26 January 2023               [Page 76]
 Internet-Draft               DAO Projection                    July 2022
 
 
-11.10.  Subregistry for the PDR-ACK Rejection Status Values
+11.10.  Registry for the PDR-ACK Rejection Status Values
 
    IANA is requested to create a registry for the 6-bit "PDR-ACK
    Rejection Status Values" under the heading "Routing Protocol for Low

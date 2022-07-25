@@ -4457,7 +4457,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 
-   <section anchor='RPIIANA'><name>Subregistry For The RPL Option Flags</name>
+   <section anchor='RPIIANA'><name>Registry For The RPL Option Flags</name>
     <t>
    IANA is requested to create a registry for the 8-bit "RPL Option Flags" field, as detailed in <xref target='Rpifmt'/>, under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
@@ -4512,7 +4512,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
           <td align='left'> </td></tr>
     </tbody>
         </table>
-   </section><!-- Subregistry For The RPL Option Flags -->
+   </section><!-- Registry For The RPL Option Flags -->
 
    <section anchor='RPLCtrlMsgReg'><name>RPL Control Codes</name>
 
@@ -4659,7 +4659,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 <section anchor='iana-stats-nonrej'>
-<name>Subregistry for the PDR-ACK Acceptance Status Values </name>
+<name>Registry for the PDR-ACK Acceptance Status Values </name>
  <t>
 
      IANA is requested to create a registry for the 8-bit "PDR-ACK Acceptance
@@ -4690,11 +4690,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </table>
 
 
-</section><!-- Subregistry for the PDR-ACK Acceptance Status Values -->
+</section><!-- Registry for the PDR-ACK Acceptance Status Values -->
 
 
 <section anchor='iana-stats-rej'>
-<name>Subregistry for the PDR-ACK Rejection Status Values</name>
+<name>Registry for the PDR-ACK Rejection Status Values</name>
 
    <t>
     IANA is requested to create a registry for the 6-bit "PDR-ACK Rejection Status Values"
@@ -4726,7 +4726,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    </table>
 
-</section><!-- Subregistry for the PDR-ACK Rejection Status Values -->
+</section><!-- Registry for the PDR-ACK Rejection Status Values -->
 
 
 
@@ -4877,7 +4877,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    </table>
 
-</section> <!-- Subregistry for RPL Rejection Status values -->
+</section> <!-- Registry for RPL Rejection Status values -->
 
 
 </section> <!-- "IANA Considerations"-->
