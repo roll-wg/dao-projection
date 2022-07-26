@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-27" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-28" >
 
 <front>
 
@@ -203,7 +203,7 @@
        <dt>RAN:</dt><dd>RPL-Aware Node (either a RPL router or a RPL-Aware Leaf)</dd>
        <dt>RAL:</dt><dd>RPL-Aware Leaf</dd>
        <dt>RH:</dt><dd>Routing Header</dd>
-       <dt>RIB:</dt><dd>Routing Information Base, aka the routing table</dd>
+       <dt>RIB:</dt><dd>Routing Information Base, aka the routing table. </dd>
        <dt>RPI:</dt><dd>RPL Packet Information</dd>
        <dt>RTO:</dt><dd>RPL Target Option</dd>
        <dt>RUL:</dt><dd>RPL-Unaware Leaf</dd>
@@ -295,8 +295,8 @@
     may fork and rejoin, and may enable the RAW Packet ARQ, Replication,
     Elimination, and Overhearing (PAREO) operations.
     </t>
-    <t><xref target='TRK'/> illustrates the mapping the DODAG with the
-    generic concept of a Track, with the DODAG Root acting a Ingress
+    <t><xref target='TRK'/> illustrates the mapping of the DODAG with the
+    generic concept of a Track, with the DODAG Root acting as Ingress
     for the Track, and the mapping of legs and Segments, and only East-West
     Segments, meaning that they are directional and progressing towards the
     destination.
@@ -472,8 +472,10 @@
     RPL instances operate as ships passing in the night, unbeknownst of one another.
     The RPL Root is responsible for selecting the RPL Instance that is used
     to forward a packet coming from the Backbone into the RPL domain and for setting
-    the related RPL information in the packets. 6TiSCH leverages RPL for its
-    distributed routing operations.
+    the related RPL information in the packets. Each Instance creates its own
+    routing table (RIB) in participating nodes, and the RIB associated to the instance must be used end to end in the RPL domain. To that effect, RPL
+    tags the packets with the Instance ID in a Hop-by-Hop extension Header.
+    6TiSCH leverages RPL for its distributed routing operations.
 </t><t>
    To reduce the routing exchanges, RPL leverages an anisotropic Distance Vector
    approach, which does not need a global knowledge of the topology, and only
@@ -550,7 +552,8 @@
     P-Routes can be used as stand-alone Segments meant to reduce the size of the
     source routing headers, thanks to loose source routing operations down the main RPL DODAG.
     P-Routes can also be combined with other P-Routes to form a more complex
-    Track, consisting of local instances overlaid on an existing main RPL Instance.
+    Track, consisting of local instances overlaid on an existing main RPL Instance, each with its own RIB that must be followed till the destination
+    is reachable directly as a neighbor, or via a Sibling.
     </t>
 
 </section>	<!-- end section "RPL Routing Modes" -->
@@ -2155,12 +2158,12 @@ Legs may cross at the edges of loose hops or remain parallel.
 </t><t>
    The Segments that join the loose hops of a Leg are installed with the same
    TrackID as the Leg. But each individual Leg and Segment has its own
-   P-RouteID which allows it to be managed separately. When Legs cross within
-   - meaning that there is a node that belongs to a Segment from each Tracks,
-   so it may reach the destination over either leg -
-   the next loose hop (the current destination of the
-   packet) indicates which Leg is being followed and a Segment that can reach
-   that next loose hop is selected.
+   P-RouteID which allows it to be managed separately. 2 Legs of the same
+   Track may cross at a common node that participates to a Segment of Each Leg.
+   In that case the common node has more than one next hop in its RIB
+   associated to the Track, but no specific signal in the packet to indicate
+   which Segment is being followed. A next hop that can reach the loose hop is
+   selected.
 </t>
 <figure anchor="FigLegs">
           <name>Segments and Tracks</name>
@@ -3889,12 +3892,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
         be forwarded to that neighbor,
         </li>
         <li> else
-        the previous next hop is Ingress of a Segment of the same Track for
-        which the loose next hop is a target in which case the Segment MUST
+        the previous next hop is the Ingress of a Segment of the same Track for
+        which the loose next hop is a target, in which case the Segment MUST
         be used,
         </li>
         <li> else
-        the previous next hop is Ingress of a (nested) Track to the loose
+        the previous next hop is the Ingress of a (nested) Track to the loose
         next hop, in which case the (nested) Track MUST be used; another
         encapsulation takes place and the process may recurse.
         </li>
