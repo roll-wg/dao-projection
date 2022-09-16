@@ -122,11 +122,14 @@
    With this specification, an abstract routing function called a Path
    Computation Element <xref target='PCE'/> (e.g., located in an central
    controller or collocated with the Root) interacts with the RPL Root to
-   compute Peer-to-Peer (P2P) paths within a pre-existing RPL Main DODAG.
-   The topological information that is passed to the PCE is derived from the
-   DODAG that is already available at the Root in RPL Non-Storing Mode. This
-   specification introduces protocol extensions that enrich the topological
-   information that is available at the Root and passed to the PCE.
+   compute Peer-to-Peer (P2P) paths within a pre-existing Main RPL Instance
+   (and associated Main DODAG) that is operated in Non-Storing Mode. In that
+   Mode of Operation (MOP), the base topological information to be passed to the
+   PCE, that is the knowledge of the MAIN DODAG, is already available at
+   the Root.
+   This specification introduces protocol extensions that enrich the topological
+   information available to the Root with sibling relationships that are usable
+   but not leveraged to form the MAIN DODAG.
     </t>
 <t>
    Based on usage, path length, and knowledge of available resources such as
@@ -136,6 +139,47 @@
    This specification also introduces protocol extensions that enable the
    Root to translate the computed paths into RPL and install them as
    Projected Routes (aka P-Routes) inside the DODAG on behalf of a PCE.
+    </t>
+<t>
+   In the simplest mode of this specification, Storing-Mode P-Routes can be
+   deployed to join the dots of a loose source routing header (SRH) in the main
+   DODAG. In that case, all the routes (source routed and P-Routes) belong to
+   the Routing Information base (RIB) associated with the main RPL Instance.
+   Storing-Mode P-Routes are referred to as Segments in this specification.
+
+    </t>
+<t>A set of P-Routes can also be projected to form a dotted-line overlay of the
+    main RPL Instance and provide Traffic Engineered paths for an application.
+   In that case, the P-Routes are installed in Non-Storing Mode and the set
+   of P-Routes is called a Track.
+   A Track is associated with its own RPL Instance, and, as any RPL Instance,
+   with its own Routing Information base (RIB). As a result, each Track defines
+   a routing topology in the RPL domain. As for the main DODAG, Segments
+   associated to the Track Instance may be deployed to join the dots using
+   Storing-Mode P-Routes.
+    </t>
+<t>
+   Routing in a multi-topology domain may cause loops unless strict rules are
+   applied. This specification defines two strict orders to ensure loop
+   avoidance when projected routes are used in a RPL domain, one between
+   forwarding methods and one between RPL Instances, seen as routing topologies.
+   The possible forwarding methods are to a direct next hop, to an indirect
+   neighbor via a common neighbor, along a Segment, and along a Track. The
+   methods are strictly ordered as listed above.
+   A forwarding method may leverage any of the lower order ones, but never one
+   with a higher order; for instance, when forwarding a packet along a Segment,
+   the router may use direct or indirect neighbors but cannot use a Track.
+   The lower order methods have a strict precedence, so the router will always
+   prefer a direct neighbor over an indirect one, or a Segment within the
+   current RPL Instance vs. another Track.
+   The second strict and partial order is between RPL Instances.
+   That order must be defined by the administrator for his RPL domain and
+   defines a DODAG of underlays with the Main Instance as Root. A RPL Instance
+   may leverage another as underlay if and only if that other Instance is higher
+   in that order, that is farther to the Main Instance in that graph; as an
+   example, a packet that is being forwarded along the Main Instance may be
+   encapsulated in any Track, but a packet that is forwarded along a Track may
+   never continue along the Main Instance.
    </t>
     </section>
 
@@ -556,6 +600,29 @@
     is reachable directly as a neighbor, or via a Sibling.
     </t>
 
+<t>
+   Routing in a multi-topology domain may cause loops unless strict rules are
+   applied. This specification defines two strict orders, between forwarding
+   methods and between Instances to ensure loop avoidance when projected
+   routes are used in a RPL domain.
+   The possible forwarding methods are to a direct next hop, to an indirect
+   neighbor via a common neighbor, along a Segment, and along a Track. The
+   methods are strictly ordered as listed above.
+   A forwarding method may leverage any of the lower order ones, but never one
+   with a higher order; for instance, when forwarding a packet along a Segment,
+   the router may use direct or indirect neighbors, but cannot use a Track.
+   The lower order methods have a strict precedence, so the router will always
+   prefer a direct neighbor over an indirect one, or a Segment within the
+   current RPL Instance vs. another Track.
+   The second strict and partial order is between RPL Instances.
+   That order must be defined by the administrator for his RPL domain and
+   defines a DODAG of underlays with the Main Instance as Root. A RPL Instance
+   may leverage another as underlay if and only if that other Instance is higher
+   in that order, that is farther to the Main Instance in that graph; as an
+   example, a packet that is being forwarded along the Main Instance may be
+   encapsulated in any Track, but a packet that is forwarded along a Track may
+   never continue along the Main Instance.
+   </t>
 </section>	<!-- end section "RPL Routing Modes" -->
 
 
@@ -2591,8 +2658,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <li>A multicast DAO message MUST be used only to advertise information about
    the node (using the Target Option), and direct Link Neighbors such as learned
    by Neighbor Discovery (using the Sibling Information Option).</li>
-   <li>The multicast DAO may be used to enable direct and one-hop P2P
-   communication without needing the DODAG to relay the packets.
+   <li>The multicast DAO may be used to enable direct and indirect (via a common
+   neighbor) P2P communication without needing the DODAG to relay the packets.
+   The multicast DAO exposes the sender's addresses as Targets in RTOs and the
+   sender's neighbors addresses as siblings in SIOs.
    </li>
    </ol>
 
