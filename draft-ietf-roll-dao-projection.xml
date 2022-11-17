@@ -3725,7 +3725,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
     </section><!-- Tearing Down a P-Route -->
 
-     <section anchor='maintain'><name> maintaining a Track</name>
+     <section anchor='maintain'><name>Maintaining a Track</name>
      <t>
      Repathing a Track Segment or Leg may cause jitter and packet misordering.
      For critical flows that require timely and/or
@@ -3743,7 +3743,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      The disabled section is removed when the packets in-flight are forwarded
      along the new section as well.
      </t>
-    <section anchor='maintainS'><name>maintaining a Track Segment</name>
+    <section anchor='maintainS'><name>Maintaining a Track Segment</name>
 
     <t>
     To modify a section of a Segment between a first node and a second, downstream
@@ -3767,9 +3767,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     tears down the remaining section(s) of the old Segments as
     described in <xref target='teardown'/>.
     </t>
-    </section>  <!-- maintaining a Track Segment -->
+    </section>  <!-- Maintaining a Track Segment -->
 
-    <section anchor='maintainT'><name>maintaining a Track Leg</name>
+    <section anchor='maintainT'><name>Maintaining a Track Leg</name>
 
      <t>This specification allows the Root to add Legs to a Track by sending
      a Non-Storing Mode P-DAO to the Ingress associated to the same TrackID,
@@ -3799,9 +3799,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     tears down those Segments as described in <xref target='teardown'/>.
     </t>
 
-    </section>  <!-- maintaining a Track Leg -->
+    </section>  <!-- Maintaining a Track Leg -->
 
-    </section> <!-- maintaining a Track -->
+    </section> <!-- Maintaining a Track -->
 
    <section anchor='routing'><name>Encapsulating and Forwarding Along a Track</name>
 
@@ -3898,8 +3898,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
      Non-Storing Mode Track MAY be placed (encapsulated) in a second Track to
      cover one loose hop of the first Track as discussed in more details <xref
      target="nssr"/>.
-     On the other hand, a Storing Mode Track must be strict and a packet that
-     it placed in a Storing Mode Track MUST follow that Track till the Track
+     On the other hand, a Storing Mode Segment must be strict and a packet that
+     it placed in a Storing Mode Segment MUST follow that Segment till the Segment
      Egress.
      </t>
 
