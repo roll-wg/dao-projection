@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-29" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-30" >
 
 <front>
 
@@ -190,7 +190,7 @@
     <t>
     Both architecture documents define the concept of Track in a compatible
     fashion. The RAW Architecture also defines the concepts of subTrack, Segment,
-    leg, East-West, and more. This documents only builds Tracks that are DODAGs,
+    lane, East-West, and more. This documents only builds Tracks that are DODAGs,
     meaning that there is no North/South Segment.
     </t>
   </section>	<!-- end section "References" -->
@@ -310,14 +310,16 @@
     may fork and rejoin, and may enable the RAW Packet ARQ, Replication,
     Elimination, and Overhearing (PAREO) operations.
     </t>
-    <t><xref target='TRK'/> illustrates the mapping of the DODAG with the
+    <t>
+    <xref target='TRK'/> illustrates the mapping of the DODAG with the
     generic concept of a Track, with the DODAG Root acting as Ingress
-    for the Track, and the mapping of legs and Segments, and only East-West
+    for the Track, and the mapping of lanes and Segments, and only East-West
     Segments, meaning that they are directional and progressing towards the
     destination.
 </t>
 <figure anchor='TRK'><name>A Track and its Components</name>
               <artwork align="center"><![CDATA[
+North East                                   North West
 
        A ==> B ==> C -=- F ==> G ==> H     T1       I: Ingress
      /              \   /              \ /          E: Egress
@@ -325,9 +327,11 @@
      \              /   \              / \            External
        P ==> Q ==> R -=- T ==> U ==> V     T3         Targets
 
+South East                                   South West
+
       I ==> A ==> B ==> C : a Segment to targets F and O
 
-         I --> F --> E : a leg to targets T1, T2, T3
+         I --> F --> E : a lane to targets T1, T2, T3
 
         I, A, B, C, F, G, H, E : a path to T1, T2, T3
 
@@ -380,31 +384,24 @@
     the other track.
     </t>
   </section>
-  <section><name>Leg</name>
-    <t>
-    An end-to-end East-West serial path. A leg can be a Serial Track by itself
-    or a subTrack of a complex Track with the same Ingress and Egress Nodes.
-    With this specification, a Leg is installed by the Root of the main
-    DODAG using a Non-Storing Mode P-DAO message, and it is expressed as a
-    loose sequence of nodes that are joined by Track Segments.
-    </t> <t>
-    <!-- COMMENT: complex Track is used but not introduced before, rather this
-         is done much later in the document.
-         AUTH: introduced it above, note that we need it to define all the
-         components below that for the complex track
-    -->
+  <section><name>Lane</name>
+    <t> The concept of lane is defined in the
+    <xref target='I-D.ietf-raw-architecture'> RAW Architecture"</xref>
+    as an end-to-end East-West serial path.
+    With this specification, a lane is installed by the Root of the main
+    DODAG using a Non-Storing Mode P-DAO message.
     </t> <t>
     As the Non-Storing Mode Via Information option (NSM-VIO) can only signal
-    sequences of nodes, it takes one Non-Storing Mode P-DAO message per Leg to
+    sequences of nodes, it takes one Non-Storing Mode P-DAO message per Lane to
     signal the structure of a complex Track.
     </t> <t>
     Each NSM-VIO for the same
-    TrackId but with a different Segment ID signals a different leg that the
+    TrackId but with a different Segment ID signals a different lane that the
     Track Ingress adds to the topology.
     </t>
   </section>
   <section><name>subTrack</name>
-    <t>A Track within a Track, formed by a non-empty set of Legs of the
+    <t>A Track within a Track, formed by a non-empty set of Lanes of the
     Track.
     <!-- COMMENT: "set" is more exact than "collection". "Collection" could mean repetitions are allowed.
          AUTH: OK
@@ -417,9 +414,9 @@
     installed.
     With this specification, a Segment is typically installed by the Root of the
     main DODAG using Storing Mode P-DAO messages. A Segment is used as
-    the topological edge of a Track joining the loose steps along the Legs that
+    the topological edge of a Track joining the loose steps along the Lanes that
     form the structure of a complex Track. The same Segment may be leveraged by
-    more than one Leg where the Legs overlap.
+    more than one Lane where the Lanes overlap.
     </t> <t>
     Since this specification builds only DODAGs,
     all Segments are oriented from Ingress (East) to Egress (West), as opposed
@@ -792,22 +789,22 @@
     </t>
 <t>
    A RPL Track is a collection of (one or more) parallel loose source routed
-   sequences of nodes ordered from Ingress to Egress, each forming a Track Leg.
+   sequences of nodes ordered from Ingress to Egress, each forming a Track Lane.
    The nodes that are directly connected, reachable via existing Tracks as
    illustrated in <xref target='nssr'/>  or joined with strict Segments of
    other nodes as shown in <xref target='srpdao'/>.
-   The Legs are expressed in RPL Non-Storing Mode and require an encapsulation
+   The Lanes are expressed in RPL Non-Storing Mode and require an encapsulation
    to add a Source Route Header, whereas the Segments are expressed in RPL
    Storing Mode.
 </t>
 <t>
    A Serial Track provides only one path between Ingress and Egress.
-   It comprises at most one Leg. A Stand-Alone Segment implicitly defines a
+   It comprises at most one Lane. A Stand-Alone Segment implicitly defines a
    Serial Track from its Ingress to Egress.
 </t>
 
 <t> A complex Track forms a graph that provides a collection of potential paths
-    to provide redundancy for the packets, either as a collection of Legs that
+    to provide redundancy for the packets, either as a collection of Lanes that
     may be parallel or cross at certain points, or as a more generic DODAG.
 </t>
 
@@ -847,13 +844,13 @@
    IP address and local RPLInstanceID, respectively (more in <xref target='trkid'/>).
    </t>
    <t>
-   A Track Leg may also be used as an alternative to a Segment in the RPL main
+   A Track Lane may also be used as an alternative to a Segment in the RPL main
    DODAG, causing an extra encapsulation to signal a source-routed path between
    loose hops in the encapsulated source routing header.
    In that case, the TrackID in the outer header remains that of the global
    RPLInstanceID of the main DODAG, which suffices to identify the routing
    topology. As opposed to local RPL instances, the Track Ingress that
-   encapsulates the packets over the Track Leg is not a Root of the instance,
+   encapsulates the packets over the Track Lane is not a Root of the instance,
    and the source address of the encapsulated packet is not used to
    determine the Track.
    </t>
@@ -866,7 +863,7 @@
 
     <section><name>Serial Track Signaling</name>
 <t>
-   This specification enables setting up a P-Route along either a Track Leg or a
+   This specification enables setting up a P-Route along either a Track Lane or a
    Segment. A P-Route is installed and maintained by the Root of the main DODAG
    using an extended RPL DAO message called a Projected DAO (P-DAO), and a Track
    is composed of the combination of one or more P-Routes.
@@ -879,13 +876,13 @@
    see <xref target='p-dao-fmt'/>.
 </t><t>
    This specification introduces the Via Information Option (VIO) to signal a sequence of hops in a
-   Leg or a Segment in the P-DAO messages, either in Storing Mode (SM-VIO) or
+   Lane or a Segment in the P-DAO messages, either in Storing Mode (SM-VIO) or
    Non-Storing Mode (NSM-VIO). One P-DAO message contains a single VIO,
    associated to one or more RPL Target Options that signal the destination
    IPv6 addresses that can reached along the Track (more in <xref target='vio'/>).
 </t>
 <t>
-   Before diving deeper into Track Legs and Segments signaling and operation,
+   Before diving deeper into Track Lanes and Segments signaling and operation,
    this section provides examples of how route projection works through
    variations of a simple example. This simple example illustrates the case of
    host routes, though RPL Targets can also be prefixes.
@@ -1128,7 +1125,7 @@ As an example, say that A has a packet for F. Using the RIB above:
    We then apply the directives for encapsulating in that case (more in <xref
    target='routing'/>).
 </t>
-<t>In this formulation, we set up the Track Leg explicitly, which creates less
+<t>In this formulation, we set up the Track Lane explicitly, which creates less
    routing state in intermediate hops at the expense of larger packets to
    accommodate source routing:</t>
 <ul>
@@ -1374,7 +1371,7 @@ Now the packet destination is E.</li>
 
     <section anchor="srpdao"><name>Segment Routing</name>
 
-<t>In this formulation Track Legs are leveraged to combine Segments and form a
+<t>In this formulation Track Lanes are leveraged to combine Segments and form a
    Graph. The packets are source routed from a Segment to the next to adapt
    the path. As such, this can be seen as a form of Segment Routing <xref target='RFC8402'/>:</t>
 
@@ -1429,7 +1426,7 @@ Now the packet destination is E.</li>
 <t>
    Note in the above that the Segment can terminate at the loose hop as used in
    the example of P-DAO 1 or at the previous hop as done with P-DAO 2.
-   Both methods are possible on any Segment joined by a loose Track Leg. P-DAO 1
+   Both methods are possible on any Segment joined by a loose Track Lane. P-DAO 1
    generates more signaling since E is the Segment Egress when D could be, but
    has the benefit that it validates that the connectivity between D and E still
    exists.
@@ -2187,15 +2184,15 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 <section anchor='concepts'><name>Complex Tracks</name>
 
 <t>To increase the reliability of the P2P transmission, this specification
-   enables building a collection of Legs between the same Ingress and Egress
+   enables building a collection of Lanes between the same Ingress and Egress
    Nodes and combining them within the same TrackID, as shown in <xref
    target="FigLegs"/>.
-Legs may cross at the edges of loose hops or remain parallel.
+Lanes may cross at the edges of loose hops or remain parallel.
 </t><t>
-   The Segments that join the loose hops of a Leg are installed with the same
-   TrackID as the Leg. But each individual Leg and Segment has its own
-   P-RouteID which allows it to be managed separately. 2 Legs of the same
-   Track may cross at a common node that participates to a Segment of Each Leg.
+   The Segments that join the loose hops of a Lane are installed with the same
+   TrackID as the Lane. But each individual Lane and Segment has its own
+   P-RouteID which allows it to be managed separately. 2 Lanes of the same
+   Track may cross at a common node that participates to a Segment of Each Lane.
    In that case the common node has more than one next hop in its RIB
    associated to the Track, but no specific signal in the packet to indicate
    which Segment is being followed. A next hop that can reach the loose hop is
@@ -2221,7 +2218,7 @@ Legs may cross at the edges of loose hops or remain parallel.
           (                                           )
   (                                                         )
                                                                   )
-  <-    Leg 1            B,                            E ->
+  <-    Lane 1            B,                            E ->
   <--- Segment 1 A,B ---> <------- Segment 2 C,D,E ------->
 
              FWD  --z  Relay --z   FWD  --z   FWD          Target 1
@@ -2236,10 +2233,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
            (F)        (G)       (H)        (J)
 
   <------ Segment 3 F,G,H ------> <---- Segment 4 J,E ---->
-  <-      Leg 2                  H,                    E ->
+  <-      Lane 2                  H,                    E ->
 
   <--- Segment 1 A,B ---> <- S5-> <---- Segment 4 J,E ---->
-  <-      Leg 3          B,      H,                    E ->
+  <-      Lane 3          B,      H,                    E ->
                                                                   )
    (
               (                                        )
@@ -2247,17 +2244,17 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </figure>
 
 <!-- COMMENT: This figure was hard for me to decode, but I don't have a particularly good improvement suggestion. The explanation below helped, but the figure is still very "noisy".
-    Maybe two tables (T1. Segments, T2. Legs) that are outside the Figure would help in cleaning it up by transferring that information to the tables. Also, what are the interspersed opening and closing parentheses representing?
+    Maybe two tables (T1. Segments, T2. Lanes) that are outside the Figure would help in cleaning it up by transferring that information to the tables. Also, what are the interspersed opening and closing parentheses representing?
     AUTH: not sure; that would be repeating and thus even heavier and prone to errors
     -->
 <t>
    Note that while this specification enables building both Segments inside a
-   Leg (aka East-West), such as Segment 2 above which is within Leg 1, and Inter-Leg Segments (aka North-South), such as Segment 2 above which joins
-   Leg 1 and Leg 2, it does not signal to the Ingress which Inter-Leg Segments
+   Lane (aka East-West), such as Segment 2 above which is within Lane 1, and Inter-Lane Segments (aka North-South), such as Segment 2 above which joins
+   Lane 1 and Lane 2, it does not signal to the Ingress which Inter-Lane Segments
    are available, so the use of North-South Segments and associated PAREO
    functions is curently limited. The only possibility available at this time
-   is to define overlapping Legs as illustrated in <xref target="FigLegs"/>,
-   with Leg 3 that is congruent with Leg 1 until node B and congruent with Leg
+   is to define overlapping Lanes as illustrated in <xref target="FigLegs"/>,
+   with Lane 3 that is congruent with Lane 1 until node B and congruent with Lane
    2 from node H on, abstracting Segment 5 as an East-West Segment.
  </t>
 
@@ -2310,7 +2307,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </t>
 <t>
    One possible mapping between DetNet and this specification
-   is to signal the Relay Nodes as the hops of a Leg and the forwarding Nodes
+   is to signal the Relay Nodes as the hops of a Lane and the forwarding Nodes
    as the hops in a Segment that join the Relay nodes as illustrated in <xref
    target="FigLegs"/>.
 </t>
@@ -2352,7 +2349,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <t>
     The <xref target='I-D.ietf-raw-architecture'>RAW Architecture</xref> extends the definition of
     Track, as being composed of East-West directional Segments and North-South
-    bidirectional Segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Legs, joined by strict routed Segments, all oriented East-West.
+    bidirectional Segments, to enable additional path diversity, using Packet ARQ, Replication, Elimination, and Overhearing (PAREO) functions over the available paths, to provide a dynamic balance between the reliability and availability requirements of the flows and the need to conserve energy and spectrum. This specification prepares for RAW by setting up the Tracks, but only forms DODAGs, which are composed  of aggregated end-to-end loose source routed Lanes, joined by strict routed Segments, all oriented East-West.
      </t>
     <t>
     The RAW Architecture defines a dataplane extension of the PCE called the Path Selection Engine (PSE), that adapts the use of the path redundancy within a Track to defeat the diverse causes of packet loss.  The PSE controls the forwarding operation of the packets within a Track.
@@ -2403,7 +2400,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     (see <xref target='extP-DAO'/>) to the Track Ingress; the P-DAO message
     contains a new Via Information Option (VIO) that installs a strict
     or a loose sequence of hops to form a Track Segment or a
-    Track Leg, respectively.
+    Track Lane, respectively.
     </t>
     <t>
     The P-DAO Request (PDR) is a new message detailed in <xref target='P-DAOreq'/>.
@@ -2597,7 +2594,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
    installs a strict hop-by-hop P-Route called a Track Segment. The other is the
    Non-Storing Mode VIO (NSM-VIO); the NSM-VIO installs a loose source-routed
-   P-Route called a Track Leg at the Track Ingress, which uses that state to
+   P-Route called a Track Lane at the Track Ingress, which uses that state to
    encapsulate a packet IPv6_in_IPv6 with a new Routing Header (RH) to the
    Track Egress (more in <xref target= 'routing'/>).
    </t>
@@ -3028,7 +3025,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      <section anchor='vio'><name>Via Information Options</name>
 
     <t>A VIO signals the ordered list of IPv6 Via Addresses that constitutes
-    the hops of either a Leg (using Non-Storing Mode) or a Segment (using Storing
+    the hops of either a Lane (using Non-Storing Mode) or a Segment (using Storing
     mode) of a Track.  A Storing Mode P-DAO contains one Storing Mode VIO
     (SM-VIO) whereas a Non-Storing Mode P-DAO contains one Non-Storing Mode VIO
     (NSM-VIO).
@@ -3094,8 +3091,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>P-RouteID:</dt><dd>8-bit field that identifies a component
                of a Track or the main DODAG as indicated by the TrackID field.
                The value of 0 is used to signal a Serial Track, i.e., made of a
-               single Segment/Leg. In an SM-VIO, the P-RouteID indicates an
-               actual Segment. In an NSM-VIO, it indicates a Leg, that is a
+               single Segment/Lane. In an SM-VIO, the P-RouteID indicates an
+               actual Segment. In an NSM-VIO, it indicates a Lane, that is a
                serial subTrack that is added to the overall topology of the
                Track.
               </dd>
@@ -3390,7 +3387,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      </t>
      <t>
      To achieve this, the Root MAY install a Segment along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
-     The Root MAY also install a Track Leg across the main DODAG to complement
+     The Root MAY also install a Track Lane across the main DODAG to complement
      the routing topology.
      </t>
      <t>
@@ -3452,10 +3449,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
  <t>
-   A Serial Track can be installed by a single P-Route that signals the sequence of consecutive nodes, either in Storing Mode as a single-Segment Track, or in Non-Storing Mode as a single-Leg Track. A single-Leg Track can be installed as a loose Non-Storing Mode P-Route, in which case the next loose entry must recursively be reached over a Serial Track.
+   A Serial Track can be installed by a single P-Route that signals the sequence of consecutive nodes, either in Storing Mode as a single-Segment Track, or in Non-Storing Mode as a single-Lane Track. A single-Lane Track can be installed as a loose Non-Storing Mode P-Route, in which case the next loose entry must recursively be reached over a Serial Track.
    </t>
    <t>
-   A Complex Track can be installed as a collection of P-Routes with the same DODAGID and Track ID. The Ingress of a Non-Storing Mode P-Route is the owner and Root of the DODAGID. The Ingress of a Storing Mode P-Route must be either the owner of the DODAGID, or a hop of a Leg of the same Track. In the latter case, the Targets of the P-Route must include the next hop of the Leg if there is one, to ensure forwarding continuity.
+   A Complex Track can be installed as a collection of P-Routes with the same DODAGID and Track ID. The Ingress of a Non-Storing Mode P-Route is the owner and Root of the DODAGID. The Ingress of a Storing Mode P-Route must be either the owner of the DODAGID, or a hop of a Lane of the same Track. In the latter case, the Targets of the P-Route must include the next hop of the Lane if there is one, to ensure forwarding continuity.
    In the case of a Complex Track, each Segment is maintained independently and
    asynchronously by the Root, with its own lifetime that may be shorter, the
    same, or longer than that of the Track.
@@ -3486,7 +3483,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
          <t>
     This draft adds a capability whereby the Root of a main RPL DODAG installs
     a Track as a collection of P-Routes, using a Projected-DAO (P-DAO) message
-    for each individual Track Leg or Segment.
+    for each individual Track Lane or Segment.
     The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a VIO.
      </t> <t>
     Like a classical DAO message, a P-DAO causes a change of state only if it is
@@ -3502,9 +3499,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     this specification, where as the latter corresponds to the variation for
     lesser constrained environments described in <xref target='bfd'/>.
     </t> <t>
-    A P-DAO that creates or updates a Track Leg MUST be sent to a GUA or a ULA
-    of the Ingress of the Leg; it must contain the full list of hops in the
-    Leg unless the Leg is being removed.
+    A P-DAO that creates or updates a Track Lane MUST be sent to a GUA or a ULA
+    of the Ingress of the Lane; it must contain the full list of hops in the
+    Lane unless the Lane is being removed.
     A P-DAO that creates a new Track Segment MUST be sent to a GUA or a ULA
     of the Segment Egress and MUST signal the full list of hops in Segment; a
     P-DAO that updates (including deletes) a section of a Segment MUST be
@@ -3522,7 +3519,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      <t>
     If the 'K' Flag is present in the P-DAO, the P-DAO must be acknowledged
     using a DAO-ACK that is sent back to the address of the Root from which the
-    P-DAO was received. In most cases, the first node of the Leg, Segment,
+    P-DAO was received. In most cases, the first node of the Lane, Segment,
     or updated section of the Segment is the node that sends the acknowledgment.
     The exception to the rule is when an intermediate node in a Segment fails
     to forward a Storing Mode P-DAO to the previous node in the SM-VIO.
@@ -3633,7 +3630,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
 
-    <section anchor='nsP-DAO'><name>Installing a Track Leg with a Non-Storing Mode P-Route</name>
+    <section anchor='nsP-DAO'><name>Installing a Track Lane with a Non-Storing Mode P-Route</name>
 
 
 
@@ -3669,7 +3666,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    Storing or Non-Storing, which implies that the nested P-Route has to be
    installed before the loose sequence is, and that P-Routes must be installed
    from the last to the first along the datapath.
-   For instance, a Segment of a Track must be installed before the Leg(s) of
+   For instance, a Segment of a Track must be installed before the Lane(s) of
    the same Track that use it, and stitched Segments must be installed in
    order from the last that reaches to the Targets to the first.
    </t>
@@ -3697,12 +3694,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
     A P-DAO with a lifetime of 0 is interpreted as a No-Path DAO and results in
     cleaning up existing state as opposed to refreshing an existing one or
     installing a new one. To tear down a Track, the Root must tear down all the
-    Track Segments and Legs that compose it one by one.
+    Track Segments and Lanes that compose it one by one.
     </t>
     <t>
-    Since the state about a Leg of a Track is located only on the Ingress Node,
-    the Root cleans up the Leg by sending an NSM-VIO to the Ingress indicating
-    the TrackID and the P-RouteID of the Leg being removed, a Segment Lifetime
+    Since the state about a Lane of a Track is located only on the Ingress Node,
+    the Root cleans up the Lane by sending an NSM-VIO to the Ingress indicating
+    the TrackID and the P-RouteID of the Lane being removed, a Segment Lifetime
     of 0 and a newer Segment Sequence. The SRH-6LoRH with the Via Addresses in
     the NSM-VIO are not needed; it SHOULD NOT be placed in the message and MUST
     be ignored by the receiver. Upon that NSM-VIO, the Ingress node removes all
@@ -3727,11 +3724,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
      <section anchor='maintain'><name>Maintaining a Track</name>
      <t>
-     Repathing a Track Segment or Leg may cause jitter and packet misordering.
+     Repathing a Track Segment or Lane may cause jitter and packet misordering.
      For critical flows that require timely and/or
      in-order delivery, it might be necessary to deploy the PAREO functions
      <xref target='I-D.ietf-raw-architecture'/> over a highly redundant Track.
-     This specification allows to use more than one Leg for a Track, and 1+N
+     This specification allows to use more than one Lane for a Track, and 1+N
      packet redundancy.
      </t>
     <t>
@@ -3769,14 +3766,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </t>
     </section>  <!-- Maintaining a Track Segment -->
 
-    <section anchor='maintainT'><name>Maintaining a Track Leg</name>
+    <section anchor='maintainT'><name>Maintaining a Track Lane</name>
 
-     <t>This specification allows the Root to add Legs to a Track by sending
+     <t>This specification allows the Root to add Lanes to a Track by sending
      a Non-Storing Mode P-DAO to the Ingress associated to the same TrackID,
-     and a new Segment ID. If the Leg is loose, then the Segments that join
-     the hops must be created first.  It makes sense to add a new Leg before
+     and a new Segment ID. If the Lane is loose, then the Segments that join
+     the hops must be created first.  It makes sense to add a new Lane before
      removing one that is becoming excessively lossy, and switch to the new
-     Leg before removing the old. Dropping a Track before the new one is
+     Lane before removing the old. Dropping a Track before the new one is
      installed would reroute the traffic via the root; this may increase the
      latency beyond acceptable thresholds, and overload the network near the root.
      This may also cause loops in the case of stitched Tracks: the packets that
@@ -3785,21 +3782,21 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
      </t>
      <t>
-     It is also possible to update a Track Leg by sending a Non-Storing Mode
+     It is also possible to update a Track Lane by sending a Non-Storing Mode
      P-DAO to the Ingress with the same Segment ID, an incremented Segment
      Sequence, and the new complete list of hops in the NSM-VIO.
-     Updating a live Leg means changing one or more of the intermediate loose
+     Updating a live Lane means changing one or more of the intermediate loose
      hops, and involves laying out new Segments from and to the new loose hops
-     before the NSM-VIO for the new Leg is issued.
+     before the NSM-VIO for the new Lane is issued.
      </t>
     <t>
-    Packets that are in flight over the old version of the Track Leg still
+    Packets that are in flight over the old version of the Track Lane still
     follow the old source route path over the old Segments.
     After a reasonable time to enable the deprecated Segments to drain their traffic, the Root
     tears down those Segments as described in <xref target='teardown'/>.
     </t>
 
-    </section>  <!-- Maintaining a Track Leg -->
+    </section>  <!-- Maintaining a Track Lane -->
 
     </section> <!-- Maintaining a Track -->
 
@@ -4045,7 +4042,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 </t>
 <t> The SRH-6LoRH is then added at the head of the resulting sequence of bytes
    as a verbatim copy of the content of the SR-VIO that signaled the selected
-   Track Leg.
+   Track Lane.
 </t>
 <figure anchor='srh6lorh'><name>The SRH 6LoRH Header</name>
               <artwork align="center">
@@ -4193,7 +4190,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <section anchor="bfd"><name>A Track as a Full DODAG</name>
 
-    <t>This specification builds parallel or crossing Track Legs as opposed
+    <t>This specification builds parallel or crossing Track Lanes as opposed
    to a more complex DODAG with interconnections at any place desirable. The
    reason for that limitation is related to constrained node operations, and the
    capability to store large amount of topological information and compute
@@ -4205,7 +4202,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </li>
    <li>The Root has a complete topological information and statistical metrics
    that allow it or its PCE to perform a global optimization of all Tracks in
-   its DODAG. Based on that information, the Root computes the Track Leg and produces the source route paths.
+   its DODAG. Based on that information, the Root computes the Track Lane and produces the source route paths.
    </li>
    <li>
    The node merely selects one of the proposed paths and applies the associated
@@ -4947,7 +4944,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <displayreference   target="I-D.ietf-raw-architecture"   to="RAW-ARCHI"/>
    <displayreference   target="I-D.ietf-raw-use-cases"   to="USE-CASES"/>
 
-    <references><name>Normative References</name>
+    <references>
+    <name>Normative References</name>
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
@@ -4965,7 +4963,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
 
-    </references><references><name>Informative References</name>
+    </references><references>
+    <name>Informative References</name>
 
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4944.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5440.xml'/>
