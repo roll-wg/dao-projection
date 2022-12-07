@@ -3404,7 +3404,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
      </t>
      <t>
      To achieve this, the main Root MAY install a Segment along a path down the
-     main DODAG, which is operated in Non-Storing Mode  This enables a loose
+     main DODAG, which is operated in Non-Storing Mode. This enables a loose
      source routing and reduces the size of the Routing Header,
      see <xref target='loose'/>.
      The main Root MAY also install a Track Lane across the main DODAG to
