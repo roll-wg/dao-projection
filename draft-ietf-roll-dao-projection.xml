@@ -117,16 +117,18 @@
    IP backbone. Routers inside the DODAG route along that graph up towards
    the Root for the default route and down towards destinations in the RPL
    domain for more specific routes.
+   This specification expects as a pre-requisite a pre-existing RPL Instance
+   with an associated DODAG and RPL Root, which are referred to as main Instance,
+   main DODAG and main Root respectively. The main Instance is operated in RPL
+   Non-Storing Mode of Operation (MOP).
     </t>
 <t>
    With this specification, an abstract routing function called a Path
    Computation Element <xref target='PCE'/> (e.g., located in an central
-   controller or collocated with the Root) interacts with the RPL Root to
-   compute Peer-to-Peer (P2P) paths within a pre-existing main RPL Instance
-   (and associated main DODAG) that is operated in Non-Storing Mode. In that
-   Mode of Operation (MOP), the base topological information to be passed to the
-   PCE, that is the knowledge of the main DODAG, is already available at
-   the Root.
+   controller or collocated with the main Root) interacts with the main Root to
+   compute Peer-to-Peer (P2P) paths within the main Instance. In Non-Storing
+   Mode, the base topological information to be passed to the PCE, that is the
+   knowledge of the main DODAG, is already available at the Root.
    This specification introduces protocol extensions that enrich the topological
    information available to the Root with sibling relationships that are usable
    but not leveraged to form the main DODAG.
@@ -150,7 +152,7 @@
     main RPL DODAG.
     P-Routes can also be combined with other P-Routes to form a Track signaled as
     a local RPL Instance, and that provides underlay shortcuts in an existing
-    main RPL Instance, each with its own RIB.
+    main Instance, each with its own RIB.
     </t>
     </section>
 
@@ -186,12 +188,33 @@
     Available Wireless (RAW) Architecture"</xref>,
     and
     <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
+
+    Both architecture documents define the concept of Track in a compatible
+    fashion. This documents only builds Tracks that are DODAGs, meaning that all
+    links are oriented From Ingress to Egress.
+    This specification also utilizes the terms Segment and Lane that are also
+    defined in the RAW Architecture.
     </t>
     <t>
-    Both architecture documents define the concept of Track in a compatible
-    fashion. The RAW Architecture also defines the concepts of subTrack, Segment,
-    lane, East-West, and more. This documents only builds Tracks that are DODAGs,
-    meaning that there is no North/South Segment.
+    As opposed to routing trees, RPL DODAGs are typically constructed
+    to provide redundancy and dynamically adapt the forwarding operation to the
+    state of the LLN links. Note that the plain forwarding operation over DODAGs
+    does not provide redundancy for all nodes, since at least the node nearest
+    to the Root does not have an alternate feasible successor.
+    </t>
+    <t>
+    RAW solves that problem by defining Protection Paths that can be fully
+    non-congruent and can be activated dynamically upon failures. This requires
+    additional control to take the routing decision early enough along the Track
+    to route around the failure.
+    </t>
+    <t>
+    RAW only uses single-ended DODAGs, meaning that they can be reversed in
+    another DODAG by reversing all the links. The Ingress of the Track is the
+    Root of the DODAG, whereas the Egress is the Root of the reversed DODAG.
+    From the RAW perspective, single-ended DODAGs are special Tracks that only
+    have East-West links, and that can be leveraged to provide Protection
+    services by defining destination-oriented Protection Paths within the DODAG.
     </t>
   </section>	<!-- end section "References" -->
 
@@ -313,7 +336,7 @@
     <t>
     <xref target='TRK'/> illustrates the mapping of the DODAG with the
     generic concept of a Track, with the DODAG Root acting as Ingress
-    for the Track, and the mapping of lanes and Segments, and only East-West
+    for the Track, and the mapping of Lanes and Segments, and only East-West
     Segments, meaning that they are directional and progressing towards the
     destination.
 </t>
@@ -331,7 +354,7 @@ South East                                   South West
 
       I ==> A ==> B ==> C : a Segment to targets F and O
 
-         I --> F --> E : a lane to targets T1, T2, T3
+         I --> F --> E : a Lane to targets T1, T2, T3
 
         I, A, B, C, F, G, H, E : a path to T1, T2, T3
 
@@ -371,10 +394,12 @@ South East                                   South West
     <t>A Track that can be traversed via more than one path (e.g., a DODAG).
     </t>
   </section>
-  <section><name>Stand-Alone Track</name>
+  <section><name>Stand-Alone</name>
     <t>
-    A single P-DAO that fully defines a Track, e.g., a Serial Track installed
-    with a single Storing Mode Via Information option (SM-VIO).
+    Refers to a Segment or a Lane that is installed with a single P-DAO and
+    fully defines a Serial Track, e.g., a Stand-Alone Segment installed
+    with a single Storing Mode Via Information option (SM-VIO) all the way
+    between Ingress and Egress.
     </t>
   </section>
   <section><name>Stitching</name>
@@ -385,10 +410,10 @@ South East                                   South West
     </t>
   </section>
   <section><name>Lane</name>
-    <t> The concept of lane is defined in the
+    <t> The concept of Lane is defined in the
     <xref target='I-D.ietf-raw-architecture'> RAW Architecture"</xref>
     as an end-to-end East-West serial path.
-    With this specification, a lane is installed by the Root of the main
+    With this specification, a Lane is installed by the Root of the main
     DODAG using a Non-Storing Mode P-DAO message.
     </t> <t>
     As the Non-Storing Mode Via Information option (NSM-VIO) can only signal
@@ -396,16 +421,8 @@ South East                                   South West
     signal the structure of a complex Track.
     </t> <t>
     Each NSM-VIO for the same
-    TrackId but with a different Segment ID signals a different lane that the
+    TrackId but with a different Segment ID signals a different Lane that the
     Track Ingress adds to the topology.
-    </t>
-  </section>
-  <section><name>subTrack</name>
-    <t>A Track within a Track, formed by a non-empty set of Lanes of the
-    Track.
-    <!-- COMMENT: "set" is more exact than "collection". "Collection" could mean repetitions are allowed.
-         AUTH: OK
-     -->
     </t>
   </section>
   <section><name>Segment</name>
@@ -552,12 +569,12 @@ South East                                   South West
    In the simplest mode of this specification, Storing-Mode P-Routes can be
    deployed to join the dots of a loose source routing header (SRH) in the main
    DODAG. In that case, all the routes (source routed and P-Routes) belong to
-   the Routing Information base (RIB) associated with the main RPL Instance.
+   the Routing Information base (RIB) associated with the main Instance.
    Storing-Mode P-Routes are referred to as Segments in this specification.
 
     </t>
 <t>A set of P-Routes can also be projected to form a dotted-line underlay of the
-    main RPL Instance and provide Traffic Engineered paths for an application.
+    main Instance and provide Traffic Engineered paths for an application.
    In that case, the P-Routes are installed in Non-Storing Mode and the set
    of P-Routes is called a Track.
    A Track is associated with its own RPL Instance, and, as any RPL Instance,
@@ -838,13 +855,13 @@ South East                                   South West
  </artwork>
 </figure>
    <t>
-   A Track typically forms an underlay to the main instance, and is associated with
+   A Track typically forms an underlay to the main Instance, and is associated with
    a Local RPL Instance wherein the RPLInstanceID is used as the TrackID; the
    encapsulating source IP address and RPI Instance are set to the Track Ingress
    IP address and local RPLInstanceID, respectively (more in <xref target='trkid'/>).
    </t>
    <t>
-   A Track Lane may also be used as an alternative to a Segment in the RPL main
+   A Track Lane may also be used as an alternative to a Segment in the main
    DODAG, causing an extra encapsulation to signal a source-routed path between
    loose hops in the encapsulated source routing header.
    In that case, the TrackID in the outer header remains that of the global
@@ -2265,7 +2282,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 <section anchor='mtsch'><name>External Dependencies</name>
 <t>
-    This specification expects that the RPL main DODAG is operated in RPL
+    This specification expects that the main DODAG is operated in RPL
     Non-Storing Mode to sustain the exchanges with the Root. Based on its
     comprehensive knowledge of the parent-child relationship, the Root can form
     an abstracted view of the whole DODAG topology. This document adds the
@@ -2614,8 +2631,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    (SIO).
    The SIO is used by a RPL Aware Node (RAN) to advertise a selection of its
    candidate neighbors as siblings to the Root (more in <xref target='rplsib'/>).
-   The SIO is placed in DAO messages that are sent directly to the Root of the
-   main DODAG, including multicast DAO (see section 9.10 of <xref target='RFC6550'/>).
+   The SIO is placed in DAO messages that are sent directly to the main Root,
+   including multicast DAO (see section 9.10 of <xref target='RFC6550'/>).
    </t>
    <t>
    This draft AMENDS the multicast DAO operation as follows:
@@ -2656,8 +2673,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     <dl>
        <dt> Projected-Route 'P':</dt><dd> 1-bit flag. It is set to 1 in the RPI
        that is added in the encapsulation when a packet is sent over a Track.
-       It is set to 0 when a packet is forwarded along the main Track,
-       including when the packet follows a Segment that joins loose hops
+       It is set to 0 when a packet is forwarded along the main DODAG (as a
+       Track), including when the packet follows a Segment that joins loose hops
        of the main DODAG. The flag is not mutable en-route.</dd>
     </dl>
     <t>The encoding of the 'P' flag in native format is shown in <xref target='ext6553'/> while the compressed format is indicated in <xref target='ext8138'/>.
@@ -3093,7 +3110,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
                The value of 0 is used to signal a Serial Track, i.e., made of a
                single Segment/Lane. In an SM-VIO, the P-RouteID indicates an
                actual Segment. In an NSM-VIO, it indicates a Lane, that is a
-               serial subTrack that is added to the overall topology of the
+               serial Track that is added to the overall topology of the
                Track.
               </dd>
 
@@ -3382,29 +3399,33 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <ul spacing='normal'>
      <li>
      <t>
-     The Root MAY use P-DAO messages to add better routes in the main (Global)
-     RPL Instance in conformance with the routing objectives in that Instance.
+     The main Root MAY use P-DAO messages to add better routes in the main
+     Instance in conformance with the routing objectives in that Instance.
      </t>
      <t>
-     To achieve this, the Root MAY install a Segment along a path down the main Non-Storing Mode DODAG. This enables a loose source routing and reduces the size of the Routing Header, see <xref target='loose'/>.
-     The Root MAY also install a Track Lane across the main DODAG to complement
-     the routing topology.
+     To achieve this, the main Root MAY install a Segment along a path down the
+     main DODAG, which is operated in Non-Storing Mode  This enables a loose
+     source routing and reduces the size of the Routing Header,
+     see <xref target='loose'/>.
+     The main Root MAY also install a Track Lane across the main DODAG to
+     complement the routing topology.
      </t>
      <t>
-     When adding a P-Route to the RPL main DODAG, the Root MUST set the
+     When adding a P-Route to the RPL main DODAG, the main Root MUST set the
      RPLInstanceID field of the P-DAO Base Object (see section 6.4.1. of <xref
      target='RFC6550'/>) to the RPLInstanceID of the main DODAG, and MUST NOT
      use the DODAGID field. A P-Route provides a longer match to the Target
-     Address than the default route via the Root, so it is preferred.
+     Address than the default route via the main Root, so it is preferred.
      </t>
      </li>
      <li>
      <t>
-     The Root MAY also use P-DAO messages to install a Track as an independent
-     routing topology (say, Traffic Engineered) to achieve particular routing
-     characteristics from an Ingress to Egress Endpoints. To achieve
-     this, the Root MUST set up a local RPL Instance (see section 5 of <xref
-     target='RFC6550'/>), and the Local RPLInstanceID serves as the TrackID.
+     The main Root MAY also use P-DAO messages to install a Track as an
+     independent routing topology (say, Traffic Engineered) to achieve
+     particular routing characteristics from an Ingress to Egress Endpoints.
+     To achieve this, the main Root MUST set up a local RPL Instance (see
+     section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID serves
+     as the TrackID.
      The TrackID MUST be unique for the IPv6 ULA or GUA of the Track Ingress that serves as DODAGID for the Track.
      </t>
      <t>
@@ -3428,13 +3449,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
      assigning the TrackIDs for the Tracks it creates.
     </t>
      <t>
-     With this specification, the Root is aware of all the active Tracks, so it
-     can also pick any unused value to form Tracks without a PDR. To avoid a
-     collision of the Root and the Track Ingress picking the same value at the
-     same time, it is RECOMMENDED that the Track Ingress starts allocating the
-     ID value of the Local RPLInstanceID (see section 5.1. of <xref target=
-     'RFC6550'/>) used as TrackIDs with the value 0 incrementing, while the Root
-     starts with 63 decrementing.
+     With this specification, the main Root is aware of all the active Tracks,
+     so it can also pick any unused value to form Tracks without a PDR. To avoid
+     a collision of the main Root and the Track Ingress picking the same value
+     at the same time, it is RECOMMENDED that the Track Ingress starts
+     allocating the ID value of the Local RPLInstanceID (see section 5.1. of
+     <xref target='RFC6550'/>) used as TrackIDs with the value 0 incrementing,
+     while the Root starts with 63 decrementing.
      </t>
 
      </li>
@@ -3481,7 +3502,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
      <section anchor='trkpdao'><name>Signaling a Projected Route</name>
          <t>
-    This draft adds a capability whereby the Root of a main RPL DODAG installs
+    This draft adds a capability whereby the Root of a main DODAG installs
     a Track as a collection of P-Routes, using a Projected-DAO (P-DAO) message
     for each individual Track Lane or Segment.
     The P-DAO signals a collection of Targets in the RPL Target Option(s) (RTO). Those Targets can be reached via a sequence of routers indicated in a VIO.
@@ -3547,7 +3568,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    <t>As illustrated in <xref target='sdf'/>, a Storing Mode P-DAO installs a
    route along the Segment signaled by the SM-VIO towards the Targets indicated in the Target Options.
    The Segment is to be included in a DODAG indicated by the P-DAO Base Object,
-   that may be the one formed by the RPL main DODAG, or a Track associated
+   that may be the one formed by the main DODAG, or a Track associated
    with a local RPL Instance.
    </t>
 
@@ -3811,7 +3832,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
 
     <t>
-     All properties of a Track operations are inherited form the main RPL
+     All properties of a Track operations are inherited form the main
      Instance that is used to install the Track. For instance, the use of
      compression per <xref target='RFC8138'/> is determined by whether it is
      used in the RPL main DODAG, e.g., by setting the "T" flag <xref target=
@@ -4255,7 +4276,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     This section describes profiles that enable implementing only a portion
     of this specification to meet a particular use case.
     </t><t>
-    Profiles 0 to 2 operate in the main RPL Instance and do not require the
+    Profiles 0 to 2 operate in the main Instance and do not require the
     support of local RPL Instances or the indication of the RPL Instance in the
     data plane. Profile 3 and above leverage Local RPL Instances to build
     arbitrary Tracks Rooted at the Track Ingress and using its namespace for
@@ -4294,7 +4315,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
       the loose source routing hops.
       In that case, the Tracks MUST be installed as subTracks of the main DODAG,
       <!-- DB: not sure what "In that case," refers to. Do you mean "With Profile 2,? -->
-      the main RPL Instance MUST be used as TrackID. Note that the Ingress node
+      the main Instance MUST be used as TrackID. Note that the Ingress node
       encapsulates but is not the Root, as it does not own the DODAGID.
     </dd>
     <dt> Profile 3 </dt><dd>
