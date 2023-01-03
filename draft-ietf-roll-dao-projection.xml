@@ -150,8 +150,8 @@
     P-Routes can be used as stand-alone Segments meant to reduce the size of the
     source routing headers, leveraging loose source routing operations down the
     main RPL DODAG.
-    P-Routes can also be combined with other P-Routes to form a Track signaled as
-    a local RPL Instance, and that provides underlay shortcuts in an existing
+    P-Routes can also be combined with other P-Routes to form a Track signaled
+    as a RPL Instance, and that provides underlay shortcuts in an existing
     main Instance, each with its own RIB.
     </t>
     </section>
@@ -371,23 +371,25 @@ South East                                   South West
     </t>
   <section><name>TrackID</name>
     <t>
-    A RPL Local InstanceID that identifies a Track using the namespace owned by
-    the Track Ingress. The TrackID is associated with the IPv6 Address of the
-    Track Ingress that is used as DODAGID, and together they form a unique
-    identification of the Track
+    A RPL InstanceID (typically of a Local Instance) that identifies a Track
+    using the namespace owned by the Track Ingress. For Local Instances,
+    the TrackID is associated with the IPv6 Address of the Track Ingress that is
+    used as DODAGID, and together they form a unique identification of the Track
     (see the definition of DODAGID in section 2 of <xref target='RFC6550'/>.
     </t>
   </section>
   <section><name>Namespace</name>
   <t>
-    The term namespace is used to refer to the scope of the TrackID. The TrackID
-    is locally significant within its namespace. The namespace is identified by
-    the DODAGID for the Track. The tuple (DODAGID, TrackID) is globally unique.
+    The term namespace is used to refer to the scope of the TrackID.
+    The TrackID is locally significant within its namespace.
+    For Local Instances, the namespace is identified by the DODAGID for the
+    Track and the tuple (DODAGID, TrackID) is globally unique. For Global
+    Instances, the namespace is the whole RPL domain.
     </t>
 
   </section>
   <section><name>Serial Track</name>
-    <t>A Track that has only one path.
+    <t>A Track that has only one path from Ingress to Egress.
     </t>
   </section>
   <section><name>Complex Track</name>
@@ -414,7 +416,8 @@ South East                                   South West
     <xref target='I-D.ietf-raw-architecture'> RAW Architecture"</xref>
     as an end-to-end East-West serial path.
     With this specification, a Lane is installed by the Root of the main
-    DODAG using a Non-Storing Mode P-DAO message.
+    DODAG using a Non-Storing Mode P-DAO message, e.g.,
+    I --> F --> E in <xref target="TRK"/>.
     </t> <t>
     As the Non-Storing Mode Via Information option (NSM-VIO) can only signal
     sequences of nodes, it takes one Non-Storing Mode P-DAO message per Lane to
@@ -428,7 +431,8 @@ South East                                   South West
   <section><name>Segment</name>
     <t>
     A serial path formed by a strict sequence of nodes, along which a P-Route is
-    installed.
+    installed, e.g.,
+    I ==> A ==> B ==> C in <xref target="TRK"/>.
     With this specification, a Segment is typically installed by the Root of the
     main DODAG using Storing Mode P-DAO messages. A Segment is used as
     the topological edge of a Track joining the loose steps along the Lanes that
@@ -831,20 +835,16 @@ South East                                   South West
 
    <t>
    Section 5.1. of <xref target='RFC6550'/> describes the RPL Instance and
-   its encoding. There can be up to 128 global RPL Instances, for which there
+   its encoding. There can be up to 128 Global RPL Instances, for which there
    can be one or more DODAGs, and there can be 64 local RPL Instances, with a
    namespace that is indexed by a DODAGID, where the DODAGID is a Unique Local
    Address (ULA) or a Global Unicast Address (GUA) of the Root of the DODAG.
    Bit 0 (most significant) is set to 1 to signal a Local RPLInstanceID, as
    shown in <xref target='rpid'/>. By extension, this specification expresses
    the value of the RPLInstanceID as a single integer between 128 and 191,
-   representing both the Local RPLInstanceID in 0..63 and Bit 0 set.
-       <!--
-       COMMENT: I understand this, but I'm not sure why exactly this is useful, yet.
-       AUTH: timely again that's exactly what the next sentence is about;
-       I added a snippet to clarify.       -->
-
-    </t>
+   representing both the Local RPLInstanceID in 0..63 in the rightmost bits
+   and Bit 0 set.
+   </t>
 
 <figure anchor='rpid'><name>Local RPLInstanceID Encoding</name>
               <artwork align="center">
@@ -855,10 +855,11 @@ South East                                   South West
  </artwork>
 </figure>
    <t>
-   A Track typically forms an underlay to the main Instance, and is associated with
-   a Local RPL Instance wherein the RPLInstanceID is used as the TrackID; the
-   encapsulating source IP address and RPI Instance are set to the Track Ingress
-   IP address and local RPLInstanceID, respectively (more in <xref target='trkid'/>).
+   A Track typically forms an underlay to the main Instance, and is associated
+   with a Local RPL Instance wherein the RPLInstanceID is used as the TrackID;
+   the encapsulating source IP address and RPI Instance are set to the Track
+   Ingress IP address and local RPLInstanceID, respectively, more in
+   <xref target='trkid'/>.
    </t>
    <t>
    A Track Lane may also be used as an alternative to a Segment in the main
@@ -896,7 +897,7 @@ South East                                   South West
    Lane or a Segment in the P-DAO messages, either in Storing Mode (SM-VIO) or
    Non-Storing Mode (NSM-VIO). One P-DAO message contains a single VIO,
    associated to one or more RPL Target Options that signal the destination
-   IPv6 addresses that can reached along the Track (more in <xref target='vio'/>).
+   IPv6 addresses that can reached along the Track (more in <xref target='viof'/>).
 </t>
 <t>
    Before diving deeper into Track Lanes and Segments signaling and operation,
@@ -1950,7 +1951,8 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 </ul>
 
     <t>
-    Non-Storing Mode P-DAO 1 is sent to C and Non-Storing Mode P-DAO 2 and 3 are sent A, as follows:
+    Non-Storing Mode P-DAO 1 is sent to C and Non-Storing Mode P-DAO 2 and 3 are
+    sent to A, as follows:
     </t>
 
         <table anchor="PDAOcase23"><name>P-DAO Messages</name>
@@ -2266,7 +2268,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     -->
 <t>
    Note that while this specification enables building both Segments inside a
-   Lane (aka East-West), such as Segment 2 above which is within Lane 1, and Inter-Lane Segments (aka North-South), such as Segment 2 above which joins
+   Lane (aka East-West), such as Segment 2 above which is within Lane 1,
+   and Inter-Lane Segments (aka North-South), such as Segment 5 above which joins
    Lane 1 and Lane 2, it does not signal to the Ingress which Inter-Lane Segments
    are available, so the use of North-South Segments and associated PAREO
    functions is curently limited. The only possibility available at this time
@@ -2436,9 +2439,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
     the owner the address that serves as DODAGID and authoritative for the
     associated namespace from which the TrackID is selected. In the
     context of this specification, the installed route appears as a more
-    specific route to the Track Targets, and the Track Ingress routes
+    specific route to the Track Targets, and the Track Ingress forwards
     the packets towards the Targets via the Track using the longest match as
-    usual.
+    normal.
     </t>
     <t>
     To ensure that the PDR and P-DAO messages can flow at most times,
@@ -2607,7 +2610,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
       This document Extends the CMO to create new objects called the Via
       Information Options (VIO).
       The VIOs are the multihop alternative to the TIO (more in <xref target=
-   'vio'/>).
+   'viof'/>).
    One VIO is the stateful Storing Mode VIO (SM-VIO); an SM-VIO
    installs a strict hop-by-hop P-Route called a Track Segment. The other is the
    Non-Storing Mode VIO (NSM-VIO); the NSM-VIO installs a loose source-routed
@@ -2663,7 +2666,13 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
     <section anchor='extRPI'><name>Amending the RPI</name>
          <t>
-     Sending a Packet within a RPL Local Instance requires the presence of the abstract RPL Packet Information (RPI) described in section 11.2. of <xref target='RFC6550'/> in the outer IPv6 Header chain (see <xref target='RFC9008'/>). The RPI carries a local RPLInstanceID which, in association with either the source or the destination address in the IPv6 Header, indicates the RPL Instance that the packet follows.
+     Sending a Packet within a RPL Local Instance requires the presence of the
+     abstract RPL Packet Information (RPI) described in section 11.2. of
+     <xref target='RFC6550'/> in the outer IPv6 Header chain
+     (see <xref target='RFC9008'/>).
+     The RPI carries a local RPLInstanceID which, in association with either the
+     source or the destination address in the IPv6 Header, indicates the RPL
+     Instance that the packet follows.
 
     </t>
     <t>
@@ -2780,7 +2789,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>Opt Data Len:</dt><dd> See <xref target='RFC6553'/>
               </dd>
               <dt>'O', 'R' and 'F' flags:</dt><dd> See <xref target='RFC6553'/>.
-              Those flags MUST be set to 0 by the sender and ignored by the receiver if the 'P' flag is set.
+              Those flags MUST be set to 0 by the sender and ignored by the
+              receiver if the 'P' flag is set.
               </dd>
               <dt> Projected-Route 'P':</dt><dd> 1-bit flag as defined in <xref target='extRPI'/>.
               </dd>
@@ -3039,7 +3049,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </section> <!-- New PDR-ACK Control Message -->
 
 
-     <section anchor='vio'><name>Via Information Options</name>
+     <section anchor='viof'><name>Via Information Options</name>
 
     <t>A VIO signals the ordered list of IPv6 Via Addresses that constitutes
     the hops of either a Lane (using Non-Storing Mode) or a Segment (using Storing
@@ -3063,14 +3073,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
     SRH-6LoRH Types would make the VIO globally shorter; this means that more than one SRH-6LoRH may be present.
     </t>
     <t>
-    The format of the Via Information Options is as follows:
+    The format of the Via Information Option is as follows:
     </t>
 <figure anchor='viao'><name>VIO format</name>
               <artwork align="center">
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |   Type        | Option Length |     Flags     |   P-RouteID   |
+    |  Option Type  | Option Length |     Flags     |   P-RouteID   |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |Segm. Sequence | Seg. Lifetime |        SRH-6LoRH head         |
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -3104,7 +3114,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
               the Option Length is variable, depending on the number of Via
               Addresses and the compression applied.</dd>
 
-
+               <dt>Flags:</dt><dd>8-bit field. No flag is defined in this
+               specification. The field MUST be set to 0 by the sender and
+               ignored by the receiver.</dd>
               <dt>P-RouteID:</dt><dd>8-bit field that identifies a component
                of a Track or the main DODAG as indicated by the TrackID field.
                The value of 0 is used to signal a Serial Track, i.e., made of a
@@ -3275,9 +3287,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
               <dt>Opaque:</dt><dd>MAY be used to carry information that the node
               and the Root understand, e.g., a particular representation of the
               Link properties such as a proprietary Link Quality Information
-              for packets received from the sibling. An industrial Alliance
-              that uses RPL for a particular use / environment MAY redefine the
-              use of this field to fit its needs.
+              for packets received from the sibling.
+              In some scenarios such as the case of an Industrial Alliances that
+              uses RPL for a particular use / environment, this field MAY be
+              redefined to fit the needs of that case.
+
               </dd>
 
               <dt>Compression Type:</dt><dd>3-bit unsigned integer. This is the
@@ -3423,10 +3437,11 @@ Ingress                    Segment 5                 Egress - Tgt 2
      The main Root MAY also use P-DAO messages to install a Track as an
      independent routing topology (say, Traffic Engineered) to achieve
      particular routing characteristics from an Ingress to Egress Endpoints.
-     To achieve this, the main Root MUST set up a local RPL Instance (see
+     To achieve this, the main Root MUST set up a Local RPL Instance (see
      section 5 of <xref target='RFC6550'/>), and the Local RPLInstanceID serves
      as the TrackID.
-     The TrackID MUST be unique for the IPv6 ULA or GUA of the Track Ingress that serves as DODAGID for the Track.
+     The TrackID MUST be unique for the IPv6 ULA or GUA of the Track Ingress
+     that serves as DODAGID for the Track.
      </t>
      <t>
      This way, a Track is uniquely identified by the tuple (DODAGID, TrackID)
@@ -3583,10 +3598,10 @@ Ingress                    Segment 5                 Egress - Tgt 2
            +-----+                      |     ^                   |
               |                         | DAO | ACK               |
         o    o   o    o                 |     |                   |
-    o o   o  o   o  o  o o   o          |  ^       | Projected    .
-   o  o o  o o    o   o   o  o  o       |  | DAO   | Route        .
-   o   o    o  o     o  o    o  o  o    | ^        |              .
-  o  o   o  o   o         o   o o       v | DAO    v              .
+    o o   o  o Ingress  o  o  o         |  ^       | Projected    .
+   o  o o  o    o  \\  o  o    o        |  | DAO   | Route        .
+   o   o    o  o    \\  o    o  o  o    | ^        |              .
+  o  o   o  o   o    Egress   o o       v | DAO    v              .
   o          o   LLN   o   o     o                                |
       o o   o        o     o              Loose Source Route Path |
    o       o      o    o                                          v
@@ -4804,7 +4819,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </ul>
 
  <t>Registration procedure is "Standards Action" <xref target='RFC8126'/>.
-    No bit is currently assigned for the PDR-ACK Flags.
+    No bit is currently assigned for the VIO Flags, more in <xref target="viof"/>.
    </t>
 
    </section> <!-- SubRegistry for the Via Information Options Flags -->
@@ -4825,7 +4840,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </ul>
 
 
- <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. The initial allocation is as indicated in <xref target='RPLSIORegtbl'/>:
+ <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. The initial allocation is as indicated in <xref target='RPLSIORegtbl'/>, more in <xref target="siof"/>:
  </t>
 
         <table anchor="RPLSIORegtbl"><name>Initial SIO Flags</name>
@@ -4866,7 +4881,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
     IANA is requested to update the "Destination Advertisement Object (DAO) Flags"
     registry created in Section 20.11 of <xref target='RFC6550'/> under the
     heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as
-    indicated in <xref target="iana-P-DAOtbl"/>:
+    indicated in <xref target="iana-P-DAOtbl"/>,
+    more in <xref target="extP-DAO"/>:
     </t>
 
    <table  anchor="iana-P-DAOtbl">
@@ -4882,7 +4898,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 <section anchor="iana-P-DAO-aCK"><name>Destination Advertisement Object Acknowledgment Flag</name>
 
-    <t> IANA is requested to update the "Destination Advertisement Object (DAO) Acknowledgment Flags" registry created in Section 20.12 of <xref target='RFC6550'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="iana-P-DAO-ACKtbl"/>:
+    <t> IANA is requested to update the "Destination Advertisement Object (DAO) Acknowledgment Flags" registry created in Section 20.12 of <xref target='RFC6550'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="iana-P-DAO-ACKtbl"/>,
+    more in <xref target='extP-DAO-ACK'/>:
     </t>
 
    <table  anchor="iana-P-DAO-ACKtbl">
