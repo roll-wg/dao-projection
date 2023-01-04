@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-31" >
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-32" >
 
 <front>
 
@@ -4479,7 +4479,9 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    <t>
    IANA is requested to update the "Elective 6LoWPAN Routing Header Type" registry that
-   was created for <xref target='RFC8138'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" and assign the following value:
+   was created for <xref target='RFC8138'/> under the heading
+   "Elective 6LoWPAN Routing Header Type"  in <xref target='IANA-6LO'/>
+   and assign the following value:
 </t>
         <table anchor="elec6lorhtbl"><name>New Elective 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4505,7 +4507,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
    <section anchor='crit6lorh'><name>Critical 6LoWPAN Routing Header Type</name>
    <t>
-   IANA is requested to update the "Critical 6LoWPAN Routing Header Type" registry that was created for <xref target='RFC8138'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" and assign the following value:
+   IANA is requested to update the "Critical 6LoWPAN Routing Header Type" registry that was created for <xref target='RFC8138'/> under the heading "Critical 6LoWPAN Routing Header Type" in <xref target='IANA-6LO'/> and assign the following value:
 </t>
         <table anchor="crit6lorhtbl"><name>New Critical 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4920,12 +4922,12 @@ Ingress                    Segment 5                 Egress - Tgt 2
         <t>In some cases RPL will return an ICMPv6 error message when a
         message cannot be forwarded along a P-Route.</t>
 
-        <t>IANA has defined an ICMPv6 "Code" Fields Registry for ICMPv6
-        Message Types. ICMPv6 Message Type 1 describes "Destination Unreachable"
-        codes. This specification requires that a new code is allocated from the
-        ICMPv6 Code Fields Registry for ICMPv6 Message Type 1, for "Error in
-        P-Route", with a suggested code value of 8, to be confirmed by
-        IANA.</t>
+        <t> This specification requires that a new code is allocated from the
+        'ICMPv6 "Code" Fields' heading of the "Internet Control Message Protocol
+        version 6 (ICMPv6) Parameters" Registry for
+        "Type 1 - Destination Unreachable",
+        with a suggested code value of 9, to be confirmed by IANA to indicate an
+        "Error in P-Route".</t>
    </section> <!--"ICMPv6: Error in a P-Route" -->
 
 
@@ -4933,7 +4935,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor='iana-stats-rpl-rej'><name>RPL Rejection Status values </name>
 
 
-    <t> IANA is requested to update the "RPL Rejection Statuss" registry
+    <t> IANA is requested to update the "RPL Rejection Status" registry
     under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)"
     as indicated in <xref target="iana-nack-Status"/>:
 </t>
@@ -4988,7 +4990,6 @@ Ingress                    Segment 5                 Egress - Tgt 2
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6550.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6553.xml'/>
@@ -5004,6 +5005,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
     </references><references>
     <name>Informative References</name>
 
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4944.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5440.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6997.xml'/>
@@ -5023,9 +5025,21 @@ Ingress                    Segment 5                 Egress - Tgt 2
 
 
      <xi:include href="http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.irtf-panrg-path-properties.xml"/>
+
+
       <reference anchor='PCE' target='https://dataTracker.ietf.org/doc/charter-ietf-pce/'>
          <front>
             <title>Path Computation Element</title>
+            <author>
+               <organization>IETF</organization>
+            </author>
+            <date/>
+         </front>
+      </reference>
+
+            <reference anchor='IANA-6LO' target='https://www.iana.org/assignments/_6lowpan-parameters/_6lowpan-parameters.xhtml'>
+         <front>
+            <title>IPv6 Low Power Personal Area Network Parameters</title>
             <author>
                <organization>IETF</organization>
             </author>
