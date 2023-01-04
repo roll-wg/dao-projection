@@ -4971,7 +4971,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    and Toerless Eckert for their in-depth reviews,
    with many excellent suggestions that improved the readability and well as the
    content of the specification.
-   Many thanks to Remous-Aris Koutsiamanis for his review during WGLC.
+   Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
+   Ines Robles for her shepherding and thorough review.
   </t>
 </section>
 
