@@ -244,14 +244,15 @@ Internet-Draft               DAO Projection               September 2023
    In this document, readers will encounter terms and concepts that are
    discussed in the "Routing Protocol for Low Power and Lossy Networks"
    [RPL], the "6TiSCH Architecture" [RFC9030], the "Deterministic
-   Networking Architecture" [RFC8655], the "Reliable and Available
-   Wireless (RAW) Architecture" [RAW-ARCHI], and "Terminology in Low
-   power And Lossy Networks" [RFC7102].  Both architecture documents
-   define the concept of Track in a compatible fashion.  This documents
-   only builds Tracks that are DODAGs, meaning that all links are
-   oriented From Ingress to Egress.  This specification also utilizes
-   the terms Segment and Lane that are also defined in the RAW
-   Architecture.
+   Networking Architecture" [RFC8655], the "Using RPI Option Type,
+   Routing Header for Source Routes, and IPv6-in-IPv6 Encapsulation in
+   the RPL Data Plane" [RFC9008], the "Reliable and Available Wireless
+   (RAW) Architecture" [RAW-ARCHI], and "Terminology in Low power And
+   Lossy Networks" [RFC7102].  Both architecture documents define the
+   concept of Track in a compatible fashion.  This documents only builds
+   Tracks that are DODAGs, meaning that all links are oriented From
+   Ingress to Egress.  This specification also utilizes the terms
+   Segment and Lane that are also defined in the RAW Architecture.
 
    As opposed to routing trees, RPL DODAGs are typically constructed to
    provide redundancy and dynamically adapt the forwarding operation to
@@ -272,7 +273,6 @@ Internet-Draft               DAO Projection               September 2023
    special Tracks that only have forward links, and that can be
    leveraged to provide Protection services by defining destination-
    oriented Protection Paths within the DODAG.
-
 
 
 

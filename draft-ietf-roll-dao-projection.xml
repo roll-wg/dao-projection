@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-33" updates="6550, 6553, 8138">
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-34" updates="6550, 6553, 8138">
 
 <front>
 
@@ -165,7 +165,10 @@
     <t>
 	In this document, readers will encounter terms and concepts
 	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref>, the <xref target='RFC9030'> "6TiSCH Architecture"</xref>, the <xref target='RFC8655'>
-    "Deterministic Networking Architecture"</xref>, the <xref target='I-D.ietf-raw-architecture'>"Reliable and
+    "Deterministic Networking Architecture"</xref>, the <xref target='RFC9008'>
+    "Using RPI Option Type, Routing Header for Source Routes, and IPv6-in-IPv6
+    Encapsulation in the RPL Data Plane"</xref>,
+    the <xref target='I-D.ietf-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture"</xref>,
     and
     <xref target='RFC7102'>"Terminology in Low power And Lossy Networks"</xref>.
@@ -5067,6 +5070,8 @@ Ingress                    Segment 5                 Egress - Tgt 2
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
+   Many thanks to Sue Hares for their comments and suggestions during the IETF
+   last call and IESG review cycle.
   </t>
 </section>
 
