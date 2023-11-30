@@ -1249,7 +1249,7 @@ As an example, say that A has a packet for F. Using the RIB above:
 
 <t>
    Note in the above that E is not an implicit Target in Storing mode, so it must be added in the RTO for P-DAO 1 and 2.
-   E is not an implicit Target for P-DAO 3 either, since E is also the Next Hop.
+   E is not an implicit Target for P-DAO 3 either, since E is the only entry in the VIO.
 </t>
 
 <t>As a result the RIBs are set as follows:</t>
@@ -1326,9 +1326,7 @@ As an example, say that A has a packet for F. Using the RIB above:
     </tbody>
         </table>
 
-<t>Note in the above that the route in A to E is derived from P-DAO 2 
-that is Storing Mode and has precedence over P-DAO 3 that is Non-Storing. 
-</t>
+
         <!--
 <t>As a result the RIBs are set as follows:</t>
 
