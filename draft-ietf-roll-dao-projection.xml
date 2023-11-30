@@ -14,7 +14,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-34" updates="6550, 6553, 8138">
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-35" updates="6550, 6553, 8138">
 
 <front>
 
@@ -1278,7 +1278,7 @@ As an example, say that A has a packet for F. Using the RIB above:
               <td align='left'>P-DAO 1</td>
               <td align='left'>Neighbor</td>
               <td align='left'>(A, 129)</td></tr>
-
+ty
 
           <tr><td align='center'>C</td>
               <td align='left'>D</td>
