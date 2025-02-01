@@ -13,7 +13,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="specification-ietf-roll-dao-projection-35" updates="6550, 6553, 8138">
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-36" updates="6550, 6553, 8138">
 
 <front>
 
@@ -5119,7 +5119,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
-   Many thanks to Sue Hares for their comments and suggestions during the IETF
+   Many thanks to Sue Hares and John Scudder for their comments and suggestions during the IETF
    last call and IESG review cycle.
   </t>
 </section>

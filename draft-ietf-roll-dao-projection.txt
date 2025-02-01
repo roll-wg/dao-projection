@@ -12,7 +12,7 @@ Expires: 5 August 2025                                     M. Richardson
 
 
                   Root initiated routing state in RPL
-               specification-ietf-roll-dao-projection-35
+                   draft-ietf-roll-dao-projection-36
 
 Abstract
 
@@ -4695,9 +4695,9 @@ Internet-Draft               DAO Projection                February 2025
    that improved the readability and well as the content of the
    specification.  Many thanks to Remous-Aris Koutsiamanis for his
    review during WGLC and to Ines Robles for her shepherding and
-   thorough review.  Many thanks to Sue Hares for their comments and
-   suggestions during the IETF last call and IESG review cycle.
-
+   thorough review.  Many thanks to Sue Hares and John Scudder for their
+   comments and suggestions during the IETF last call and IESG review
+   cycle.
 
 
 
