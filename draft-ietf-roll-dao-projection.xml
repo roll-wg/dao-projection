@@ -67,7 +67,7 @@
         This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a
    RPL Root to install and maintain Projected Routes within its DODAG.
    A Projected Route is one that is computed by a central entity, such
-   as a Path Computation Engine (PCE) and installed in the routers 
+   as a Path Computation Engine (PCE) and installed in the routers that
    instantiate it, using the procedures defined here. The routes are
    installed along a selected set of nodes that may or may not include
    itself, for a chosen duration.  This potentially enables routes that 
@@ -127,17 +127,20 @@
     </t>
        <t>
     A P-Route may be installed in either Storing or Non-Storing Mode,
-    potentially resulting in hybrid situations where the Mode in which the P-Route operates
-    is different from that of the RPL main Instance.
+    potentially resulting in hybrid situations where the Mode in which 
+    the P-Route operates is different from that of the RPL main Instance.
 
     P-Routes can be used as stand-alone Segments meant to reduce the size of the
     source routing headers, leveraging loose source routing operations down the
     main RPL DODAG.
-    P-Routes can also be combined with other P-Routes to form a protection Path
-    called a Track (aka a Recovery Graph) and signaled as a RPL Instance. 
-    A Track provides underlay shortcuts in an existing main Instance.
-    The Track is represented with its own RIB, that is separate from that of
-    the main Instance, and has a higher precedence.
+    
+    A P-Route can also be used as a protection path and combined with 
+    other P-Routes to form a Recovery Graph called a Track. 
+    A Track is signaled as a separate RPL Instance that is associated with 
+    a main RPL Instance, such that the RPL routers that form the Track
+    are also members of the main DODAG.
+    The Track provides underlay shortcuts using its own RIB, that
+    is separate from the RIB of the main Instance and has a higher precedence.
     </t>
     </section>
 
@@ -170,7 +173,7 @@
 	In this document, readers will encounter terms and concepts
 	that are discussed in the <xref target='RFC6550'>"Routing Protocol for Low Power and Lossy Networks"</xref>, the <xref target='RFC9030'> "6TiSCH Architecture"</xref>, the <xref target='RFC8655'>
     "Deterministic Networking Architecture"</xref>, the <xref target='RFC9008'>
-    "Using RPI Option Type, Routing Header for Source Routes, and IPv6-in-IPv6
+    "Using RPI Option Type, Routing Header for Source Routes, and IP-in-IP
     Encapsulation in the RPL Data Plane"</xref>,
     the <xref target='I-D.ietf-raw-architecture'>"Reliable and
     Available Wireless (RAW) Architecture"</xref>,
@@ -493,7 +496,7 @@ South East                                   South West
    mobility between the nodes in the network (aka swarming), e.g.,
    within a variable set of vehicles with a similar global motion, or a platoon of
    drones. 
-   In contrast, this specification only applies when the toon has a relatively stable 
+   In contrast, this specification only applies when the platoon has a relatively stable 
    topology where the segments can be attributed a reliability and availability 
    for a certain lifetime, see <xref target='I-D.ietf-raw-architecture'/>.
 </t><t>
@@ -2707,7 +2710,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    installs a strict hop-by-hop P-Route called a Track Segment. The other is the
    Non-Storing Mode VIO (NSM-VIO); the NSM-VIO installs a loose source-routed
    P-Route called a lane at the Track Ingress, which uses that state to
-   encapsulate a packet IPv6-in-IPv6 with a new Routing Header (RH) to the
+   encapsulate a packet IP-in-IP with a new Routing Header (RH) to the
    Track Egress (more in <xref target= 'routing'/>).
    </t>
    <t>
@@ -2730,8 +2733,21 @@ Ingress                    Segment 5                 Egress - Tgt 2
    including multicast DAO (see section 9.10 of <xref target='RFC6550'/>).
    </t>
    <t>
-   This specification AMENDS the rules listed in section 9.10 of <xref target='RFC6550'/>) for the multicast DAO operation as follows:
+   This specification AMENDS rules 1 and 2 listed in section 9.10 of <xref target='RFC6550'/>) for the multicast DAO operation as follows:
    </t>
+   <t>OLD:</t>
+   <ol>
+   <li>
+      A node MAY multicast a DAO message to the link-local scope all-RPL-nodes multicast address.
+   </li>
+   
+   <li> A multicast DAO message MUST be used only to advertise
+       information about the node itself, i.e., prefixes directly
+       connected to or owned by the node, such as a multicast group that
+       the node is subscribed to or a global address owned by the node
+   </li>
+   </ol>
+   <t>NEW:</t>
    <ol>
    <li>
      A multicast DAO message MUST be used only to advertise information about
@@ -3447,18 +3463,19 @@ Ingress                    Segment 5                 Egress - Tgt 2
 <section anchor='setup'><name>RPL Network Setup</name>
 <t>
 
-   To avoid the need of Path MTU Discovery, 6LoWPAN links are normally defined
+   To avoid the need of Path MTU Discovery by 6LoWPAN end-points, 
+   6LoWPAN links are normally defined
    with a MTU of 1280 (see section 4 of <xref target='RFC4944'/>).
    Injecting packets in a Track typically involves an IP-in-IP encapsulation and
    additional IPv6 Extension Headers. This may cause fragmentation if the
-   resulting packets exceeds the MTU that is defined for the RPL domain.
+   resulting packets exceed the MTU that is defined for the RPL domain.
 </t>
  <t>
    Though fragmentation is possible in a 6LoWPAN LLN, e.g., using <xref
    target='RFC4944'/>, <xref target='RFC8930'/>, and/or <xref target='RFC8931'/>,
-   it is RECOMMENDED to allow an MTU that is larger than 1280 in the main
-   DODAG and which allows for the additional headers while exposing only 1280 to the
-   6LoWPAN Nodes.
+   it is RECOMMENDED to define an MTU that is larger than 1280 between RPL
+   routers that form the main DODAG to allow for the necessary header additions,
+   while still exposing 1280 to the 6LoWPAN end-point stacks.
 </t>
 </section><!--  RPL Network Setup -->
 <section anchor='req'><name>Requesting a Track</name>
@@ -3636,19 +3653,14 @@ Ingress                    Segment 5                 Egress - Tgt 2
     Sequence from a TIO. Also, a Segment Lifetime of 0 in a VIO indicates that the P-Route associated to the Segment is to be removed. There are two Modes
     of operation for the P-Routes, the Storing and the Non-Storing Modes.
      </t> <t>
-    A P-DAO message MUST be sent from the address of the Root that serves as
-    DODAGID for the main DODAG. It MUST contain either exactly one sequence of
-    one or more RTOs followed one VIO, or any number of sequences of one or more
-    RTOs followed by one or more TIOs. The former is the normal expression for
-    this specification, where as the latter corresponds to the variation for
-    
     A P-DAO message MUST be sent from the address of the Root that serves 
     as DODAGID for the main DODAG. It MUST contain either exactly one 
-    sequence of one or more RTOs followed by one VIO, or any number of
+    sequence of one or more RTOs followed by one VIO, or any number of 
     sequences of one or more RTOs followed by one or more TIOs. 
-    The former is the normal expression for this specification, whereas 
-    the latter corresponds to the variation for
-    less-constrained environments described in <xref target='bfd'/>.
+    The former is the normal expression for this specification, whereas
+    the latter corresponds to the variation for less-constrained
+    environments described in <xref target='bfd'/>.T
+    
     </t> <t>
     A P-DAO that creates or updates a lane MUST be sent to a GUA or a ULA
     of the Ingress of the Lane; it must contain the full list of hops in the
@@ -3970,7 +3982,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    </t>
     <t>
     The Track Ingress that places a packet in a Track encapsulates it with an
-    IP-in-IP header, a Routing Header, and an IPv6 Hop-by-Hop Option Header that
+    additional IPv6 header, a Routing Header, and an IPv6 Hop-by-Hop Option Header that
     contains the RPL Packet Information (RPI) as follows:
     </t>
     <ul>
@@ -4182,7 +4194,7 @@ Ingress                    Segment 5                 Egress - Tgt 2
    When using <xref target='RFC8138'/> in the main DODAG operated in Non-Storing
    Mode in a 6LoWPAN LLN, a typical packet that circulates in the main DODAG is
    formatted as shown in <xref target='inner'/>, representing the case where
-   an IPv6-in-IPv6 encapsulation is needed
+   an IP-in-IP encapsulation is needed
    (see Table 19 of  <xref target='RFC9008'/>):
 </t>
 

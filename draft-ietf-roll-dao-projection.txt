@@ -6,9 +6,9 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                                          
 Updates: 6550, 6553, 8138 (if approved)                      R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 5 August 2025                                     M. Richardson
+Expires: 8 August 2025                                     M. Richardson
                                                                Sandelman
-                                                         1 February 2025
+                                                         4 February 2025
 
 
                   Root initiated routing state in RPL
@@ -19,7 +19,7 @@ Abstract
    This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a
    RPL Root to install and maintain Projected Routes within its DODAG.
    A Projected Route is one that is computed by a central entity, such
-   as a Path Computation Engine (PCE) and installed in the routers
+   as a Path Computation Engine (PCE) and installed in the routers that
    instantiate it, using the procedures defined here.  The routes are
    installed along a selected set of nodes that may or may not include
    itself, for a chosen duration.  This potentially enables routes that
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 August 2025.
+   This Internet-Draft will expire on 8 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 1]
+Thubert, et al.           Expires 8 August 2025                 [Page 1]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -105,72 +105,72 @@ Table of Contents
        4.1.5.  P-DAO Request . . . . . . . . . . . . . . . . . . . .  44
        4.1.6.  Amending the RPI  . . . . . . . . . . . . . . . . . .  44
        4.1.7.  Additional Flag in the RPL DODAG Configuration
-               Option  . . . . . . . . . . . . . . . . . . . . . . .  44
+               Option  . . . . . . . . . . . . . . . . . . . . . . .  45
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 2]
+Thubert, et al.           Expires 8 August 2025                 [Page 2]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-     4.2.  Extending RFC 6553  . . . . . . . . . . . . . . . . . . .  45
-     4.3.  Extending RFC 8138  . . . . . . . . . . . . . . . . . . .  46
+     4.2.  Extending RFC 6553  . . . . . . . . . . . . . . . . . . .  46
+     4.3.  Extending RFC 8138  . . . . . . . . . . . . . . . . . . .  47
    5.  New RPL Control Messages and Options  . . . . . . . . . . . .  48
      5.1.  New P-DAO Request Control Message . . . . . . . . . . . .  48
      5.2.  New PDR-ACK Control Message . . . . . . . . . . . . . . .  49
-     5.3.  Via Information Options . . . . . . . . . . . . . . . . .  50
-     5.4.  Sibling Information Option  . . . . . . . . . . . . . . .  53
-   6.  Root Initiated Routing State  . . . . . . . . . . . . . . . .  55
-     6.1.  RPL Network Setup . . . . . . . . . . . . . . . . . . . .  55
-     6.2.  Requesting a Track  . . . . . . . . . . . . . . . . . . .  56
-     6.3.  Identifying a Track . . . . . . . . . . . . . . . . . . .  57
-     6.4.  Installing a Track  . . . . . . . . . . . . . . . . . . .  58
-       6.4.1.  Signaling a Projected Route . . . . . . . . . . . . .  59
+     5.3.  Via Information Options . . . . . . . . . . . . . . . . .  51
+     5.4.  Sibling Information Option  . . . . . . . . . . . . . . .  54
+   6.  Root Initiated Routing State  . . . . . . . . . . . . . . . .  56
+     6.1.  RPL Network Setup . . . . . . . . . . . . . . . . . . . .  56
+     6.2.  Requesting a Track  . . . . . . . . . . . . . . . . . . .  57
+     6.3.  Identifying a Track . . . . . . . . . . . . . . . . . . .  58
+     6.4.  Installing a Track  . . . . . . . . . . . . . . . . . . .  59
+       6.4.1.  Signaling a Projected Route . . . . . . . . . . . . .  60
        6.4.2.  Installing a Track Segment with a Storing Mode
-               P-Route . . . . . . . . . . . . . . . . . . . . . . .  60
-       6.4.3.  Installing a lane with a Non-Storing Mode P-Route . .  62
-     6.5.  Tearing Down a P-Route  . . . . . . . . . . . . . . . . .  64
-     6.6.  Maintaining a Track . . . . . . . . . . . . . . . . . . .  64
-       6.6.1.  Maintaining a Track Segment . . . . . . . . . . . . .  65
-       6.6.2.  Maintaining a lane  . . . . . . . . . . . . . . . . .  65
-     6.7.  Encapsulating and Forwarding Along a Track  . . . . . . .  66
-     6.8.  Compression of the RPL Artifacts  . . . . . . . . . . . .  69
-   7.  Less-Constrained Variations . . . . . . . . . . . . . . . . .  71
-     7.1.  Storing Mode main DODAG . . . . . . . . . . . . . . . . .  71
-     7.2.  A Track as a Full DODAG . . . . . . . . . . . . . . . . .  73
-   8.  Profiles  . . . . . . . . . . . . . . . . . . . . . . . . . .  74
-   9.  Backwards Compatibility . . . . . . . . . . . . . . . . . . .  76
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .  76
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  77
-     11.1.  RPL DODAG Configuration Option Flag  . . . . . . . . . .  77
-     11.2.  Elective 6LoWPAN Routing Header Type . . . . . . . . . .  77
-     11.3.  Critical 6LoWPAN Routing Header Type . . . . . . . . . .  78
-     11.4.  Registry For The RPL Option Flags  . . . . . . . . . . .  78
-     11.5.  RPL Control Codes  . . . . . . . . . . . . . . . . . . .  79
-     11.6.  RPL Control Message Options  . . . . . . . . . . . . . .  79
-     11.7.  SubRegistry for the Projected DAO Request Flags  . . . .  80
-     11.8.  SubRegistry for the PDR-ACK Flags  . . . . . . . . . . .  80
-     11.9.  Registry for the PDR-ACK Acceptance Status Values  . . .  81
-     11.10. Registry for the PDR-ACK Rejection Status Values . . . .  81
-     11.11. SubRegistry for the Via Information Options Flags  . . .  82
-     11.12. SubRegistry for the Sibling Information Option Flags . .  82
-     11.13. Destination Advertisement Object Flag  . . . . . . . . .  83
-     11.14. Destination Advertisement Object Acknowledgment Flag . .  83
-     11.15. New ICMPv6 Error Code  . . . . . . . . . . . . . . . . .  84
-     11.16. RPL Rejection Status values  . . . . . . . . . . . . . .  84
-   12. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  84
-   13. Normative References  . . . . . . . . . . . . . . . . . . . .  85
-   14. Informative References  . . . . . . . . . . . . . . . . . . .  86
+               P-Route . . . . . . . . . . . . . . . . . . . . . . .  61
+       6.4.3.  Installing a lane with a Non-Storing Mode P-Route . .  63
+     6.5.  Tearing Down a P-Route  . . . . . . . . . . . . . . . . .  65
+     6.6.  Maintaining a Track . . . . . . . . . . . . . . . . . . .  65
+       6.6.1.  Maintaining a Track Segment . . . . . . . . . . . . .  66
+       6.6.2.  Maintaining a lane  . . . . . . . . . . . . . . . . .  66
+     6.7.  Encapsulating and Forwarding Along a Track  . . . . . . .  67
+     6.8.  Compression of the RPL Artifacts  . . . . . . . . . . . .  70
+   7.  Less-Constrained Variations . . . . . . . . . . . . . . . . .  72
+     7.1.  Storing Mode main DODAG . . . . . . . . . . . . . . . . .  72
+     7.2.  A Track as a Full DODAG . . . . . . . . . . . . . . . . .  74
+   8.  Profiles  . . . . . . . . . . . . . . . . . . . . . . . . . .  75
+   9.  Backwards Compatibility . . . . . . . . . . . . . . . . . . .  77
+   10. Security Considerations . . . . . . . . . . . . . . . . . . .  77
+   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  78
+     11.1.  RPL DODAG Configuration Option Flag  . . . . . . . . . .  78
+     11.2.  Elective 6LoWPAN Routing Header Type . . . . . . . . . .  78
+     11.3.  Critical 6LoWPAN Routing Header Type . . . . . . . . . .  79
+     11.4.  Registry For The RPL Option Flags  . . . . . . . . . . .  79
+     11.5.  RPL Control Codes  . . . . . . . . . . . . . . . . . . .  80
+     11.6.  RPL Control Message Options  . . . . . . . . . . . . . .  80
+     11.7.  SubRegistry for the Projected DAO Request Flags  . . . .  81
+     11.8.  SubRegistry for the PDR-ACK Flags  . . . . . . . . . . .  81
+     11.9.  Registry for the PDR-ACK Acceptance Status Values  . . .  82
+     11.10. Registry for the PDR-ACK Rejection Status Values . . . .  82
+     11.11. SubRegistry for the Via Information Options Flags  . . .  83
+     11.12. SubRegistry for the Sibling Information Option Flags . .  83
+     11.13. Destination Advertisement Object Flag  . . . . . . . . .  84
+     11.14. Destination Advertisement Object Acknowledgment Flag . .  84
+     11.15. New ICMPv6 Error Code  . . . . . . . . . . . . . . . . .  85
+     11.16. RPL Rejection Status values  . . . . . . . . . . . . . .  85
+   12. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  85
+   13. Normative References  . . . . . . . . . . . . . . . . . . . .  86
+   14. Informative References  . . . . . . . . . . . . . . . . . . .  87
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 3]
+Thubert, et al.           Expires 8 August 2025                 [Page 3]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  88
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  89
 
 1.  Introduction
 
@@ -216,20 +216,21 @@ Internet-Draft               DAO Projection                February 2025
    the P-Route operates is different from that of the RPL main Instance.
    P-Routes can be used as stand-alone Segments meant to reduce the size
    of the source routing headers, leveraging loose source routing
-   operations down the main RPL DODAG.  P-Routes can also be combined
-   with other P-Routes to form a protection Path called a Track (aka a
+   operations down the main RPL DODAG.  A P-Route can also be used as a
+   protection path and combined with other P-Routes to form a Recovery
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 4]
+Thubert, et al.           Expires 8 August 2025                 [Page 4]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   Recovery Graph) and signaled as a RPL Instance.  A Track provides
-   underlay shortcuts in an existing main Instance.  The Track is
-   represented with its own RIB, that is separate from that of the main
-   Instance, and has a higher precedence.
+   Graph called a Track.  A Track is signaled as a separate RPL Instance
+   that is associated with a main RPL Instance, such that the RPL
+   routers that form the Track are also members of the main DODAG.  The
+   Track provides underlay shortcuts using its own RIB, that is separate
+   from the RIB of the main Instance and has a higher precedence.
 
 2.  Terminology
 
@@ -250,13 +251,13 @@ Internet-Draft               DAO Projection                February 2025
    discussed in the "Routing Protocol for Low Power and Lossy Networks"
    [RPL], the "6TiSCH Architecture" [RFC9030], the "Deterministic
    Networking Architecture" [RFC8655], the "Using RPI Option Type,
-   Routing Header for Source Routes, and IPv6-in-IPv6 Encapsulation in
-   the RPL Data Plane" [RFC9008], the "Reliable and Available Wireless
-   (RAW) Architecture" [RAW-ARCHI], and "Terminology in Low power And
-   Lossy Networks" [RFC7102].  The 6ToSCH and DetNet/RAW architectures
-   utilize the terms "Track" and "Recovery Graph" to represent the same
-   concept though in different environments.  This document uses "Track"
-   to represent that concept, and only builds Tracks that are DODAGs,
+   Routing Header for Source Routes, and IP-in-IP Encapsulation in the
+   RPL Data Plane" [RFC9008], the "Reliable and Available Wireless (RAW)
+   Architecture" [RAW-ARCHI], and "Terminology in Low power And Lossy
+   Networks" [RFC7102].  The 6ToSCH and DetNet/RAW architectures utilize
+   the terms "Track" and "Recovery Graph" to represent the same concept
+   though in different environments.  This document uses "Track" to
+   represent that concept, and only builds Tracks that are DODAGs,
    meaning that all links are oriented From Ingress to Egress.  This
    specification also utilizes the terms Segment and Lane that are also
    defined in the RAW Architecture.
@@ -276,8 +277,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-Thubert, et al.           Expires 5 August 2025                 [Page 5]
+Thubert, et al.           Expires 8 August 2025                 [Page 5]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 6]
+Thubert, et al.           Expires 8 August 2025                 [Page 6]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -389,7 +389,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 7]
+Thubert, et al.           Expires 8 August 2025                 [Page 7]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -445,7 +445,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 8]
+Thubert, et al.           Expires 8 August 2025                 [Page 8]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -501,7 +501,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                 [Page 9]
+Thubert, et al.           Expires 8 August 2025                 [Page 9]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 10]
+Thubert, et al.           Expires 8 August 2025                [Page 10]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -597,9 +597,9 @@ Internet-Draft               DAO Projection                February 2025
    but also situations of high relative mobility between the nodes in
    the network (aka swarming), e.g., within a variable set of vehicles
    with a similar global motion, or a platoon of drones.  In contrast,
-   this specification only applies when the toon has a relatively stable
-   topology where the segments can be attributed a reliability and
-   availability for a certain lifetime, see [RAW-ARCHI].
+   this specification only applies when the platoon has a relatively
+   stable topology where the segments can be attributed a reliability
+   and availability for a certain lifetime, see [RAW-ARCHI].
 
    To reach this goal, RPL is primarily designed to minimize the control
    plane activity, that is the relative amount of routing protocol
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 11]
+Thubert, et al.           Expires 8 August 2025                [Page 11]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 12]
+Thubert, et al.           Expires 8 August 2025                [Page 12]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 13]
+Thubert, et al.           Expires 8 August 2025                [Page 13]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 14]
+Thubert, et al.           Expires 8 August 2025                [Page 14]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 15]
+Thubert, et al.           Expires 8 August 2025                [Page 15]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 16]
+Thubert, et al.           Expires 8 August 2025                [Page 16]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 17]
+Thubert, et al.           Expires 8 August 2025                [Page 17]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 18]
+Thubert, et al.           Expires 8 August 2025                [Page 18]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 19]
+Thubert, et al.           Expires 8 August 2025                [Page 19]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 20]
+Thubert, et al.           Expires 8 August 2025                [Page 20]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 21]
+Thubert, et al.           Expires 8 August 2025                [Page 21]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 22]
+Thubert, et al.           Expires 8 August 2025                [Page 22]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 23]
+Thubert, et al.           Expires 8 August 2025                [Page 23]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1341,7 +1341,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 24]
+Thubert, et al.           Expires 8 August 2025                [Page 24]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 25]
+Thubert, et al.           Expires 8 August 2025                [Page 25]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1453,7 +1453,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 26]
+Thubert, et al.           Expires 8 August 2025                [Page 26]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 27]
+Thubert, et al.           Expires 8 August 2025                [Page 27]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1565,7 +1565,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 28]
+Thubert, et al.           Expires 8 August 2025                [Page 28]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1621,7 +1621,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 29]
+Thubert, et al.           Expires 8 August 2025                [Page 29]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 30]
+Thubert, et al.           Expires 8 August 2025                [Page 30]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1733,7 +1733,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 31]
+Thubert, et al.           Expires 8 August 2025                [Page 31]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1789,7 +1789,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 32]
+Thubert, et al.           Expires 8 August 2025                [Page 32]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1845,7 +1845,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 33]
+Thubert, et al.           Expires 8 August 2025                [Page 33]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1901,7 +1901,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 34]
+Thubert, et al.           Expires 8 August 2025                [Page 34]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1957,7 +1957,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 35]
+Thubert, et al.           Expires 8 August 2025                [Page 35]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2013,7 +2013,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 36]
+Thubert, et al.           Expires 8 August 2025                [Page 36]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2069,7 +2069,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 37]
+Thubert, et al.           Expires 8 August 2025                [Page 37]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2125,7 +2125,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 38]
+Thubert, et al.           Expires 8 August 2025                [Page 38]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2181,7 +2181,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 39]
+Thubert, et al.           Expires 8 August 2025                [Page 39]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2237,7 +2237,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 40]
+Thubert, et al.           Expires 8 August 2025                [Page 40]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2293,7 +2293,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 41]
+Thubert, et al.           Expires 8 August 2025                [Page 41]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2349,7 +2349,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 42]
+Thubert, et al.           Expires 8 August 2025                [Page 42]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2373,8 +2373,8 @@ Internet-Draft               DAO Projection                February 2025
    VIO (SM-VIO); an SM-VIO installs a strict hop-by-hop P-Route called a
    Track Segment.  The other is the Non-Storing Mode VIO (NSM-VIO); the
    NSM-VIO installs a loose source-routed P-Route called a lane at the
-   Track Ingress, which uses that state to encapsulate a packet IPv6-in-
-   IPv6 with a new Routing Header (RH) to the Track Egress (more in
+   Track Ingress, which uses that state to encapsulate a packet IP-in-IP
+   with a new Routing Header (RH) to the Track Egress (more in
    Section 6.7).
 
    A P-DAO contains one or more RTOs to indicate the Target
@@ -2393,22 +2393,34 @@ Internet-Draft               DAO Projection                February 2025
    directly to the main Root, including multicast DAO (see section 9.10
    of [RPL]).
 
-   This specification AMENDS the rules listed in section 9.10 of [RPL])
-   for the multicast DAO operation as follows:
+   This specification AMENDS rules 1 and 2 listed in section 9.10 of
+   [RPL]) for the multicast DAO operation as follows:
+
+   OLD:
+
+   1.  A node MAY multicast a DAO message to the link-local scope all-
+       RPL-nodes multicast address.
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 43]
+
+Internet-Draft               DAO Projection                February 2025
+
+
+   2.  A multicast DAO message MUST be used only to advertise
+       information about the node itself, i.e., prefixes directly
+       connected to or owned by the node, such as a multicast group that
+       the node is subscribed to or a global address owned by the node
+
+   NEW:
 
    1.  A multicast DAO message MUST be used only to advertise
        information about the node (using the Target Option), and direct
        Link Neighbors such as learned by Neighbor Discovery (using the
        Sibling Information Option).
-
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 43]
-
-Internet-Draft               DAO Projection                February 2025
-
 
    2.  The multicast DAO may be used to enable direct and indirect (via
        a common neighbor) P2P communication without needing the DODAG to
@@ -2446,6 +2458,14 @@ Internet-Draft               DAO Projection                February 2025
       Track), including when the packet follows a Segment that joins
       loose hops of the main DODAG.  The flag is not mutable en-route.
 
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 44]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    The encoding of the 'P' flag in native format is shown in Section 4.2
    while the compressed format is indicated in Section 4.3.
 
@@ -2457,14 +2477,6 @@ Internet-Draft               DAO Projection                February 2025
    operational parameters for RPL on the DODAG, through the DODAG.  This
    Option was originally designed with 4 bit positions reserved for
    future use as Flags.
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 44]
-
-Internet-Draft               DAO Projection                February 2025
-
 
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -2502,6 +2514,14 @@ Internet-Draft               DAO Projection                February 2025
    |  Nodes other than the DODAG root MUST NOT modify this information
    |  when propagating the DODAG Configuration option.
 
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 45]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    Therefore, a legacy parent propagates the 'D' flag as set by the
    root, and when the 'D' flag is set to 1, it is transparently flooded
    to all the nodes in the DODAG.
@@ -2512,15 +2532,6 @@ Internet-Draft               DAO Projection                February 2025
    [RFC6553] describes the RPL Option for use among RPL routers to
    include the abstract RPL Packet Information (RPI) described in
    section 11.2. of [RPL] in data packets.
-
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 45]
-
-Internet-Draft               DAO Projection                February 2025
-
 
    The RPL Option is commonly referred to as the RPI though the RPI is
    really the abstract information that is transported in the RPL
@@ -2556,27 +2567,23 @@ Internet-Draft               DAO Projection                February 2025
    SenderRank:  See [RFC6553].  This field MUST be set to 0 by the
       sender and ignored by the receiver if the 'P' flag is set.
 
+
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 46]
+
+Internet-Draft               DAO Projection                February 2025
+
+
 4.3.  Extending RFC 8138
 
    The 6LoWPAN Routing Header [RFC8138] specification introduces a new
    IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN)
    [RFC6282] dispatch type for use in 6LoWPAN route-over topologies,
    which initially covers the needs of RPL data packet compression.
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 46]
-
-Internet-Draft               DAO Projection                February 2025
-
 
    Section 4 of [RFC8138] presents the generic formats of the 6LoWPAN
    Routing Header (6LoRH) with two forms, one Elective that can be
@@ -2619,6 +2626,14 @@ Internet-Draft               DAO Projection                February 2025
 
                        Figure 12: P-RPI-6LoRH Format
 
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 47]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    Type:  IANA is requested to define the same value of the type for
       both Elective and Critical forms.  A type of 8 is suggested.
 
@@ -2626,14 +2641,6 @@ Internet-Draft               DAO Projection                February 2025
       an Elective 6LoRH, meaning that it can be ignored when forwarding.
 
    RPLInstanceID :  In the context of this specification, the
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 47]
-
-Internet-Draft               DAO Projection                February 2025
-
-
       RPLInstanceID field signals the TrackID, see Section 3.4 and
       Section 6.3 .
 
@@ -2673,6 +2680,16 @@ Internet-Draft               DAO Projection                February 2025
    The RPL Control Code for the PDR is 0x09, to be confirmed by IANA.
    The format of PDR Base Object is as follows:
 
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 48]
+
+Internet-Draft               DAO Projection                February 2025
+
+
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2682,13 +2699,6 @@ Internet-Draft               DAO Projection                February 2025
      +-+-+-+-+-+-+-+-+
 
                     Figure 13: New P-DAO Request Format
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 48]
-
-Internet-Draft               DAO Projection                February 2025
-
 
    TrackID:  8-bit field.  In the context of this specification, the
       TrackID field signals the RPLInstanceID of the DODAG formed by the
@@ -2725,6 +2735,17 @@ Internet-Draft               DAO Projection                February 2025
    flag set.  The RPL Control Code for the PDR-ACK is 0x0A, to be
    confirmed by IANA.  Its format is as follows:
 
+
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 49]
+
+Internet-Draft               DAO Projection                February 2025
+
+
       0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2738,14 +2759,6 @@ Internet-Draft               DAO Projection                February 2025
                Figure 14: New PDR-ACK Control Message Format
 
    TrackID:  Set to the TrackID indicated in the TrackID field of the
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 49]
-
-Internet-Draft               DAO Projection                February 2025
-
-
       PDR messages that this replies to.
 
    Flags:  Reserved.  The Flags field MUST be initialized to zero by the
@@ -2781,6 +2794,14 @@ Internet-Draft               DAO Projection                February 2025
    Reserved:  The Reserved field MUST be initialized to zero by the
       sender and MUST be ignored by the receiver.
 
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 50]
+
+Internet-Draft               DAO Projection                February 2025
+
+
 5.3.  Via Information Options
 
    A VIO signals the ordered list of IPv6 Via Addresses that constitutes
@@ -2792,15 +2813,6 @@ Internet-Draft               DAO Projection                February 2025
    The duration of the validity of a VIO is indicated in a Segment
    Lifetime field.  A P-DAO message that contains a VIO with a Segment
    Lifetime of zero is referred as a No-Path P-DAO.
-
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 50]
-
-Internet-Draft               DAO Projection                February 2025
-
 
    The VIO contains one or more SRH-6LoRH header(s), each formed of a
    SRH-6LoRH head and a collection of compressed Via Addresses, except
@@ -2818,6 +2830,33 @@ Internet-Draft               DAO Projection                February 2025
    more than one SRH-6LoRH may be present.
 
    The format of the Via Information Option is as follows:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 51]
+
+Internet-Draft               DAO Projection                February 2025
+
 
         0                   1                   2                   3
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -2850,14 +2889,6 @@ Internet-Draft               DAO Projection                February 2025
       IANA) (see Table 26).
 
    Option Length:  8-bit unsigned integer, representing the length in
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 51]
-
-Internet-Draft               DAO Projection                February 2025
-
-
       octets of the option, not including the Option Type and Length
       fields (see section 6.7.1. of [RPL]); the Option Length is
       variable, depending on the number of Via Addresses and the
@@ -2874,6 +2905,15 @@ Internet-Draft               DAO Projection                February 2025
       overall topology of the Track.
 
    Segment Sequence:  8-bit unsigned integer.  The Segment Sequence
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 52]
+
+Internet-Draft               DAO Projection                February 2025
+
+
       obeys the operation in section 7.2 of [RPL] and the initial value
       is 255.
 
@@ -2905,15 +2945,6 @@ Internet-Draft               DAO Projection                February 2025
       that the VIA Addresses are provided in full with no compression.
 
    Via Address:  An IPv6 ULA or GUA of a node along the Segment.  The
-
-
-
-
-Thubert, et al.           Expires 5 August 2025                [Page 52]
-
-Internet-Draft               DAO Projection                February 2025
-
-
       VIO contains one or more IPv6 Via Addresses listed in the datapath
       order from Ingress to Egress.  The list is expressed in a
       compressed form as signaled by the preceding SRH-6LoRH header.
@@ -2929,6 +2960,15 @@ Internet-Draft               DAO Projection                February 2025
       path through direct neighbors, the complete list starts at Ingress
       and ends at Egress, and the nodes listed in the VIO, including the
       Egress, MAY be considered as implicit Targets.
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 53]
+
+Internet-Draft               DAO Projection                February 2025
+
 
       In the case of an NSM-VIO, the complete list can be loose and
       excludes the Ingress node, starting at the first loose hop and
@@ -2965,7 +3005,23 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 53]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 54]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3021,7 +3077,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 54]
+Thubert, et al.           Expires 8 August 2025                [Page 55]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3066,26 +3122,27 @@ Internet-Draft               DAO Projection                February 2025
 
 6.1.  RPL Network Setup
 
-   To avoid the need of Path MTU Discovery, 6LoWPAN links are normally
-   defined with a MTU of 1280 (see section 4 of [6LoWPAN]).  Injecting
-   packets in a Track typically involves an IP-in-IP encapsulation and
-   additional IPv6 Extension Headers.  This may cause fragmentation if
-   the resulting packets exceeds the MTU that is defined for the RPL
-   domain.
+   To avoid the need of Path MTU Discovery by 6LoWPAN end-points,
+   6LoWPAN links are normally defined with a MTU of 1280 (see section 4
+   of [6LoWPAN]).  Injecting packets in a Track typically involves an
+   IP-in-IP encapsulation and additional IPv6 Extension Headers.  This
+   may cause fragmentation if the resulting packets exceed the MTU that
+   is defined for the RPL domain.
 
 
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 55]
+Thubert, et al.           Expires 8 August 2025                [Page 56]
 
 Internet-Draft               DAO Projection                February 2025
 
 
    Though fragmentation is possible in a 6LoWPAN LLN, e.g., using
-   [6LoWPAN], [RFC8930], and/or [RFC8931], it is RECOMMENDED to allow an
-   MTU that is larger than 1280 in the main DODAG and which allows for
-   the additional headers while exposing only 1280 to the 6LoWPAN Nodes.
+   [6LoWPAN], [RFC8930], and/or [RFC8931], it is RECOMMENDED to define
+   an MTU that is larger than 1280 between RPL routers that form the
+   main DODAG to allow for the necessary header additions, while still
+   exposing 1280 to the 6LoWPAN end-point stacks.
 
 6.2.  Requesting a Track
 
@@ -3132,8 +3189,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-Thubert, et al.           Expires 5 August 2025                [Page 56]
+Thubert, et al.           Expires 8 August 2025                [Page 57]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3189,7 +3245,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 57]
+Thubert, et al.           Expires 8 August 2025                [Page 58]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3245,7 +3301,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 58]
+Thubert, et al.           Expires 8 August 2025                [Page 59]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3275,17 +3331,11 @@ Internet-Draft               DAO Projection                February 2025
 
    A P-DAO message MUST be sent from the address of the Root that serves
    as DODAGID for the main DODAG.  It MUST contain either exactly one
-   sequence of one or more RTOs followed one VIO, or any number of
+   sequence of one or more RTOs followed by one VIO, or any number of
    sequences of one or more RTOs followed by one or more TIOs.  The
-   former is the normal expression for this specification, where as the
-   latter corresponds to the variation for A P-DAO message MUST be sent
-   from the address of the Root that serves as DODAGID for the main
-   DODAG.  It MUST contain either exactly one sequence of one or more
-   RTOs followed by one VIO, or any number of sequences of one or more
-   RTOs followed by one or more TIOs.  The former is the normal
-   expression for this specification, whereas the latter corresponds to
-   the variation for less-constrained environments described in
-   Section 7.2.
+   former is the normal expression for this specification, whereas the
+   latter corresponds to the variation for less-constrained environments
+   described in Section 7.2.T
 
    A P-DAO that creates or updates a lane MUST be sent to a GUA or a ULA
    of the Ingress of the Lane; it must contain the full list of hops in
@@ -3301,7 +3351,13 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 59]
+
+
+
+
+
+
+Thubert, et al.           Expires 8 August 2025                [Page 60]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3357,7 +3413,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 60]
+Thubert, et al.           Expires 8 August 2025                [Page 61]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3413,7 +3469,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 61]
+Thubert, et al.           Expires 8 August 2025                [Page 62]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3469,7 +3525,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 62]
+Thubert, et al.           Expires 8 August 2025                [Page 63]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3525,7 +3581,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 63]
+Thubert, et al.           Expires 8 August 2025                [Page 64]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3581,7 +3637,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 64]
+Thubert, et al.           Expires 8 August 2025                [Page 65]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3637,7 +3693,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 65]
+Thubert, et al.           Expires 8 August 2025                [Page 66]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3661,8 +3717,8 @@ Internet-Draft               DAO Projection                February 2025
    configuration option.
 
    The Track Ingress that places a packet in a Track encapsulates it
-   with an IP-in-IP header, a Routing Header, and an IPv6 Hop-by-Hop
-   Option Header that contains the RPL Packet Information (RPI) as
+   with an additional IPv6 header, a Routing Header, and an IPv6 Hop-by-
+   Hop Option Header that contains the RPL Packet Information (RPI) as
    follows:
 
    *  In the uncompressed form, the source of the packet is the address
@@ -3693,7 +3749,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 66]
+Thubert, et al.           Expires 8 August 2025                [Page 67]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3749,7 +3805,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 67]
+Thubert, et al.           Expires 8 August 2025                [Page 68]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3805,7 +3861,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 68]
+Thubert, et al.           Expires 8 August 2025                [Page 69]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3838,7 +3894,7 @@ Internet-Draft               DAO Projection                February 2025
    When using [RFC8138] in the main DODAG operated in Non-Storing Mode
    in a 6LoWPAN LLN, a typical packet that circulates in the main DODAG
    is formatted as shown in Figure 20, representing the case where an
-   IPv6-in-IPv6 encapsulation is needed (see Table 19 of [RFC9008]):
+   IP-in-IP encapsulation is needed (see Table 19 of [RFC9008]):
 
    +-+ ... -+- ... -+- ... -+-+- ... +-+-+-+ ... +-+-+ ... -+ ... +-...
    |11110001|  SRH- | RPI-  | IP-in-IP | NH=1      |11110CPP| UDP | UDP
@@ -3861,7 +3917,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 69]
+Thubert, et al.           Expires 8 August 2025                [Page 70]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3917,7 +3973,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 70]
+Thubert, et al.           Expires 8 August 2025                [Page 71]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3973,7 +4029,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 71]
+Thubert, et al.           Expires 8 August 2025                [Page 72]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4029,7 +4085,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 72]
+Thubert, et al.           Expires 8 August 2025                [Page 73]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4085,7 +4141,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 73]
+Thubert, et al.           Expires 8 August 2025                [Page 74]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4141,7 +4197,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 74]
+Thubert, et al.           Expires 8 August 2025                [Page 75]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4197,7 +4253,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 75]
+Thubert, et al.           Expires 8 August 2025                [Page 76]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4253,7 +4309,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 76]
+Thubert, et al.           Expires 8 August 2025                [Page 77]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4309,7 +4365,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 77]
+Thubert, et al.           Expires 8 August 2025                [Page 78]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4365,7 +4421,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 78]
+Thubert, et al.           Expires 8 August 2025                [Page 79]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4421,7 +4477,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 79]
+Thubert, et al.           Expires 8 August 2025                [Page 80]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4477,7 +4533,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 80]
+Thubert, et al.           Expires 8 August 2025                [Page 81]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4533,7 +4589,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 81]
+Thubert, et al.           Expires 8 August 2025                [Page 82]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4589,7 +4645,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 82]
+Thubert, et al.           Expires 8 August 2025                [Page 83]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4645,7 +4701,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 83]
+Thubert, et al.           Expires 8 August 2025                [Page 84]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4701,7 +4757,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 84]
+Thubert, et al.           Expires 8 August 2025                [Page 85]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4757,7 +4813,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 85]
+Thubert, et al.           Expires 8 August 2025                [Page 86]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4813,7 +4869,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 86]
+Thubert, et al.           Expires 8 August 2025                [Page 87]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4869,7 +4925,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 87]
+Thubert, et al.           Expires 8 August 2025                [Page 88]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4925,7 +4981,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 88]
+Thubert, et al.           Expires 8 August 2025                [Page 89]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4981,4 +5037,4 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 5 August 2025                [Page 89]
+Thubert, et al.           Expires 8 August 2025                [Page 90]
