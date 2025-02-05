@@ -6,13 +6,13 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                                          
 Updates: 6550, 6553, 8138 (if approved)                      R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 8 August 2025                                     M. Richardson
+Expires: 9 August 2025                                     M. Richardson
                                                                Sandelman
-                                                         4 February 2025
+                                                         5 February 2025
 
 
                   Root initiated routing state in RPL
-                   draft-ietf-roll-dao-projection-36
+                   draft-ietf-roll-dao-projection-37
 
 Abstract
 
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 August 2025.
+   This Internet-Draft will expire on 9 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 1]
+Thubert, et al.           Expires 9 August 2025                 [Page 1]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 2]
+Thubert, et al.           Expires 9 August 2025                 [Page 2]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -165,7 +165,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 3]
+Thubert, et al.           Expires 9 August 2025                 [Page 3]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -221,7 +221,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 4]
+Thubert, et al.           Expires 9 August 2025                 [Page 4]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -277,7 +277,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 5]
+Thubert, et al.           Expires 9 August 2025                 [Page 5]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -333,7 +333,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 6]
+Thubert, et al.           Expires 9 August 2025                 [Page 6]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -389,7 +389,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 7]
+Thubert, et al.           Expires 9 August 2025                 [Page 7]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -445,7 +445,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 8]
+Thubert, et al.           Expires 9 August 2025                 [Page 8]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -501,7 +501,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                 [Page 9]
+Thubert, et al.           Expires 9 August 2025                 [Page 9]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -557,7 +557,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 10]
+Thubert, et al.           Expires 9 August 2025                [Page 10]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 11]
+Thubert, et al.           Expires 9 August 2025                [Page 11]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 12]
+Thubert, et al.           Expires 9 August 2025                [Page 12]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 13]
+Thubert, et al.           Expires 9 August 2025                [Page 13]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 14]
+Thubert, et al.           Expires 9 August 2025                [Page 14]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 15]
+Thubert, et al.           Expires 9 August 2025                [Page 15]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 16]
+Thubert, et al.           Expires 9 August 2025                [Page 16]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 17]
+Thubert, et al.           Expires 9 August 2025                [Page 17]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1005,7 +1005,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 18]
+Thubert, et al.           Expires 9 August 2025                [Page 18]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1061,7 +1061,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 19]
+Thubert, et al.           Expires 9 August 2025                [Page 19]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1117,7 +1117,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 20]
+Thubert, et al.           Expires 9 August 2025                [Page 20]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1173,7 +1173,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 21]
+Thubert, et al.           Expires 9 August 2025                [Page 21]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 22]
+Thubert, et al.           Expires 9 August 2025                [Page 22]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 23]
+Thubert, et al.           Expires 9 August 2025                [Page 23]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1341,7 +1341,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 24]
+Thubert, et al.           Expires 9 August 2025                [Page 24]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 25]
+Thubert, et al.           Expires 9 August 2025                [Page 25]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1453,7 +1453,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 26]
+Thubert, et al.           Expires 9 August 2025                [Page 26]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 27]
+Thubert, et al.           Expires 9 August 2025                [Page 27]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1565,7 +1565,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 28]
+Thubert, et al.           Expires 9 August 2025                [Page 28]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1621,7 +1621,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 29]
+Thubert, et al.           Expires 9 August 2025                [Page 29]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 30]
+Thubert, et al.           Expires 9 August 2025                [Page 30]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1733,7 +1733,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 31]
+Thubert, et al.           Expires 9 August 2025                [Page 31]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1789,7 +1789,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 32]
+Thubert, et al.           Expires 9 August 2025                [Page 32]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1845,7 +1845,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 33]
+Thubert, et al.           Expires 9 August 2025                [Page 33]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1901,7 +1901,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 34]
+Thubert, et al.           Expires 9 August 2025                [Page 34]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1957,7 +1957,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 35]
+Thubert, et al.           Expires 9 August 2025                [Page 35]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2013,7 +2013,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 36]
+Thubert, et al.           Expires 9 August 2025                [Page 36]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2069,7 +2069,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 37]
+Thubert, et al.           Expires 9 August 2025                [Page 37]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2125,7 +2125,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 38]
+Thubert, et al.           Expires 9 August 2025                [Page 38]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2181,7 +2181,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 39]
+Thubert, et al.           Expires 9 August 2025                [Page 39]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2237,7 +2237,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 40]
+Thubert, et al.           Expires 9 August 2025                [Page 40]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2293,7 +2293,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 41]
+Thubert, et al.           Expires 9 August 2025                [Page 41]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2349,7 +2349,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 42]
+Thubert, et al.           Expires 9 August 2025                [Page 42]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2405,7 +2405,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 43]
+Thubert, et al.           Expires 9 August 2025                [Page 43]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2461,7 +2461,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 44]
+Thubert, et al.           Expires 9 August 2025                [Page 44]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2517,7 +2517,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 45]
+Thubert, et al.           Expires 9 August 2025                [Page 45]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2573,7 +2573,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 46]
+Thubert, et al.           Expires 9 August 2025                [Page 46]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2629,7 +2629,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 47]
+Thubert, et al.           Expires 9 August 2025                [Page 47]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2685,7 +2685,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 48]
+Thubert, et al.           Expires 9 August 2025                [Page 48]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2741,7 +2741,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 49]
+Thubert, et al.           Expires 9 August 2025                [Page 49]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2797,7 +2797,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 50]
+Thubert, et al.           Expires 9 August 2025                [Page 50]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2853,7 +2853,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 51]
+Thubert, et al.           Expires 9 August 2025                [Page 51]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2909,7 +2909,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 52]
+Thubert, et al.           Expires 9 August 2025                [Page 52]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2965,7 +2965,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 53]
+Thubert, et al.           Expires 9 August 2025                [Page 53]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3021,7 +3021,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 54]
+Thubert, et al.           Expires 9 August 2025                [Page 54]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3077,7 +3077,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 55]
+Thubert, et al.           Expires 9 August 2025                [Page 55]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3133,7 +3133,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 56]
+Thubert, et al.           Expires 9 August 2025                [Page 56]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3189,7 +3189,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 57]
+Thubert, et al.           Expires 9 August 2025                [Page 57]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3245,7 +3245,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 58]
+Thubert, et al.           Expires 9 August 2025                [Page 58]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3301,7 +3301,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 59]
+Thubert, et al.           Expires 9 August 2025                [Page 59]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3335,7 +3335,7 @@ Internet-Draft               DAO Projection                February 2025
    sequences of one or more RTOs followed by one or more TIOs.  The
    former is the normal expression for this specification, whereas the
    latter corresponds to the variation for less-constrained environments
-   described in Section 7.2.T
+   described in Section 7.2.
 
    A P-DAO that creates or updates a lane MUST be sent to a GUA or a ULA
    of the Ingress of the Lane; it must contain the full list of hops in
@@ -3357,7 +3357,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 60]
+Thubert, et al.           Expires 9 August 2025                [Page 60]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3413,7 +3413,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 61]
+Thubert, et al.           Expires 9 August 2025                [Page 61]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3469,7 +3469,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 62]
+Thubert, et al.           Expires 9 August 2025                [Page 62]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3525,7 +3525,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 63]
+Thubert, et al.           Expires 9 August 2025                [Page 63]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3581,7 +3581,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 64]
+Thubert, et al.           Expires 9 August 2025                [Page 64]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3637,7 +3637,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 65]
+Thubert, et al.           Expires 9 August 2025                [Page 65]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3693,7 +3693,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 66]
+Thubert, et al.           Expires 9 August 2025                [Page 66]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3749,7 +3749,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 67]
+Thubert, et al.           Expires 9 August 2025                [Page 67]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3805,7 +3805,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 68]
+Thubert, et al.           Expires 9 August 2025                [Page 68]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3861,7 +3861,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 69]
+Thubert, et al.           Expires 9 August 2025                [Page 69]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3917,7 +3917,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 70]
+Thubert, et al.           Expires 9 August 2025                [Page 70]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3973,7 +3973,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 71]
+Thubert, et al.           Expires 9 August 2025                [Page 71]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4029,7 +4029,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 72]
+Thubert, et al.           Expires 9 August 2025                [Page 72]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4085,7 +4085,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 73]
+Thubert, et al.           Expires 9 August 2025                [Page 73]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4141,7 +4141,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 74]
+Thubert, et al.           Expires 9 August 2025                [Page 74]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4197,7 +4197,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 75]
+Thubert, et al.           Expires 9 August 2025                [Page 75]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4253,7 +4253,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 76]
+Thubert, et al.           Expires 9 August 2025                [Page 76]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4309,7 +4309,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 77]
+Thubert, et al.           Expires 9 August 2025                [Page 77]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4365,7 +4365,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 78]
+Thubert, et al.           Expires 9 August 2025                [Page 78]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4421,7 +4421,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 79]
+Thubert, et al.           Expires 9 August 2025                [Page 79]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4477,7 +4477,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 80]
+Thubert, et al.           Expires 9 August 2025                [Page 80]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4533,7 +4533,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 81]
+Thubert, et al.           Expires 9 August 2025                [Page 81]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4589,7 +4589,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 82]
+Thubert, et al.           Expires 9 August 2025                [Page 82]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4645,7 +4645,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 83]
+Thubert, et al.           Expires 9 August 2025                [Page 83]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4701,7 +4701,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 84]
+Thubert, et al.           Expires 9 August 2025                [Page 84]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4757,7 +4757,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 85]
+Thubert, et al.           Expires 9 August 2025                [Page 85]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4813,7 +4813,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 86]
+Thubert, et al.           Expires 9 August 2025                [Page 86]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4869,7 +4869,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 87]
+Thubert, et al.           Expires 9 August 2025                [Page 87]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4925,7 +4925,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 88]
+Thubert, et al.           Expires 9 August 2025                [Page 88]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4981,7 +4981,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 89]
+Thubert, et al.           Expires 9 August 2025                [Page 89]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -5037,4 +5037,4 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 8 August 2025                [Page 90]
+Thubert, et al.           Expires 9 August 2025                [Page 90]
