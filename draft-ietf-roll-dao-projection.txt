@@ -6,9 +6,9 @@ ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                                          
 Updates: 6550, 6553, 8138 (if approved)                      R.A. Jadhav
 Intended status: Standards Track                             Huawei Tech
-Expires: 9 August 2025                                     M. Richardson
+Expires: 22 August 2025                                    M. Richardson
                                                                Sandelman
-                                                         5 February 2025
+                                                        18 February 2025
 
 
                   Root initiated routing state in RPL
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 August 2025.
+   This Internet-Draft will expire on 22 August 2025.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 1]
+Thubert, et al.          Expires 22 August 2025                 [Page 1]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 2]
+Thubert, et al.          Expires 22 August 2025                 [Page 2]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -129,11 +129,12 @@ Internet-Draft               DAO Projection                February 2025
        6.4.1.  Signaling a Projected Route . . . . . . . . . . . . .  60
        6.4.2.  Installing a Track Segment with a Storing Mode
                P-Route . . . . . . . . . . . . . . . . . . . . . . .  61
-       6.4.3.  Installing a lane with a Non-Storing Mode P-Route . .  63
+       6.4.3.  Installing a protection path with a Non-Storing Mode
+               P-Route . . . . . . . . . . . . . . . . . . . . . . .  63
      6.5.  Tearing Down a P-Route  . . . . . . . . . . . . . . . . .  65
      6.6.  Maintaining a Track . . . . . . . . . . . . . . . . . . .  65
        6.6.1.  Maintaining a Track Segment . . . . . . . . . . . . .  66
-       6.6.2.  Maintaining a lane  . . . . . . . . . . . . . . . . .  66
+       6.6.2.  Maintaining a protection path . . . . . . . . . . . .  66
      6.7.  Encapsulating and Forwarding Along a Track  . . . . . . .  67
      6.8.  Compression of the RPL Artifacts  . . . . . . . . . . . .  70
    7.  Less-Constrained Variations . . . . . . . . . . . . . . . . .  72
@@ -161,15 +162,15 @@ Internet-Draft               DAO Projection                February 2025
      11.16. RPL Rejection Status values  . . . . . . . . . . . . . .  85
    12. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  85
    13. Normative References  . . . . . . . . . . . . . . . . . . . .  86
-   14. Informative References  . . . . . . . . . . . . . . . . . . .  87
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 3]
+Thubert, et al.          Expires 22 August 2025                 [Page 3]
 
 Internet-Draft               DAO Projection                February 2025
 
 
+   14. Informative References  . . . . . . . . . . . . . . . . . . .  87
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  89
 
 1.  Introduction
@@ -217,20 +218,21 @@ Internet-Draft               DAO Projection                February 2025
    P-Routes can be used as stand-alone Segments meant to reduce the size
    of the source routing headers, leveraging loose source routing
    operations down the main RPL DODAG.  A P-Route can also be used as a
-   protection path and combined with other P-Routes to form a Recovery
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 4]
+Thubert, et al.          Expires 22 August 2025                 [Page 4]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   Graph called a Track.  A Track is signaled as a separate RPL Instance
-   that is associated with a main RPL Instance, such that the RPL
-   routers that form the Track are also members of the main DODAG.  The
-   Track provides underlay shortcuts using its own RIB, that is separate
-   from the RIB of the main Instance and has a higher precedence.
+   protection path, and it can be combined and interleaved with other
+   P-Routes to form a Recovery Graph called a Track.  A Track is
+   signaled as a separate RPL Instance that is associated with a main
+   RPL Instance, such that the RPL routers that form the Track are also
+   members of the main DODAG.  The Track provides underlay shortcuts
+   using its own RIB, that is separate from the RIB of the main Instance
+   and has a higher precedence.
 
 2.  Terminology
 
@@ -259,8 +261,8 @@ Internet-Draft               DAO Projection                February 2025
    though in different environments.  This document uses "Track" to
    represent that concept, and only builds Tracks that are DODAGs,
    meaning that all links are oriented From Ingress to Egress.  This
-   specification also utilizes the terms Segment and Lane that are also
-   defined in the RAW Architecture.
+   specification also utilizes the terms Segment and protection path
+   that are also defined in the RAW Architecture.
 
    As opposed to routing trees, RPL DODAGs are typically constructed to
    provide redundancy and dynamically adapt the forwarding operation to
@@ -269,18 +271,21 @@ Internet-Draft               DAO Projection                February 2025
    the node nearest to the Root does not have an alternate feasible
    successor.
 
-   RAW solves that problem by defining Protection Paths that can be
-   fully non-congruent and can be activated dynamically upon failures.
-   This requires additional control to take the routing decision early
-   enough along the Track to route around the failure.
 
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 5]
+
+
+Thubert, et al.          Expires 22 August 2025                 [Page 5]
 
 Internet-Draft               DAO Projection                February 2025
 
+
+   RAW solves that problem by defining Protection Paths that can be
+   interleaved to form new paths that can be activated dynamically upon
+   failures.  This requires additional control to take the routing
+   decision early enough along the Track to route around the failure.
 
    RAW only uses single-ended DODAGs, meaning that they can be reversed
    in another DODAG by reversing all the links.  The Ingress of the
@@ -325,19 +330,19 @@ Internet-Draft               DAO Projection                February 2025
    NSM-VIO:  A Source-Routed Via Information Option, used in Non-Storing
       Mode P-DAO messages
    SLO:  Service Level Objective
+
+
+
+Thubert, et al.          Expires 22 August 2025                 [Page 6]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    SRH:  Source Routing Header, see Section 2.4.5.7.2
    SRH-6loRH:  Source Routing Header 6LoRH, a compressed form of SRH
       defined in " IPv6 over Low-Power Wireless Personal Area Network
       (6LoWPAN) Routing Header" [RFC8138]
    TIO:  RPL Transit Information Option
-
-
-
-Thubert, et al.           Expires 9 August 2025                 [Page 6]
-
-Internet-Draft               DAO Projection                February 2025
-
-
    SM-VIO:  A strict Via Information Option, used in Storing Mode P-DAO
       messages
    VIO:  A Via Information Option; it can be an SM-VIO or a NSM-VIO
@@ -384,12 +389,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                 [Page 7]
+Thubert, et al.          Expires 22 August 2025                 [Page 7]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -430,10 +430,10 @@ Internet-Draft               DAO Projection                February 2025
 
    Figure 1 illustrates the mapping of the DODAG with the generic
    concept of a Track, with the DODAG Root acting as Ingress for the
-   Track, and the mapping of Lanes and Segments, and only forward
-   Segments, meaning that they are directional and progressing towards
-   the destination.  Note that East is represented on the left since the
-   packets are forwarded East-West.
+   Track, and the mapping of protection paths and Segments, and only
+   forward Segments, meaning that they are directional and progressing
+   towards the destination.  Note that East is represented on the left
+   since the packets are forwarded East-West.
 
 
 
@@ -445,26 +445,26 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 8]
+Thubert, et al.          Expires 22 August 2025                 [Page 8]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-      North East                                   North West
+     North East                                   North West
 
-             A ==> B ==> C -=- F ==> G ==> H     T1       I: Ingress
-           /              \   /              \ /          E: Egress
-         I                  O                 E -=- T2    T1, T2, T3:
-           \              /   \              / \            External
-             P ==> Q ==> R -=- T ==> U ==> V     T3         Targets
+            A ==> B ==> C -=- F ==> G ==> H     T1       I: Ingress
+          /              \   /              \ /          E: Egress
+        I                  O                 E -=- T2    T1, T2, T3:
+          \              /   \              / \            External
+            P ==> Q ==> R -=- T ==> U ==> V     T3         Targets
 
-      South East                                   South West
+     South East                                   South West
 
-            I ==> A ==> B ==> C : a Segment to targets F and O
+           I ==> A ==> B ==> C : a Segment to targets F and O
 
-               I --> F --> E : a Lane to targets T1, T2, T3
+              I --> F --> E : a protection path to targets T1, T2, T3
 
-              I, A, B, C, F, G, H, E : a path to T1, T2, T3
+             I, A, B, C, F, G, H, E : a path to T1, T2, T3
 
                     Figure 1: A Track and its Components
 
@@ -501,17 +501,17 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                 [Page 9]
+Thubert, et al.          Expires 22 August 2025                 [Page 9]
 
 Internet-Draft               DAO Projection                February 2025
 
 
 2.4.5.4.  Stand-Alone
 
-   Refers to a Segment or a Lane that is installed with a single P-DAO
-   that fully defines the path, e.g., a stand-alone segment is installed
-   with a single Storing Mode Via Information option (SM-VIO) all the
-   way between Ingress and Egress.
+   Refers to a Segment or a protection path that is installed with a
+   single P-DAO that fully defines the path, e.g., a stand-alone segment
+   is installed with a single Storing Mode Via Information option (SM-
+   VIO) all the way between Ingress and Egress.
 
 2.4.5.5.  Stitching
 
@@ -519,19 +519,22 @@ Internet-Draft               DAO Projection                February 2025
    is piped to another one, meaning that traffic out of the first track
    is injected into the other track.
 
-2.4.5.6.  Lane
+2.4.5.6.  Protection Path
 
-   The concept of Lane is defined in the RAW Architecture" [RAW-ARCHI]
-   as an end-to-end forward serial path.  With this specification, a
-   Lane is installed by the Root of the main DODAG using a Non-Storing
-   Mode P-DAO message, e.g., I --> F --> E in Figure 1.
+   The concept of protection path is defined in the RAW Architecture"
+   [RAW-ARCHI] as an end-to-end forward serial path.  With this
+   specification, a protection path is installed by the Root of the main
+   DODAG using a Non-Storing Mode P-DAO message, e.g., I --> F --> E in
+   Figure 1.
 
    As the Non-Storing Mode Via Information option (NSM-VIO) can only
    signal sequences of nodes, it takes one Non-Storing Mode P-DAO
-   message per Lane to signal the structure of a complex Track.
+   message per protection path to signal the structure of a complex
+   Track.
 
    Each NSM-VIO for the same TrackId but with a different Segment ID
-   signals a different Lane that the Track Ingress adds to the topology.
+   signals a different protection path that the Track Ingress adds to
+   the topology.
 
 2.4.5.7.  Segment
 
@@ -540,8 +543,9 @@ Internet-Draft               DAO Projection                February 2025
    this specification, a Segment is typically installed by the Root of
    the main DODAG using Storing Mode P-DAO messages.  A Segment is used
    as the topological edge of a Track joining the loose steps along the
-   Lanes that form the structure of a complex Track.  The same Segment
-   may be leveraged by more than one Lane where the Lanes overlap.
+   protection paths that form the structure of a complex Track.  The
+   same Segment may be leveraged by more than one protection path where
+   the protection paths overlap.
 
    Since this specification builds only DODAGs, all Segments are
    oriented from Ingress (East) to Egress (West), as opposed to the
@@ -553,11 +557,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 10]
+Thubert, et al.          Expires 22 August 2025                [Page 10]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -613,7 +613,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 11]
+Thubert, et al.          Expires 22 August 2025                [Page 11]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -669,7 +669,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 12]
+Thubert, et al.          Expires 22 August 2025                [Page 12]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -725,7 +725,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 13]
+Thubert, et al.          Expires 22 August 2025                [Page 13]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -781,7 +781,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 14]
+Thubert, et al.          Expires 22 August 2025                [Page 14]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -837,7 +837,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 15]
+Thubert, et al.          Expires 22 August 2025                [Page 15]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -893,7 +893,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 16]
+Thubert, et al.          Expires 22 August 2025                [Page 16]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -949,7 +949,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 17]
+Thubert, et al.          Expires 22 August 2025                [Page 17]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -994,30 +994,30 @@ Internet-Draft               DAO Projection                February 2025
 
    A RPL Track is a collection of (one or more) parallel loose source
    routed sequences of nodes ordered from Ingress to Egress, each
-   forming a lane.  The nodes in a Track are directly connected,
-   reachable via existing Tracks as illustrated in Section 3.5.2.3 or
-   joined with strict Segments of other nodes as shown in
-   Section 3.5.1.3.  The Lanes are expressed in RPL Non-Storing Mode and
-   require an encapsulation to add a Source Route Header, whereas the
-   Segments are expressed in RPL Storing Mode.
+   forming a protection path.  The nodes in a Track are directly
+   connected, reachable via existing Tracks as illustrated in
+   Section 3.5.2.3 or joined with strict Segments of other nodes as
+   shown in Section 3.5.1.3.  The protection paths are expressed in RPL
+   Non-Storing Mode and require an encapsulation to add a Source Route
+   Header, whereas the Segments are expressed in RPL Storing Mode.
 
 
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 18]
+Thubert, et al.          Expires 22 August 2025                [Page 18]
 
 Internet-Draft               DAO Projection                February 2025
 
 
    A path provides only one path between Ingress and Egress.  It
-   comprises exactly one Lane.  A Stand-Alone Segment implicitly defines
-   a path from its Ingress to Egress.
+   comprises exactly one protection path.  A Stand-Alone Segment
+   implicitly defines a path from its Ingress to Egress.
 
    A complex Track forms a graph that provides a collection of potential
    paths to provide redundancy for the packets, either as a collection
-   of Lanes that may be parallel or cross at certain points, or as a
-   more generic DODAG.
+   of protection paths that may be parallel or interleaved at certain
+   points, or as a more generic DODAG.
 
 3.4.2.  Tracks and RPL Instances
 
@@ -1051,40 +1051,40 @@ Internet-Draft               DAO Projection                February 2025
    RPI Instance are set to the Track Ingress IP address and local
    RPLInstanceID, respectively, more in Section 6.3.
 
-   A Track typically offers service protection across several lanes.  As
-   a degraded form of a Track, a path made of a single lane (i.e.,
-   offering no protection) can be used as an alternative to a Segment
-   for forwarding along a RPL Instance.  In that case, instead of
-   following native routes along the instance, the packets are
-   encapsulated to signal a more specific source-routed path between the
-   loose hops in the encapsulated source routing header.
+   A Track typically offers service protection across several protection
+   paths.  As a degraded form of a Track, a path made of a single
+   protection path (i.e., offering no protection) can be used as an
+   alternative to a Segment for forwarding along a RPL Instance.  In
+   that case, instead of following native routes along the instance, the
+   packets are encapsulated to signal a more specific source-routed path
+   between the loose hops in the encapsulated source routing header.
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 19]
+Thubert, et al.          Expires 22 August 2025                [Page 19]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   If the encapsulated packet follows a global instance, then the lane
-   may be part of that global instance as well, for instance the global
-   instance of the main DODAG.  This can only be done for global
-   instances because the Ingress node that encapsulates the packets over
-   the lane is not the Root of the instance, so the source address of
-   the encapsulated packet cannot be used to determine the Track along
-   the way.
+   If the encapsulated packet follows a global instance, then the
+   protection path may be part of that global instance as well, for
+   instance the global instance of the main DODAG.  This can only be
+   done for global instances because the Ingress node that encapsulates
+   the packets over the protection path is not the Root of the instance,
+   so the source address of the encapsulated packet cannot be used to
+   determine the Track along the way.
 
 3.5.  path Signaling
 
-   This specification enables setting up a P-Route along either a lane
-   or a Segment.  A P-Route is installed and maintained by the Root of
-   the main DODAG using an extended RPL DAO message called a Projected
-   DAO (P-DAO), and a Track is composed of the combination of one or
-   more P-Routes.  In order to clarify the techniques that may be used
-   to install a P-Route, this section takes the simple case of the path
-   illustrated in Figure 6.  So the goal is to build a path from node A
-   to E for packets towards E's neighbors F and G along A, B, C, D and E
-   as opposed to via the Root:
+   This specification enables setting up a P-Route along either a
+   protection path or a Segment.  A P-Route is installed and maintained
+   by the Root of the main DODAG using an extended RPL DAO message
+   called a Projected DAO (P-DAO), and a Track is composed of the
+   combination of one or more P-Routes.  In order to clarify the
+   techniques that may be used to install a P-Route, this section takes
+   the simple case of the path illustrated in Figure 6.  So the goal is
+   to build a path from node A to E for packets towards E's neighbors F
+   and G along A, B, C, D and E as opposed to via the Root:
 
                                                  /===> F
                    A ===> B ===> C ===> D===> E <
@@ -1100,31 +1100,28 @@ Internet-Draft               DAO Projection                February 2025
    Object, see Figure 8.
 
    This specification introduces the Via Information Option (VIO) to
-   signal a sequence of hops in a Lane or a Segment in the P-DAO
-   messages, either in Storing Mode (SM-VIO) or Non-Storing Mode (NSM-
-   VIO).  One P-DAO message contains a single VIO, associated to one or
-   more RPL Target Options that signal the destination IPv6 addresses
-   that can reached along the Track (more in Section 5.3).
+   signal a sequence of hops in a protection path or a Segment in the
+   P-DAO messages, either in Storing Mode (SM-VIO) or Non-Storing Mode
+   (NSM-VIO).  One P-DAO message contains a single VIO, associated to
+   one or more RPL Target Options that signal the destination IPv6
+   addresses that can reached along the Track (more in Section 5.3).
 
-   Before diving deeper into Track Lanes and Segments signaling and
-   operation, this section provides examples of how route projection
-   works through variations of a simple example.  This simple example
-   illustrates the case of host routes, though RPL Targets can also be
-   prefixes.
-
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 20]
-
-Internet-Draft               DAO Projection                February 2025
-
+   Before diving deeper into Track and Segment signaling and operation,
+   this section provides examples of how route projection works through
+   variations of a simple example.  This simple example illustrates the
+   case of host routes, though RPL Targets can also be prefixes.
 
    Conventionally we use ==> to represent a strict hop and --> for a
    loose hop.  We use "-to-", such as in C==>D==>E-to-F to represent
    coma-separated Targets, e.g., F is a Target for Segment C==>D==>E.
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 20]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    In this example, A is the Track Ingress and E is the Track Egress.  C
    is a stitching point.  F and G are "external” Targets for the Track,
    and become reachable from A via the Track A (Ingress) to E (Egress
@@ -1173,7 +1170,10 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 21]
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 21]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1229,7 +1229,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 22]
+Thubert, et al.          Expires 22 August 2025                [Page 22]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1285,7 +1285,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 23]
+Thubert, et al.          Expires 22 August 2025                [Page 23]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1301,9 +1301,9 @@ Internet-Draft               DAO Projection                February 2025
    [RFC9008].  We then apply the directives for encapsulating in that
    case (more in Section 6.7).
 
-   In this formulation, we set up the lane explicitly, which creates
-   less routing state in intermediate hops at the expense of larger
-   packets to accommodate source routing:
+   In this formulation, we set up the protection path explicitly, which
+   creates less routing state in intermediate hops at the expense of
+   larger packets to accommodate source routing:
 
    *  P-DAO 1 signals C==>D==>E-to-E
 
@@ -1341,7 +1341,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 24]
+Thubert, et al.          Expires 22 August 2025                [Page 24]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1397,7 +1397,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 25]
+Thubert, et al.          Expires 22 August 2025                [Page 25]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1415,10 +1415,10 @@ Internet-Draft               DAO Projection                February 2025
 
 3.5.1.3.  Segment Routing
 
-   In this formulation Track Lanes are leveraged to combine Segments and
-   form a Graph.  The packets are source routed from a Segment to the
-   next to adapt the path.  As such, this can be seen as a form of
-   Segment Routing [RFC8402]:
+   In this formulation protection paths are leveraged to combine
+   Segments and form a Graph.  The packets are source routed from a
+   Segment to the next to adapt the path.  As such, this can be seen as
+   a form of Segment Routing [RFC8402]:
 
    *  P-DAO 1 signals C==>D==>E-to-E
 
@@ -1453,14 +1453,14 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 26]
+Thubert, et al.          Expires 22 August 2025                [Page 26]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   lane.  P-DAO 1 generates more signaling since E is the Segment Egress
-   when D could be, but has the benefit that it validates that the
-   connectivity between D and E still exists.
+   protection path.  P-DAO 1 generates more signaling since E is the
+   Segment Egress when D could be, but has the benefit that it validates
+   that the connectivity between D and E still exists.
 
    As a result the RIBs are set as follows:
 
@@ -1509,7 +1509,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 27]
+Thubert, et al.          Expires 22 August 2025                [Page 27]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1565,7 +1565,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 28]
+Thubert, et al.          Expires 22 August 2025                [Page 28]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1621,7 +1621,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 29]
+Thubert, et al.          Expires 22 August 2025                [Page 29]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1677,7 +1677,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 30]
+Thubert, et al.          Expires 22 August 2025                [Page 30]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1733,7 +1733,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 31]
+Thubert, et al.          Expires 22 August 2025                [Page 31]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1789,7 +1789,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 32]
+Thubert, et al.          Expires 22 August 2025                [Page 32]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1845,7 +1845,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 33]
+Thubert, et al.          Expires 22 August 2025                [Page 33]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1901,7 +1901,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 34]
+Thubert, et al.          Expires 22 August 2025                [Page 34]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1923,24 +1923,22 @@ Internet-Draft               DAO Projection                February 2025
 3.6.  Complex Tracks
 
    To increase the reliability of the P2P transmission, this
-   specification enables building a collection of Lanes between the same
-   Ingress and Egress Nodes and combining them within the same TrackID,
-   as shown in Figure 7.  Lanes may cross at the edges of loose hops or
-   remain parallel.
+   specification enables building a collection of protection paths
+   between the same Ingress and Egress Nodes and combining them within
+   the same TrackID, as shown in Figure 7.  Protection paths may be
+   interleaved at the edges of loose hops or remain parallel.
 
-   The Segments that join the loose hops of a Lane are installed with
-   the same TrackID as the Lane.  But each individual Lane and Segment
-   has its own P-RouteID which allows it to be managed separately. 2
-   Lanes of the same Track may cross at a common node that participates
-   to a Segment of Each Lane.  In that case the common node has more
-   than one next hop in its RIB associated to the Track, but no specific
-   signal in the packet to indicate which Segment is being followed.  A
-   next hop that can reach the loose hop is selected.
-
-
-
-
-
+   The Segments that join the loose hops of a protection path are
+   installed with the same TrackID as the protection path.  But each
+   individual protection path and Segment has its own P-RouteID which
+   allows it to be managed separately.  Two protection paths of the same
+   Track may cross at a common node that participates to a Segment of
+   Each protection path, or may be joined by additional Segments.  The
+   final path of a packet may then be the result of interleaving those
+   two (and possibly more) protection paths.  In that case the common
+   node has more than one next hop in its RIB associated to the Track,
+   but no specific signal in the packet to indicate which Segment is
+   being followed.  A next hop that can reach the loose hop is selected.
 
 
 
@@ -1957,7 +1955,9 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 35]
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 35]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -1978,7 +1978,7 @@ Internet-Draft               DAO Projection                February 2025
 
      (                    all around                             )
 
-     <-    Lane 1            B,                            E ->
+     <-    Protection path 1   via      B,   E              ->
      <--- Segment 1 A,B ---> <------- Segment 2 C,D,E ------->
 
 
@@ -1987,20 +1987,20 @@ Internet-Draft               DAO Projection                February 2025
             /-- Node   --  Node   --  Node   --  Node \       /
          --/    (A)        (B) \      (C)        (D)   \     /
    Track                        \                       Track
-   Ingress                    Segment 5                 Egress - Tgt 2
-     (I)                           \                 --  (E)
-         \                        \                 /      \
-          \ FWD   --   FWD  --   Relay --   FWD  --/        \
-            Node    -- Node   -- Node    -- Node             Target 3
+   Ingress                    Segment 5                Egress -- Target
+     (I)                           \                 --  (E)       2
+         \                        \                 /        \
+          \ FWD   --   FWD  --   Relay --   FWD  --/          \
+            Node    -- Node   -- Node    -- Node               Target 3
             (F)        (G)       (H)        (J)
 
 
 
      <------ Segment 3 F,G,H ------> <---- Segment 4 J,E ---->
-     <-      Lane 2                  H,                    E ->
+     <-      Protection path 2  via     H,   E              ->
 
      <--- Segment 1 A,B ---> <- S5-> <---- Segment 4 J,E ---->
-     <-      Lane 3          B,      H,                    E ->
+     <-      Protection path 3  via   B,    H,    E         ->
 
 
                                                                      )
@@ -2013,21 +2013,23 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 36]
+Thubert, et al.          Expires 22 August 2025                [Page 36]
 
 Internet-Draft               DAO Projection                February 2025
 
 
    Note that while this specification enables building both Segments
-   inside a Lane, for instance Segment 2 above which is within Lane 1,
-   and Inter-Lane Segments (aka North-South), for instance Segment 5
-   above which joins Lane 1 and Lane 2, it does not signal to the
-   Ingress which Inter-Lane Segments are available, so the use of North-
+   inside a protection path, for instance Segment 2 above which is
+   within protection path 1, and Inter-protection-path Segments (aka
+   North-South), for instance Segment 5 above which joins protection
+   path 1 and protection path 2, it does not signal to the Ingress which
+   Inter-protection-path Segments are available, so the use of North-
    South Segments and associated path redundancy functions is currently
    limited.  The only possibility available at this time is to define
-   overlapping Lanes as illustrated in Figure 7, with Lane 3 that is
-   congruent with Lane 1 until node B and congruent with Lane 2 from
-   node H on, abstracting Segment 5 as an forward Segment.
+   overlapping protection paths as illustrated in Figure 7, with
+   protection path 3 that is congruent with protection path 1 until node
+   B and congruent with protection path 2 from node H on, abstracting
+   Segment 5 as an forward Segment.
 
 3.7.  Scope and Expectations
 
@@ -2067,9 +2069,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 37]
+Thubert, et al.          Expires 22 August 2025                [Page 37]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2082,9 +2082,9 @@ Internet-Draft               DAO Projection                February 2025
    such as Replication and Elimination.
 
    One possible mapping between DetNet and this specification is to
-   signal the Relay Nodes as the hops of a Lane and the forwarding Nodes
-   as the hops in a Segment that join the Relay nodes as illustrated in
-   Figure 7.
+   signal the Relay Nodes as the hops of a protection path and the
+   forwarding Nodes as the hops in a Segment that join the Relay nodes
+   as illustrated in Figure 7.
 
 3.7.2.3.  Leveraging PCE
 
@@ -2125,7 +2125,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 38]
+Thubert, et al.          Expires 22 August 2025                [Page 38]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2141,7 +2141,8 @@ Internet-Draft               DAO Projection                February 2025
    and the need to conserve energy and spectrum.  This specification
    prepares for RAW by setting up the Tracks, but only forms DODAGs,
    which are composed of aggregated end-to-end loose source routed
-   Lanes, joined by strict routed Segments, all oriented forward.
+   protection paths, joined by strict routed Segments, all oriented
+   forward.
 
    The RAW Architecture defines a dataplane extension of the PCE called
    the Point of Local Repair (PLR), that adapts the use of the path
@@ -2180,8 +2181,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-Thubert, et al.           Expires 9 August 2025                [Page 39]
+Thubert, et al.          Expires 22 August 2025                [Page 39]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2193,7 +2193,8 @@ Internet-Draft               DAO Projection                February 2025
    Mode.  The Root issues a Projected DAO (P-DAO) message (see
    Section 4.1.1) to the Track Ingress; the P-DAO message contains a new
    Via Information Option (VIO) that installs a strict or a loose
-   sequence of hops to form a Track Segment or a lane, respectively.
+   sequence of hops to form a Track Segment or a protection path,
+   respectively.
 
    The P-DAO Request (PDR) is a new message detailed in Section 5.1.  As
    per [RPL] section 6, if a node receives this message and it does not
@@ -2236,8 +2237,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-Thubert, et al.           Expires 9 August 2025                [Page 40]
+Thubert, et al.          Expires 22 August 2025                [Page 40]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2293,7 +2293,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 41]
+Thubert, et al.          Expires 22 August 2025                [Page 41]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2349,7 +2349,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 42]
+Thubert, et al.          Expires 22 August 2025                [Page 42]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2372,10 +2372,10 @@ Internet-Draft               DAO Projection                February 2025
    the TIO (more in Section 5.3).  One VIO is the stateful Storing Mode
    VIO (SM-VIO); an SM-VIO installs a strict hop-by-hop P-Route called a
    Track Segment.  The other is the Non-Storing Mode VIO (NSM-VIO); the
-   NSM-VIO installs a loose source-routed P-Route called a lane at the
-   Track Ingress, which uses that state to encapsulate a packet IP-in-IP
-   with a new Routing Header (RH) to the Track Egress (more in
-   Section 6.7).
+   NSM-VIO installs a loose source-routed P-Route called a protection
+   path at the Track Ingress, which uses that state to encapsulate a
+   packet IP-in-IP with a new Routing Header (RH) to the Track Egress
+   (more in Section 6.7).
 
    A P-DAO contains one or more RTOs to indicate the Target
    (destinations) that can be reached via the P-Route, followed by
@@ -2405,7 +2405,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 43]
+Thubert, et al.          Expires 22 August 2025                [Page 43]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2461,7 +2461,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 44]
+Thubert, et al.          Expires 22 August 2025                [Page 44]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2517,7 +2517,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 45]
+Thubert, et al.          Expires 22 August 2025                [Page 45]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2573,7 +2573,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 46]
+Thubert, et al.          Expires 22 August 2025                [Page 46]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2629,7 +2629,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 47]
+Thubert, et al.          Expires 22 August 2025                [Page 47]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2685,7 +2685,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 48]
+Thubert, et al.          Expires 22 August 2025                [Page 48]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2741,7 +2741,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 49]
+Thubert, et al.          Expires 22 August 2025                [Page 49]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2797,7 +2797,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 50]
+Thubert, et al.          Expires 22 August 2025                [Page 50]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2805,10 +2805,10 @@ Internet-Draft               DAO Projection                February 2025
 5.3.  Via Information Options
 
    A VIO signals the ordered list of IPv6 Via Addresses that constitutes
-   the hops of either a Lane (using Non-Storing Mode) or a Segment
-   (using Storing mode) of a Track.  A Storing Mode P-DAO contains one
-   Storing Mode VIO (SM-VIO) whereas a Non-Storing Mode P-DAO contains
-   one Non-Storing Mode VIO (NSM-VIO).
+   the hops of either a protection path (using Non-Storing Mode) or a
+   Segment (using Storing mode) of a Track.  A Storing Mode P-DAO
+   contains one Storing Mode VIO (SM-VIO) whereas a Non-Storing Mode
+   P-DAO contains one Non-Storing Mode VIO (NSM-VIO).
 
    The duration of the validity of a VIO is indicated in a Segment
    Lifetime field.  A P-DAO message that contains a VIO with a Segment
@@ -2853,7 +2853,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 51]
+Thubert, et al.          Expires 22 August 2025                [Page 51]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2899,17 +2899,17 @@ Internet-Draft               DAO Projection                February 2025
 
    P-RouteID:  8-bit field that identifies a component of a Track or the
       main DODAG as indicated by the TrackID field.  The value of 0 is
-      used to signal a path, i.e., made of a single Segment/Lane.  In an
-      SM-VIO, the P-RouteID indicates a Segment ID.  In an NSM-VIO, it
-      indicates the ID of a Lane that is added (or updated) to the
-      overall topology of the Track.
+      used to signal a path, i.e., made of a single Segment/protection
+      path.  In an SM-VIO, the P-RouteID indicates a Segment ID.  In an
+      NSM-VIO, it indicates the ID of a protection path that is added
+      (or updated) to the overall topology of the Track.
 
    Segment Sequence:  8-bit unsigned integer.  The Segment Sequence
 
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 52]
+Thubert, et al.          Expires 22 August 2025                [Page 52]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -2965,7 +2965,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 53]
+Thubert, et al.          Expires 22 August 2025                [Page 53]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3021,7 +3021,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 54]
+Thubert, et al.          Expires 22 August 2025                [Page 54]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3077,7 +3077,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 55]
+Thubert, et al.          Expires 22 August 2025                [Page 55]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3133,7 +3133,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 56]
+Thubert, et al.          Expires 22 August 2025                [Page 56]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3171,9 +3171,9 @@ Internet-Draft               DAO Projection                February 2025
    Requested Lifetime in the PDR, or between P-DAO messages for
    different Segments.  E.g., The Root may use shorter lifetimes for the
    Segments and renew them or change them during the lifetime of the
-   Track.  All the components (Lanes and Segments) of a Track MUST be
-   destroyed (or have their lifetime elapsed) before the TrackID can be
-   reused.
+   Track.  All the components (protection paths and Segments) of a Track
+   MUST be destroyed (or have their lifetime elapsed) before the TrackID
+   can be reused.
 
    When the Track Lifetime is relatively close to elapse - meaning in
    the order of the trip time from the node to the Root - the requesting
@@ -3189,7 +3189,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 57]
+Thubert, et al.          Expires 22 August 2025                [Page 57]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3210,8 +3210,9 @@ Internet-Draft               DAO Projection                February 2025
       To achieve this, the main Root MAY install a Segment along a path
       down the main DODAG, which is operated in Non-Storing Mode.  This
       enables a loose source routing and reduces the size of the Routing
-      Header, see Section 3.3.1.  The main Root MAY also install a lane
-      across the main DODAG to complement the routing topology.
+      Header, see Section 3.3.1.  The main Root MAY also install a
+      protection path across the main DODAG to complement the routing
+      topology.
 
       When adding a P-Route to the RPL main DODAG, the main Root MUST
       set the RPLInstanceID field of the P-DAO Base Object (see section
@@ -3244,8 +3245,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-Thubert, et al.           Expires 9 August 2025                [Page 58]
+Thubert, et al.          Expires 22 August 2025                [Page 58]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3271,20 +3271,21 @@ Internet-Draft               DAO Projection                February 2025
 
    A path can be installed by a single P-Route that signals the sequence
    of consecutive nodes, either in Storing Mode as a single-Segment
-   Track, or in Non-Storing Mode as a single-Lane Track.  A single-Lane
-   Track can be installed as a loose Non-Storing Mode P-Route, in which
-   case the next loose entry must recursively be reached over a path.
+   Track, or in Non-Storing Mode as a single-protection-path Track.  A
+   single-protection-path Track can be installed as a loose Non-Storing
+   Mode P-Route, in which case the next loose entry must recursively be
+   reached over a path.
 
    A Complex Track can be installed as a collection of P-Routes with the
    same DODAGID and Track ID.  The Ingress of a Non-Storing Mode P-Route
    is the owner and Root of the DODAGID.  The Ingress of a Storing Mode
-   P-Route must be either the owner of the DODAGID, or a hop of a Lane
-   of the same Track.  In the latter case, the Targets of the P-Route
-   must include the next hop of the Lane if there is one, to ensure
-   forwarding continuity.  In the case of a Complex Track, each Segment
-   is maintained independently and asynchronously by the Root, with its
-   own lifetime that may be shorter, the same, or longer than that of
-   the Track.
+   P-Route must be either the owner of the DODAGID, or a hop of a
+   protection path of the same Track.  In the latter case, the Targets
+   of the P-Route must include the next hop of the protection path if
+   there is one, to ensure forwarding continuity.  In the case of a
+   Complex Track, each Segment is maintained independently and
+   asynchronously by the Root, with its own lifetime that may be
+   shorter, the same, or longer than that of the Track.
 
    A route along a Track for which the TrackID is not the RPLInstanceID
    of the main DODAG MUST be installed with a higher precedence than the
@@ -3295,16 +3296,19 @@ Internet-Draft               DAO Projection                February 2025
    *  In case of equal length match, the route along the Track MUST be
       preferred vs. the one along the main DODAG.
 
-   *  There SHOULD NOT be 2 different Tracks leading to the same Target
-      from same Ingress node, unless there's a policy for selecting
-      which packets use which Track; such a policy is out of scope.
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 59]
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 59]
 
 Internet-Draft               DAO Projection                February 2025
 
+
+   *  There SHOULD NOT be 2 different Tracks leading to the same Target
+      from same Ingress node, unless there's a policy for selecting
+      which packets use which Track; such a policy is out of scope.
 
    *  A packet that was routed along a Track MUST NOT be routed along
       the main DODAG again; if the destination is not reachable as a
@@ -3315,10 +3319,10 @@ Internet-Draft               DAO Projection                February 2025
 
    This specification adds a capability whereby the Root of a main DODAG
    installs a Track as a collection of P-Routes, using a Projected-DAO
-   (P-DAO) message for each individual lane or Segment.  The P-DAO
-   signals a collection of Targets in the RPL Target Option(s) (RTO).
-   Those Targets can be reached via a sequence of routers indicated in a
-   VIO.
+   (P-DAO) message for each individual protection path or Segment.  The
+   P-DAO signals a collection of Targets in the RPL Target Option(s)
+   (RTO).  Those Targets can be reached via a sequence of routers
+   indicated in a VIO.
 
    Like a classical DAO message, a P-DAO causes a change of state only
    if it is "new" per section 9.2.2.  "Generation of DAO Messages" of
@@ -3337,34 +3341,27 @@ Internet-Draft               DAO Projection                February 2025
    latter corresponds to the variation for less-constrained environments
    described in Section 7.2.
 
-   A P-DAO that creates or updates a lane MUST be sent to a GUA or a ULA
-   of the Ingress of the Lane; it must contain the full list of hops in
-   the Lane unless the Lane is being removed.  A P-DAO that creates a
-   new Track Segment MUST be sent to a GUA or a ULA of the Segment
-   Egress and MUST signal the full list of hops in Segment; a P-DAO that
-   updates (including deletes) a section of a Segment MUST be sent to
-   the first node after the modified Segment and signal the full list of
-   hops in the section starting at the node that immediately precedes
-   the modified section.
-
-
-
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 60]
-
-Internet-Draft               DAO Projection                February 2025
-
+   A P-DAO that creates or updates a protection path MUST be sent to a
+   GUA or a ULA of the Ingress of the protection path; it must contain
+   the full list of hops in the protection path unless the protection
+   path is being removed.  A P-DAO that creates a new Track Segment MUST
+   be sent to a GUA or a ULA of the Segment Egress and MUST signal the
+   full list of hops in Segment; a P-DAO that updates (including
+   deletes) a section of a Segment MUST be sent to the first node after
+   the modified Segment and signal the full list of hops in the section
+   starting at the node that immediately precedes the modified section.
 
    In Non-Storing Mode, as discussed in Section 6.4.3, the Root sends
    the P-DAO to the Track Ingress where the source-routing state is
    applied, whereas in Storing Mode, the P-DAO is sent to the last node
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 60]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    on the installed path and forwarded in the reverse direction,
    installing a Storing Mode state at each hop, as discussed in
    Section 6.4.2.  In both cases the Track Ingress is the owner of the
@@ -3374,10 +3371,10 @@ Internet-Draft               DAO Projection                February 2025
    If the 'K' Flag is present in the P-DAO, the P-DAO must be
    acknowledged using a DAO-ACK that is sent back to the address of the
    Root from which the P-DAO was received.  In most cases, the first
-   node of the Lane, Segment, or updated section of the Segment is the
-   node that sends the acknowledgment.  The exception to the rule is
-   when an intermediate node in a Segment fails to forward a Storing
-   Mode P-DAO to the previous node in the SM-VIO.
+   node of the protection path, Segment, or updated section of the
+   Segment is the node that sends the acknowledgment.  The exception to
+   the rule is when an intermediate node in a Segment fails to forward a
+   Storing Mode P-DAO to the previous node in the SM-VIO.
 
    In a No-Path Non-Storing Mode P-DAO, the SRH-6LoRH MUST NOT be
    present in the NSM-VIO; the state in the Ingress is erased
@@ -3413,7 +3410,10 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 61]
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 61]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3469,7 +3469,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 62]
+Thubert, et al.          Expires 22 August 2025                [Page 62]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3501,7 +3501,7 @@ Internet-Draft               DAO Projection                February 2025
    status.  If the DAO-ACK is not received, the Root may retry the DAO
    with the same TID, or tear down the route.
 
-6.4.3.  Installing a lane with a Non-Storing Mode P-Route
+6.4.3.  Installing a protection path with a Non-Storing Mode P-Route
 
    As illustrated in Figure 19, a Non-Storing Mode P-DAO installs a
    source-routed path within the Track indicated by the P-DAO Base
@@ -3525,7 +3525,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 63]
+Thubert, et al.          Expires 22 August 2025                [Page 63]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3555,10 +3555,10 @@ Internet-Draft               DAO Projection                February 2025
    either Storing or Non-Storing, which implies that the nested P-Route
    has to be installed before the loose sequence is, and that P-Routes
    must be installed from the last to the first along the datapath.  For
-   instance, a Segment of a Track must be installed before the Lane(s)
-   of the same Track that use it, and stitched Segments must be
-   installed in order from the last that reaches to the Targets to the
-   first.
+   instance, a Segment of a Track must be installed before the
+   protection path(s) of the same Track that use it, and stitched
+   Segments must be installed in order from the last that reaches to the
+   Targets to the first.
 
    If the next entry in the loose sequence is reachable over a Storing
    Mode P-Route, it MUST be the Target of a Segment and the Ingress of a
@@ -3581,7 +3581,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 64]
+Thubert, et al.          Expires 22 August 2025                [Page 64]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3591,17 +3591,18 @@ Internet-Draft               DAO Projection                February 2025
    A P-DAO with a lifetime of 0 is interpreted as a No-Path DAO and
    results in cleaning up existing state as opposed to refreshing an
    existing one or installing a new one.  To tear down a Track, the Root
-   must tear down all the Track Segments and Lanes that compose it one
-   by one.
+   must tear down all the Track Segments and protection paths that
+   compose it one by one.
 
-   Since the state about a Lane of a Track is located only on the
-   Ingress Node, the Root cleans up the Lane by sending an NSM-VIO to
-   the Ingress indicating the TrackID and the P-RouteID of the Lane
-   being removed, a Segment Lifetime of 0 and a newer Segment Sequence.
-   The SRH-6LoRH with the Via Addresses in the NSM-VIO are not needed;
-   it SHOULD NOT be placed in the message and MUST be ignored by the
-   receiver.  Upon that NSM-VIO, the Ingress node removes all state for
-   that Track if any, and replies positively anyway.
+   Since the state about a protection path of a Track is located only on
+   the Ingress Node, the Root cleans up the protection path by sending
+   an NSM-VIO to the Ingress indicating the TrackID and the P-RouteID of
+   the protection path being removed, a Segment Lifetime of 0 and a
+   newer Segment Sequence.  The SRH-6LoRH with the Via Addresses in the
+   NSM-VIO are not needed; it SHOULD NOT be placed in the message and
+   MUST be ignored by the receiver.  Upon that NSM-VIO, the Ingress node
+   removes all state for that Track if any, and replies positively
+   anyway.
 
    The Root cleans up a section of a Segment by sending an SM-VIO to the
    last node of the Segment, with the TrackID and the P-RouteID of the
@@ -3619,11 +3620,12 @@ Internet-Draft               DAO Projection                February 2025
 
 6.6.  Maintaining a Track
 
-   Repathing a Track Segment or Lane may cause jitter and packet
-   misordering.  For critical flows that require timely and/or in-order
-   delivery, it might be necessary to deploy the PAREO functions
-   [RAW-ARCHI] over a highly redundant Track.  This specification allows
-   to use more than one Lane for a Track, and 1+N packet redundancy.
+   Repathing a Track Segment or protection path may cause jitter and
+   packet misordering.  For critical flows that require timely and/or
+   in-order delivery, it might be necessary to deploy the PAREO
+   functions [RAW-ARCHI] over a highly redundant Track.  This
+   specification allows to use more than one protection path for a
+   Track, and 1+N packet redundancy.
 
    This section provides the steps to ensure that no packet is lost due
    to the operation itself.  This is ensured by installing the new
@@ -3635,9 +3637,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 65]
+Thubert, et al.          Expires 22 August 2025                [Page 65]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3664,44 +3664,44 @@ Internet-Draft               DAO Projection                February 2025
    their traffic, the Root tears down the remaining section(s) of the
    old Segments as described in Section 6.5.
 
-6.6.2.  Maintaining a lane
+6.6.2.  Maintaining a protection path
 
-   This specification allows the Root to add Lanes to a Track by sending
-   a Non-Storing Mode P-DAO to the Ingress associated to the same
-   TrackID, and a new Segment ID.  If the Lane is loose, then the
-   Segments that join the hops must be created first.  It makes sense to
-   add a new Lane before removing one that is becoming excessively
-   lossy, and switch to the new Lane before removing the old.  Dropping
-   a Track before the new one is installed would reroute the traffic via
-   the root; this may increase the latency beyond acceptable thresholds,
-   and overload the network near the root.  This may also cause loops in
-   the case of stitched Tracks: the packets that cannot be injected in
-   the second Track might be routed back and reinjected at the Ingress
-   of the first.
+   This specification allows the Root to add protection paths to a Track
+   by sending a Non-Storing Mode P-DAO to the Ingress associated to the
+   same TrackID, and a new Segment ID.  If the protection path is loose,
+   then the Segments that join the hops must be created first.  It makes
+   sense to add a new protection path before removing one that is
+   becoming excessively lossy, and switch to the new protection path
+   before removing the old.  Dropping a Track before the new one is
+   installed would reroute the traffic via the root; this may increase
+   the latency beyond acceptable thresholds, and overload the network
+   near the root.  This may also cause loops in the case of stitched
+   Tracks: the packets that cannot be injected in the second Track might
+   be routed back and reinjected at the Ingress of the first.
 
-   It is also possible to update a lane by sending a Non-Storing Mode
-   P-DAO to the Ingress with the same Segment ID, an incremented Segment
-   Sequence, and the new complete list of hops in the NSM-VIO.  Updating
-   a live Lane means changing one or more of the intermediate loose
-   hops, and involves laying out new Segments from and to the new loose
-   hops before the NSM-VIO for the new Lane is issued.
-
-
-
+   It is also possible to update a protection path by sending a Non-
+   Storing Mode P-DAO to the Ingress with the same Segment ID, an
+   incremented Segment Sequence, and the new complete list of hops in
+   the NSM-VIO.  Updating a live protection path means changing one or
+   more of the intermediate loose hops, and involves laying out new
+   Segments from and to the new loose hops before the NSM-VIO for the
+   new protection path is issued.
 
 
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 66]
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 66]
 
 Internet-Draft               DAO Projection                February 2025
 
 
-   Packets that are in flight over the old version of the lane still
-   follow the old source route path over the old Segments.  After a
-   reasonable time to enable the deprecated Segments to drain their
-   traffic, the Root tears down those Segments as described in
+   Packets that are in flight over the old version of the protection
+   path still follow the old source route path over the old Segments.
+   After a reasonable time to enable the deprecated Segments to drain
+   their traffic, the Root tears down those Segments as described in
    Section 6.5.
 
 6.7.  Encapsulating and Forwarding Along a Track
@@ -3749,7 +3749,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 67]
+Thubert, et al.          Expires 22 August 2025                [Page 67]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3805,7 +3805,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 68]
+Thubert, et al.          Expires 22 August 2025                [Page 68]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3861,7 +3861,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 69]
+Thubert, et al.          Expires 22 August 2025                [Page 69]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3917,7 +3917,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 70]
+Thubert, et al.          Expires 22 August 2025                [Page 70]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -3949,7 +3949,7 @@ Internet-Draft               DAO Projection                February 2025
 
    The SRH-6LoRH is then added at the head of the resulting sequence of
    bytes as a verbatim copy of the content of the SR-VIO that signaled
-   the selected lane.
+   the selected protection path.
 
         0                   1
         0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5  ..         ..        ..
@@ -3973,7 +3973,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 71]
+Thubert, et al.          Expires 22 August 2025                [Page 71]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4029,7 +4029,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 72]
+Thubert, et al.          Expires 22 August 2025                [Page 72]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4085,7 +4085,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 73]
+Thubert, et al.          Expires 22 August 2025                [Page 73]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4097,11 +4097,12 @@ Internet-Draft               DAO Projection                February 2025
 
 7.2.  A Track as a Full DODAG
 
-   This specification builds parallel or crossing Track Lanes as opposed
-   to a more complex DODAG with interconnections at any place desirable.
-   The reason for that limitation is related to constrained node
-   operations, and the capability to store large amount of topological
-   information and compute complex paths:
+   This specification builds Tracks with parallel or interleaved
+   protection paths as opposed to a more complex DODAG with
+   interconnections at any place desirable.  The reason for that
+   limitation is related to constrained node operations, and the
+   capability to store large amount of topological information and
+   compute complex paths:
 
    *  With this specification, the node in the LLN has no topological
       awareness, and does not need to maintain dynamic information about
@@ -4110,7 +4111,7 @@ Internet-Draft               DAO Projection                February 2025
    *  The Root has a complete topological information and statistical
       metrics that allow it or its PCE to perform a global optimization
       of all Tracks in its DODAG.  Based on that information, the Root
-      computes the lane and produces the source route paths.
+      computes the protection path and produces the source route paths.
 
    *  The node merely selects one of the proposed paths and applies the
       associated pre-computed routing header in the encapsulation.  This
@@ -4133,23 +4134,18 @@ Internet-Draft               DAO Projection                February 2025
    the PLR will learn the metrics it needs from an alternate source,
    e.g., OAM frames.
 
-
-
-
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 74]
-
-Internet-Draft               DAO Projection                February 2025
-
-
    To pass the topological information to the Ingress, the Root uses a
    P-DAO messages that contains sequences of Target and Transit
    Information options that collectively represent the Track, expressed
    in the same fashion as in classical Non-Storing Mode.  The difference
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 74]
+
+Internet-Draft               DAO Projection                February 2025
+
+
    is that the Root is the source as opposed to the destination, and can
    report information on many Targets, possibly the full Track, with one
    P-DAO.
@@ -4191,23 +4187,21 @@ Internet-Draft               DAO Projection                February 2025
       top.
 
    Profile 1 (Storing Mode P-Route Segments along the main DODAG)  Profi
-
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 75]
-
-Internet-Draft               DAO Projection                February 2025
-
-
       le 1 does not create new paths; compared to Profile 0, it combines
       Storing and Non-Storing Modes to balance the size of the Routing
       Header in the packet and the amount of state in the intermediate
       routers in a Non-Storing Mode RPL DODAG.
 
    Profile 2 (Non-Storing Mode P-Route Segments along the main DODAG)  P
+
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 75]
+
+Internet-Draft               DAO Projection                February 2025
+
+
       rofile 2 extends Profile 0 with Strict Source-Routing Non-Storing
       Mode P-Routes along the main DODAG, which is the same as Profile 1
       but using NSM VIOs as opposed to SM VIOs.  Profile 2 provides the
@@ -4250,20 +4244,19 @@ Internet-Draft               DAO Projection                February 2025
       DODAG.  Longest match rules decide whether a packet is sent along
       the main DODAG or rerouted in a track.
 
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 76]
-
-Internet-Draft               DAO Projection                February 2025
-
-
    Profile 8  Profile 8 is offered in preparation of the RAW work, and
       for use cases where an arbitrary node in the network can afford
       the same code complexity as the RPL Root in a traditional
       deployment.  It offers a full DODAG visibility to the Track
       Ingress as specified in Section 7.2 in a Non-Storing Mode main
       DODAG.
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 76]
+
+Internet-Draft               DAO Projection                February 2025
+
 
    Profile 9  Profile 9 combines profiles 7 and 8, operating the Track
       as a full DODAG within a Storing Mode main DODAG, using only the
@@ -4304,22 +4297,22 @@ Internet-Draft               DAO Projection                February 2025
    security.  This is a generic 6LoWPAN requirement, see Req5.1 in
    Appendix B.5 of [RFC8505].
 
-
-
-
-
-
-Thubert, et al.           Expires 9 August 2025                [Page 77]
-
-Internet-Draft               DAO Projection                February 2025
-
-
    In a general manner, the Security Considerations in [RPL], and
    [RFC7416] apply to this specification as well.  The Link-Layer
    security is needed in particular to prevent Denial-Of-Service attacks
    whereby a rogue router creates a high churn in the RPL network by
    constantly injecting forged P-DAO messages and using up all the
    available storage in the attacked routers.
+
+
+
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 77]
+
+Internet-Draft               DAO Projection                February 2025
+
 
    With this specification, only the Root may generate P-DAO messages.
    PDR messages may only be sent to the Root.  This specification
@@ -4365,7 +4358,14 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 78]
+
+
+
+
+
+
+
+Thubert, et al.          Expires 22 August 2025                [Page 78]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4421,7 +4421,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 79]
+Thubert, et al.          Expires 22 August 2025                [Page 79]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4477,7 +4477,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 80]
+Thubert, et al.          Expires 22 August 2025                [Page 80]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4533,7 +4533,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 81]
+Thubert, et al.          Expires 22 August 2025                [Page 81]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4589,7 +4589,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 82]
+Thubert, et al.          Expires 22 August 2025                [Page 82]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4645,7 +4645,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 83]
+Thubert, et al.          Expires 22 August 2025                [Page 83]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4701,7 +4701,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 84]
+Thubert, et al.          Expires 22 August 2025                [Page 84]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4757,7 +4757,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 85]
+Thubert, et al.          Expires 22 August 2025                [Page 85]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4813,7 +4813,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 86]
+Thubert, et al.          Expires 22 August 2025                [Page 86]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4869,7 +4869,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 87]
+Thubert, et al.          Expires 22 August 2025                [Page 87]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4925,7 +4925,7 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 88]
+Thubert, et al.          Expires 22 August 2025                [Page 88]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -4981,7 +4981,7 @@ Authors' Addresses
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 89]
+Thubert, et al.          Expires 22 August 2025                [Page 89]
 
 Internet-Draft               DAO Projection                February 2025
 
@@ -5037,4 +5037,4 @@ Internet-Draft               DAO Projection                February 2025
 
 
 
-Thubert, et al.           Expires 9 August 2025                [Page 90]
+Thubert, et al.          Expires 22 August 2025                [Page 90]
