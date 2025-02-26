@@ -2386,7 +2386,7 @@ Ingress                    Segment 5                Egress -- Target
    functions is currently limited. The only possibility available at this time
    is to define overlapping protection paths as illustrated in <xref target="FigLegs"/>,
    with protection path 3 that is congruent with protection path 1 until node B and congruent with protection path
-   2 from node H on, abstracting segment 5 as an forward segment.
+   2 from node H on, abstracting segment 5 as a forward segment.
  </t>
 
 </section>	<!-- Complex Tracks -->
