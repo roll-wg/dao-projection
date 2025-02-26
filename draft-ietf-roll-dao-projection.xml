@@ -17,7 +17,7 @@
 
 <front>
 
-   <title abbrev='DAO Projection'>Root initiated routing state in RPL</title>
+   <title abbrev='DAO Projection'>Root-initiated Routing State in RPL</title>
    <author initials='P' surname='Thubert' fullname='Pascal Thubert' role='editor'>
       <!-- <organization abbrev='Cisco Systems'>Cisco Systems, Inc</organization> -->
       <address>
@@ -65,7 +65,7 @@
         <abstract>
 	  <t>
         This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a
-   RPL Root to install and maintain Projected Routes within its DODAG.
+   RPL Root to install and maintain Projected Routes within its domain.
    A Projected Route is one that is computed by a central entity, such
    as a Path Computation Engine (PCE) and installed in the routers that
    instantiate it, using the procedures defined here. The routes are
@@ -123,7 +123,7 @@
    application needs, including the capability to provide path redundancy.
    This specification also introduces protocol extensions that enable the
    Root to translate the computed paths into RPL and install them as
-   Projected Routes (aka P-Routes) inside the DODAG on behalf of a PCE.
+   Projected Routes (a.k.a. P-Routes) inside the DODAG on behalf of a PCE.
     </t>
        <t>
     A P-Route may be installed in either Storing or Non-Storing Mode,
@@ -230,17 +230,13 @@
        <dt>MOP:</dt><dd>RPL Mode of Operation</dd>
        <dt>P-DAO:</dt><dd>Projected DAO </dd>
        <dt>P-Route:</dt><dd>Projected Route</dd>
-        <dt>PDR:</dt><dd>P-DAO Request</dd>
-        <!--
-        COMMENT: The PDR acronym is not great, since there is the often-used packet delivery rate as well, but a) it is used consistently in this document, and b) it's still much better than my initially proposed no-so-well thought-out PNS extension
-        AUTH: OK, non actionable
-        -->
+       <dt>PDR:</dt><dd>P-DAO Request</dd>
        <dt>PCE:</dt><dd>Path Computation Element</dd>
        <dt>PLR:</dt><dd>Point of Local Repair</dd>
        <dt>RAN:</dt><dd>RPL-Aware Node (either a RPL router or a RPL-Aware Leaf)</dd>
        <dt>RAL:</dt><dd>RPL-Aware Leaf</dd>
        <dt>RH:</dt><dd>Routing Header</dd>
-       <dt>RIB:</dt><dd>Routing Information Base, aka the routing table. </dd>
+       <dt>RIB:</dt><dd>Routing Information Base, i.e., the routing table. </dd>
        <dt>RPI:</dt><dd>RPL Packet Information</dd>
        <dt>RPL:</dt><dd>IPv6 Routing Protocol for Low-Power and Lossy Networks </dd>
        <dt>RTO:</dt><dd>RPL Target Option</dd>
@@ -252,7 +248,7 @@
        <dt>SubDAG:</dt><dd> A DODAG Rooted at a node which is a child of that
        node and a subset of a larger DAG</dd> -->
        <dt>SLO:</dt><dd>Service Level Objective</dd>
-       <dt>SRH:</dt><dd>Source Routing Header, see <xref target="SRSRH"/></dd>
+       <dt>SRH:</dt><dd>Source Routing Header, i.e. the IPv6 RH type 3, see <xref target="SRSRH"/></dd>
        <dt>SRH-6loRH:</dt><dd> Source Routing Header 6LoRH, a compressed form of SRH defined in <xref target='RFC8138'>
     " IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Routing Header"</xref> </dd>
        <dt>TIO:</dt><dd>RPL Transit Information Option</dd>
@@ -272,7 +268,7 @@
   <section><name>Projected Route</name><t>
 	 A RPL P-Route is a RPL route that is computed remotely by a PCE, and 
     installed and maintained by a RPL Root on behalf of the PCE. It
-    is installed as a state that signals that destinations (aka Targets)
+    is installed as a state that signals that destinations (i.e. Targets)
     are reachable via or along a sequence of nodes.</t>
 
   </section>
@@ -280,7 +276,7 @@
     <t> A DAO message used to install a P-Route. </t>
   </section>
   <section><name>Path</name>
-    <t>Quoting section 1.1.3 of <xref target="RFC1122"/>:</t>
+    <t>Quoting (non-normatively) section 1.1.3 of <xref target="RFC1122"/>:</t>
     <blockquote>
     At a given moment, all the IP datagrams from a particular source host to a
     particular destination host will typically traverse the same sequence of
@@ -323,7 +319,7 @@
     the P2P (Point-to-Point) traffic has to follow the same DODAG. Following the
     DODAG, the RPL datapath passes via a common parent in Storing Mode and
     via the Root in Non-Storing Mode. This typically involves more hops and
-    more latency than the minimum possible for a directional (aka forward) P2P path that an
+    more latency than the minimum possible for a directional (i.e., forward) P2P path that an
     isotropic protocol would compute.
     We refer to this elongated path as stretched.
   </t>
@@ -369,7 +365,7 @@ South East                                   South West
 </figure>
     <t>
     This specification builds Tracks that are DODAGs oriented towards a Track
-    Ingress, and the forward direction for packets (aka forward) is from the
+    Ingress, and the forward direction for packets is from the
     Track Ingress to one of the possibly multiple Track Egress Nodes, which is
     also down the DODAG.
     </t>
@@ -460,22 +456,29 @@ South East                                   South West
 
   </section>
   <section anchor='SRSRH'><name>Segment Routing and SRH</name>
-<t>
-   The terms Segment Routing and SRH are used generically, to refer 
-   to using source-routing to hop over segments.
-   In a Non-Storing mode RPL domain, the SRH is typically a RPL Source
-   Route Header (the IPv6 RH of type 3) as defined in <xref target='RFC6554'/>.
+  <t>
+   In a Non-Storing mode RPL domain, the IPv6 RH used for source-routing
+   is the (RPL) SRH as defined in <xref target='RFC6554'/>. 
+   This specification operates in that context and uses the acronym SRH
+   to mean the IPv6 RH type 3 as opposed to the IPv6 RH type 4 defined 
+   in <xref target='RFC8754'/> for the Segment Routing (SRv6) operation.
    </t>
    <t>
    If the network is a 6LoWPAN Network, the expectation is that the
    SRH is compressed and encoded as a 6LoWPAN Routing Header (6LoRH), as
    specified in section 5 of <xref target='RFC8138'/>.
-   </t>
+   </t> 
    <t>
-   On the other hand, if the RPL Network is less constrained and operated in
-   Storing Mode, as discussed in <xref target='smmd'/>, the Segment Routing
-   operation and the SRH could be as specified in <xref target='RFC8754'/>.
-   This specification applies equally to both forms of source routing and SRH.
+   This specification uses the term "Segment Routing" generically, to
+   refer to using source-routing to hop over segments. As such, 
+   forwarding along segments as specified hereafter can be seen as a 
+   form of Segment Routing <xref target='RFC8402'/>, but leveraging the 
+   (RPL) SRH for its operation.
+   </t> 
+   <t>
+   Outside of LLNs, the RPL Network may be less constrained and operated
+   in Storing Mode, as discussed in <xref target='smmd'/>. In that case,
+   this specification could be extended to accommodate the SRv6 RH.
    </t>
 
 </section>	<!-- end section "Segment Routing and SRH" -->
@@ -493,7 +496,7 @@ South East                                   South West
    RPL is optimized for situations where the power is scarce, the bandwidth is
    constrained and the transmissions are unreliable. This matches the use case of
    an IoT LLN where RPL is typically used today, but also situations of high relative
-   mobility between the nodes in the network (aka swarming), e.g.,
+   mobility between the nodes in the network (a.k.a. swarming), e.g.,
    within a variable set of vehicles with a similar global motion, or a platoon of
    drones. 
    In contrast, this specification only applies when the platoon has a relatively stable 
@@ -511,7 +514,7 @@ South East                                   South West
     function allows to adapt the activity of the routing protocol to the use
     case, e.g., type, speed, and quality of the LLN links.
 </t><t>
-    RPL instances operate in parallel, unbeknownst of one another. Yet, 
+    RPL instances operate in parallel, unaware of one another. Yet, 
     it is possible to define a model whereby if a route cannot be found 
     in the current instance A where a packet is being forwarded, then
     the router may lookup the routing table (RIB) in an instance B and
@@ -752,7 +755,7 @@ South East                                   South West
       <xref target="RFC6550"/> optimizes Point-to-Multipoint (P2MP) routes from
       the Root, Multipoint-to-Point (MP2P) routes to the DODAG Root, and
       Internet access when the Root also serves as Border Router.
-      All routes are installed North-South (aka up/down) along the RPL DODAG.
+      All routes are installed North-South (a.k.a. up/down) along the RPL DODAG.
       Peer to Peer (P2P) forward routes in a RPL network will generally
       experience elongated (stretched) paths versus direct (optimized)
       paths, since routing between two nodes always happens via a common
@@ -1489,7 +1492,7 @@ Now the packet destination is E.</li>
 
 <t>In this formulation protection paths are leveraged to combine segments and form a
    Graph. The packets are source routed from a segment to the next to adapt
-   the path. As such, this can be seen as a form of Segment Routing <xref target='RFC8402'/>:</t>
+   the path:</t>
 
 <ul>
 <li>P-DAO 1 signals C==&gt;D==&gt;E-to-E</li>
@@ -2377,7 +2380,7 @@ Ingress                    Segment 5                Egress -- Target
 <t>
    Note that while this specification enables building both segments inside a
    protection path, for instance segment 2 above which is within protection path 1,
-   and Inter-protection-path segments (aka North-South), for instance  segment 5 above which joins
+   and Inter-protection-path segments (i.e., North-South), for instance  segment 5 above which joins
    protection path 1 and protection path 2, it does not signal to the Ingress which Inter-protection-path segments
    are available, so the use of North-South segments and associated path redundancy
    functions is currently limited. The only possibility available at this time
@@ -2520,7 +2523,7 @@ Ingress                    Segment 5                Egress -- Target
     tests to confirm that legacy operations will continue unaffected.
   </t>
 
-    <section anchor='ext6550'><name>Extending RFC 6550</name>
+    <section anchor='ext6550'><name>Extending RPL RFC 6550</name>
     <t>
     This specification Extends RPL <xref target='RFC6550'/> to enable the Root
     to install forward routes inside a main DODAG that is operated as
@@ -2883,7 +2886,7 @@ Ingress                    Segment 5                Egress -- Target
   </section> <!-- Extending RFC 6550 -->
 
 
-    <section anchor='ext6553'><name>Extending RFC 6553</name>
+    <section anchor='ext6553'><name>Extending RPL RFC 6553</name>
     <t>
     <xref target='RFC6553'>"The RPL Option for Carrying RPL Information in Data-Plane Datagrams"</xref> describes the RPL Option for use among RPL routers to include the abstract RPL Packet Information (RPI) described in section 11.2. of <xref target='RFC6550'/> in data packets.
 
@@ -2930,7 +2933,7 @@ Ingress                    Segment 5                Egress -- Target
             </dl>
 
  </section> <!-- Extending RFC 6553 -->
- <section anchor='ext8138'><name>Extending RFC 8138</name>
+ <section anchor='ext8138'><name>Extending RPL RFC 8138</name>
     <t> The <xref target='RFC8138'>6LoWPAN Routing Header</xref> specification
     introduces a new IPv6 over Low-Power Wireless Personal Area Network
     (6LoWPAN) <xref target='RFC6282'/> dispatch type for use in 6LoWPAN
@@ -4634,7 +4637,9 @@ Ingress                    Segment 5                Egress -- Target
     <t>
     IANA is requested to assign a flag from the "DODAG Configuration Option
     Flags for MOP 0..6" <xref target='RFC9010'/> registry under the heading
-    "Routing Protocol for Low Power and Lossy Networks (RPL)" as follows:
+    "Routing Protocol for Low Power and Lossy Networks (RPL)" 
+    <xref target='IANA-RPL'/>
+    as follows:
     </t>
 
    <table  anchor="nexndopt"><name>New DODAG Configuration Option Flag</name>
@@ -4645,16 +4650,27 @@ Ingress                    Segment 5                Egress -- Target
    </tbody>
    </table>
 
-<t>IANA is requested to add [THIS RFC] as a reference for MOP 7 in the RPL Mode of Operation registry.
+<t>
+      IANA is requested to add [THIS RFC] as a reference for MOP 7 in the 
+      RPL Mode of Operation registry that is part of
+      the Routing Protocol for Low Power and Lossy Networks (RPL) registry group
+      <xref target='IANA-RPL'/>.
 </t>
 </section><!-- RPL DODAG Configuration Option Flag -->
+
+
+
+
+
+
    <section anchor='elec6lorh'><name>Elective 6LoWPAN Routing Header Type</name>
 
    <t>
    IANA is requested to update the "Elective 6LoWPAN Routing Header Type" registry that
    was created for <xref target='RFC8138'/> under the heading
-   "Elective 6LoWPAN Routing Header Type"  in <xref target='IANA-6LO'/>
-   and assign the following value:
+   "Elective 6LoWPAN Routing Header Type" 
+   in the "IPv6 Low Power Personal Area Network Parameters" registry group
+    <xref target='IANA-6LO'/> and assign the following value:
 </t>
         <table anchor="elec6lorhtbl"><name>New Elective 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4680,7 +4696,10 @@ Ingress                    Segment 5                Egress -- Target
 
    <section anchor='crit6lorh'><name>Critical 6LoWPAN Routing Header Type</name>
    <t>
-   IANA is requested to update the "Critical 6LoWPAN Routing Header Type" registry that was created for <xref target='RFC8138'/> under the heading "Critical 6LoWPAN Routing Header Type" in <xref target='IANA-6LO'/> and assign the following value:
+   IANA is requested to update the "Critical 6LoWPAN Routing Header Type" registry that was created for <xref target='RFC8138'/> under the heading "Critical 6LoWPAN Routing Header Type" 
+   
+   in the "IPv6 Low Power Personal Area Network Parameters" registry group
+   <xref target='IANA-6LO'/> and assign the following value:
 </t>
         <table anchor="crit6lorhtbl"><name>New Critical 6LoWPAN Routing Header Type</name>
    <thead>
@@ -4708,7 +4727,10 @@ Ingress                    Segment 5                Egress -- Target
 
    <section anchor='RPIIANA'><name>Registry For The RPL Option Flags</name>
     <t>
-   IANA is requested to create a registry for the 8-bit "RPL Option Flags" field, as detailed in <xref target='Rpifmt'/>, under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
+   IANA is requested to create a registry for the 8-bit "RPL Option Flags" field, as detailed in <xref target='Rpifmt'/>, under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)"
+   <xref target='IANA-RPL'/>.
+   
+   The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4716,7 +4738,8 @@ Ingress                    Segment 5                Egress -- Target
      <li>Reference</li>
    </ul>
 
- <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. The initial allocation is as indicated in <xref target='RPLoptFlagtbl'/>:
+ <t> Registration procedure is "Standards Action" <xref target='RFC8126'/>. 
+     The initial allocation is as indicated in <xref target='RPLoptFlagtbl'/>:
  </t>
 
         <table anchor="RPLoptFlagtbl"><name>Initial PDR Flags</name>
@@ -4765,7 +4788,8 @@ Ingress                    Segment 5                Egress -- Target
 
    <section anchor='RPLCtrlMsgReg'><name>RPL Control Codes</name>
 
-    <t> IANA is requested to update the "RPL Control Codes" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
+    <t> IANA is requested to update the "RPL Control Codes" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)"  <xref target='IANA-RPL'/>
+   as indicated in <xref target="ianaRPLCtrlMsgtbl"/>:</t>
 
 
         <table anchor="ianaRPLCtrlMsgtbl"><name>New RPL Control Codes</name>
@@ -4798,7 +4822,8 @@ Ingress                    Segment 5                Egress -- Target
    <section anchor='RPLCtrlMsgOptionsReg'><name>RPL Control Message Options</name>
 
 
-    <t> IANA is requested to update the "RPL Control Message Options" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
+    <t> IANA is requested to update the "RPL Control Message Options" registry under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>
+ as indicated in <xref target="ianaRPLCtrlMsgopttbl"/>:</t>
 
 
 
@@ -4841,7 +4866,7 @@ Ingress                    Segment 5                Egress -- Target
    <name>SubRegistry for the Projected DAO Request Flags</name>
 
    <t>
-      IANA is requested to create a registry for the 8-bit "Projected DAO Request (PDR)" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
+      IANA is requested to create a registry for the 8-bit "Projected DAO Request (PDR)" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>. The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
 
    </t>
    <ul>
@@ -4891,7 +4916,7 @@ Ingress                    Segment 5                Egress -- Target
    <name>SubRegistry for the PDR-ACK Flags</name>
 
    <t>
-   IANA is requested to create a registry for the 8-bit "PDR-ACK Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
+   IANA is requested to create a registry for the 8-bit "PDR-ACK Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>. The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -4912,7 +4937,7 @@ Ingress                    Segment 5                Egress -- Target
  <t>
 
      IANA is requested to create a registry for the 8-bit "PDR-ACK Acceptance
-    Status Values" under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)".
+    Status Values" under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>.
 
      Each value is tracked with the following qualities:
    </t>
@@ -4947,7 +4972,7 @@ Ingress                    Segment 5                Egress -- Target
 
    <t>
     IANA is requested to create a registry for the 6-bit "PDR-ACK Rejection Status Values"
-    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)".
+    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>.
      Each value is tracked with the following qualities:
    </t>
    <ul>
@@ -4985,7 +5010,7 @@ Ingress                    Segment 5                Egress -- Target
 
    <t>
    IANA is requested to create a registry for the 8-bit "Via Information Options
-   (VIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
+   (VIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>. The bits are indexed from 0 (leftmost) to 7. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -5006,7 +5031,7 @@ Ingress                    Segment 5                Egress -- Target
 
    <t>
    IANA is requested to create a registry for the 5-bit "Sibling Information
-   Option (SIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)". The bits are indexed from 0 (leftmost) to 4. Each bit is tracked with the following qualities:
+   Option (SIO) Flags" field under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>. The bits are indexed from 0 (leftmost) to 4. Each bit is tracked with the following qualities:
    </t>
    <ul>
      <li>Bit number (counting from bit 0 as the most significant bit)</li>
@@ -5055,7 +5080,7 @@ Ingress                    Segment 5                Egress -- Target
     <t>
     IANA is requested to update the "Destination Advertisement Object (DAO) Flags"
     registry created in Section 20.11 of <xref target='RFC6550'/> under the
-    heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as
+    heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/> as
     indicated in <xref target="iana-P-DAOtbl"/>,
     more in <xref target="extP-DAO"/>:
     </t>
@@ -5073,7 +5098,7 @@ Ingress                    Segment 5                Egress -- Target
 
 <section anchor="iana-P-DAO-aCK"><name>Destination Advertisement Object Acknowledgment Flag</name>
 
-    <t> IANA is requested to update the "Destination Advertisement Object (DAO) Acknowledgment Flags" registry created in Section 20.12 of <xref target='RFC6550'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" as indicated in <xref target="iana-P-DAO-ACKtbl"/>,
+    <t> IANA is requested to update the "Destination Advertisement Object (DAO) Acknowledgment Flags" registry created in Section 20.12 of <xref target='RFC6550'/> under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/> as indicated in <xref target="iana-P-DAO-ACKtbl"/>,
     more in <xref target='extP-DAO-ACK'/>:
     </t>
 
@@ -5097,7 +5122,7 @@ Ingress                    Segment 5                Egress -- Target
 
         <t> This specification requires that a new code is allocated from the
         'ICMPv6 "Code" Fields' heading of the "Internet Control Message Protocol
-        version 6 (ICMPv6) Parameters" Registry for
+        version 6 (ICMPv6) Parameters" <xref target='IANA-ICMP'/> Registry for
         "Type 1 - Destination Unreachable",
         with a suggested code value of 9, to be confirmed by IANA to indicate an
         "Error in P-Route".</t>
@@ -5109,7 +5134,7 @@ Ingress                    Segment 5                Egress -- Target
 
 
     <t> IANA is requested to update the "RPL Rejection Status" registry
-    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)"
+    under the heading "Routing Protocol for Low Power and Lossy Networks (RPL)" <xref target='IANA-RPL'/>
     as indicated in <xref target="iana-nack-Status"/>:
 </t>
 
@@ -5163,7 +5188,6 @@ Ingress                    Segment 5                Egress -- Target
     <references>
     <name>Normative References</name>
 
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6282.xml'/>
@@ -5173,7 +5197,6 @@ Ingress                    Segment 5                Egress -- Target
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8126.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8138.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml'/>
-	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8754.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9008.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.9030.xml'/>
       <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-raw-architecture.xml'/>
@@ -5181,6 +5204,7 @@ Ingress                    Segment 5                Egress -- Target
     </references><references>
     <name>Informative References</name>
 
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1122.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4861.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4944.xml'/>
@@ -5191,6 +5215,7 @@ Ingress                    Segment 5                Egress -- Target
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8025.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8402.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8505.xml'/>
+	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8754.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8930.xml'/>
 	  <xi:include href='https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8931.xml'/>
@@ -5205,9 +5230,32 @@ Ingress                    Segment 5                Egress -- Target
      <xi:include href="http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.irtf-panrg-path-properties.xml"/>
 
 
-            <reference anchor='IANA-6LO' target='https://www.iana.org/assignments/_6lowpan-parameters/_6lowpan-parameters.xhtml'>
+            <reference anchor='IANA-6LO' target='https://www.iana.org/assignments/icmpv6-parameters/'>
          <front>
-            <title>IPv6 Low Power Personal Area Network Parameters</title>
+            <title>IPv6 Low Power Personal Area Network Parameters registry</title>
+            <author>
+               <organization>IETF</organization>
+            </author>
+            <date/>
+         </front>
+      </reference>
+      
+      
+      
+            <reference anchor='IANA-RPL' target='https://www.iana.org/assignments/rpl/'>
+         <front>
+            <title>Routing Protocol for Low Power and Lossy Networks (RPL) registry group</title>
+            <author>
+               <organization>IETF</organization>
+            </author>
+            <date/>
+         </front>
+      </reference>
+      
+      
+            <reference anchor='IANA-ICMP' target='https://www.iana.org/assignments/icmpv6-parameters/'>
+         <front>
+            <title>Internet Control Message Protocol version 6 (ICMPv6) Parameters registry group</title>
             <author>
                <organization>IETF</organization>
             </author>
