@@ -12,7 +12,7 @@ Expires: 30 August 2025                                    M. Richardson
 
 
                   Root-initiated Routing State in RPL
-                   draft-ietf-roll-dao-projection-38
+                   draft-ietf-roll-dao-projection-39
 
 Abstract
 
@@ -338,7 +338,7 @@ Thubert, et al.          Expires 30 August 2025                 [Page 6]
 Internet-Draft               DAO Projection                February 2025
 
 
-   SRH:  Source Routing Header, i.e. the IPv6 RH type 3, see
+   SRH:  Source Routing Header, i.e., the IPv6 RH type 3, see
       Section 2.4.5.7.2
    SRH-6loRH:  Source Routing Header 6LoRH, a compressed form of SRH
       defined in " IPv6 over Low-Power Wireless Personal Area Network
@@ -356,7 +356,7 @@ Internet-Draft               DAO Projection                February 2025
 
    A RPL P-Route is a RPL route that is computed remotely by a PCE, and
    installed and maintained by a RPL Root on behalf of the PCE.  It is
-   installed as a state that signals that destinations (i.e.  Targets)
+   installed as a state that signals that destinations (i.e., Targets)
    are reachable via or along a sequence of nodes.
 
 2.4.2.  Projected DAO
@@ -4807,9 +4807,9 @@ Internet-Draft               DAO Projection                February 2025
    that improved the readability and well as the content of the
    specification.  Many thanks to Remous-Aris Koutsiamanis for his
    review during WGLC and to Ines Robles for her shepherding and
-   thorough review.  Many thanks to Klaas Wierenga, Deb Cooley, Sue
-   Hares and John Scudder for their comments and suggestions during the
-   IETF last call and IESG review cycle.
+   thorough review.  Many thanks to Klaas Wierenga, Deb Cooley, Eric
+   Vyncke, Sue Hares and John Scudder for their comments and suggestions
+   during the IETF last call and IESG review cycle.
 
 
 

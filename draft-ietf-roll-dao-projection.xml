@@ -13,7 +13,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-38" updates="6550, 6553, 8138">
+<rfc  xmlns:xi="http://www.w3.org/2001/XInclude" category="std" ipr='trust200902' tocInclude="true" indexInclude="true" obsoletes=""  consensus="true" submissionType="IETF" xml:lang="en" version="3" docName="draft-ietf-roll-dao-projection-39" updates="6550, 6553, 8138">
 
 <front>
 
@@ -248,7 +248,7 @@
        <dt>SubDAG:</dt><dd> A DODAG Rooted at a node which is a child of that
        node and a subset of a larger DAG</dd> -->
        <dt>SLO:</dt><dd>Service Level Objective</dd>
-       <dt>SRH:</dt><dd>Source Routing Header, i.e. the IPv6 RH type 3, see <xref target="SRSRH"/></dd>
+       <dt>SRH:</dt><dd>Source Routing Header, i.e., the IPv6 RH type 3, see <xref target="SRSRH"/></dd>
        <dt>SRH-6loRH:</dt><dd> Source Routing Header 6LoRH, a compressed form of SRH defined in <xref target='RFC8138'>
     " IPv6 over Low-Power Wireless Personal Area Network (6LoWPAN) Routing Header"</xref> </dd>
        <dt>TIO:</dt><dd>RPL Transit Information Option</dd>
@@ -268,7 +268,7 @@
   <section><name>Projected Route</name><t>
 	 A RPL P-Route is a RPL route that is computed remotely by a PCE, and 
     installed and maintained by a RPL Root on behalf of the PCE. It
-    is installed as a state that signals that destinations (i.e. Targets)
+    is installed as a state that signals that destinations (i.e., Targets)
     are reachable via or along a sequence of nodes.</t>
 
   </section>
@@ -5171,7 +5171,7 @@ Ingress                    Segment 5                Egress -- Target
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
-   Many thanks to Klaas Wierenga, Deb Cooley, Sue Hares and John Scudder
+   Many thanks to Klaas Wierenga, Deb Cooley, Eric Vyncke, Sue Hares and John Scudder
    for their comments and suggestions during the IETF
    last call and IESG review cycle.
   </t>
