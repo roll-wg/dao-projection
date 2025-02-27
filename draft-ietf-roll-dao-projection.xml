@@ -64,17 +64,19 @@
 
         <abstract>
 	  <t>
-        This document extends RFC 6550, RFC 6553, and RFC 8138 to enable a
-   RPL Root to install and maintain Projected Routes within its domain.
-   A Projected Route is one that is computed by a central entity, such
-   as a Path Computation Engine (PCE) and installed in the routers that
-   instantiate it, using the procedures defined here. The routes are
-   installed along a selected set of nodes that may or may not include
-   itself, for a chosen duration.  This potentially enables routes that 
-   are more optimized or resilient than those obtained with the classical
-   distributed operation of RPL, either in terms of the size of a
-   Routing Header or in terms of path length, which impacts both the
-   latency and the packet delivery ratio.
+The Routing Protocol for Low-Power and Lossy Networks (RPL, RFC 6550) enables data packet
+routing along a Destination-Oriented Directed Acyclic Graph . However,
+the default route establishment mechanism relies on hop-by-hop forwarding along
+the DODAG, which may not always provide optimal routing efficiency. This
+document introduces the concept of DAO Projection, a mechanism that allows a
+RPL root or an external controller to install optimized routes within the RPL
+domain. DAO Projections enable the creation of optimized unicast or multicast
+routes that do not strictly follow the DODAG structure, thereby improving
+routing efficiency, reliability, availability, and resource utilization in the RPL
+domain. The document specifies two types of projected routes—storing mode and
+non-storing mode projections—and outlines the signaling procedures necessary to
+establish, maintain, and remove these routes. 
+   This document extends RFC 6550, RFC 6553, and RFC 8138.
 	  </t>
 	</abstract>
     </front>
@@ -89,10 +91,15 @@
 
 	   <t> RPL, the <xref target='RFC6550'>
    "Routing Protocol for Low Power and Lossy Networks"</xref> (LLNs),
-   is an anisotropic Distance Vector protocol that is well-suited
+   is a Distance Vector protocol, which is well-suited
    for application in a variety of low energy Internet of Things (IoT)
-   networks where stretched P2P paths are acceptable vs. the signaling
+   networks where constrained nodes cannot maintain the full view of the 
+   topology, and stretched P2P paths are acceptable vs. the signaling
    and state overhead involved in maintaining the shortest paths across.
+   Additionally, RPL is anisotropic, meaning that its operation 
+   depends on the orientation of the links, down from or up towards the 
+   Root, with the default route advertised down and more specific paths
+   advertised up along a limited set of links.
     </t>
 <t>
    RPL forms Destination Oriented Directed Acyclic Graphs (DODAGs) in which
@@ -109,7 +116,7 @@
    With this specification, an abstract routing function called a Path
    Computation Element (PCE) (e.g., located in a central
    controller or collocated with the main Root) interacts with the main Root to
-   compute Peer-to-Peer (P2P) paths within the main Instance. In Non-Storing
+   compute additional paths betwwen nodes in the main Instance. In Non-Storing
    Mode, the base topological information to be passed to the PCE, that is the
    knowledge of the main DODAG, is already available at the Root.
    This specification introduces protocol extensions that enrich the topological
@@ -122,8 +129,9 @@
    visibility of the system can optimize the computed routes for the
    application needs, including the capability to provide path redundancy.
    This specification also introduces protocol extensions that enable the
-   Root to translate the computed paths into RPL and install them as
-   Projected Routes (a.k.a. P-Routes) inside the DODAG on behalf of a PCE.
+   Root to project (i.e., advertise from a remote location) the computed 
+   paths in the RPL domain as
+   Projected Routes (a.k.a. P-Routes) on behalf of the PCE.
     </t>
        <t>
     A P-Route may be installed in either Storing or Non-Storing Mode,
@@ -315,7 +323,7 @@
     Function.
   </t>
   <t>
-    The RPL DODAG optimizes the P2MP (Point-to-MultiPoint) (from the Root) and MP2P (MultiPoint-to-Point) (towards the Root) paths, but
+    The RPL DODAG optimizes the P2MP (Point-to-Multipoint) (from the Root) and MP2P (Multipoint-to-Point) (towards the Root) paths, but
     the P2P (Point-to-Point) traffic has to follow the same DODAG. Following the
     DODAG, the RPL datapath passes via a common parent in Storing Mode and
     via the Root in Non-Storing Mode. This typically involves more hops and
@@ -752,9 +760,8 @@ South East                                   South West
     <section><name>forward Routes</name>
 
       <t>
-      <xref target="RFC6550"/> optimizes Point-to-Multipoint (P2MP) routes from
-      the Root, Multipoint-to-Point (MP2P) routes to the DODAG Root, and
-      Internet access when the Root also serves as Border Router.
+      <xref target="RFC6550"/> optimizes P2MP routes from the Root, MP2P routes towards the
+      Root, and as a consequence routes from/to the outside of the RPL domain when the Root also serves as Border Router.
       All routes are installed North-South (a.k.a. up/down) along the RPL DODAG.
       Peer to Peer (P2P) forward routes in a RPL network will generally
       experience elongated (stretched) paths versus direct (optimized)
@@ -1218,7 +1225,7 @@ Note:
     AUTH: replaced with "Any but A"
 -->
 <t>
-As an example, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB in <xref target='RIBcase11'/>:
 </t>
 <ul>
 <li>From P-DAO 2: A forwards to B and B forwards to C.</li>
@@ -1366,79 +1373,6 @@ As an example, say that A has a packet for F. Using the RIB above:
         </table>
 
 
-        <!--
-<t>As a result the RIBs are set as follows:</t>
-
-        <table anchor="RIBcase12o"><name>RIB setting</name>
-   <thead>
-
-          <tr><th align='center'>Node</th>
-              <th align='left'>Control Message</th>
-              <th align='left'>Next Hop(s)</th>
-              <th align='left'>Destination</th></tr>
-
-   </thead>
-   <tbody>
-
-          <tr><td align='center'>E</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>F</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>G</td>
-              <td align='left'>G</td></tr>
-
-          <tr><td align='center'>D</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>E</td>
-              <td align='left'>E</td></tr>
-
-          <tr><td align='center'>C</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>D</td>
-              <td align='left'>D</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 1</td>
-              <td align='left'>D</td>
-              <td align='left'>E</td></tr>
-
-          <tr><td align='center'>B</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>C</td>
-              <td align='left'>C</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>C</td>
-              <td align='left'>E</td></tr>
-
-          <tr><td align='center'>A</td>
-              <td align='left'>NS(EARO)</td>
-              <td align='left'>B</td>
-              <td align='left'>B</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 2</td>
-              <td align='left'>B</td>
-              <td align='left'>E</td></tr>
-
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 3</td>
-              <td align='left'>E</td>
-              <td align='left'>E</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 3</td>
-              <td align='left'>E</td>
-              <td align='left'>F</td></tr>
-          <tr><td align='center'> </td>
-              <td align='left'>P-DAO 3</td>
-              <td align='left'>E</td>
-              <td align='left'>G</td></tr>
-
-
-    </tbody>
-        </table>
-        -->
-
 <t>
     Packets from A to E do not require an encapsulation.
     This is why in the tables below, E may show as IPv6 Destination Address only
@@ -1477,7 +1411,7 @@ As an example, say that A has a packet for F. Using the RIB above:
      AUTH: X was the node in the column left to this. Changed to "either E if(X != A), or F, or G"
  -->
 <t>
-As an example, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB in <xref target='RIBcase12'/>:
 </t>
 <ul>
 <li>From P-DAO 3: A encapsulates the packet and sends it down the Track signaled by P-DAO 3, with the outer header above.
@@ -1659,7 +1593,7 @@ Now the packet destination is E.</li>
    row can be read as indicating the SRH as well.
 -->
 <t>
-As an example, say that A has a packet for F. Using the RIB above:
+As an example, say that A has a packet for F. Using the RIB in <xref target='RIBcase13'/>:
 </t>
 <ul>
 <li>From P-DAO 3: A encapsulates the packet the Track signaled by P-DAO 3, with the outer header above.
@@ -1830,7 +1764,7 @@ Now the destination in the IPv6 Header is C, and a SRH signals the final destina
         </table>
 
 
-<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<t>As an example, say that A has a packet for F.  Using the RIB in <xref target='RIBcase21'/>:</t>
 <ul>
 <li>From P-DAO 2:
    A encapsulates the packet with destination of F in the Track signaled by
@@ -2021,7 +1955,7 @@ As Non-Storing Mode Egress nodes addresses, they not listed in the respective RT
     -->
 
 
-<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<t>As an example, say that A has a packet for F.  Using the RIB in <xref target='RIBcase22'/>:</t>
 <ul>
 <li>
 From P-DAO 3: A encapsulates the packet with destination of F in the Track signaled by P-DAO 3. The outer header has source A, destination E, and a RPI indicating a TrackId of 141 from A's namespace. This recurses with:
@@ -2279,7 +2213,7 @@ C encapsulates the packet with destination of E in the Track signaled by P-DAO 1
 
   -->
 
-<t>As an example, say that A has a packet for F.  Using the RIB above:</t>
+<t>As an example, say that A has a packet for F.  Using the <xref target='Packetcase231'/>:</t>
 <ul>
 <li>From P-DAO 3: A encapsulates the packet with destination of F in the Track signaled by P-DAO 3. The outer header has source A, destination C, an SRH that indicates E as the next loose hop, and a RPI indicating a TrackId of 141 from A's namespace. This recurses with:
 </li>
@@ -5171,7 +5105,7 @@ Ingress                    Segment 5                Egress -- Target
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
-   Many thanks to Klaas Wierenga, Deb Cooley, Eric Vyncke, Sue Hares and John Scudder
+   Many thanks to Klaas Wierenga, Deb Cooley, Eric Vyncke, Gunter Van de Velde, Sue Hares and John Scudder
    for their comments and suggestions during the IETF
    last call and IESG review cycle.
   </t>
