@@ -12,7 +12,7 @@ Expires: 31 August 2025                                    M. Richardson
 
 
                   Root-initiated Routing State in RPL
-                   draft-ietf-roll-dao-projection-39
+                   draft-ietf-roll-dao-projection-40
 
 Abstract
 
