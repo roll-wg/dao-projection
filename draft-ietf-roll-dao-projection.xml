@@ -4586,7 +4586,7 @@ Ingress                    Segment 5                Egress -- Target
 
 <t>
       IANA is requested to add [THIS RFC] as a reference for MOP 7 in the 
-      RPL Mode of Operation registry that is part of
+      Mode of Operation registry that is part of
       the Routing Protocol for Low Power and Lossy Networks (RPL) registry group
       <xref target='IANA-RPL'/>.
 </t>
@@ -5105,7 +5105,7 @@ Ingress                    Segment 5                Egress -- Target
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
-   Many thanks to Klaas Wierenga, Deb Cooley, Eric Vyncke, Gunter Van de Velde, Sue Hares and John Scudder
+   Many thanks to Roman Danyliw, Klaas Wierenga, Deb Cooley, Eric Vyncke, Gunter Van de Velde, Sue Hares and John Scudder
    for their comments and suggestions during the IETF
    last call and IESG review cycle.
   </t>

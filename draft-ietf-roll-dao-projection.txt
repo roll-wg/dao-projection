@@ -1307,6 +1307,7 @@ Internet-Draft               DAO Projection                February 2025
                       Table 3: Packet Header Settings
 
    As an example, say that A has a packet for F.  Using the RIB in
+   As an example, say that A has a packet for F.  Using the RIB in
    Table 2:
 
    *  From P-DAO 2: A forwards to B and B forwards to C.
