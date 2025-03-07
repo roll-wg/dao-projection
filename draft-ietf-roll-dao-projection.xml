@@ -3607,7 +3607,7 @@ Ingress                    Segment 5                Egress -- Target
     
     </t> <t>
     A P-DAO that creates or updates a protection path MUST be sent to a GUA or a ULA
-    of the Ingress of the protection path; it must contain the full list of hops in the
+    of the Ingress of the protection path; it MUST contain the full list of hops in the
     protection path unless the protection path is being removed.
     A P-DAO that creates a new Track segment MUST be sent to a GUA or a ULA
     of the segment Egress and MUST signal the full list of hops in segment; a
@@ -3624,7 +3624,7 @@ Ingress                    Segment 5                Egress -- Target
     In both cases the Track Ingress is the owner of the Track, and it generates the P-DAO-ACK when the installation is successful.
     </t>
      <t>
-    If the 'K' Flag is present in the P-DAO, the P-DAO must be acknowledged
+    If the 'K' Flag is present in the P-DAO, the P-DAO MUST be acknowledged
     using a DAO-ACK that is sent back to the address of the Root from which the
     P-DAO was received. In most cases, the first node of the protection path, segment,
     or updated section of the segment is the node that sends the acknowledgment.
@@ -3717,7 +3717,7 @@ Ingress                    Segment 5                Egress -- Target
     Resources" as opposed to forwarding the DAO to its predecessor in the list.
     The router MAY install additional routes towards the Via Addresses that appear in
     the SM-VIO after its own address, if any, but in case of a conflict or a lack of
-    resource, the route(s) to the Target(s) are the ones that must be installed
+    resource, the route(s) to the Target(s) are the ones that MUST be installed
     in priority.
     </t>
      <t>
@@ -4542,8 +4542,9 @@ Ingress                    Segment 5                Egress -- Target
    for pledge to 6LBR communication when additional end-to-end security 
    is desired beyond the hop-by-hop security from the lower layer.
  </t><t>
-   With this specification, only the Root may generate P-DAO messages. PDR
-   messages may only be sent to the Root. This specification expects that the
+   With this specification, the Root MAY generate P-DAO messages but 
+   other nodes MUST NOT do so. PDR messages MUST be sent to the Root. 
+   This specification expects that the
    communication with the Root is authenticated but does not enforce which method
    is used.
 </t><t>
@@ -5105,9 +5106,7 @@ Ingress                    Segment 5                Egress -- Target
    content of the specification.
    Many thanks to Remous-Aris Koutsiamanis for his review during WGLC and to
    Ines Robles for her shepherding and thorough review.
-   Many thanks to Roman Danyliw, Klaas Wierenga, Deb Cooley, Eric Vyncke, Gunter Van de Velde, Sue Hares and John Scudder
-   for their comments and suggestions during the IETF
-   last call and IESG review cycle.
+   Many thanks to Warren Kumari, Ran Chen, Murray Kucherawy, Roman Danyliw, Klaas Wierenga, Deb Cooley, Eric Vyncke, Gunter Van de Velde, Sue Hares and John Scudder for their comments and suggestions during the IETF last call and IESG review cycle.
   </t>
 </section>
 
