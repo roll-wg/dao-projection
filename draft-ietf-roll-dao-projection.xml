@@ -3014,7 +3014,7 @@ Ingress                    Segment 5                Egress -- Target
               </t><t>
               A PDR with a fresher
               PDRSequence refreshes the lifetime, and a PDRLifetime of 0
-              indicates that the Track should be destroyed, e.g., when the
+              indicates that the Track MUST be destroyed, e.g., when the
               application that requested the Track terminates.
               </t>
               </dd>

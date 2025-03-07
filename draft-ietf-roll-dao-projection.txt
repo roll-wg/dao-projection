@@ -5,7 +5,7 @@
 ROLL                                                     P. Thubert, Ed.
 Internet-Draft                                                          
 Updates: 6550, 6553, 8138 (if approved)                      R.A. Jadhav
-Intended status: Standards Track                             Huawei Tech
+Intended status: Standards Track                                AccuKnox
 Expires: 8 September 2025                                  M. Richardson
                                                                Sandelman
                                                             7 March 2025
@@ -2776,8 +2776,8 @@ Internet-Draft               DAO Projection                   March 2025
       infinity (never time out).
 
       A PDR with a fresher PDRSequence refreshes the lifetime, and a
-      PDRLifetime of 0 indicates that the Track should be destroyed,
-      e.g., when the application that requested the Track terminates.
+      PDRLifetime of 0 indicates that the Track MUST be destroyed, e.g.,
+      when the application that requested the Track terminates.
 
    PDRSequence:  8-bit wrapping sequence number, obeying the operation
       in section 7.2 of [RPL].  The PDRSequence is used to correlate a
@@ -5071,7 +5071,7 @@ Authors' Addresses
 
 
    Rahul Arvind Jadhav
-   Huawei Tech
+   AccuKnox
    Kundalahalli Village, Whitefield,
    Bangalore 560037
    Karnataka
